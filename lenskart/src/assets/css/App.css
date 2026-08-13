@@ -21,23 +21,69 @@ a {
   text-decoration: none;
 }
 
+.img-fluid {
+  max-width: 100%;
+}
+
 .container {
   width: 90%;
   max-width: 1320px;
   margin: auto;
 }
 
-.info h2.heading {
+h2.heading {
   font-size: 24px;
   line-height: 30px;
   font-weight: 800;
-  color: rgb(0, 0, 66);
+  color: var(--dark-blue);
+}
+
+h3.title,
+h3.category_title {
+  font-size: 16px;
+  line-height: 30px;
+  font-weight: 600;
+  color: var(--dark-blue);
+  opacity: 0.6;
 }
 
 .padding_70 {
-  padding: 0 70px;
+  padding: 70px 0px;
 }
 
 .margin_70 {
-  margin: 0 70px;
+  margin: 70px 0px;
 }
+
+.category_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 20px;
+  overflow: scroll;
+  scrollbar-width: none;
+}
+
+.category_box {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.category_box img {
+  width: 180px;
+  margin-bottom: 10px;
+  padding: 20px;
+  padding-right: 0;
+  background: #f5f5f5;
+  border-radius: 20px;
+  box-shadow: 0 0 5px #f5f5f5;
+}
+
+
+.eyeglasses_sec .category_box img {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  padding: 10px;
+} 

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
 import styles from "./Header.module.css";
 import { PhoneCall } from "lucide-react";
 
@@ -9,6 +10,7 @@ import {
   Search,
   ShoppingBag,
 } from "lucide-react";
+import logo from "../assets/images/logo.svg";
 import logo_white from "../assets/images/logo_white.svg";
 
 const navigation = [
@@ -96,9 +98,27 @@ const navigation = [
 ];
 
 function Header() {
+  const [isFixed, setIsFixed] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsFixed(true);
+      } else {
+        setIsFixed(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
-      <header className={styles.header}>
+      <header className={`${styles.header} ${isFixed ? styles.fixed : ""}`}>
         <div className={styles.topbar_sec}>
           <div className={styles.container}>
             <div className={styles.topbar}>
@@ -124,7 +144,8 @@ function Header() {
         </div>
         <div className={styles.navbar}>
           <a className={styles.logo} href="#" aria-label="Lenskart home">
-            <img src={logo_white} alt="" />
+            <img src={logo} alt="Logo" />
+            {/* <img src={logo_white} alt="" /> */}
           </a>
 
           <nav className={styles.navigation} aria-label="Main navigation">
@@ -153,7 +174,7 @@ function Header() {
 
           <div className={styles.actions}>
             <label className={styles.searchBox}>
-              <Search aria-hidden="true" />
+              <Search color="white" aria-hidden="true" />
               <input
                 type="search"
                 placeholder={'Search "airy light glasses"'}
@@ -161,13 +182,13 @@ function Header() {
               />
             </label>
             <a className={styles.iconButton} href="#" aria-label="Wishlist">
-              <Heart aria-hidden="true" />
+              <Heart color="black" aria-hidden="true" />
             </a>
             <a className={styles.iconButton} href="#" aria-label="Shopping bag">
-              <ShoppingBag aria-hidden="true" />
+              <ShoppingBag color="black" aria-hidden="true" />
             </a>
             <a className={styles.iconButton} href="#" aria-label="Account">
-              <CircleUserRound aria-hidden="true" />
+              <CircleUserRound color="black" aria-hidden="true" />
             </a>
           </div>
         </div>
