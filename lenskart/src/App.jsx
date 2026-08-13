@@ -1,4 +1,4 @@
-import "./App.css";
+import "./assets/css/App.css";
 import Header from "./header/Header";
 import HomeSlider from "./components/HomeSlider";
 
