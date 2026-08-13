@@ -18,7 +18,7 @@ import image_9 from "../assets/images/image_9.webp";
 import image_10 from "../assets/images/image_10.webp";
 import image_11 from "../assets/images/image_11.webp";
 import image_12 from "../assets/images/image_12.webp";
-import image_13 from "../assets/images/image_13.webp";
+import image_13 from "../assets/images/hip-hop.jpeg";
 import image_14 from "../assets/images/image_14.webp";
 import image_15 from "../assets/images/image_15.webp";
 
