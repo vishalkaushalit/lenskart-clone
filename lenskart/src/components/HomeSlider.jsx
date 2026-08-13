@@ -43,6 +43,7 @@ const bannerImages = [
 function HomeSlider() {
   return (
     <Swiper
+      className="home-slider"
       modules={[Navigation, Pagination, Autoplay]}
       slidesPerView={1}
       spaceBetween={0}
@@ -50,7 +51,11 @@ function HomeSlider() {
         prevEl: ".home-slider-prev",
         nextEl: ".home-slider-next",
       }}
-      pagination={{ clickable: true }}
+      pagination={{
+        clickable: true,
+        dynamicBullets: true,
+        dynamicMainBullets: 1,
+      }}
       autoplay={{ delay: 5000 }}
       loop={true}
     >

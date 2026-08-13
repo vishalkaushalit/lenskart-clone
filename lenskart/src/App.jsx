@@ -1,12 +1,10 @@
 import "./assets/css/App.css";
-import Header from "./header/Header";
-import HomeSlider from "./components/HomeSlider";
+import Home from "./pages/Home";
 
 function App() {
   return (
     <>
-      <Header />
-      <HomeSlider />
+      <Home />
     </>
   );
 }
