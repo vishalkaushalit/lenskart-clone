@@ -1,5 +1,11 @@
 import React from "react";
-import category_img from "../assets/images/eyeglasses.webp";
+import rectangle from "../assets/images/rectangle.webp";
+import cateye from "../assets/images/cateye.webp";
+import aviator from "../assets/images/aviator.webp";
+import geometric from "../assets/images/geometric.webp";
+import round from "../assets/images/round.webp";
+import clubmaster from "../assets/images/clubmaster.webp";
+import square from "../assets/images/square.webp";
 
 const Eyeglasses = () => {
   return (
@@ -13,7 +19,7 @@ const Eyeglasses = () => {
             <a href="#" className="category_link">
               <div className="category_box">
                 <img
-                  src={category_img}
+                  src={rectangle}
                   alt="Category Name"
                   className="category_img"
                 />
@@ -23,7 +29,7 @@ const Eyeglasses = () => {
             <a href="#" className="category_link">
               <div className="category_box">
                 <img
-                  src={category_img}
+                  src={cateye}
                   alt="Category Name"
                   className="category_img"
                 />
@@ -33,7 +39,7 @@ const Eyeglasses = () => {
             <a href="#" className="category_link">
               <div className="category_box">
                 <img
-                  src={category_img}
+                  src={aviator}
                   alt="Category Name"
                   className="category_img"
                 />
@@ -43,7 +49,7 @@ const Eyeglasses = () => {
             <a href="#" className="category_link">
               <div className="category_box">
                 <img
-                  src={category_img}
+                  src={geometric}
                   alt="Category Name"
                   className="category_img"
                 />
@@ -53,7 +59,7 @@ const Eyeglasses = () => {
             <a href="#" className="category_link">
               <div className="category_box">
                 <img
-                  src={category_img}
+                  src={round}
                   alt="Category Name"
                   className="category_img"
                 />
@@ -63,7 +69,7 @@ const Eyeglasses = () => {
             <a href="#" className="category_link">
               <div className="category_box">
                 <img
-                  src={category_img}
+                  src={clubmaster}
                   alt="Category Name"
                   className="category_img"
                 />
@@ -73,7 +79,7 @@ const Eyeglasses = () => {
             <a href="#" className="category_link">
               <div className="category_box">
                 <img
-                  src={category_img}
+                  src={square}
                   alt="Category Name"
                   className="category_img"
                 />

@@ -4,6 +4,7 @@ import HomeSlider from "../components/HomeSlider";
 import Categories from "../components/Categories";
 import free_lens_replacement from "../../public/FLR1IN.webp";
 import Eyeglasses from "../components/Eyeglasses";
+import Trending from "../components/Trending";
 
 const Home = () => {
   return (
@@ -19,6 +20,7 @@ const Home = () => {
         />
       </a>
       <Eyeglasses />
+      <Trending />
     </>
   );
 };
