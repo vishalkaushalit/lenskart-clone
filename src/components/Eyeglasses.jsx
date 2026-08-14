@@ -1,11 +1,11 @@
 import React from "react";
-import rectangle from "../assets/images/rectangle.webp";
-import cateye from "../assets/images/cateye.webp";
-import aviator from "../assets/images/aviator.webp";
-import geometric from "../assets/images/geometric.webp";
-import round from "../assets/images/round.webp";
-import clubmaster from "../assets/images/clubmaster.webp";
-import square from "../assets/images/square.webp";
+import rectangle from "../assets/images/eyeglasses/rectangle.webp";
+import cateye from "../assets/images/eyeglasses/cateye.webp";
+import aviator from "../assets/images/eyeglasses/aviator.webp";
+import geometric from "../assets/images/eyeglasses/geometric.webp";
+import round from "../assets/images/eyeglasses/round.webp";
+import clubmaster from "../assets/images/eyeglasses/clubmaster.webp";
+import square from "../assets/images/eyeglasses/square.webp";
 
 const Eyeglasses = () => {
   return (

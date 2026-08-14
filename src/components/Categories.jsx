@@ -1,5 +1,5 @@
 import React from "react";
-import category_img from "../assets/images/eyeglasses.webp";
+import category_img from "../assets/images/eyeglasses/eyeglasses.webp";
 
 const Categories = () => {
   return (

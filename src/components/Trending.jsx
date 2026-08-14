@@ -1,77 +1,195 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
+import trending_1 from "../assets/images/trending/trending_1.webp";
+import trending_2 from "../assets/images/trending/trending_2.webp";
+import trending_3 from "../assets/images/trending/trending_3.webp";
+import trending_4 from "../assets/images/trending/trending_4.webp";
+import trending_5 from "../assets/images/trending/trending_5.webp";
+import trending_6 from "../assets/images/trending/trending_6.webp";
+import trending_7 from "../assets/images/trending/trending_7.webp";
+import trending_8 from "../assets/images/trending/trending_8.webp";
+// import trending_9 from "../assets/images/trending/trending_9.webp";
+// import trending_10 from "../assets/images/trending/trending_10.webp";
+// import trending_11 from "../assets/images/trending/trending_11.webp";
+// import trending_12 from "../assets/images/trending/trending_12.webp";
+import trending_1_video from "../assets/videos/trending_1.mp4";
+import trending_2_video from "../assets/videos/trending_2.mp4";
+import trending_3_video from "../assets/videos/trending_3.mp4";
+import trending_4_video from "../assets/videos/trending_4.mp4";
+import trending_5_video from "../assets/videos/trending_5.mp4";
+import trending_6_video from "../assets/videos/trending_6.mp4";
+import trending_7_video from "../assets/videos/trending_7.mp4";
+import trending_8_video from "../assets/videos/trending_8.mp4";
+// import trending_9_video from "../assets/videos/trending_9.mp4";
+// import trending_10_video from "../assets/videos/trending_10.mp4";
+// import trending_11_video from "../assets/videos/trending_11.mp4";
+// import trending_12_video from "../assets/videos/trending_12.mp4";
 
 import "swiper/css";
+
+const videoUrls = [
+  trending_1_video,
+  trending_2_video,
+  trending_3_video,
+  trending_4_video,
+  trending_5_video,
+  trending_6_video,
+  trending_7_video,
+  trending_8_video,
+  // trending_9_video,
+  // trending_10_video,
+  // trending_11_video,
+  // trending_12_video,
+];
+
+const thumbnailImages = [
+  trending_1,
+  trending_2,
+  trending_3,
+  trending_4,
+  trending_5,
+  trending_6,
+  trending_7,
+  trending_8,
+  // trending_9,
+  // trending_10,
+  // trending_11,
+  // trending_12,
+];
 
 const videoSlides = [
   {
     id: 1,
-    title: "Top Frames",
-    thumbnail:
-      "https://images.unsplash.com/photo-1577803947579-9f4ff6a7d1db?auto=format&fit=crop&w=900&q=80",
-    video:
-      "https://assets.mixkit.co/videos/preview/mixkit-woman-in-sunglasses-looking-at-the-camera-11441-large.mp4",
-    link: "/shop",
+    title: "Classic Round",
+    thumbnail: thumbnailImages[0],
+    video: videoUrls[0],
+    link: "/shop/round-glasses",
   },
   {
     id: 2,
-    title: "Blue Light",
-    thumbnail:
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80",
-    video:
-      "https://assets.mixkit.co/videos/preview/mixkit-close-up-of-person-putting-on-sunglasses-13004-large.mp4",
-    link: "/shop",
+    title: "Aviator Edge",
+    thumbnail: thumbnailImages[1],
+    video: videoUrls[1],
+    link: "/shop/aviator-glasses",
   },
   {
     id: 3,
-    title: "Bold Style",
-    thumbnail:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
-    video:
-      "https://assets.mixkit.co/videos/preview/mixkit-man-wearing-sunglasses-in-the-city-26479-large.mp4",
-    link: "/shop",
+    title: "Cat Eye Style",
+    thumbnail: thumbnailImages[2],
+    video: videoUrls[2],
+    link: "/shop/cat-eye-glasses",
   },
   {
     id: 4,
-    title: "Classic Look",
-    thumbnail:
-      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80",
-    video:
-      "https://assets.mixkit.co/videos/preview/mixkit-young-woman-with-sunglasses-in-a-store-39592-large.mp4",
-    link: "/shop",
+    title: "Rectangle Smart",
+    thumbnail: thumbnailImages[3],
+    video: videoUrls[3],
+    link: "/shop/rectangle-glasses",
   },
   {
     id: 5,
-    title: "Lens Care",
-    thumbnail:
-      "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=80",
-    video:
-      "https://assets.mixkit.co/videos/preview/mixkit-fashion-model-in-sunglasses-17942-large.mp4",
-    link: "/shop",
+    title: "Blue Light Shield",
+    thumbnail: thumbnailImages[4],
+    video: videoUrls[4],
+    link: "/shop/blue-light-glasses",
   },
   {
     id: 6,
-    title: "Sunset Edit",
-    thumbnail:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=900&q=80",
-    video:
-      "https://assets.mixkit.co/videos/preview/mixkit-woman-with-sunglasses-on-a-beach-17756-large.mp4",
-    link: "/shop",
+    title: "Sunset Luxe",
+    thumbnail: thumbnailImages[5],
+    video: videoUrls[5],
+    link: "/shop/sunset-luxe-glasses",
   },
+  {
+    id: 7,
+    title: "Vintage Charm",
+    thumbnail: thumbnailImages[6],
+    video: videoUrls[6],
+    link: "/shop/vintage-glasses",
+  },
+  {
+    id: 8,
+    title: "Modern Bold",
+    thumbnail: thumbnailImages[7],
+    video: videoUrls[7],
+    link: "/shop/modern-glasses",
+  },
+  // {
+  //   id: 9,
+  //   title: "Elegant Retro",
+  //   thumbnail: thumbnailImages[8],
+  //   video: videoUrls[8],
+  //   link: "/shop/retro-glasses",
+  // },
+  // {
+  //   id: 10,
+  //   title: "Urban Edge",
+  //   thumbnail: thumbnailImages[9],
+  //   video: videoUrls[9],
+  //   link: "/shop/urban-glasses",
+  // },
+  // {
+  //   id: 11,
+  //   title: "Minimalist Pure",
+  //   thumbnail: thumbnailImages[10],
+  //   video: videoUrls[10],
+  //   link: "/shop/minimalist-glasses",
+  // },
+  // {
+  //   id: 12,
+  //   title: "Fashion Forward",
+  //   thumbnail: thumbnailImages[11],
+  //   video: videoUrls[11],
+  //   link: "/shop/fashion-glasses",
+  // },
 ];
 
 const Trending = () => {
+  const swiperRef = useRef(null);
   const videoRefs = useRef([]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [playingIndex, setPlayingIndex] = useState(-1);
+
+  useEffect(() => {
+    const activeVideo = videoRefs.current[activeIndex];
+
+    if (!activeVideo) return;
+
+    activeVideo.pause();
+    activeVideo.currentTime = 0;
+    setPlayingIndex(-1);
+
+    // Wait 2 seconds before starting the video (show poster)
+    const initialDelayTimer = setTimeout(() => {
+      activeVideo.play().catch(() => {});
+      setPlayingIndex(activeIndex);
+
+      // After playing for 3 seconds, advance to next slide
+      const playDurationTimer = setTimeout(() => {
+        setPlayingIndex(-1);
+        if (swiperRef.current) {
+          swiperRef.current.slideNext();
+        }
+      }, 3000);
+
+      return () => clearTimeout(playDurationTimer);
+    }, 500);
+
+    return () => {
+      clearTimeout(initialDelayTimer);
+      activeVideo.pause();
+      activeVideo.currentTime = 0;
+      setPlayingIndex(-1);
+    };
+  }, [activeIndex]);
 
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
 
       if (index === activeIndex) {
-        video.currentTime = 0;
-        video.play().catch(() => {});
+        video.muted = true;
       } else {
         video.pause();
         video.currentTime = 0;
@@ -87,19 +205,17 @@ const Trending = () => {
         </div>
 
         <Swiper
+          ref={swiperRef}
           className="trending-video-slider"
           modules={[Autoplay]}
           slidesPerView={4}
           spaceBetween={18}
           loop={true}
           speed={700}
-          autoplay={{
-            delay: 2600,
-            disableOnInteraction: false,
-          }}
+          autoplay={true}
           onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
           breakpoints={{
-            0: { slidesPerView: 1.2 },
+            0: { slidesPerView: 1.5 },
             480: { slidesPerView: 2 },
             768: { slidesPerView: 3 },
             1024: { slidesPerView: 4 },
@@ -108,7 +224,7 @@ const Trending = () => {
           {videoSlides.map((slide, index) => (
             <SwiperSlide key={slide.id} className="trending-video-slide">
               <div
-                className={`video-card ${index === activeIndex ? "is-active" : ""}`}
+                className={`video-card ${index === activeIndex ? "is-active" : ""} ${index === playingIndex ? "is-playing" : ""}`}
               >
                 <div className="video-media-wrap">
                   <img
@@ -123,10 +239,8 @@ const Trending = () => {
                     className="video-player"
                     src={slide.video}
                     muted
-                    loop
                     playsInline
                     preload="metadata"
-                    autoPlay={index === activeIndex}
                   />
                   <div className="video-overlay" />
                   <a href={slide.link} className="shop-now-btn">

@@ -6,21 +6,21 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-import image_1 from "../assets/images/image_1.webp";
-import image_2 from "../assets/images/image_2.webp";
-import image_3 from "../assets/images/image_3.webp";
-import image_4 from "../assets/images/image_4.webp";
-import image_5 from "../assets/images/image_5.webp";
-import image_6 from "../assets/images/image_6.webp";
-import image_7 from "../assets/images/image_7.webp";
-import image_8 from "../assets/images/image_8.webp";
-import image_9 from "../assets/images/image_9.webp";
-import image_10 from "../assets/images/image_10.webp";
-import image_11 from "../assets/images/image_11.webp";
-import image_12 from "../assets/images/image_12.webp";
-import image_13 from "../assets/images/hip-hop.jpeg";
-import image_14 from "../assets/images/image_14.webp";
-import image_15 from "../assets/images/image_15.webp";
+import image_1 from "../assets/images/slider/image_1.webp";
+import image_2 from "../assets/images/slider/image_2.webp";
+import image_3 from "../assets/images/slider/image_3.webp";
+import image_4 from "../assets/images/slider/image_4.webp";
+import image_5 from "../assets/images/slider/image_5.webp";
+import image_6 from "../assets/images/slider/image_6.webp";
+import image_7 from "../assets/images/slider/image_7.webp";
+import image_8 from "../assets/images/slider/image_8.webp";
+import image_9 from "../assets/images/slider/image_9.webp";
+import image_10 from "../assets/images/slider/image_10.webp";
+import image_11 from "../assets/images/slider/image_11.webp";
+import image_12 from "../assets/images/slider/image_12.webp";
+import image_13 from "../assets/images/slider/hip-hop.jpeg";
+import image_14 from "../assets/images/slider/image_14.webp";
+import image_15 from "../assets/images/slider/image_15.webp";
 
 const bannerImages = [
   image_1,
