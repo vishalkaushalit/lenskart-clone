@@ -6,7 +6,7 @@ const Categories = () => {
     <>
       <div className="categories_sec padding_70">
         <div className="container">
-          <div className="info">
+          <div className="info mb_30">
             <h2 className="heading">Top Categories</h2>
           </div>
           <div className="category_wrapper">

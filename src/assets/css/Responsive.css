@@ -1,0 +1,19 @@
+@media (max-width: 768px) {
+  .video-media-wrap {
+    height: 330px;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-media-wrap {
+    height: 290px;
+  }
+
+  .shop-now-btn {
+    left: 14px;
+    bottom: 14px;
+    min-width: 110px;
+    padding: 9px 16px;
+    font-size: 13px;
+  }
+}

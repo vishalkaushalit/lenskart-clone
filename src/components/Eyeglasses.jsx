@@ -10,9 +10,9 @@ import square from "../assets/images/eyeglasses/square.webp";
 const Eyeglasses = () => {
   return (
     <>
-      <div className="categories_sec eyeglasses_sec padding_70">
+      <div className="eyeglasses_sec padding_70">
         <div className="container">
-          <div className="info">
+          <div className="info mb_30">
             <h2 className="heading">Get the perfect shape - Eyeglasses</h2>
           </div>
           <div className="category_wrapper">
@@ -21,7 +21,7 @@ const Eyeglasses = () => {
                 <img
                   src={rectangle}
                   alt="Category Name"
-                  className="category_img"
+                  className="eyeglass_img"
                 />
                 <h3 className="category_title">Rectangle</h3>
               </div>
@@ -31,7 +31,7 @@ const Eyeglasses = () => {
                 <img
                   src={cateye}
                   alt="Category Name"
-                  className="category_img"
+                  className="eyeglass_img"
                 />
                 <h3 className="category_title">Cateye</h3>
               </div>
@@ -41,7 +41,7 @@ const Eyeglasses = () => {
                 <img
                   src={aviator}
                   alt="Category Name"
-                  className="category_img"
+                  className="eyeglass_img"
                 />
                 <h3 className="category_title">Aviator</h3>
               </div>
@@ -51,7 +51,7 @@ const Eyeglasses = () => {
                 <img
                   src={geometric}
                   alt="Category Name"
-                  className="category_img"
+                  className="eyeglass_img"
                 />
                 <h3 className="category_title">Geometric</h3>
               </div>
@@ -61,7 +61,7 @@ const Eyeglasses = () => {
                 <img
                   src={round}
                   alt="Category Name"
-                  className="category_img"
+                  className="eyeglass_img"
                 />
                 <h3 className="category_title">Round</h3>
               </div>
@@ -71,7 +71,7 @@ const Eyeglasses = () => {
                 <img
                   src={clubmaster}
                   alt="Category Name"
-                  className="category_img"
+                  className="eyeglass_img"
                 />
                 <h3 className="category_title">Clubmaster</h3>
               </div>
@@ -81,7 +81,7 @@ const Eyeglasses = () => {
                 <img
                   src={square}
                   alt="Category Name"
-                  className="category_img"
+                  className="eyeglass_img"
                 />
                 <h3 className="category_title">Square</h3>
               </div>

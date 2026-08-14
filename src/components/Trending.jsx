@@ -21,10 +21,6 @@ import trending_5_video from "../assets/videos/trending_5.mp4";
 import trending_6_video from "../assets/videos/trending_6.mp4";
 import trending_7_video from "../assets/videos/trending_7.mp4";
 import trending_8_video from "../assets/videos/trending_8.mp4";
-import trending_9_video from "../assets/videos/trending_9.mp4";
-import trending_10_video from "../assets/videos/trending_10.mp4";
-import trending_11_video from "../assets/videos/trending_11.mp4";
-import trending_12_video from "../assets/videos/trending_12.mp4";
 
 import "swiper/css";
 
@@ -37,10 +33,10 @@ const videoUrls = [
   trending_6_video,
   trending_7_video,
   trending_8_video,
-  trending_9_video,
-  trending_10_video,
-  trending_11_video,
-  trending_12_video,
+  trending_1_video, // Cycle back to video 1 for slide 9
+  trending_2_video, // Cycle back to video 2 for slide 10
+  trending_3_video, // Cycle back to video 3 for slide 11
+  trending_4_video, // Cycle back to video 4 for slide 12
 ];
 
 const thumbnailImages = [
@@ -198,9 +194,9 @@ const Trending = () => {
   }, [activeIndex]);
 
   return (
-    <div className="categories_sec trending_sec padding_70">
+    <div className="trending_sec">
       <div className="container">
-        <div className="info">
+        <div className="info mb_30">
           <h2 className="heading">#Trending at Lenskart</h2>
         </div>
 
