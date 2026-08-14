@@ -9,10 +9,10 @@ import trending_5 from "../assets/images/trending/trending_5.webp";
 import trending_6 from "../assets/images/trending/trending_6.webp";
 import trending_7 from "../assets/images/trending/trending_7.webp";
 import trending_8 from "../assets/images/trending/trending_8.webp";
-// import trending_9 from "../assets/images/trending/trending_9.webp";
-// import trending_10 from "../assets/images/trending/trending_10.webp";
-// import trending_11 from "../assets/images/trending/trending_11.webp";
-// import trending_12 from "../assets/images/trending/trending_12.webp";
+import trending_9 from "../assets/images/trending/trending_9.webp";
+import trending_10 from "../assets/images/trending/trending_10.webp";
+import trending_11 from "../assets/images/trending/trending_11.webp";
+import trending_12 from "../assets/images/trending/trending_12.webp";
 import trending_1_video from "../assets/videos/trending_1.mp4";
 import trending_2_video from "../assets/videos/trending_2.mp4";
 import trending_3_video from "../assets/videos/trending_3.mp4";
@@ -21,10 +21,10 @@ import trending_5_video from "../assets/videos/trending_5.mp4";
 import trending_6_video from "../assets/videos/trending_6.mp4";
 import trending_7_video from "../assets/videos/trending_7.mp4";
 import trending_8_video from "../assets/videos/trending_8.mp4";
-// import trending_9_video from "../assets/videos/trending_9.mp4";
-// import trending_10_video from "../assets/videos/trending_10.mp4";
-// import trending_11_video from "../assets/videos/trending_11.mp4";
-// import trending_12_video from "../assets/videos/trending_12.mp4";
+import trending_9_video from "../assets/videos/trending_9.mp4";
+import trending_10_video from "../assets/videos/trending_10.mp4";
+import trending_11_video from "../assets/videos/trending_11.mp4";
+import trending_12_video from "../assets/videos/trending_12.mp4";
 
 import "swiper/css";
 
@@ -37,10 +37,10 @@ const videoUrls = [
   trending_6_video,
   trending_7_video,
   trending_8_video,
-  // trending_9_video,
-  // trending_10_video,
-  // trending_11_video,
-  // trending_12_video,
+  trending_9_video,
+  trending_10_video,
+  trending_11_video,
+  trending_12_video,
 ];
 
 const thumbnailImages = [
@@ -52,10 +52,10 @@ const thumbnailImages = [
   trending_6,
   trending_7,
   trending_8,
-  // trending_9,
-  // trending_10,
-  // trending_11,
-  // trending_12,
+  trending_9,
+  trending_10,
+  trending_11,
+  trending_12,
 ];
 
 const videoSlides = [
@@ -115,34 +115,34 @@ const videoSlides = [
     video: videoUrls[7],
     link: "/shop/modern-glasses",
   },
-  // {
-  //   id: 9,
-  //   title: "Elegant Retro",
-  //   thumbnail: thumbnailImages[8],
-  //   video: videoUrls[8],
-  //   link: "/shop/retro-glasses",
-  // },
-  // {
-  //   id: 10,
-  //   title: "Urban Edge",
-  //   thumbnail: thumbnailImages[9],
-  //   video: videoUrls[9],
-  //   link: "/shop/urban-glasses",
-  // },
-  // {
-  //   id: 11,
-  //   title: "Minimalist Pure",
-  //   thumbnail: thumbnailImages[10],
-  //   video: videoUrls[10],
-  //   link: "/shop/minimalist-glasses",
-  // },
-  // {
-  //   id: 12,
-  //   title: "Fashion Forward",
-  //   thumbnail: thumbnailImages[11],
-  //   video: videoUrls[11],
-  //   link: "/shop/fashion-glasses",
-  // },
+  {
+    id: 9,
+    title: "Elegant Retro",
+    thumbnail: thumbnailImages[8],
+    video: videoUrls[8],
+    link: "/shop/retro-glasses",
+  },
+  {
+    id: 10,
+    title: "Urban Edge",
+    thumbnail: thumbnailImages[9],
+    video: videoUrls[9],
+    link: "/shop/urban-glasses",
+  },
+  {
+    id: 11,
+    title: "Minimalist Pure",
+    thumbnail: thumbnailImages[10],
+    video: videoUrls[10],
+    link: "/shop/minimalist-glasses",
+  },
+  {
+    id: 12,
+    title: "Fashion Forward",
+    thumbnail: thumbnailImages[11],
+    video: videoUrls[11],
+    link: "/shop/fashion-glasses",
+  },
 ];
 
 const Trending = () => {
