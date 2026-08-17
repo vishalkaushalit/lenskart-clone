@@ -1,17 +1,27 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import styles from "./Header.module.css";
 import { PhoneCall } from "lucide-react";
 
 import {
   CircleUserRound,
-  Glasses,
   Heart,
   Search,
   ShoppingBag,
 } from "lucide-react";
 import logo from "../assets/images/logo.svg";
-import logo_white from "../assets/images/logo_white.svg";
+
+const topbarLinks = [
+  "Corporate",
+  "StoreLocator",
+  "Singapore",
+  "UAE",
+  "John Jacobs",
+  "Aqualens",
+  "Cobrowsing",
+  "Engineering Blog",
+  "Partner With Us",
+];
 
 const navigation = [
   {
@@ -123,15 +133,11 @@ function Header() {
           <div className={styles.container}>
             <div className={styles.topbar}>
               <div className={styles.locations}>
-                <a href="#">Corporate</a>
-                <a href="#">StoreLocator</a>
-                <a href="#">Singapore</a>
-                <a href="#">UAE</a>
-                <a href="#">John Jacobs</a>
-                <a href="#">Aqualens</a>
-                <a href="#">Cobrowsing</a>
-                <a href="#">Engineering Blog</a>
-                <a href="#">Partner With Us</a>
+                {topbarLinks.map((link) => (
+                  <a href="#" key={link}>
+                    {link}
+                  </a>
+                ))}
               </div>
               <div>
                 <a className={styles.callBtn} href="#">
@@ -145,7 +151,6 @@ function Header() {
         <div className={styles.navbar}>
           <a className={styles.logo} href="#" aria-label="Lenskart home">
             <img src={logo} alt="Logo" />
-            {/* <img src={logo_white} alt="" /> */}
           </a>
 
           <nav className={styles.navigation} aria-label="Main navigation">

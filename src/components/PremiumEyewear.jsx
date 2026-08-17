@@ -5,7 +5,7 @@ import aqua_lens from "../assets/images/brands/aqua_lens.webp";
 import lenskart_air from "../assets/images/brands/lenskart_air.webp";
 import hooper from "../assets/images/brands/hooper.webp";
 
-const brands = [
+const premiumBrands = [
   { name: "Vincent Chase", image: vincent_chase },
   { name: "Hustlr", image: hustlr },
   { name: "John Jacobs", image: john_jacobs },
@@ -14,16 +14,16 @@ const brands = [
   { name: "Hooper", image: hooper },
 ];
 
-const Brands = () => {
+const PremiumEyewear = () => {
   return (
     <>
-      <div className="exclusive_sec padding_70">
+      <div className="exclusive_sec">
         <div className="container">
           <div className="info mb_30">
-            <h2 className="heading">Our Brands</h2>
+            <h2 className="heading">Premium Eyewear</h2>
           </div>
           <div className="exclusive_wrappper">
-            {brands.map(({ name, image }) => (
+            {premiumBrands.map(({ name, image }) => (
               <a href="#" className="store_box" key={name}>
                 <img className="img-fluid" src={image} alt={name} />
               </a>
@@ -35,4 +35,4 @@ const Brands = () => {
   );
 };
 
-export default Brands;
+export default PremiumEyewear;

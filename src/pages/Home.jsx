@@ -1,4 +1,3 @@
-import React from "react";
 import Header from "../header/Header";
 import HomeSlider from "../components/HomeSlider";
 import Categories from "../components/Categories";
@@ -12,6 +11,15 @@ import Sunglasses from "../components/Sunglasses";
 import NearbyStores from "../components/NearbyStores";
 import Exclusive from "../components/Exclusive";
 import Brands from "../components/Brands";
+import PremiumEyewear from "../components/PremiumEyewear";
+import FreeCheckup from "../components/FreeCheckup";
+
+const promotionalBanners = [
+  { image: free_lens_replacement, alt: "Free Lens Replacement" },
+  { image: meller_banner, alt: "Meller" },
+  { image: buy_one_get_second_later, alt: "Buy One Get Second Later" },
+  { image: do_more_be_more, alt: "Do More Be More", className: "padding_70" },
+];
 
 const Home = () => {
   return (
@@ -23,8 +31,8 @@ const Home = () => {
         <div>
           <img
             className="img-fluid"
-            src={free_lens_replacement}
-            alt="Free Lens Replacement"
+            src={promotionalBanners[0].image}
+            alt={promotionalBanners[0].alt}
           />
         </div>
       </a>
@@ -35,28 +43,23 @@ const Home = () => {
       <Exclusive />
       <a href="#">
         <div>
-          <img className="img-fluid" src={meller_banner} alt="Meller" />
+          <img
+            className="img-fluid"
+            src={promotionalBanners[1].image}
+            alt={promotionalBanners[1].alt}
+          />
         </div>
       </a>
       <Brands />
-      <a href="#">
-        <div>
-          <img
-            className="img-fluid"
-            src={buy_one_get_second_later}
-            alt="Buy One Get Second Later"
-          />
-        </div>
-      </a>
-      <a href="#">
-        <div className="padding_70">
-          <img
-            className="img-fluid"
-            src={do_more_be_more}
-            alt="Do More Be More"
-          />
-        </div>
-      </a>
+      <PremiumEyewear />
+      <FreeCheckup />
+      {promotionalBanners.slice(2).map(({ image, alt, className }) => (
+        <a href="#" key={alt}>
+          <div className={className}>
+            <img className="img-fluid" src={image} alt={alt} />
+          </div>
+        </a>
+      ))}
     </>
   );
 };
