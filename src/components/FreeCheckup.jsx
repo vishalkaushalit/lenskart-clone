@@ -11,22 +11,20 @@ const checkupList = [
 const FreeCheckup = () => {
   return (
     <>
-      <div className="checkup_sec padding_70">
-        <div className="container">
-          <div className="info mb_30">
-            <h2 className="heading">Get a FREE Eye Check Up</h2>
-          </div>
-          <div className="checkup_wrappper">
+      <section className="py-12 sm:py-16">
+        <div className="mx-auto w-[90%] max-w-[1320px]">
+          <h2 className="mb-7 text-2xl font-extrabold text-ink">Get a FREE Eye Check Up</h2>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
             {checkupList.map(({ name, image, checkupUrl }) => (
-              <a href={checkupUrl} className="store_box" key={name}>
-                <div className="imgBox">
-                  <img className="img-fluid" src={image} alt={name} />
+              <a href={checkupUrl} className="overflow-hidden rounded-xl transition-transform hover:scale-[1.02]" key={name}>
+                <div>
+                  <img className="h-auto w-full" src={image} alt={name} />
                 </div>
               </a>
             ))}
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 };

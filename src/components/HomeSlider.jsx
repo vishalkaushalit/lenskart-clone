@@ -43,7 +43,7 @@ const bannerImages = [
 function HomeSlider() {
   return (
     <Swiper
-      className="home-slider"
+      className="[--swiper-pagination-bottom:24px] [&_.swiper-pagination-bullet-active]:!opacity-100 [&_.swiper-pagination-bullet]:!bg-white [&_.swiper-pagination-bullet]:!opacity-55"
       modules={[Navigation, Pagination, Autoplay]}
       slidesPerView={1}
       spaceBetween={0}
@@ -61,20 +61,20 @@ function HomeSlider() {
     >
       {bannerImages.map((image, index) => (
         <SwiperSlide key={`${image}-${index}`}>
-          <a href="#">
-            <img className="banner_img" src={image} alt="Home Banner" />
+          <a href="#" className="relative block after:pointer-events-none after:absolute after:inset-0 after:bg-gradient-to-b after:from-transparent after:via-transparent after:to-black/60">
+            <img className="block h-full w-full" src={image} alt="Home Banner" />
           </a>
         </SwiperSlide>
       ))}
       <button
-        className="home-slider-arrow home-slider-prev"
+        className="absolute bottom-4 left-2 z-10 grid size-10 place-items-center text-white transition hover:scale-110 hover:opacity-70 focus-visible:outline-3 focus-visible:outline-cyan-500 sm:left-6 sm:size-12"
         type="button"
         aria-label="Previous slide"
       >
         <ChevronLeft aria-hidden="true" />
       </button>
       <button
-        className="home-slider-arrow home-slider-next"
+        className="absolute right-2 bottom-4 z-10 grid size-10 place-items-center text-white transition hover:scale-110 hover:opacity-70 focus-visible:outline-3 focus-visible:outline-cyan-500 sm:right-6 sm:size-12"
         type="button"
         aria-label="Next slide"
       >

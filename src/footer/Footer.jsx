@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
-
 const Footer = () => {
   return (
     <>
-      <footer className="footer_sec bg_blue">
-        <div className="ftr_list">
+      <footer className="bg-ink">
+        <div className="border-t border-white/25">
         </div>
       </footer>
     </>

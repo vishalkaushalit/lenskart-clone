@@ -194,15 +194,13 @@ const Trending = () => {
   }, [activeIndex]);
 
   return (
-    <div className="trending_sec">
-      <div className="container">
-        <div className="info mb_30">
-          <h2 className="heading">#Trending at Lenskart</h2>
-        </div>
+    <section className="py-12 sm:py-16">
+      <div className="mx-auto w-[90%] max-w-[1320px]">
+        <h2 className="mb-7 text-2xl font-extrabold text-ink">#Trending at Lenskart</h2>
 
         <Swiper
           ref={swiperRef}
-          className="trending-video-slider"
+          className="overflow-hidden pb-2.5"
           modules={[Autoplay]}
           slidesPerView={4}
           spaceBetween={18}
@@ -218,28 +216,28 @@ const Trending = () => {
           }}
         >
           {videoSlides.map((slide, index) => (
-            <SwiperSlide key={slide.id} className="trending-video-slide">
+            <SwiperSlide key={slide.id} className="h-auto">
               <div
-                className={`video-card ${index === activeIndex ? "is-active" : ""} ${index === playingIndex ? "is-playing" : ""}`}
+                className="h-full"
               >
-                <div className="video-media-wrap">
+                <div className="relative h-[290px] overflow-hidden rounded-[26px] sm:h-[330px] lg:h-[440px]">
                   <img
                     src={slide.thumbnail}
                     alt={slide.title}
-                    className="video-thumbnail"
+                    className={`absolute inset-0 z-1 size-full object-cover transition duration-200 ${index === playingIndex ? "scale-105 opacity-0" : "opacity-100"}`}
                   />
                   <video
                     ref={(element) => {
                       videoRefs.current[index] = element;
                     }}
-                    className="video-player"
+                    className={`absolute inset-0 z-2 block size-full object-cover transition duration-200 ${index === playingIndex ? "opacity-100" : "opacity-0"}`}
                     src={slide.video}
                     muted
                     playsInline
                     preload="metadata"
                   />
-                  <div className="video-overlay" />
-                  <a href={slide.link} className="shop-now-btn">
+                  <div className="absolute inset-0 z-3 bg-gradient-to-t from-black/60 via-black/20 to-black/30" />
+                  <a href={slide.link} className="absolute bottom-4 left-4 z-4 inline-flex min-w-27 items-center justify-center rounded-full border border-white/75 bg-white/95 px-4 py-2.5 text-sm font-bold text-ink shadow-lg transition hover:-translate-y-0.5 hover:bg-white sm:bottom-[18px] sm:left-[18px] sm:min-w-30 sm:px-[18px]">
                     Shop now
                   </a>
                 </div>
@@ -248,7 +246,7 @@ const Trending = () => {
           ))}
         </Swiper>
       </div>
-    </div>
+    </section>
   );
 };
 

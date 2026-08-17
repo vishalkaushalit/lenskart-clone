@@ -19,23 +19,21 @@ const frameShapes = [
 const Eyeglasses = () => {
   return (
     <>
-      <div className="eyeglasses_sec padding_70">
-        <div className="container">
-          <div className="info mb_30">
-            <h2 className="heading">Get the perfect shape - Eyeglasses</h2>
-          </div>
-          <div className="category_wrapper">
+      <section className="py-12 sm:py-16">
+        <div className="mx-auto w-[90%] max-w-[1320px]">
+          <h2 className="mb-7 text-2xl font-extrabold leading-tight text-ink">Get the perfect shape - Eyeglasses</h2>
+          <div className="flex gap-5 overflow-x-auto pb-2 [scrollbar-width:none]">
             {frameShapes.map(({ name, image, eyeglassUrl }) => (
-              <a href={eyeglassUrl} className="category_link" key={name}>
-                <div className="category_box">
-                  <img src={image} alt={name} className="eyeglass_img" />
-                  <h3 className="category_title">{name}</h3>
+              <a href={eyeglassUrl} className="shrink-0 text-center" key={name}>
+                <div>
+                  <img src={image} alt={name} className="size-36 rounded-full object-contain sm:size-44" />
+                  <h3 className="mt-2.5 text-sm font-semibold text-ink/60 sm:text-base">{name}</h3>
                 </div>
               </a>
             ))}
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 };

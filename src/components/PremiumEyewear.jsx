@@ -15,35 +15,33 @@ const premiumBrands = [
 const PremiumEyewear = () => {
   return (
     <>
-      <div className="premium_eyewear_sec">
-        <div className="container">
-          <div className="info mb_30">
-            <h2 className="heading">Premium Eyewear</h2>
-          </div>
-          <div className="premium_wrappper">
-            <div className="premium_left_sec">
+      <section className="py-12 sm:py-16">
+        <div className="mx-auto w-[90%] max-w-[1320px]">
+          <h2 className="mb-7 text-2xl font-extrabold text-ink">Premium Eyewear</h2>
+          <div className="grid gap-5 lg:grid-cols-[43%_1fr] lg:gap-7">
+            <div className="overflow-hidden rounded-xl">
               <a href={premiumBrands[0].premiumUrl}>
-                <div className="imgBox">
+                <div>
                   <img
-                    className="img-fluid"
+                    className="h-auto w-full"
                     src={premiumBrands[0].image}
                     alt={premiumBrands[0].name}
                   />
                 </div>
               </a>
             </div>
-            <div className="premium_right_sec">
+            <div className="grid grid-cols-2 gap-5 lg:gap-7">
               {premiumBrands.slice(1).map(({ name, image, premiumUrl }) => (
                 <a href={premiumUrl} key={name}>
-                  <div className="imgBox">
-                    <img className="img-fluid" src={image} alt={name} />
+                  <div className="overflow-hidden rounded-xl">
+                  <img className="h-auto w-full" src={image} alt={name} />
                   </div>
                 </a>
               ))}
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 };
