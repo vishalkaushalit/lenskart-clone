@@ -11,6 +11,8 @@ import {
   X,
 } from "lucide-react";
 
+import { FaUserAlt } from "react-icons/fa";
+
 import logo from "../assets/images/logo.svg";
 import get_gold from "../assets/images/get_gold.webp";
 
@@ -203,8 +205,8 @@ const Header = () => {
         <div className="lg:hidden">
           <div className="flex h-[40px] items-center justify-between bg-ink px-4 text-white">
             <p className="text-[12px] font-light">
-              4.5 <span className="text-yellow-400 text-[10px]">★</span> Rating | 50M+
-              Downloads
+              4.5 <span className="text-yellow-400 text-[10px]">★</span> Rating
+              | 50M+ Downloads
             </p>
             <a
               href="#"
@@ -221,14 +223,16 @@ const Header = () => {
                 aria-label="Select location"
               >
                 <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#f1f1fa] text-[#686795]">
-                  <UserRound size={20} />
+                  <FaUserAlt size={20} />
                 </span>
                 <span className="min-w-0">
                   <span className="block text-[8px] italic text-[#ff5d4f]">
                     Get faster delivery ⚡
                   </span>
                   <span className="flex items-center gap-1 text-[12px] font-bold text-ink">
-                    <span className="min-w-max overflow-hidden text-[10px]">Select Location</span>
+                    <span className="min-w-max overflow-hidden text-[10px]">
+                      Select Location
+                    </span>
                     <ChevronDown size={18} fill="currentColor" />
                   </span>
                 </span>
@@ -252,10 +256,7 @@ const Header = () => {
               </div>
             </div>
             <label className="mt-2 flex h-[40px] items-center gap-4 rounded-[10px] border-1 border-[#e6e6ef] px-3 text-[#73739d]">
-              <Search
-                size={16}
-                className="shrink-0 text-ink"
-              />
+              <Search size={16} className="shrink-0 text-ink" />
               <input
                 className="min-w-0 w-full bg-transparent text-[14px] outline-none placeholder:text-[#73739d]"
                 type="search"
@@ -292,11 +293,7 @@ const Header = () => {
             <div className="px-4 py-6">
               <div className="flex items-start gap-3">
                 <div className="border-1 rounded-full p-2">
-                  <UserRound
-                    size={24}
-                    strokeWidth={1.7}
-                    className="shrink-0"
-                  />
+                  <UserRound size={24} strokeWidth={1.7} className="shrink-0" />
                 </div>
                 <div>
                   <h2 className="text-[16px] font-bold leading-tight">

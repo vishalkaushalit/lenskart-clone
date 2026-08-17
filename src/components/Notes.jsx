@@ -1,7 +1,7 @@
 const Notes = () => {
   return (
     <>
-      <section className="bg-ink py-12 text-white sm:py-16">
+      <section className="bg-ink pt-12 text-white sm:py-16">
         <div className="mx-auto w-[90%] max-w-[1320px]">
           <div className="max-w-5xl">
             <h2 className="text-2xl font-extrabold">Buy Eyewear from Lenskart</h2>
