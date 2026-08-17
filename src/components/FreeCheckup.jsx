@@ -6,12 +6,12 @@ import lenskart_air from "../assets/images/brands/lenskart_air.webp";
 import hooper from "../assets/images/brands/hooper.webp";
 
 const premiumBrands = [
-  { name: "Vincent Chase", image: vincent_chase, url: "#" },
-  { name: "Hustlr", image: hustlr, url: "#" },
-  { name: "John Jacobs", image: john_jacobs, url: "#" },
-  { name: "Aqualens", image: aqua_lens, url: "#" },
-  { name: "Lenskart Air", image: lenskart_air, url: "#" },
-  { name: "Hooper", image: hooper, url: "#" },
+  { name: "Vincent Chase", image: vincent_chase, checkupUrl: "#" },
+  { name: "Hustlr", image: hustlr, checkupUrl: "#" },
+  { name: "John Jacobs", image: john_jacobs, checkupUrl: "#" },
+  { name: "Aqualens", image: aqua_lens, checkupUrl: "#" },
+  { name: "Lenskart Air", image: lenskart_air, checkupUrl: "#" },
+  { name: "Hooper", image: hooper, checkupUrl: "#" },
 ];
 
 const FreeCheckup = () => {
@@ -23,8 +23,8 @@ const FreeCheckup = () => {
             <h2 className="heading">Get a FREE Eye Check Up</h2>
           </div>
           <div className="exclusive_wrappper">
-            {premiumBrands.map(({ name, image, url }) => (
-              <a href={url} className="store_box" key={name}>
+            {premiumBrands.map(({ name, image, checkupUrl }) => (
+              <a href={checkupUrl} className="store_box" key={name}>
                 <img className="img-fluid" src={image} alt={name} />
               </a>
             ))}

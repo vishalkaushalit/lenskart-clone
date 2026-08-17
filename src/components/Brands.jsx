@@ -6,12 +6,12 @@ import lenskart_air from "../assets/images/brands/lenskart_air.webp";
 import hooper from "../assets/images/brands/hooper.webp";
 
 const brands = [
-  { name: "Vincent Chase", image: vincent_chase, url: "#" },
-  { name: "Hustlr", image: hustlr, url: "#" },
-  { name: "John Jacobs", image: john_jacobs, url: "#" },
-  { name: "Aqualens", image: aqua_lens, url: "#" },
-  { name: "Lenskart Air", image: lenskart_air, url: "#" },
-  { name: "Hooper", image: hooper, url: "#" },
+  { name: "Vincent Chase", image: vincent_chase, brandUrl: "#" },
+  { name: "Hustlr", image: hustlr, brandUrl: "#" },
+  { name: "John Jacobs", image: john_jacobs, brandUrl: "#" },
+  { name: "Aqualens", image: aqua_lens, brandUrl: "#" },
+  { name: "Lenskart Air", image: lenskart_air, brandUrl: "#" },
+  { name: "Hooper", image: hooper, brandUrl: "#" },
 ];
 
 const Brands = () => {
@@ -23,8 +23,8 @@ const Brands = () => {
             <h2 className="heading">Our Brands</h2>
           </div>
           <div className="exclusive_wrappper">
-            {brands.map(({ name, image, url }) => (
-              <a href={url} className="store_box" key={name}>
+            {brands.map(({ name, image, brandUrl }) => (
+              <a href={brandUrl} className="store_box" key={name}>
                 <img className="img-fluid" src={image} alt={name} />
               </a>
             ))}

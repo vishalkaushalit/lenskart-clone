@@ -6,12 +6,12 @@ import hustlr_switch from "../assets/images/exclusive/hustlr_switch.webp";
 import ultra_light_frames from "../assets/images/exclusive/ultra_light_frames.webp";
 
 const exclusiveCollections = [
-  { name: "Transparent frames", image: transparent_frames, url: "#" },
-  { name: "Popmart", image: popmart, url: "#" },
-  { name: "John Jacobs Bold", image: john_jacobs_bold, url: "#" },
-  { name: "John Jacobs Prada", image: john_jacobs_prada, url: "#" },
-  { name: "Hustlr Switch", image: hustlr_switch, url: "#" },
-  { name: "Ultra-light frames", image: ultra_light_frames, url: "#" },
+  { name: "Transparent frames", image: transparent_frames, exclusiveUrl: "#" },
+  { name: "Popmart", image: popmart, exclusiveUrl: "#" },
+  { name: "John Jacobs Bold", image: john_jacobs_bold, exclusiveUrl: "#" },
+  { name: "John Jacobs Prada", image: john_jacobs_prada, exclusiveUrl: "#" },
+  { name: "Hustlr Switch", image: hustlr_switch, exclusiveUrl: "#" },
+  { name: "Ultra-light frames", image: ultra_light_frames, exclusiveUrl: "#" },
 ];
 
 const Exclusive = () => {
@@ -23,8 +23,8 @@ const Exclusive = () => {
             <h2 className="heading">Exclusively at Lenskart</h2>
           </div>
           <div className="exclusive_wrappper">
-            {exclusiveCollections.map(({ name, image, url }) => (
-              <a href={url} className="store_box" key={name}>
+            {exclusiveCollections.map(({ name, image, exclusiveUrl }) => (
+              <a href={exclusiveUrl} className="store_box" key={name}>
                 <img className="img-fluid" src={image} alt={name} />
               </a>
             ))}

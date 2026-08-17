@@ -7,13 +7,13 @@ import clubmaster from "../assets/images/eyeglasses/clubmaster.webp";
 import square from "../assets/images/eyeglasses/square.webp";
 
 const frameShapes = [
-  { name: "Rectangle", image: rectangle, url: "#" },
-  { name: "Cateye", image: cateye, url: "#" },
-  { name: "Aviator", image: aviator, url: "#" },
-  { name: "Geometric", image: geometric, url: "#" },
-  { name: "Round", image: round, url: "#" },
-  { name: "Clubmaster", image: clubmaster, url: "#" },
-  { name: "Square", image: square, url: "#" },
+  { name: "Rectangle", image: rectangle, eyeglassUrl: "#" },
+  { name: "Cateye", image: cateye, eyeglassUrl: "#" },
+  { name: "Aviator", image: aviator, eyeglassUrl: "#" },
+  { name: "Geometric", image: geometric, eyeglassUrl: "#" },
+  { name: "Round", image: round, eyeglassUrl: "#" },
+  { name: "Clubmaster", image: clubmaster, eyeglassUrl: "#" },
+  { name: "Square", image: square, eyeglassUrl: "#" },
 ];
 
 const Eyeglasses = () => {
@@ -25,8 +25,8 @@ const Eyeglasses = () => {
             <h2 className="heading">Get the perfect shape - Eyeglasses</h2>
           </div>
           <div className="category_wrapper">
-            {frameShapes.map(({ name, image, url }) => (
-              <a href={url} className="category_link" key={name}>
+            {frameShapes.map(({ name, image, eyeglassUrl }) => (
+              <a href={eyeglassUrl} className="category_link" key={name}>
                 <div className="category_box">
                   <img src={image} alt={name} className="eyeglass_img" />
                   <h3 className="category_title">{name}</h3>

@@ -4,10 +4,10 @@ import order_whatsapp from "../assets/images/order_whatsapp.webp";
 import call_expert from "../assets/images/call_expert.webp";
 
 const services = [
-  { name: "Visit store", image: visit_store, url: "#" },
-  { name: "Home try-on", image: home_try_on, url: "#" },
-  { name: "Order on WhatsApp", image: order_whatsapp, url: "#" },
-  { name: "Call an expert", image: call_expert, url: "#" },
+  { name: "Visit store", image: visit_store, storeUrl: "#" },
+  { name: "Home try-on", image: home_try_on, storeUrl: "#" },
+  { name: "Order on WhatsApp", image: order_whatsapp, storeUrl: "#" },
+  { name: "Call an expert", image: call_expert, storeUrl: "#" },
 ];
 
 const NearbyStores = () => {
@@ -19,8 +19,8 @@ const NearbyStores = () => {
             <h2 className="heading">Nearby Stores & Services</h2>
           </div>
           <div className="nearby_stores_wrappper">
-            {services.map(({ name, image, url }) => (
-              <a href={url} className="store_box" key={name}>
+            {services.map(({ name, image, storeUrl }) => (
+              <a href={storeUrl} className="store_box" key={name}>
                 <img className="img-fluid" src={image} alt={name} />
               </a>
             ))}
