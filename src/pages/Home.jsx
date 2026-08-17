@@ -13,6 +13,8 @@ import Exclusive from "../components/Exclusive";
 import Brands from "../components/Brands";
 import PremiumEyewear from "../components/PremiumEyewear";
 import FreeCheckup from "../components/FreeCheckup";
+import Footer from "../footer/Footer";
+import Notes from "../components/Notes";
 
 const promotionalBanners = [
   { image: free_lens_replacement, alt: "Free Lens Replacement" },
@@ -24,7 +26,6 @@ const promotionalBanners = [
 const Home = () => {
   return (
     <>
-      <Header />
       <HomeSlider />
       <Categories />
       <a href="#">
@@ -60,6 +61,7 @@ const Home = () => {
           </div>
         </a>
       ))}
+      <Notes />
     </>
   );
 };

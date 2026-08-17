@@ -3,12 +3,7 @@ import { useEffect, useState } from "react";
 import styles from "./Header.module.css";
 import { PhoneCall } from "lucide-react";
 
-import {
-  CircleUserRound,
-  Heart,
-  Search,
-  ShoppingBag,
-} from "lucide-react";
+import { CircleUserRound, Heart, Search, ShoppingBag } from "lucide-react";
 import logo from "../assets/images/logo.svg";
 
 const topbarLinks = [
@@ -107,7 +102,7 @@ const navigation = [
   },
 ];
 
-function Header() {
+const Header = () => {
   const [isFixed, setIsFixed] = useState(false);
 
   useEffect(() => {
@@ -200,6 +195,6 @@ function Header() {
       </header>
     </>
   );
-}
+};
 
 export default Header;

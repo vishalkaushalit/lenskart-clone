@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
-
+@import "tailwindcss";
 * {
   margin: 0;
   padding: 0;
@@ -7,7 +7,21 @@
 }
 
 :root {
+  --white: #fff;
+  --blue: #010142;
   --dark-blue: #000042;
+}
+
+.bg_blue {
+  background: var(--dark-blue);
+}
+
+.text_white {
+  color: var(--white);
+}
+
+.imgBox {
+  width: 100%;
 }
 
 html,
@@ -220,10 +234,41 @@ h3.category_title {
 .nearby_stores_wrappper,
 .exclusive_wrappper {
   display: grid;
-  grid-template-columns: repeat(4,1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
 
 .exclusive_wrappper {
-  grid-template-columns: repeat(3,1fr);
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.premium_wrappper {
+  display: grid;
+  grid-template-columns: 43% 56%;
+  gap: 30px;
+}
+
+.premium_right_sec {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.checkup_wrappper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+/* Footer */
+
+.footer_sec p {
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+
+.ftr_list {
+  border-top: 1px solid #d5d5d5;
 }

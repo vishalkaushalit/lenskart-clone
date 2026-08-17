@@ -1,33 +1,46 @@
-import vincent_chase from "../assets/images/brands/vincent_chase.webp";
-import hustlr from "../assets/images/brands/hustlr.webp";
-import john_jacobs from "../assets/images/brands/john_jacobs.webp";
-import aqua_lens from "../assets/images/brands/aqua_lens.webp";
-import lenskart_air from "../assets/images/brands/lenskart_air.webp";
-import hooper from "../assets/images/brands/hooper.webp";
+import premium_Meller from "../assets/images/premium/premium_Meller.webp";
+import premium_JJ from "../assets/images/premium/premium_JJ.webp";
+import premium_OD from "../assets/images/premium/premium_OD.webp";
+import premium_LPL from "../assets/images/premium/premium_LPL.webp";
+import premium_Fossil from "../assets/images/premium/premium_Fossil.webp";
 
 const premiumBrands = [
-  { name: "Vincent Chase", image: vincent_chase, premiumUrl: "#" },
-  { name: "Hustlr", image: hustlr, premiumUrl: "#" },
-  { name: "John Jacobs", image: john_jacobs, premiumUrl: "#" },
-  { name: "Aqualens", image: aqua_lens, premiumUrl: "#" },
-  { name: "Lenskart Air", image: lenskart_air, premiumUrl: "#" },
-  { name: "Hooper", image: hooper, premiumUrl: "#" },
+  { name: "Premium Meller", image: premium_Meller, premiumUrl: "#" },
+  { name: "Premium John Jocobs", image: premium_JJ, premiumUrl: "#" },
+  { name: "Premium Own Days", image: premium_OD, premiumUrl: "#" },
+  { name: "Premium Le Petit Lenetier", image: premium_LPL, premiumUrl: "#" },
+  { name: "Premium Fossil", image: premium_Fossil, premiumUrl: "#" },
 ];
 
 const PremiumEyewear = () => {
   return (
     <>
-      <div className="exclusive_sec">
+      <div className="premium_eyewear_sec">
         <div className="container">
           <div className="info mb_30">
             <h2 className="heading">Premium Eyewear</h2>
           </div>
-          <div className="exclusive_wrappper">
-            {premiumBrands.map(({ name, image, premiumUrl }) => (
-              <a href={premiumUrl} className="store_box" key={name}>
-                <img className="img-fluid" src={image} alt={name} />
+          <div className="premium_wrappper">
+            <div className="premium_left_sec">
+              <a href={premiumBrands[0].premiumUrl}>
+                <div className="imgBox">
+                  <img
+                    className="img-fluid"
+                    src={premiumBrands[0].image}
+                    alt={premiumBrands[0].name}
+                  />
+                </div>
               </a>
-            ))}
+            </div>
+            <div className="premium_right_sec">
+              {premiumBrands.slice(1).map(({ name, image, premiumUrl }) => (
+                <a href={premiumUrl} key={name}>
+                  <div className="imgBox">
+                    <img className="img-fluid" src={image} alt={name} />
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>
