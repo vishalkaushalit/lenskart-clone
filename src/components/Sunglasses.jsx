@@ -7,13 +7,13 @@ import clubmaster from "../assets/images/sunglasses/clubmaster.webp";
 import square from "../assets/images/sunglasses/square.webp";
 
 const frameShapes = [
-  { name: "Rectangle", image: rectangle },
-  { name: "Cateye", image: cateye },
-  { name: "Aviator", image: aviator },
-  { name: "Geometric", image: geometric },
-  { name: "Round", image: round },
-  { name: "Clubmaster", image: clubmaster },
-  { name: "Square", image: square },
+  { name: "Rectangle", image: rectangle, url: "#" },
+  { name: "Cateye", image: cateye, url: "#" },
+  { name: "Aviator", image: aviator, url: "#" },
+  { name: "Geometric", image: geometric, url: "#" },
+  { name: "Round", image: round, url: "#" },
+  { name: "Clubmaster", image: clubmaster, url: "#" },
+  { name: "Square", image: square, url: "#" },
 ];
 
 const Sunglasses = () => {
@@ -25,8 +25,8 @@ const Sunglasses = () => {
             <h2 className="heading">Get the perfect shape - Sunglasses</h2>
           </div>
           <div className="category_wrapper">
-            {frameShapes.map(({ name, image }) => (
-              <a href="#" className="category_link" key={name}>
+            {frameShapes.map(({ name, image, url }) => (
+              <a href={url} className="category_link" key={name}>
                 <div className="category_box">
                   <img src={image} alt={name} className="eyeglass_img" />
                   <h3 className="category_title">{name}</h3>

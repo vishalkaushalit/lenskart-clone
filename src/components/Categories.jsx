@@ -1,12 +1,12 @@
 import category_img from "../assets/images/eyeglasses/eyeglasses.webp";
 
 const categories = [
-  "Eyeglasses",
-  "Sunglasses",
-  "Special Power",
-  "Contact Lenses",
-  "Kids Glasses",
-  "Sale",
+  { name: "Eyeglasses", image: category_img, url: "#" },
+  { name: "Sunglasses", image: category_img, url: "#" },
+  { name: "Special Power", image: category_img, url: "#" },
+  { name: "Contact Lenses", image: category_img, url: "#" },
+  { name: "Kids Glasses", image: category_img, url: "#" },
+  { name: "Sale", image: category_img, url: "#" },
 ];
 
 const Categories = () => {
@@ -18,15 +18,15 @@ const Categories = () => {
             <h2 className="heading">Top Categories</h2>
           </div>
           <div className="category_wrapper">
-            {categories.map((category) => (
-              <a href="#" className="category_link" key={category}>
+            {categories.map((name, image, url) => (
+              <a href={url} className="category_link" key={name}>
                 <div className="category_box">
                   <img
-                    src={category_img}
-                    alt={category}
+                    src={image}
+                    alt={name}
                     className="category_img"
                   />
-                  <h3 className="category_title">{category}</h3>
+                  <h3 className="category_title">{name}</h3>
                 </div>
               </a>
             ))}
