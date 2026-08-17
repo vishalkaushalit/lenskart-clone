@@ -444,10 +444,10 @@ const Header = () => {
             </nav>
 
             <div className="ml-auto flex items-center gap-4 xl:gap-7">
-              <label className="hidden h-11 w-[220px] items-center gap-3.5 rounded-2xl bg-black px-4 text-white lg:flex xl:w-[330px]">
-                <Search color="white" aria-hidden="true" />
+              <label className="bg-gray-100 hidden h-11 w-[120px] items-center gap-3.5 rounded-lg px-4 lg:flex xl:w-[250px]">
+                <Search size={20} color="black" aria-hidden="true" />
                 <input
-                  className="min-w-0 w-full bg-transparent text-base text-white outline-none placeholder:text-white/90"
+                  className="min-w-0 w-full bg-transparent text-base outline-none"
                   type="search"
                   placeholder={'Search "airy light glasses"'}
                   aria-label="Search products"
