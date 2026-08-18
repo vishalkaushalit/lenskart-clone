@@ -13,7 +13,7 @@ const services = [
 const NearbyStores = () => {
   return (
     <>
-      <section className="py-12 sm:py-16">
+      <section className="nearby_stores_sec">
         <div className="mx-auto w-[90%] max-w-[1320px]">
           <h2 className="mb-7 text-2xl font-extrabold text-ink">Nearby Stores & Services</h2>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">

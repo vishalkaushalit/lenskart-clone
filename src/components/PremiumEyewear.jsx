@@ -15,7 +15,7 @@ const premiumBrands = [
 const PremiumEyewear = () => {
   return (
     <>
-      <section className="py-12 sm:py-16">
+      <section className="premium_eyewear_sec">
         <div className="mx-auto w-[90%] max-w-[1320px]">
           <h2 className="mb-7 text-2xl font-extrabold text-ink">Premium Eyewear</h2>
           <div className="grid gap-5 lg:grid-cols-[43%_1fr] lg:gap-7">
