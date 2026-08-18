@@ -4,7 +4,7 @@ const Notes = () => {
       <section className="bg-ink pt-12 text-white">
         <div className="mx-auto w-[90%] max-w-[1320px]">
           <div className="max-w-5xl">
-            <h2 className="text-2xl font-extrabold">Buy Eyewear from Lenskart</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold">Buy Eyewear from Lenskart</h2>
             <p className="mt-5 text-sm leading-6">
               LENSKART SOLUTIONS LIMITED (Earlier known as Lenskart Solutions
               Private Limited) is a technology-driven eyewear company, with a

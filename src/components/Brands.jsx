@@ -19,7 +19,7 @@ const Brands = () => {
     <>
       <section className="py-12 sm:py-16">
         <div className="mx-auto w-[90%] max-w-[1320px]">
-          <h2 className="mb-7 text-2xl font-extrabold text-ink">Our Brands</h2>
+          <h2 className="mb-7 text-xl sm:text-2xl font-extrabold text-ink">Our Brands</h2>
           <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
             {brands.map(({ name, image, brandUrl }) => (
               <a href={brandUrl} className="overflow-hidden rounded-xl transition-transform hover:scale-[1.02]" key={name}>

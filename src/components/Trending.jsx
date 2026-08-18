@@ -196,7 +196,7 @@ const Trending = () => {
   return (
     <section className="trending_sec">
       <div className="mx-auto w-[90%] max-w-[1320px]">
-        <h2 className="mb-7 text-2xl font-extrabold text-ink">#Trending at Lenskart</h2>
+        <h2 className="mb-7 text-xl sm:text-2xl font-extrabold text-ink">#Trending at Lenskart</h2>
 
         <Swiper
           ref={swiperRef}
@@ -210,9 +210,9 @@ const Trending = () => {
           onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
           breakpoints={{
             0: { slidesPerView: 1.5 },
-            480: { slidesPerView: 2 },
-            768: { slidesPerView: 3 },
-            1024: { slidesPerView: 4 },
+            480: { slidesPerView: 2.5 },
+            768: { slidesPerView: 3.5 },
+            1200: { slidesPerView: 4.5 },
           }}
         >
           {videoSlides.map((slide, index) => (

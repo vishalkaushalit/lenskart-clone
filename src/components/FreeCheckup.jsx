@@ -13,8 +13,8 @@ const FreeCheckup = () => {
     <>
       <section className="py-12 sm:py-16">
         <div className="mx-auto w-[90%] max-w-[1320px]">
-          <h2 className="mb-7 text-2xl font-extrabold text-ink">Get a FREE Eye Check Up</h2>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+          <h2 className="mb-7 text-xl sm:text-2xl font-extrabold text-ink">Get a FREE Eye Check Up</h2>
+          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3">
             {checkupList.map(({ name, image, checkupUrl }) => (
               <a href={checkupUrl} className="overflow-hidden rounded-xl transition-transform hover:scale-[1.02]" key={name}>
                 <div>

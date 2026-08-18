@@ -17,10 +17,10 @@ const Categories = () => {
     <>
       <section className="py-12 sm:py-16">
         <div className="mx-auto w-[90%] max-w-[1320px]">
-          <h2 className="mb-7 text-2xl font-extrabold leading-tight text-ink">Top Categories</h2>
+          <h2 className="mb-7 text-xl sm:text-2xl font-extrabold leading-tight text-ink">Top Categories</h2>
           <Swiper
             spaceBetween={20}
-            slidesPerView={2.15}
+            slidesPerView={2.5}
             breakpoints={{
               480: { slidesPerView: 3.75 },
               640: { slidesPerView: 4.75 },
