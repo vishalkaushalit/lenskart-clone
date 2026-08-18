@@ -67,14 +67,14 @@ function HomeSlider() {
         </SwiperSlide>
       ))}
       <button
-        className="absolute bottom-4 left-2 z-10 grid size-10 place-items-center text-white transition hover:scale-110 hover:opacity-70 focus-visible:outline-3 focus-visible:outline-cyan-500 sm:left-6 sm:size-12"
+        className="home-slider-prev absolute bottom-4 left-2 z-10 grid size-10 place-items-center text-white transition hover:scale-110 hover:opacity-70 focus-visible:outline-3 focus-visible:outline-cyan-500 sm:left-6 sm:size-12"
         type="button"
         aria-label="Previous slide"
       >
         <ChevronLeft aria-hidden="true" />
       </button>
       <button
-        className="absolute right-2 bottom-4 z-10 grid size-10 place-items-center text-white transition hover:scale-110 hover:opacity-70 focus-visible:outline-3 focus-visible:outline-cyan-500 sm:right-6 sm:size-12"
+        className="home-slider-next absolute right-2 bottom-4 z-10 grid size-10 place-items-center text-white transition hover:scale-110 hover:opacity-70 focus-visible:outline-3 focus-visible:outline-cyan-500 sm:right-6 sm:size-12"
         type="button"
         aria-label="Next slide"
       >
