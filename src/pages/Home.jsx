@@ -1,3 +1,5 @@
+import Header from "../header/Header";
+import Footer from "../footer/Footer";
 import HomeSlider from "../components/HomeSlider";
 import Categories from "../components/Categories";
 import free_lens_replacement from "/FLR1IN.webp";
@@ -18,12 +20,17 @@ const promotionalBanners = [
   { image: free_lens_replacement, alt: "Free Lens Replacement" },
   { image: meller_banner, alt: "Meller" },
   { image: buy_one_get_second_later, alt: "Buy One Get Second Later" },
-  { image: do_more_be_more, alt: "Do More Be More", className: "py-12 sm:py-16" },
+  {
+    image: do_more_be_more,
+    alt: "Do More Be More",
+    className: "py-12 sm:py-16",
+  },
 ];
 
 const Home = () => {
   return (
     <>
+      <Header />
       <HomeSlider />
       <Categories />
       <a href="#" className="block">
@@ -60,6 +67,7 @@ const Home = () => {
         </a>
       ))}
       <Notes />
+      <Footer />
     </>
   );
 };

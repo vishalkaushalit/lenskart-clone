@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import {
   ChevronDown,
@@ -464,13 +465,13 @@ const Header = () => {
               >
                 <ShoppingBag color="black" aria-hidden="true" />
               </a>
-              <a
+              <Link
+                to="/login"
                 className="grid shrink-0 place-items-center transition hover:-translate-y-0.5 hover:opacity-75"
-                href="#"
                 aria-label="Account"
               >
                 <UserRound color="black" aria-hidden="true" />
-              </a>
+              </Link>
             </div>
           </div>
         </div>
