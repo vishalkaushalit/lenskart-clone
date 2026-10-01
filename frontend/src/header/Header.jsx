@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import AccountMenu from "../components/AccountMenu";
+import { useAuth } from "../context/AuthContext";
 
 import {
   ChevronDown,
@@ -170,6 +172,7 @@ const mobileMenuItems = [
 ];
 
 const Header = () => {
+  const { user } = useAuth();
   const [isFixed, setIsFixed] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openMobileMenu, setOpenMobileMenu] = useState(null);
@@ -282,7 +285,9 @@ const Header = () => {
             className={`relative ml-auto h-full w-3/4 overflow-y-auto bg-white text-ink transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
           >
             <div className="flex h-[60px] items-center justify-between border-b border-[#ededf5] px-4">
-              <img src={logo} alt="Lenskart" className="h-auto w-[50px]" />
+              <Link to="/" aria-label="Lenskart home" onClick={() => setIsMenuOpen(false)}>
+                <img src={logo} alt="Lenskart" className="h-auto w-[50px]" />
+              </Link>
               <button
                 type="button"
                 aria-label="Close menu"
@@ -298,20 +303,14 @@ const Header = () => {
                 </div>
                 <div>
                   <h2 className="text-[16px] font-bold leading-tight">
-                    Hi Specsy!
+                    {user ? `Hi ${user.name || "Specsy"}!` : "Hi Specsy!"}
                   </h2>
                   <p className="mt-2 max-w-[150px] text-[12px] text-[#686795]">
-                    Login or Signup to track your orders and get access to
-                    exclusive deals.
+                    {user ? "View your account details below." : "Login or Signup to track your orders and get access to exclusive deals."}
                   </p>
                 </div>
               </div>
-              <button
-                type="button"
-                className="mt-4 w-full rounded-[10px] bg-ink py-3 text-[14px] font-semibold text-white"
-              >
-                Login/Signup
-              </button>
+              <AccountMenu mobile onNavigate={() => setIsMenuOpen(false)} />
               <a
                 href="tel:9999899998"
                 className="pt-6 pb-4 flex items-center justify-between text-[14px] font-semibold"
@@ -393,14 +392,14 @@ const Header = () => {
               </div>
             </div>
           </div>
-          <div className="flex min-h-[70px] w-full items-center gap-4 overflow-x-auto px-5">
-            <a
+          <div className="flex min-h-[70px] w-full items-center gap-4 px-5">
+            <Link
               className="grid shrink-0 place-items-center"
-              href="#"
+              to="/"
               aria-label="Lenskart home"
             >
               <img src={logo} alt="Logo" />
-            </a>
+            </Link>
 
             <nav
               className="flex h-[70px] shrink-0 items-stretch gap-5"
@@ -465,13 +464,7 @@ const Header = () => {
               >
                 <ShoppingBag color="black" aria-hidden="true" />
               </a>
-              <Link
-                to="/login"
-                className="grid shrink-0 place-items-center transition hover:-translate-y-0.5 hover:opacity-75"
-                aria-label="Account"
-              >
-                <UserRound color="black" aria-hidden="true" />
-              </Link>
+              <AccountMenu />
             </div>
           </div>
         </div>

@@ -1,5 +1,3 @@
-import Header from "../header/Header";
-import Footer from "../footer/Footer";
 import HomeSlider from "../components/HomeSlider";
 import Categories from "../components/Categories";
 import free_lens_replacement from "/FLR1IN.webp";
@@ -30,7 +28,6 @@ const promotionalBanners = [
 const Home = () => {
   return (
     <>
-      <Header />
       <HomeSlider />
       <Categories />
       <a href="#" className="block">
@@ -67,7 +64,6 @@ const Home = () => {
         </a>
       ))}
       <Notes />
-      <Footer />
     </>
   );
 };

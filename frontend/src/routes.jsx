@@ -2,12 +2,16 @@ import Header from "./header/Header";
 import Footer from "./footer/Footer";
 import { Outlet } from "react-router-dom";
 
-function routes() {
+function StoreLayout() {
   return (
     <>
-      <Outlet />
+      <Header />
+      <main>
+        <Outlet />
+      </main>
+      <Footer />
     </>
   );
 }
 
-export default routes;
+export default StoreLayout;
