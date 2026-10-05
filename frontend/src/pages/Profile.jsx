@@ -1,3 +1,4 @@
+import Loader from '../components/Loader';
 import PopupMessage from "../components/PopupMessage";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -80,7 +81,7 @@ function OrderHistory() {
     <section className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8" aria-labelledby="order-history-heading">
       <h2 id="order-history-heading" className="flex items-center gap-2 text-xl font-bold"><Package size={22} />Order history</h2>
       <p className="mt-2 text-sm text-gray-500">Your recent orders and their status.</p>
-      {loading ? <p role="status" className="py-8 text-sm text-gray-500">Loading orders...</p> : error ? (
+      {loading ? <Loader label="Loading orders"/> : error ? (
         <div className="mt-6">
           <PopupMessage message={error} />
           <button type="button" onClick={() => setAttempt(attempt + 1)} className="mt-3 text-sm font-semibold underline">Try again</button>

@@ -5,11 +5,15 @@ import { StoreContext } from './StoreContext';
 function read(key){try{const value=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(value)?value:[];}catch{return [];}}
 function initial(){return normalizeStore(read('collection-favorites'),read('store-cart'));}
 function Toast({toast,onDismiss}){
-  useEffect(()=>{const timer=setTimeout(()=>onDismiss(toast.id),4500);return()=>clearTimeout(timer);},[toast.id,onDismiss]);
+  const [closing,setClosing]=useState(false);
+  useEffect(()=>{const timer=setTimeout(()=>setClosing(true),4500);return()=>clearTimeout(timer);},[toast.id]);
+  useEffect(()=>{if(!closing)return;const timer=setTimeout(()=>onDismiss(toast.id),260);return()=>clearTimeout(timer);},[closing,toast.id,onDismiss]);
   const Icon=toast.type==='error'?CircleAlert:CircleCheck;
-  return <div className={`store-toast ${toast.type==='error'?'is-error':''}`} role={toast.type==='error'?'alert':'status'}><Icon size={20}/><p>{toast.message}</p><button type="button" aria-label="Dismiss notification" onClick={()=>onDismiss(toast.id)}><X size={16}/></button></div>;
+  return <div className={`store-toast ${toast.type==='error'?'is-error':''} ${closing?'is-leaving':''}`} role={toast.type==='error'?'alert':'status'}><Icon size={20}/><p>{toast.message}</p><button type="button" aria-label="Dismiss notification" onClick={()=>setClosing(true)}><X size={16}/></button></div>;
 }
 export default function StoreProvider({children}){
+  const [couponCode,updateCouponCode]=useState(()=>{try{return sessionStorage.getItem('store-coupon-code')||'';}catch{return '';}});
+  function setCouponCode(code){updateCouponCode(code);try{sessionStorage.setItem('store-coupon-code',code);}catch{/* Retain the code for the current page session. */}}
   const [store,setStore]=useState(initial);const current=useRef(store);
   const [toasts,setToasts]=useState([]);const sequence=useRef(0);
   const notify=useCallback((message,type='success',onDismiss)=>{
@@ -30,5 +34,5 @@ export default function StoreProvider({children}){
   }
   function removeFromCart(id){commit({...current.current,cart:current.current.cart.filter((item)=>item.id!==id)});notify('Removed from cart.');}
   function changeQuantity(id,quantity,stock){if(quantity<1){removeFromCart(id);return;}try{const cart=cartQuantity(current.current.cart,id,quantity,stock);commit({...current.current,cart});notify('Cart quantity updated.');}catch(error){notify(error.message,'error');}}
-  return <StoreContext.Provider value={{...store,cartCount:store.cart.reduce((total,item)=>total+item.quantity,0),notify,toggleFavorite,removeFavorite,addToCart,removeFromCart,changeQuantity}}>{children}<div className="store-toast-stack" aria-label="Notifications">{toasts.map((toast)=><Toast key={toast.id} toast={toast} onDismiss={dismiss}/>)}</div></StoreContext.Provider>;
+  return <StoreContext.Provider value={{...store,couponCode,setCouponCode,cartCount:store.cart.reduce((total,item)=>total+item.quantity,0),notify,toggleFavorite,removeFavorite,addToCart,removeFromCart,changeQuantity}}>{children}<div className="store-toast-stack" aria-label="Notifications">{toasts.map((toast)=><Toast key={toast.id} toast={toast} onDismiss={dismiss}/>)}</div></StoreContext.Provider>;
 }

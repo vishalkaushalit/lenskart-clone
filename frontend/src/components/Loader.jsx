@@ -1,38 +1,9 @@
-"use client";
-
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import GlassesModel from "./GlassesModel";
-
-export default function Loader(){
-
-return (
-
-<div className="fixed inset-0 bg-white z-50">
-
-<Canvas camera={{position:[0,0,5]}}>
-
-<ambientLight intensity={2}/>
-
-<directionalLight 
-position={[2,3,4]}
-intensity={3}
-/>
-
-
-<GlassesModel/>
-
-
-<OrbitControls
-enableZoom={false}
-/>
-
-
-</Canvas>
-
-
-</div>
-
-)
-
+export default function Loader({ label = 'Loading data' }) {
+  return <div className="store-loader" role="status">
+    <div className="store-loader-scene" aria-hidden="true">
+      <div className="store-loader-cube">{['front','back','right','left','top','bottom'].map(face=><span key={face} className={`store-loader-face is-${face}`}/>)}</div>
+      <div className="store-loader-shadow"/>
+    </div>
+    <span className="sr-only">{label}</span>
+  </div>;
 }

@@ -1,0 +1,9 @@
+.store-coupon{background:white;border:1px solid #e8e8f2;border-radius:14px;padding:18px;margin-top:18px;color:#000042}
+.store-coupon>label{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;margin-bottom:14px}
+.store-coupon form{display:flex;gap:10px}
+.store-coupon input{min-width:0;flex:1;border:1px solid #dedeea;border-radius:8px;padding:11px 12px;font-size:13px;background:white;text-transform:uppercase;outline:none}
+.store-coupon input::placeholder{text-transform:none;color:#9999b6}
+.store-coupon input:focus{border-color:#000042;box-shadow:0 0 0 3px #0000420a}
+.store-coupon button{border-radius:8px;padding:10px 18px;background:#000042;color:white;font-size:13px;font-weight:600;cursor:pointer}
+.store-coupon button:hover{background:#1d1958}
+.store-coupon p{font-size:11px;color:#73739d;line-height:1.6;margin-top:10px}

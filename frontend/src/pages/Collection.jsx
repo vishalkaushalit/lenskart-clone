@@ -1,3 +1,4 @@
+import Loader from '../components/Loader';
 import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
@@ -228,9 +229,7 @@ export default function Collection() {
           </div>
         )}
         {loading && (
-          <p role="status" className="p-8 text-center">
-            Loading products...
-          </p>
+          <Loader label="Loading products"/>
         )}
         {error && (
           <div className="collection-empty">

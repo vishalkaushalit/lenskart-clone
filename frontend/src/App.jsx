@@ -4,6 +4,7 @@ import StoreLayout from "./routes";
 import Register from "./pages/Register";
 import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 import ProductDetails from "./pages/ProductDetails";
 import Collection from "./pages/Collection";
 import Home from "./pages/Home";
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/eyeglasses" element={<Collection />} />
         <Route element={<ProtectedRoute />}>
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
         <Route path="*" element={<h1>Page not found</h1>} />

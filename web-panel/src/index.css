@@ -81,15 +81,25 @@ select:disabled {
 }
 
 .admin-loader{display:flex;align-items:center;justify-content:center;min-height:190px;width:100%;padding:32px}
-.admin-loader-scene{position:relative;width:110px;height:110px;perspective:500px;display:grid;place-items:center}
-.admin-loader-cube{position:relative;width:48px;height:48px;transform-style:preserve-3d;animation:admin-loader-cube-spin 3s linear infinite}
+.admin-loader-scene{position:relative;width:70px;height:70px;perspective:500px;display:grid;place-items:center}
+.admin-loader-cube{position:relative;width:30px;height:30px;transform-style:preserve-3d;animation:admin-loader-cube-spin 3s linear infinite}
 .admin-loader-face{position:absolute;inset:0;border:1px solid #ffffff80;border-radius:5px;background:linear-gradient(135deg,#60a5fae6,#2563ebe6);box-shadow:inset 0 0 12px #ffffff30;backface-visibility:visible}
-.admin-loader-face.is-front{transform:translateZ(24px)}
-.admin-loader-face.is-back{transform:rotateY(180deg) translateZ(24px)}
-.admin-loader-face.is-right{transform:rotateY(90deg) translateZ(24px);background:linear-gradient(135deg,#818cf8e6,#4f46e5e6)}
-.admin-loader-face.is-left{transform:rotateY(-90deg) translateZ(24px);background:linear-gradient(135deg,#818cf8e6,#4f46e5e6)}
-.admin-loader-face.is-top{transform:rotateX(90deg) translateZ(24px);background:linear-gradient(135deg,#c4b5fde6,#8b5cf6e6)}
-.admin-loader-face.is-bottom{transform:rotateX(-90deg) translateZ(24px);background:linear-gradient(135deg,#c4b5fde6,#8b5cf6e6)}
-.admin-loader-shadow{position:absolute;bottom:3px;width:64px;height:10px;background:#6366f130;filter:blur(5px);border-radius:50%}
+.admin-loader-face.is-front{transform:translateZ(15px)}
+.admin-loader-face.is-back{transform:rotateY(180deg) translateZ(15px)}
+.admin-loader-face.is-right{transform:rotateY(90deg) translateZ(15px);background:linear-gradient(135deg,#818cf8e6,#4f46e5e6)}
+.admin-loader-face.is-left{transform:rotateY(-90deg) translateZ(15px);background:linear-gradient(135deg,#818cf8e6,#4f46e5e6)}
+.admin-loader-face.is-top{transform:rotateX(90deg) translateZ(15px);background:linear-gradient(135deg,#c4b5fde6,#8b5cf6e6)}
+.admin-loader-face.is-bottom{transform:rotateX(-90deg) translateZ(15px);background:linear-gradient(135deg,#c4b5fde6,#8b5cf6e6)}
+.admin-loader-shadow{position:absolute;bottom:3px;width:40px;height:6px;background:#6366f130;filter:blur(5px);border-radius:50%}
 @keyframes admin-loader-cube-spin{from{transform:rotateX(-25deg) rotateY(35deg)}to{transform:rotateX(335deg) rotateY(395deg)}}
 @media(prefers-reduced-motion:reduce){.admin-loader-cube{animation:none;transform:rotateX(-25deg) rotateY(35deg)}}
+
+.admin-notification{animation:admin-notification-enter .35s cubic-bezier(.2,.8,.2,1) both}
+.admin-notification::backdrop{animation:admin-backdrop-enter .35s ease both}
+.admin-notification.is-leaving{animation:admin-notification-leave .26s ease both;pointer-events:none}
+.admin-notification.is-leaving::backdrop{animation:admin-backdrop-leave .26s ease both}
+@keyframes admin-notification-enter{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes admin-notification-leave{from{opacity:1;transform:scale(1)}to{opacity:0;transform:translateY(10px) scale(.97)}}
+@keyframes admin-backdrop-enter{from{opacity:0}to{opacity:1}}
+@keyframes admin-backdrop-leave{from{opacity:1}to{opacity:0}}
+@media(prefers-reduced-motion:reduce){.admin-notification,.admin-notification.is-leaving,.admin-notification::backdrop,.admin-notification.is-leaving::backdrop{animation:none}}
