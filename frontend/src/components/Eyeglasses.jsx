@@ -10,13 +10,13 @@ import square from "../assets/images/eyeglasses/square.webp";
 import "swiper/css";
 
 const frameShapes = [
-  { name: "Rectangle", image: rectangle, eyeglassUrl: "#" },
-  { name: "Cateye", image: cateye, eyeglassUrl: "#" },
-  { name: "Aviator", image: aviator, eyeglassUrl: "#" },
-  { name: "Geometric", image: geometric, eyeglassUrl: "#" },
-  { name: "Round", image: round, eyeglassUrl: "#" },
-  { name: "Clubmaster", image: clubmaster, eyeglassUrl: "#" },
-  { name: "Square", image: square, eyeglassUrl: "#" },
+  { name: "Rectangle", image: rectangle, eyeglassUrl: "/collection" },
+  { name: "Cateye", image: cateye, eyeglassUrl: "/collection" },
+  { name: "Aviator", image: aviator, eyeglassUrl: "/collection" },
+  { name: "Geometric", image: geometric, eyeglassUrl: "/collection" },
+  { name: "Round", image: round, eyeglassUrl: "/collection" },
+  { name: "Clubmaster", image: clubmaster, eyeglassUrl: "/collection" },
+  { name: "Square", image: square, eyeglassUrl: "/collection" },
 ];
 
 const Eyeglasses = () => {

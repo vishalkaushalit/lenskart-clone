@@ -1,3 +1,4 @@
+import PopupMessage from "./PopupMessage";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -57,9 +58,7 @@ const LoginForm = () => {
       </p>
 
       {location.state?.registered && (
-        <p className="mt-4 text-green-700" role="status">
-          Registration successful. Please log in.
-        </p>
+        <PopupMessage message="Registration successful. Please log in." type="success" />
       )}
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-5">
@@ -113,9 +112,7 @@ const LoginForm = () => {
         </div>
 
         {error && (
-          <p role="alert" className="text-sm text-red-600">
-            {error}
-          </p>
+          <PopupMessage message={error} onClose={() => setError("")} />
         )}
 
         <button

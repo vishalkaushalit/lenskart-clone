@@ -18,6 +18,8 @@ export async function requireAuth(req, res, next) {
             });
         }
 
+        if (user.status === 'inactive') return res.status(403).json({ success: false, message: 'Your account is inactive.' });
+
         req.user = user;
         next();
     } catch (error) {

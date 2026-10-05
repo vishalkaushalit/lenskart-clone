@@ -9,6 +9,8 @@ import { connectDB } from './config/db.js';
 import User from './models/User.js';
 import authRoutes from './routes/authRoutes.js';
 import accountRoutes from './routes/accountRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import { initializeUserIds } from './services/userIds.js';
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -47,7 +49,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/api/health', (req, res) => {
+app.get(['/', '/api/health'], (req, res) => {
   const connected = mongoose.connection.readyState === 1;
 
   res.status(connected ? 200 : 503).json({
@@ -64,6 +66,7 @@ async function startServer() {
     }
 
     await connectDB();
+    await initializeUserIds(User.collection);
     await User.init();
 
     const sessionStore = MongoStore.create({
@@ -91,6 +94,7 @@ async function startServer() {
 
     app.use('/api/auth', authRoutes);
     app.use('/api/account', accountRoutes);
+    app.use('/api/users', userRoutes);
 
     app.use((req, res) => {
       res.status(404).json({
@@ -112,8 +116,9 @@ async function startServer() {
       console.log(`Backend running at http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error('Backend startup failed:', error.name);
-    console.error('Check database settings and SESSION_SECRET.');
+    console.error("Backend startup failed:", error.name);
+    console.error("Error code:", error.code);
+    console.error("Details:", error.message);
     process.exit(1);
   }
 }

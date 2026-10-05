@@ -1,3 +1,4 @@
+import PopupMessage from "./PopupMessage";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown, UserRound } from "lucide-react";
@@ -91,9 +92,9 @@ export default function AccountMenu({ mobile = false, onNavigate }) {
           <button type="button" disabled={signingOut} onClick={handleLogout} className="mt-3 w-full rounded-lg border-t border-black/10 px-3 py-2 text-left text-sm font-semibold hover:bg-gray-100 disabled:opacity-50">
             {signingOut ? "Logging out..." : "Logout"}
           </button>
-          {error && <p role="alert" className="mt-2 text-sm text-red-600">{error}</p>}
         </div>
       )}
+      {error && <PopupMessage message={error} onClose={() => setError("")} />}
     </div>
   );
 }

@@ -23,7 +23,7 @@ export async function updateProfile(req, res, next) {
     if (!user) return res.status(401).json({ message: 'Account not found. Please log in again.' });
     return res.json({
       success: true,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      user: { id: user._id, userId: user.userId, name: user.name, email: user.email, role: user.role },
     });
   } catch (error) {
     if (error.code === 11000) {

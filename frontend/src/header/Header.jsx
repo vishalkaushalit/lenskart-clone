@@ -348,7 +348,7 @@ const Header = () => {
                           <div className="pl-4">
                             {items.map((item) => (
                               <a
-                                href="#"
+                                href={label === "Eyeglasses" ? "/collection" : "#"}
                                 className="block border-b border-[#ededf5] py-3 text-[14px] leading-tight text-[#686795] last:border-0 first:pt-0"
                                 key={item}
                                 onClick={() => setIsMenuOpen(false)}
@@ -409,7 +409,7 @@ const Header = () => {
                 <div className="group flex items-center" key={navItem.label}>
                   <a
                     className="relative flex h-full items-center whitespace-nowrap text-[13px] font-bold uppercase tracking-tight after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:scale-x-0 after:bg-black after:transition-transform group-hover:after:scale-x-100 group-focus-within:after:scale-x-100 xl:text-[14px]"
-                    href="#"
+                    href={navItem.label === "Eyeglasses" ? "/collection" : "#"}
                   >
                     {navItem.label}
                   </a>
@@ -426,7 +426,7 @@ const Header = () => {
                           {group.items.map((item) => (
                             <a
                               className="text-sm text-neutral-600 transition hover:translate-x-1 hover:text-ink"
-                              href="#"
+                              href={navItem.label === "Eyeglasses" ? "/collection" : "#"}
                               key={item}
                             >
                               {item}

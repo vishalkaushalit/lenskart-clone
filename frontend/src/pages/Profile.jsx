@@ -1,3 +1,4 @@
+import PopupMessage from "../components/PopupMessage";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserRound, Package } from "lucide-react";
@@ -42,8 +43,8 @@ function ProfileDetails({ user }) {
           <label htmlFor="profile-email" className="mb-2 block text-sm font-semibold">Email</label>
           <input id="profile-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required maxLength={254} autoComplete="email" className="w-full rounded-lg border border-gray-300 px-4 py-3" />
         </div>
-        {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
-        {success && <p role="status" className="text-sm text-green-700">{success}</p>}
+        {error && <PopupMessage message={error} onClose={() => setError("")} />}
+        {success && <PopupMessage message={success} type="success" onClose={() => setSuccess("")} />}
         <button type="submit" disabled={saving} className="rounded-lg bg-ink px-6 py-3 text-sm font-semibold text-white disabled:opacity-50">{saving ? "Saving..." : "Save changes"}</button>
       </form>
     </section>
@@ -81,7 +82,7 @@ function OrderHistory() {
       <p className="mt-2 text-sm text-gray-500">Your recent orders and their status.</p>
       {loading ? <p role="status" className="py-8 text-sm text-gray-500">Loading orders...</p> : error ? (
         <div className="mt-6">
-          <p role="alert" className="text-sm text-red-600">{error}</p>
+          <PopupMessage message={error} />
           <button type="button" onClick={() => setAttempt(attempt + 1)} className="mt-3 text-sm font-semibold underline">Try again</button>
         </div>
       ) : result.orders.length === 0 ? (

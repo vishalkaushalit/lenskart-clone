@@ -2,6 +2,7 @@ import { Routes, Route, Outlet } from "react-router-dom";
 
 import StoreLayout from "./routes";
 import Register from "./pages/Register";
+import Collection from "./pages/Collection";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
@@ -12,6 +13,8 @@ const App = () => {
     <Routes>
       <Route element={<StoreLayout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/collection" element={<Collection />} />
+        <Route path="/eyeglasses" element={<Collection />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>

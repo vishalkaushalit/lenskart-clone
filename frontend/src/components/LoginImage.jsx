@@ -1,4 +1,4 @@
-import React from "react";
+import { Link } from "react-router-dom";
 import Login_Image from "../assets/images/Login/login_image.webp";
 const LoginImage = () => {
   return (
@@ -38,10 +38,10 @@ const LoginImage = () => {
 
         {/* Bottom: Welcome */}
         <div className="relative z-10 mt-10">
-          {/* Back button */}
-          <button
-            type="button"
-            aria-label="Go back"
+          {/* Homepage link */}
+          <Link
+            to="/"
+            aria-label="Go to homepage"
             className="mb-6 flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20"
           >
             <svg
@@ -57,7 +57,7 @@ const LoginImage = () => {
               <line x1="19" y1="12" x2="5" y2="12" />
               <polyline points="12 19 5 12 12 5" />
             </svg>
-          </button>
+          </Link>
 
           <h1 className="text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
             Welcome to ShopAdmin

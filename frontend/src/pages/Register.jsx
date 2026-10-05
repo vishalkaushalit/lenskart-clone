@@ -1,3 +1,4 @@
+import PopupMessage from "../components/PopupMessage";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { apiRequest } from "../api/api";
@@ -52,7 +53,7 @@ export default function Register() {
                 <input {...props} id={`register-${name}`} name={name} required className="w-full rounded-lg border border-gray-300 px-4 py-3" />
               </div>
             ))}
-            {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
+            {error && <PopupMessage message={error} onClose={() => setError("")} />}
             <button disabled={submitting} type="submit" className="w-full rounded-lg bg-black px-4 py-3 font-medium text-white disabled:opacity-50">
               {submitting ? "Registering..." : "Register"}
             </button>

@@ -84,6 +84,7 @@ router.post('/register', registerLimiter, async (req, res) => {
             message: 'Registration successful. Please log in.',
             user: {
                 id: user._id,
+                userId: user.userId,
                 name: user.name,
                 email: user.email,
                 role: user.role,
@@ -109,6 +110,7 @@ router.post('/register', registerLimiter, async (req, res) => {
 function publicUser(user) {
     return {
         id: user._id,
+        userId: user.userId,
         name: user.name,
         email: user.email,
         role: user.role,
@@ -159,6 +161,8 @@ router.post('/login', loginLimiter, async (req, res, next) => {
                 message: 'Invalid email or password.',
             });
         }
+
+        if (user.status === 'inactive') return res.status(403).json({ success: false, message: 'Your account is inactive.' });
 
         // Create a fresh session after successful login.
         await new Promise((resolve, reject) => {

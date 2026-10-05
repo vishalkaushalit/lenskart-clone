@@ -28,7 +28,7 @@ test('profile updates use the session account and allow only name and email', as
   } }, res, assert.ifError);
   assert.equal(res.statusCode, 200);
   assert.deepEqual(res.body.user, {
-    id: 'session-user', name: 'Customer', email: 'customer@example.com', role: 'customer',
+    id: 'session-user', userId: undefined, name: 'Customer', email: 'customer@example.com', role: 'customer',
   });
 });
 

@@ -1,3 +1,4 @@
+import PopupMessage from "./PopupMessage";
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -7,7 +8,7 @@ export default function CustomerRoute() {
 
   if (loading) return <p>Checking login...</p>;
 
-  if (error) return <p role="alert">{error}</p>;
+  if (error) return <main className="p-8"><PopupMessage message={error} /><button type="button" onClick={() => window.location.reload()} className="rounded-lg bg-blue-600 px-5 py-3 text-white">Try again</button></main>;
 
   if (!user) {
     return (

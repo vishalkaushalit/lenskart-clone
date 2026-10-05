@@ -1,16 +1,42 @@
-# React + Vite
+# Web panel
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The separate admin application for the Lenskart clone.
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```sh
+npm install
+npm run dev
+```
 
-## React Compiler
+Vite runs on `http://localhost:5174` and requires that port to be available.
+The frontend should run on `http://localhost:5173` and the backend on
+`http://localhost:5001`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `/` redirects to `/dashboard`.
+- `/dashboard` displays the store overview.
+- `/product` displays the product management page.
 
-## Expanding the ESLint configuration
+These routes check the shared backend session at `/api/auth/me` and require
+an admin account. Log in through the frontend first. Logout clears that session
+and returns to the frontend login page.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The dashboard metrics, recent orders, and product rows currently use the
+existing sample data; product management actions are not connected to an API.
+
+## Configuration
+
+The local API and frontend URLs work by default. To override them, copy
+`.env.example` to `.env` and set `VITE_API_URL` and `VITE_FRONTEND_URL`.
+Keep the frontend's `VITE_ADMIN_URL` and the backend's `ADMIN_URL` pointed at
+this application's origin (`http://localhost:5174` locally).
+
+## Checks
+
+```sh
+npm run lint
+npm run build
+```
+
+When deploying, configure the host to serve `index.html` for client routes such
+as `/dashboard` and `/product`.
