@@ -2,7 +2,7 @@ import User from '../models/User.js';
 
 export async function requireAuth(req, res, next) {
     try {
-        if (!req.session.userId) {
+        if (!req.session?.userId) {
             return res.status(401).json({
                 success: false,
                 message: 'Please log in first.',

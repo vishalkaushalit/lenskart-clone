@@ -1,9 +1,5 @@
-import React from "react";
 import AsideBarDashboard from "../components/AsideBarDashboard";
 import DashboardHeader from "../components/DashboardHeader";
-import StatDashboard from "../components/StatDashboard";
-import ChartDashboard from "../components/ChartDashboard";
-import RecentOrders from "../components/RecentOrders";
 
 const ProductDashboard = () => {
   // Sample data — replace with real products later

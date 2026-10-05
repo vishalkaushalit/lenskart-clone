@@ -1,20 +1,22 @@
+import {lazy,Suspense} from 'react';
+import Loader from './components/Loader';
 import { Link, Navigate, Route, Routes } from "react-router-dom";
 import AdminRoute from "./components/AdminRoute";
-import Dashboard from "./dashboard/Dashboard";
-import ProductDashboard from "./dashboard/ProductDashboard";
-import Profile from "./pages/Profile";
-import Logout from "./pages/Logout";
-import EditProduct from "./pages/EditProduct";
-import ProductDetails from "./pages/ProductDetails";
-import AddProduct from "./pages/AddProduct";
-import OrderDetails from "./pages/OrderDetails";
-import Commerce from "./pages/Commerce";
-import Categories from "./pages/Categories";
-import Users from "./pages/Users";
+const Dashboard=lazy(()=>import("./dashboard/Dashboard"));
+const ProductDashboard=lazy(()=>import("./dashboard/ProductDashboard"));
+const Profile=lazy(()=>import("./pages/Profile"));
+const Logout=lazy(()=>import("./pages/Logout"));
+const EditProduct=lazy(()=>import("./pages/EditProduct"));
+const ProductDetails=lazy(()=>import("./pages/ProductDetails"));
+const AddProduct=lazy(()=>import("./pages/AddProduct"));
+const OrderDetails=lazy(()=>import("./pages/OrderDetails"));
+const Commerce=lazy(()=>import("./pages/Commerce"));
+const Categories=lazy(()=>import("./pages/Categories"));
+const Users=lazy(()=>import("./pages/Users"));
 
 export default function App() {
   return (
-    <Routes>
+    <Suspense fallback={<Loader label="Loading page"/>}><Routes>
       <Route element={<AdminRoute />}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -36,6 +38,6 @@ export default function App() {
           </main>
         } />
       </Route>
-    </Routes>
+    </Routes></Suspense>
   );
 }

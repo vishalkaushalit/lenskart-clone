@@ -1,3 +1,4 @@
+import {Link} from 'react-router-dom';
 import { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
@@ -142,6 +143,9 @@ const videoSlides = [
 ];
 
 const Trending = () => {
+  const sectionRef=useRef(null);
+  const [visible,setVisible]=useState(false);
+  useEffect(()=>{const observer=new IntersectionObserver(([entry])=>setVisible(entry.isIntersecting));observer.observe(sectionRef.current);return()=>observer.disconnect();},[]);
   const swiperRef = useRef(null);
   const videoRefs = useRef([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -150,35 +154,37 @@ const Trending = () => {
   useEffect(() => {
     const activeVideo = videoRefs.current[activeIndex];
 
-    if (!activeVideo) return;
+    if (!activeVideo || !visible) return;
 
     activeVideo.pause();
     activeVideo.currentTime = 0;
     setPlayingIndex(-1);
 
     // Wait 2 seconds before starting the video (show poster)
+    let playDurationTimer;
     const initialDelayTimer = setTimeout(() => {
       activeVideo.play().catch(() => {});
       setPlayingIndex(activeIndex);
 
       // After playing for 3 seconds, advance to next slide
-      const playDurationTimer = setTimeout(() => {
+      playDurationTimer = setTimeout(() => {
         setPlayingIndex(-1);
         if (swiperRef.current) {
           swiperRef.current.slideNext();
         }
       }, 3000);
 
-      return () => clearTimeout(playDurationTimer);
+
     }, 500);
 
     return () => {
       clearTimeout(initialDelayTimer);
+      clearTimeout(playDurationTimer);
       activeVideo.pause();
       activeVideo.currentTime = 0;
       setPlayingIndex(-1);
     };
-  }, [activeIndex]);
+  }, [activeIndex,visible]);
 
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
@@ -194,7 +200,7 @@ const Trending = () => {
   }, [activeIndex]);
 
   return (
-    <section className="trending_sec">
+    <section ref={sectionRef} className="trending_sec">
       <div className="mx-auto w-[90%] max-w-[1320px]">
         <h2 className="mb-7 text-xl sm:text-2xl font-extrabold text-ink">#Trending at Lenskart</h2>
 
@@ -231,15 +237,15 @@ const Trending = () => {
                       videoRefs.current[index] = element;
                     }}
                     className={`absolute inset-0 z-2 block size-full object-cover transition duration-200 ${index === playingIndex ? "opacity-100" : "opacity-0"}`}
-                    src={slide.video}
+                    src={visible && index === activeIndex ? slide.video : undefined}
                     muted
                     playsInline
-                    preload="metadata"
+                    preload="none"
                   />
                   <div className="absolute inset-0 z-3 bg-gradient-to-t from-black/60 via-black/20 to-black/30" />
-                  <a href={slide.link} className="absolute bottom-4 left-4 z-4 inline-flex min-w-27 items-center justify-center rounded-full border border-white/75 bg-white/95 px-4 py-2.5 text-sm font-bold text-ink shadow-lg transition hover:-translate-y-0.5 hover:bg-white sm:bottom-[18px] sm:left-[18px] sm:min-w-30 sm:px-[18px]">
+                  <Link to={index<4?`/collection?shape=${encodeURIComponent(['Round','Aviator','Cat Eye','Rectangle'][index])}`:'/collection'} className="absolute bottom-4 left-4 z-4 inline-flex min-w-27 items-center justify-center rounded-full border border-white/75 bg-white/95 px-4 py-2.5 text-sm font-bold text-ink shadow-lg transition hover:-translate-y-0.5 hover:bg-white sm:bottom-[18px] sm:left-[18px] sm:min-w-30 sm:px-[18px]">
                     Shop now
-                  </a>
+                  </Link>
                 </div>
               </div>
             </SwiperSlide>

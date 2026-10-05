@@ -1,9 +1,10 @@
 import express from 'express';
 import { uploadProductImage } from '../services/productImages.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
-import { listProducts, adminProducts, saveProduct, deleteProduct, productDetails, storefrontProductDetails } from '../controllers/productController.js';
+import { productNavigation, listProducts, adminProducts, saveProduct, deleteProduct, productDetails, storefrontProductDetails } from '../controllers/productController.js';
 export const publicProducts = express.Router();
 publicProducts.get('/', listProducts);
+publicProducts.get('/navigation',productNavigation);
 publicProducts.get('/:id', storefrontProductDetails);
 export const managedProducts = express.Router();
 managedProducts.use(requireAuth, requireRole('admin'));

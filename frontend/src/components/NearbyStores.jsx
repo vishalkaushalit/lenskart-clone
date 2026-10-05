@@ -19,7 +19,7 @@ const NearbyStores = () => {
           <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4">
             {services.map(({ name, image, storeUrl }) => (
               <a href={storeUrl} className="overflow-hidden rounded-xl transition-transform hover:scale-[1.02]" key={name}>
-                <img className="h-auto w-full" src={image} alt={name} />
+                <img loading="lazy" decoding="async" className="h-auto w-full" src={image} alt={name} />
               </a>
             ))}
           </div>

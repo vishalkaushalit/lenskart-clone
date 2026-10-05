@@ -7,7 +7,11 @@ export default function useSavedProducts(ids){
     async function load(){
       const requested=key?key.split(','):[];setResult({loading:true,items:[],error:''});
       try{
-        const items=await Promise.all(requested.map(async(id)=>{try{const data=await apiRequest(`/products/${id}`,{signal:controller.signal});return {id,product:data.product};}catch(error){if(error.status===404||error.status===400)return {id,product:null};throw error;}}));
+        const validIds=requested.filter(id=>/^[a-f\d]{24}$/i.test(id));
+        const products=[];
+        for(let offset=0;offset<validIds.length;offset+=50){const data=await apiRequest(`/products?ids=${validIds.slice(offset,offset+50).join(',')}`,{signal:controller.signal});products.push(...data.products);}
+        const byId=new Map(products.map(product=>[product.id,product]));
+        const items=requested.map(id=>({id,product:byId.get(id)||null}));
         if(!controller.signal.aborted)setResult({loading:false,items,error:''});
       }catch(error){if(!controller.signal.aborted)setResult({loading:false,items:[],error:error.message});}
     }

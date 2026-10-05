@@ -1,20 +1,22 @@
+import {lazy,Suspense} from 'react';
+import Loader from './components/Loader';
 import { Routes, Route, Outlet } from "react-router-dom";
 
 import StoreLayout from "./routes";
-import Register from "./pages/Register";
-import Wishlist from "./pages/Wishlist";
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
-import ProductDetails from "./pages/ProductDetails";
-import Collection from "./pages/Collection";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Profile from "./pages/Profile";
+const Register=lazy(()=>import("./pages/Register"));
+const Wishlist=lazy(()=>import("./pages/Wishlist"));
+const Cart=lazy(()=>import("./pages/Cart"));
+const Checkout=lazy(()=>import("./pages/Checkout"));
+const ProductDetails=lazy(()=>import("./pages/ProductDetails"));
+const Collection=lazy(()=>import("./pages/Collection"));
+const Home=lazy(()=>import("./pages/Home"));
+const Login=lazy(()=>import("./pages/Login"));
+const Profile=lazy(()=>import("./pages/Profile"));
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   return (
-    <Routes>
+    <Suspense fallback={<Loader label="Loading page"/>}><Routes>
       <Route element={<StoreLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/collection" element={<Collection />} />
@@ -48,7 +50,7 @@ const App = () => {
           element={<p>Reset password — coming soon.</p>}
         />
       </Route>
-    </Routes>
+    </Routes></Suspense>
   );
 };
 

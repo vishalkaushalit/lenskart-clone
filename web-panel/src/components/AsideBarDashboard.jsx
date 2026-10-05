@@ -90,7 +90,7 @@ const AsideBarDashboard = ({ isOpen, isDesktop, onClose }) => {
           <NavLink to="/coupons" onClick={onClose} className={navigationClass}>Coupons</NavLink>
           <NavLink to="/orders" onClick={onClose} className={navigationClass}>Orders</NavLink>
           <a
-            href="#"
+            href="/orders"
             className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 hover:bg-white/5 hover:text-white"
           >
             Track Orders

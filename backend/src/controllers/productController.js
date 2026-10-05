@@ -17,7 +17,9 @@ export function productFields(body) {
 }
 export async function listProducts(req, res, next) {
   try {
-    const products = await Product.find(req.query?.all==='1'?{status:'active'}:{ status: 'active', productType: 'Eyeglasses' }).sort({ addedAt: 1, _id: 1 }).lean();
+    let filter=req.query?.all==='1'?{status:'active'}:{status:'active',productType:'Eyeglasses'};
+    if(req.query?.ids){const ids=String(req.query.ids).split(',');if(ids.length>50||ids.some(id=>!/^[a-f\d]{24}$/i.test(id)))return res.status(400).json({message:'Provide up to 50 valid product IDs.'});filter={status:'active',_id:{$in:[...new Set(ids)]}};}
+    const products = await Product.find(filter).sort({ addedAt: 1, _id: 1 }).lean();
     res.json({ success: true, products: products.map(publicProduct) });
   } catch (error) { next(error); }
 }
@@ -93,4 +95,8 @@ export async function storefrontProductDetails(req, res, next) {
     if (!product) return res.status(404).json({ message: 'This product is no longer available.' });
     res.json({ success: true, product: publicProduct(product) });
   } catch (error) { next(error); }
+}
+
+export async function productNavigation(req,res,next){
+ try{const products=await Product.find({status:'active'}).select('name brand shape').lean();res.json({products:products.map(product=>({name:product.name,brand:product.brand,shape:product.shape}))});}catch(error){next(error);}
 }

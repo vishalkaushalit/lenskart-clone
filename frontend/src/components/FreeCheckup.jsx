@@ -35,7 +35,7 @@ const FreeCheckup = () => {
                   className="block overflow-hidden rounded-xl transition-transform hover:scale-[1.02]"
                 >
                   <div>
-                    <img className="h-auto w-full" src={image} alt={name} />
+                    <img loading="lazy" decoding="async" className="h-auto w-full" src={image} alt={name} />
                   </div>
                 </a>
               </SwiperSlide>

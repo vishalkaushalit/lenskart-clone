@@ -1,16 +1,19 @@
+import {useState} from 'react';
+import CategoryProvider from './context/CategoryProvider';
 import Header from "./header/Header";
 import Footer from "./footer/Footer";
 import { Outlet } from "react-router-dom";
 
 function StoreLayout() {
+  const [hideNavigation,setHideNavigation]=useState(false);
   return (
-    <>
-      <Header />
+    <CategoryProvider>
+      {!hideNavigation&&<Header />}
       <main>
-        <Outlet />
+        <Outlet context={{setHideNavigation}} />
       </main>
-      <Footer />
-    </>
+      {!hideNavigation&&<Footer />}
+    </CategoryProvider>
   );
 }
 

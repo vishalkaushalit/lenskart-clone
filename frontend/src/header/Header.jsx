@@ -1,8 +1,9 @@
+import {useCategories} from '../context/CategoryContext';
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import StoreIcon from "../components/StoreIcon";
 import AccountMenu from "../components/AccountMenu";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthState";
 
 import {
   ChevronDown,
@@ -30,7 +31,7 @@ const topbarLinks = [
   "Partner With Us",
 ];
 
-const navigation = [
+const defaultNavigation = [
   {
     label: "Eyeglasses",
     groups: [
@@ -114,7 +115,7 @@ const navigation = [
   },
 ];
 
-const mobileMenuItems = [
+const defaultMobileMenuItems = [
   {
     label: "Eyeglasses",
     items: [
@@ -171,6 +172,22 @@ const mobileMenuItems = [
 ];
 
 const Header = () => {
+  const navigate=useNavigate();
+  function search(event){if(event.key==='Enter'){event.preventDefault();navigate(`/collection?search=${encodeURIComponent(event.currentTarget.value.trim())}`);setIsMenuOpen(false);}}
+  const {categories}=useCategories();
+  const roots=categories.filter(row=>!row.parent);
+  const navigation=defaultNavigation;
+  const mobileMenuItems=defaultMobileMenuItems;
+  function collectionLink(label,item){
+    const aliases={'Contacts':'Contact Lenses','Contact Lens':'Contact Lenses'};
+    const root=roots.find(row=>row.name.toLowerCase()===(aliases[label]||label).toLowerCase());
+    if(!root)return '#';
+    const normalized=(value)=>value.toLowerCase().replace(/eyeglasses|sunglasses|frames|glasses|lenses/g,'').trim();
+    const child=categories.find(row=>row.parent===root._id&&(row.name.toLowerCase()===item?.toLowerCase()||normalized(row.name)===normalized(item||'')));
+    if(item&&item!==root.name&&item!==label&&!child)return '#';
+    return `/collection?category=${root.slug}${child?`&subcategory=${child.slug}`:''}`;
+  }
+
   const { user } = useAuth();
   const [isFixed, setIsFixed] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -185,7 +202,8 @@ const Header = () => {
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll,{passive:true});
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -260,15 +278,15 @@ const Header = () => {
                 className="min-w-0 w-full bg-transparent text-[14px] outline-none placeholder:text-[#73739d]"
                 type="search"
                 placeholder={'Search "metal eyeglasses"'}
-                aria-label="Search products"
+                aria-label="Search products" onKeyDown={search}
               />
             </label>
           </div>
         </div>
 
         <div
-          className={`fixed inset-0 z-[200] ${isMenuOpen ? "pointer-events-auto" : "pointer-events-none"}`}
-          aria-hidden={!isMenuOpen}
+          className={`fixed inset-0 z-[200] overflow-hidden lg:hidden ${isMenuOpen ? "pointer-events-auto" : "pointer-events-none"}`}
+          aria-hidden={!isMenuOpen} inert={!isMenuOpen}
         >
           <button
             type="button"
@@ -342,14 +360,14 @@ const Header = () => {
                         <div className="overflow-hidden">
                           <div className="pl-4">
                             {items.map((item) => (
-                              <a
-                                href={label === "Eyeglasses" ? "/collection" : "#"}
+                              <Link
+                                to={collectionLink(label,item)}
                                 className="block border-b border-[#ededf5] py-3 text-[14px] leading-tight text-[#686795] last:border-0 first:pt-0"
                                 key={item}
                                 onClick={() => setIsMenuOpen(false)}
                               >
                                 {item}
-                              </a>
+                              </Link>
                             ))}
                           </div>
                         </div>
@@ -402,12 +420,12 @@ const Header = () => {
             >
               {navigation.map((navItem) => (
                 <div className="group flex items-center" key={navItem.label}>
-                  <a
+                  <Link
                     className="relative flex h-full items-center whitespace-nowrap text-[13px] font-bold uppercase tracking-tight after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:scale-x-0 after:bg-black after:transition-transform group-hover:after:scale-x-100 group-focus-within:after:scale-x-100 xl:text-[14px]"
-                    href={navItem.label === "Eyeglasses" ? "/collection" : "#"}
+                    to={collectionLink(navItem.label)}
                   >
                     {navItem.label}
-                  </a>
+                  </Link>
                   <div className="invisible absolute inset-x-0 top-full z-50 border-t border-black/10 bg-white px-[3%] opacity-0 shadow-xl transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
                     <div className="mx-auto grid max-w-[1120px] grid-cols-3 gap-10 py-8 lg:pl-24 lg:gap-[70px]">
                       {navItem.groups.map((group) => (
@@ -419,13 +437,13 @@ const Header = () => {
                             {group.title}
                           </p>
                           {group.items.map((item) => (
-                            <a
+                            <Link
                               className="text-sm text-neutral-600 transition hover:translate-x-1 hover:text-ink"
-                              href={navItem.label === "Eyeglasses" ? "/collection" : "#"}
+                              to={collectionLink(navItem.label,item)}
                               key={item}
                             >
                               {item}
-                            </a>
+                            </Link>
                           ))}
                         </div>
                       ))}
@@ -442,7 +460,7 @@ const Header = () => {
                   className="min-w-0 w-full bg-transparent text-base outline-none"
                   type="search"
                   placeholder={'Search "airy light glasses"'}
-                  aria-label="Search products"
+                  aria-label="Search products" onKeyDown={search}
                 />
               </label>
               <StoreIcon type="wishlist" />

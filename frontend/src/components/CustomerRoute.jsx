@@ -1,7 +1,7 @@
 import Loader from './Loader';
 import PopupMessage from "./PopupMessage";
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthState';
 
 export default function CustomerRoute() {
   const { user, loading, error } = useAuth();

@@ -98,3 +98,4 @@ test('subcategory membership requires its parent to be selected',async(t)=>{
  t.mock.method(Product,'create',()=>assert.fail('invalid assignment reached write'));
  const res=response();await saveProduct({params:{},body:{categoryIds:[root],subcategoryIds:[child]}},res,assert.ifError);assert.equal(res.statusCode,400);
 });
+test('batch product lookup validates IDs and includes active products of all types',async(t)=>{const id='123456789012345678901234';t.mock.method(Product,'find',filter=>{assert.deepEqual(filter,{status:'active',_id:{$in:[id]}});return {sort(){return this;},lean:async()=>[{_id:id}]};});const res=response();await listProducts({query:{ids:id}},res,assert.ifError);assert.equal(res.body.products[0].id,id);const invalid=response();await listProducts({query:{ids:'bad'}},invalid,assert.ifError);assert.equal(invalid.statusCode,400);});

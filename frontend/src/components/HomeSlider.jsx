@@ -1,3 +1,6 @@
+import {useCategories} from '../context/CategoryContext';
+import {collectionLink} from '../state/collectionLinks';
+import {Link} from 'react-router-dom';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -41,6 +44,7 @@ const bannerImages = [
 ];
 
 function HomeSlider() {
+  const {productOptions}=useCategories();
   return (
     <Swiper
       className="[--swiper-pagination-bottom:24px] [&_.swiper-pagination-bullet-active]:!opacity-100 [&_.swiper-pagination-bullet]:!bg-white [&_.swiper-pagination-bullet]:!opacity-55"
@@ -61,9 +65,9 @@ function HomeSlider() {
     >
       {bannerImages.map((image, index) => (
         <SwiperSlide key={`${image}-${index}`}>
-          <a href="#" className="relative block after:pointer-events-none after:absolute after:inset-0 after:bg-gradient-to-b after:from-transparent after:via-transparent after:to-black/60">
-            <img className="block h-full w-full" src={image} alt="Home Banner" />
-          </a>
+          <Link to={collectionLink(productOptions)} className="relative block after:pointer-events-none after:absolute after:inset-0 after:bg-gradient-to-b after:from-transparent after:via-transparent after:to-black/60">
+            <img className="block h-full w-full" src={image} alt={`Eyewear collection ${index+1}`} loading={index===0?'eager':'lazy'} fetchPriority={index===0?'high':'auto'} />
+          </Link>
         </SwiperSlide>
       ))}
       <button

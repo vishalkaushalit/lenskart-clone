@@ -1,9 +1,9 @@
 import Loader from '../components/Loader';
 import PopupMessage from "../components/PopupMessage";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { UserRound, Package } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthState";
 import { apiRequest } from "../api/api";
 
 function ProfileDetails({ user }) {
@@ -95,7 +95,7 @@ function OrderHistory() {
       ) : (
         <ul className="mt-6 space-y-4">
           {result.orders.map((order) => (
-            <li key={order._id} className="rounded-xl border border-gray-200 p-4">
+            <li id={`order-${order._id}`} key={order._id} className="rounded-xl border border-gray-200 p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="break-all text-sm font-semibold">Order #{order.orderId??'—'}</p>
@@ -124,7 +124,8 @@ function OrderHistory() {
 
 export default function Profile() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState("profile");
+  const [params]=useSearchParams();
+  const [activeTab, setActiveTab] = useState(params.get("tab")==="orders"?"orders":"profile");
   const tabs = [
     { id: "profile", label: "Profile" },
     { id: "orders", label: "Order History" },

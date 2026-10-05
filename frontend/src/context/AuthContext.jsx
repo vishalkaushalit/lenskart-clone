@@ -1,13 +1,11 @@
 import {
-  createContext,
-  useContext,
   useEffect,
   useState,
 } from 'react';
 import { useStore } from './StoreContext';
 import { apiRequest } from '../api/api';
 
-const AuthContext = createContext(null);
+import {AuthContext} from './AuthState';
 
 export function AuthProvider({ children }) {
   const { notify } = useStore();
@@ -75,8 +73,4 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  return useContext(AuthContext);
 }

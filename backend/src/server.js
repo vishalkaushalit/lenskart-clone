@@ -31,7 +31,7 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use(express.json({ limit: '20kb' }));
+app.use(express.json({ limit: '512kb' }));
 
 // Check the origin of browser requests that change data.
 app.use((req, res, next) => {
@@ -108,7 +108,7 @@ async function startServer() {
     app.use('/api/users', userRoutes);
     app.use('/api/products', publicProducts);
     app.use('/api/admin/products', managedProducts);
-    app.use('/assets/products', express.static(fileURLToPath(new URL('../public/products/', import.meta.url))));
+    app.use('/assets/products', express.static(fileURLToPath(new URL('../public/products/', import.meta.url)),{maxAge:'7d',etag:true}));
 
     app.use((req, res) => {
       res.status(404).json({
@@ -122,7 +122,7 @@ async function startServer() {
 
       res.status(error.status === 413 ? 413 : 500).json({
         success: false,
-        message: error.status === 413 ? 'Each image must be smaller than 5 MB.' : 'Something went wrong. Please try again.',
+        message: error.status === 413 ? (req.is('application/json')?'The form is too large. Reduce the content and try again.':'Each image must be smaller than 5 MB.') : 'Something went wrong. Please try again.',
       });
     });
 

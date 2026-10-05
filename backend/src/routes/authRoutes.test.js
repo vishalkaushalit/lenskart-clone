@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import bcrypt from 'bcryptjs';
+import User from '../models/User.js';
+import routes from './authRoutes.js';
+const handler=path=>routes.stack.find(layer=>layer.route?.path===path).route.stack.at(-1).handle;
+const response=()=>({statusCode:200,status(code){this.statusCode=code;return this;},json(body){this.body=body;return this;}});
+test('registration cannot create an admin through supplied fields',async(t)=>{t.mock.method(bcrypt,'hash',async()=> 'hash');t.mock.method(User,'create',async(fields)=>{assert.equal(fields.role,'customer');return {...fields,_id:'id',userId:1};});const res=response();await handler('/register')({body:{name:'Test',email:'test@example.com',password:'validpass123',confirmPassword:'validpass123',role:'admin'}},res);assert.equal(res.statusCode,201);});
+test('login regenerates and saves a session and ignores supplied roles',async(t)=>{t.mock.method(User,'findOne',()=>({select:async()=>({_id:'user',role:'customer',status:'active',passwordHash:'hash'})}));t.mock.method(bcrypt,'compare',async()=>true);const steps=[];const req={body:{email:'test@example.com',password:'validpass123',role:'admin'},session:{regenerate(done){steps.push('regenerate');done();},save(done){steps.push('save');done();}}};const res=response();await handler('/login')(req,res,assert.ifError);assert.deepEqual(steps,['regenerate','save']);assert.equal(req.session.userId,'user');assert.equal(res.body.user.role,'customer');});
+test('invalid passwords and inactive accounts never receive sessions',async(t)=>{t.mock.method(User,'findOne',()=>({select:async()=>({_id:'user',role:'admin',status:'inactive',passwordHash:'hash'})}));for(const valid of [false,true]){t.mock.method(bcrypt,'compare',async()=>valid);const res=response();await handler('/login')({body:{email:'test@example.com',password:'validpass123'},session:{regenerate(){assert.fail('session created');}}},res,assert.ifError);assert.equal(res.statusCode,valid?403:401);}});

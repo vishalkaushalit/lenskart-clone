@@ -1,5 +1,9 @@
+import {collectionLink} from '../state/collectionLinks';
+import {Link} from 'react-router-dom';
 import {useEffect,useState} from 'react';
 import {apiRequest} from '../api/api';
+import {CategoryContext} from '../context/CategoryContext';
+import {useCategories} from '../context/CategoryContext';
 import Loader from '../components/Loader';
 import PopupMessage from '../components/PopupMessage';
 import HomeSlider from "../components/HomeSlider";
@@ -30,47 +34,49 @@ const promotionalBanners = [
 ];
 
 const Home = () => {
-  const [categories,setCategories]=useState([]);const [loading,setLoading]=useState(true);const [error,setError]=useState('');const [attempt,setAttempt]=useState(0);
-  useEffect(()=>{const controller=new AbortController();async function load(){setLoading(true);setError('');try{const data=await apiRequest('/categories',{signal:controller.signal});if(!controller.signal.aborted)setCategories(data.categories);}catch(error){if(!controller.signal.aborted)setError(error.message);}finally{if(!controller.signal.aborted)setLoading(false);}}load();return()=>controller.abort();},[attempt]);
+  const categoryState=useCategories();
+  const {categories,loading,error,retry}=categoryState;
+  const [productOptions,setProductOptions]=useState([]);
+  useEffect(()=>{const controller=new AbortController();apiRequest('/products/navigation',{signal:controller.signal}).then(data=>setProductOptions(data.products)).catch(()=>{});return()=>controller.abort();},[]);
   return (
-    <>
+    <CategoryContext.Provider value={{...categoryState,productOptions}}>
       <HomeSlider />
-      <>{loading?<Loader label="Loading categories"/>:error?<div className="p-8"><PopupMessage message={error}/><button onClick={()=>setAttempt(n=>n+1)}>Retry categories</button></div>:<Categories categories={categories}/>}</>
-      <a href="#" className="block">
+      <>{loading?<Loader label="Loading categories"/>:error?<div className="p-8"><PopupMessage message={error}/><button onClick={retry}>Retry categories</button></div>:<Categories categories={categories}/>}</>
+      <Link to="#" className="block">
         <div>
-          <img
+          <img loading="lazy" decoding="async"
             className="h-auto w-full"
             src={promotionalBanners[0].image}
             alt={promotionalBanners[0].alt}
           />
         </div>
-      </a>
+      </Link>
       <Eyeglasses categories={categories}/>
       <Trending />
       <Sunglasses categories={categories}/>
       <NearbyStores />
       <Exclusive />
-      <a href="#" className="block">
+      <Link to={collectionLink(productOptions,{brand:'Meller'})} className="block">
         <div>
-          <img
+          <img loading="lazy" decoding="async"
             className="h-auto w-full"
             src={promotionalBanners[1].image}
             alt={promotionalBanners[1].alt}
           />
         </div>
-      </a>
+      </Link>
       <Brands />
       <PremiumEyewear />
       <FreeCheckup />
       {promotionalBanners.slice(2).map(({ image, alt, className }) => (
-        <a href="#" className="block" key={alt}>
+        <Link to={collectionLink(productOptions)} className="block" key={alt}>
           <div className={className}>
-            <img className="h-auto w-full" src={image} alt={alt} />
+            <img loading="lazy" decoding="async" className="h-auto w-full" src={image} alt={alt} />
           </div>
-        </a>
+        </Link>
       ))}
       <Notes />
-    </>
+    </CategoryContext.Provider>
   );
 };
 

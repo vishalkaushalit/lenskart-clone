@@ -1,3 +1,4 @@
+import {useCategories} from '../context/CategoryContext';
 import Loader from '../components/Loader';
 import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -32,7 +33,7 @@ const colors = {
 
 export default function Collection() {
   const [params,setParams] = useSearchParams();
-  const [categories,setCategories]=useState([]);
+  const {categories}=useCategories();
   const categoryValue=params.get('category')||'';
   const subcategoryValue=params.get('subcategory')||'';
   const categoryId=categories.find(row=>!row.parent&&(row.slug===categoryValue||row._id===categoryValue))?._id||'';
@@ -49,8 +50,7 @@ export default function Collection() {
       setLoading(true);
       setError("");
       try {
-        const [data,taxonomy] = await Promise.all([apiRequest("/products?all=1",{signal:controller.signal}),apiRequest("/categories",{signal:controller.signal})]);
-        if(!controller.signal.aborted)setCategories(taxonomy.categories);
+        const data = await apiRequest("/products?all=1",{signal:controller.signal});
         if (!controller.signal.aborted)
           setCatalog(Array.isArray(data.products) ? data.products : []);
       } catch (error) {
@@ -82,6 +82,9 @@ export default function Collection() {
   const products = catalog.filter(
     (product) =>
       (tab === "All" || product.category === tab) &&
+      (!categoryValue||Boolean(categoryId))&&(!subcategoryValue||Boolean(subcategoryId))&&
+      (!params.get("brand")||product.brand.toLowerCase()===params.get("brand").toLowerCase()) &&
+      (!params.get("shape")||product.shape.toLowerCase()===params.get("shape").toLowerCase()) &&
       (!categoryId||(product.categoryIds||[product.categoryId]).includes(categoryId))&&(!subcategoryId||(product.subcategoryIds||[product.subcategoryId]).includes(subcategoryId))&&
       matchesFilters(product, filters) &&
       (!query ||
@@ -128,7 +131,7 @@ export default function Collection() {
     notify("Filters cleared.");
     setDraft({});
     setFilters({});
-    setCategoryId('');
+    const next=new URLSearchParams(params);for(const key of ['category','subcategory','brand','shape'])next.delete(key);setParams(next);
   }
   const taxonomyControls = (<div className="collection-taxonomy"><label>Category<select value={categoryId} onChange={event=>{setCategoryId(event.target.value);}}><option value="">All categories</option>{categories.filter(row=>!row.parent).map(row=><option key={row._id} value={row._id}>{row.name}</option>)}</select></label><label>Subcategory<select disabled={!categoryId} value={subcategoryId} onChange={event=>setSubcategoryId(event.target.value)}><option value="">All subcategories</option>{categories.filter(row=>row.parent===categoryId).map(row=><option key={row._id} value={row._id}>{row.name}</option>)}</select></label></div>);
   const sortControl = <CollectionSort value={sort} onChange={setSort} />;
@@ -184,10 +187,10 @@ export default function Collection() {
               <Link to={`/collection?category=${currentCategory.slug}`}>{currentCategory.name}</Link>
               <span aria-hidden="true">/</span>
               <strong aria-current="page">{currentSubcategory.name}</strong>
-            </> : <strong aria-current="page">{currentCategory?.name || 'All Products'}</strong>}
+            </> : <strong aria-current="page">{params.get('brand') || currentCategory?.name || 'All Products'}</strong>}
           </nav>
           <h1>
-            {currentSubcategory?.name||currentCategory?.name||'All Products'} <span>{products.length} Items</span>
+            {params.get('brand')||currentSubcategory?.name||currentCategory?.name||'All Products'} <span>{products.length} Items</span>
           </h1>
           <div className="collection-mobile-controls">
             {sortControl}

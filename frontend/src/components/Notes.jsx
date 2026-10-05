@@ -15,15 +15,15 @@ const Notes = () => {
             </p>
             <p className="mt-5 text-sm leading-6">
               We sell a wide range of eyewear products including prescription{" "}
-              <a className="underline" href="/eyeglasses.html">
+              <a className="underline" href="/collection?category=eyeglasses">
                 eyeglasses
               </a>
               ,{" "}
-              <a className="underline" href="/sunglasses.html">
+              <a className="underline" href="/collection?category=sunglasses">
                 sunglasses
               </a>
               , and other products such as{" "}
-              <a className="underline" href="/contact-lenses.html">
+              <a className="underline" href="/collection?category=contact-lenses">
                 contact lenses
               </a>{" "}
               and eyewear accessories. Our brands are designed to be

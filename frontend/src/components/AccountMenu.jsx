@@ -2,7 +2,7 @@ import PopupMessage from "./PopupMessage";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown, UserRound } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthState";
 
 export default function AccountMenu({ mobile = false, onNavigate }) {
   const { user, loading, logout } = useAuth();
