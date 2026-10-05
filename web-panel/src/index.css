@@ -80,7 +80,7 @@ select:disabled {
   opacity: 0.6;
 }
 
-.admin-loader{display:flex;align-items:center;justify-content:center;min-height:190px;width:100%;padding:32px}
+.admin-loader{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;width:100%;height:100dvh;background:rgba(255,255,255,.82);backdrop-filter:blur(3px);padding:32px}
 .admin-loader-scene{position:relative;width:70px;height:70px;perspective:500px;display:grid;place-items:center}
 .admin-loader-cube{position:relative;width:30px;height:30px;transform-style:preserve-3d;animation:admin-loader-cube-spin 3s linear infinite}
 .admin-loader-face{position:absolute;inset:0;border:1px solid #ffffff80;border-radius:5px;background:linear-gradient(135deg,#60a5fae6,#2563ebe6);box-shadow:inset 0 0 12px #ffffff30;backface-visibility:visible}
