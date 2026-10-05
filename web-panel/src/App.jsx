@@ -4,6 +4,9 @@ import Dashboard from "./dashboard/Dashboard";
 import ProductDashboard from "./dashboard/ProductDashboard";
 import Profile from "./pages/Profile";
 import Logout from "./pages/Logout";
+import EditProduct from "./pages/EditProduct";
+import ProductDetails from "./pages/ProductDetails";
+import AddProduct from "./pages/AddProduct";
 import Users from "./pages/Users";
 
 export default function App() {
@@ -13,6 +16,9 @@ export default function App() {
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/product" element={<ProductDashboard />} />
+        <Route path="/product/add" element={<AddProduct />} />
+        <Route path="/product/:id/edit" element={<EditProduct />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/users" element={<Users />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/logout" element={<Logout />} />

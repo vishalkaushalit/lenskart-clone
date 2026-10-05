@@ -6,7 +6,7 @@ export async function apiRequest(path, options = {}) {
     ...options,
     credentials: 'include',
     headers: {
-      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+      ...(options.body && !(options.body instanceof Blob) && !(options.body instanceof FormData) ? { 'Content-Type': 'application/json' } : {}),
       ...options.headers,
     },
   });
@@ -18,3 +18,5 @@ export async function apiRequest(path, options = {}) {
   }
   return data;
 }
+
+export const productImageUrl = (path) => path.startsWith('/') ? new URL(path, apiUrl).href : path;

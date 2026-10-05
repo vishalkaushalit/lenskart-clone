@@ -1,4 +1,6 @@
 import 'dotenv/config';
+import { fileURLToPath } from 'node:url';
+import { publicProducts, managedProducts } from './routes/productRoutes.js';
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
@@ -95,6 +97,9 @@ async function startServer() {
     app.use('/api/auth', authRoutes);
     app.use('/api/account', accountRoutes);
     app.use('/api/users', userRoutes);
+    app.use('/api/products', publicProducts);
+    app.use('/api/admin/products', managedProducts);
+    app.use('/assets/products', express.static(fileURLToPath(new URL('../public/products/', import.meta.url))));
 
     app.use((req, res) => {
       res.status(404).json({
@@ -106,9 +111,9 @@ async function startServer() {
     app.use((error, req, res, next) => {
       console.error('Request failed:', error.name);
 
-      res.status(500).json({
+      res.status(error.status === 413 ? 413 : 500).json({
         success: false,
-        message: 'Something went wrong. Please try again.',
+        message: error.status === 413 ? 'Each image must be smaller than 5 MB.' : 'Something went wrong. Please try again.',
       });
     });
 

@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import StoreIcon from "../components/StoreIcon";
 import AccountMenu from "../components/AccountMenu";
 import { useAuth } from "../context/AuthContext";
 
 import {
   ChevronDown,
   UserRound,
-  Heart,
   Menu,
   PhoneCall,
   Search,
-  ShoppingBag,
   X,
 } from "lucide-react";
 
@@ -243,12 +242,8 @@ const Header = () => {
               </a>
               <div className="flex items-center gap-3">
                 <img className="w-[50px]" src={get_gold} alt="Get Gold" />
-                <a href="#" aria-label="Wishlist" className="text-ink">
-                  <Heart size={24} strokeWidth={1.8} />
-                </a>
-                <a href="#" aria-label="Shopping bag" className="text-ink">
-                  <ShoppingBag size={24} strokeWidth={1.8} />
-                </a>
+                <StoreIcon type="wishlist" />
+                <StoreIcon type="cart" />
                 <button
                   type="button"
                   aria-label="Open menu"
@@ -450,20 +445,8 @@ const Header = () => {
                   aria-label="Search products"
                 />
               </label>
-              <a
-                className="grid shrink-0 place-items-center transition hover:-translate-y-0.5 hover:opacity-75"
-                href="#"
-                aria-label="Wishlist"
-              >
-                <Heart color="black" aria-hidden="true" />
-              </a>
-              <a
-                className="grid shrink-0 place-items-center transition hover:-translate-y-0.5 hover:opacity-75"
-                href="#"
-                aria-label="Shopping bag"
-              >
-                <ShoppingBag color="black" aria-hidden="true" />
-              </a>
+              <StoreIcon type="wishlist" />
+              <StoreIcon type="cart" />
               <AccountMenu />
             </div>
           </div>

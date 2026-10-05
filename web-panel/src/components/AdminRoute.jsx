@@ -1,3 +1,4 @@
+import Loader from './Loader';
 import PopupMessage from "./PopupMessage";
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
@@ -22,7 +23,7 @@ export default function AdminRoute() {
     return () => controller.abort();
   }, [attempt]);
 
-  if (session.loading) return <p role="status" className="p-8">Checking admin access...</p>;
+  if (session.loading) return <Loader label="Checking admin access"/>;
   if (session.error) {
     return (
       <main className="p-8">

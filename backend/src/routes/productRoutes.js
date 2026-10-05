@@ -1,0 +1,15 @@
+import express from 'express';
+import { uploadProductImage } from '../services/productImages.js';
+import { requireAuth, requireRole } from '../middleware/auth.js';
+import { listProducts, adminProducts, saveProduct, deleteProduct, productDetails, storefrontProductDetails } from '../controllers/productController.js';
+export const publicProducts = express.Router();
+publicProducts.get('/', listProducts);
+publicProducts.get('/:id', storefrontProductDetails);
+export const managedProducts = express.Router();
+managedProducts.use(requireAuth, requireRole('admin'));
+managedProducts.post('/images', express.raw({ type: ['image/jpeg', 'image/png', 'image/webp'], limit: '5mb' }), uploadProductImage);
+managedProducts.get('/', adminProducts);
+managedProducts.get('/:id', productDetails);
+managedProducts.post('/', saveProduct);
+managedProducts.patch('/:id', saveProduct);
+managedProducts.delete('/:id', deleteProduct);

@@ -1,6 +1,7 @@
 import PopupMessage from "../components/PopupMessage";
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import PageHeader from "../components/PageHeader";
 import DashboardLayout from "../components/DashboardLayout";
 import { apiRequest } from "../api";
 
@@ -34,9 +35,8 @@ export default function Profile() {
 
   return (
     <DashboardLayout>
-      <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
-        <h1 className="text-2xl font-bold text-slate-900">My profile</h1>
-        <p className="mt-2 text-sm text-slate-500">Update your name and login email.</p>
+      <main className="admin-page">
+        <PageHeader title="My profile" description="Update your name and login email." />
         <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-5 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <div>
             <label htmlFor="admin-profile-name" className="mb-2 block text-sm font-semibold">Name</label>
@@ -48,7 +48,7 @@ export default function Profile() {
           </div>
           {error && <PopupMessage message={error} onClose={() => setError("")} />}
           {success && <PopupMessage message={success} type="success" onClose={() => setSuccess("")} />}
-          <button type="submit" disabled={saving} className="rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50">{saving ? "Saving..." : "Save changes"}</button>
+          <button type="submit" disabled={saving} className="admin-button-primary">{saving ? "Saving..." : "Save changes"}</button>
         </form>
       </main>
     </DashboardLayout>

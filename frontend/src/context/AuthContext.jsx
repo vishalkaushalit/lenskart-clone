@@ -4,11 +4,13 @@ import {
   useEffect,
   useState,
 } from 'react';
+import { useStore } from './StoreContext';
 import { apiRequest } from '../api/api';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  const { notify } = useStore();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -43,6 +45,7 @@ export function AuthProvider({ children }) {
     });
 
     setUser(data.user);
+    notify('Logged in successfully.');
     setError('');
     return data.user;
   }
@@ -53,6 +56,7 @@ export function AuthProvider({ children }) {
     });
 
     setUser(null);
+    notify('Logged out successfully.');
   }
 
   async function updateProfile(fields) {

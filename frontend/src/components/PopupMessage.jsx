@@ -1,8 +1,8 @@
-import { useState } from "react";
-import NotificationPopup from "./NotificationPopup";
-
-export default function PopupMessage({ message, type = "error", onClose }) {
-  const [dismissed, setDismissed] = useState(null);
-  if (!message || dismissed === message) return null;
-  return <NotificationPopup key={`${type}-${message}`} notification={{ type, message }} onClose={() => { setDismissed(message); onClose?.(); }} />;
+import { useEffect, useRef } from 'react';
+import { useStore } from '../context/StoreContext';
+export default function PopupMessage({message,type='error',onClose}){
+  const {notify}=useStore();const last=useRef(null);const callback=useRef(onClose);
+  useEffect(()=>{callback.current=onClose;},[onClose]);
+  useEffect(()=>{if(message&&last.current!==`${type}:${message}`){last.current=`${type}:${message}`;notify(message,type,()=>callback.current?.());}},[message,type,notify]);
+  return null;
 }

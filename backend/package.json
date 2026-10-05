@@ -7,7 +7,8 @@
     "test": "node --test",
     "users:backfill-ids": "node scripts/backfill-user-ids.js",
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "products:seed": "node scripts/seed-products.js"
   },
   "keywords": [],
   "author": "",

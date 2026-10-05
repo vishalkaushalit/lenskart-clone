@@ -1,0 +1,14 @@
+import { Link } from 'react-router-dom';
+import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
+import { useStore } from '../context/StoreContext';
+import useSavedProducts from '../hooks/useSavedProducts';
+import PopupMessage from '../components/PopupMessage';
+import './SavedProducts.css';
+const asset=(path)=>path?.startsWith('/')?new URL(path,import.meta.env.VITE_API_URL||'http://localhost:5001/api').href:path;
+export default function Cart(){
+  const {cart,cartCount,removeFromCart,changeQuantity}=useStore();const {loading,items,error,retry}=useSavedProducts(cart.map((item)=>item.id));
+  const total=items.reduce((sum,item)=>sum+(item.product?.price||0)*(cart.find((entry)=>entry.id===item.id)?.quantity||0),0);
+  return <section className="saved-products-page"><div className="saved-page-heading"><div><h1>Shopping bag</h1><p>{cartCount} {cartCount===1?'item':'items'}</p></div><Link to="/collection">Continue shopping</Link></div>
+    {loading?<p role="status">Loading cart...</p>:error?<div><PopupMessage message={error}/><button onClick={retry} className="saved-button">Try again</button></div>:!cart.length?<div className="saved-empty"><ShoppingBag size={44}/><h2>Your bag is empty</h2><Link to="/collection" className="saved-button">Explore eyeglasses</Link></div>:<div className="saved-cart-layout"><div className="saved-cart-items">{items.map(({id,product})=>{const entry=cart.find((entry)=>entry.id===id);const quantity=entry?.quantity||1;return <article key={id} className="saved-cart-row">{product?<><Link to={`/products/${id}`}><img src={asset(product.image)} alt={product.name}/></Link><div><h2><Link to={`/products/${id}`}>{product.name}</Link></h2><p>{entry?.options?.color||product.color} · Size {entry?.options?.size||product.size}{entry?.options?.type&&` · ${entry.options.type}`}</p><strong>₹{product.price.toLocaleString('en-IN')}</strong>{quantity>product.stock&&<p className="saved-stock-error">Only {product.stock} available. Please adjust the quantity.</p>}<div className="saved-quantity"><button aria-label={`Decrease quantity of ${product.name}`} onClick={()=>changeQuantity(id,quantity-1,product.stock)}><Minus size={14}/></button><span>{quantity}</span><button aria-label={`Increase quantity of ${product.name}`} disabled={quantity>=product.stock} onClick={()=>changeQuantity(id,quantity+1,product.stock)}><Plus size={14}/></button></div></div></>:<div><h2>Product unavailable</h2><p>Please remove this item from your bag.</p></div>}<button className="saved-cart-remove" aria-label={`Remove ${product?.name||'product'} from cart`} onClick={()=>removeFromCart(id)}><Trash2 size={18}/></button></article>;})}</div><aside className="saved-cart-summary"><h2>Bag summary</h2><div><span>Items subtotal</span><strong>₹{total.toLocaleString('en-IN')}</strong></div><p>Unavailable products are excluded from the subtotal.</p><Link to="/wishlist">View wishlist</Link></aside></div>}
+  </section>;
+}

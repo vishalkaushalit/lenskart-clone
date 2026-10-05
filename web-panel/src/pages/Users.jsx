@@ -1,9 +1,12 @@
+import Loader from '../components/Loader';
 import { useEffect, useState } from "react";
 import { useOutletContext, useSearchParams } from "react-router-dom";
 import { Pencil, Trash2, Plus, Search, RefreshCw } from "lucide-react";
 import NotificationPopup from "../components/NotificationPopup";
 import UserActionDialog from "../components/UserActionDialog";
 import DashboardLayout from "../components/DashboardLayout";
+import Pagination from "../components/Pagination";
+import PageHeader from "../components/PageHeader";
 import DataTable from "../components/DataTable";
 import { apiRequest } from "../api";
 
@@ -63,22 +66,16 @@ export default function Users() {
   }, [page, limit, attempt, search, status, sort, setSearchParams]);
 
   const { loading, error, users, pagination } = result;
-  const totalPages = Math.min(pagination?.totalPages || 0, 10000);
-  const firstPage = Math.max(1, Math.min(page - 2, totalPages - 4));
-  const pageNumbers = Array.from({ length: Math.min(5, totalPages) }, (_, index) => firstPage + index);
-  const pageButtonClass = "flex h-8 min-w-8 items-center justify-center rounded-md border border-slate-200 px-2 text-sm text-slate-500 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
     <DashboardLayout>
-      <main className="flex-1 space-y-4 px-3 py-4 sm:space-y-6 sm:px-6 sm:py-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4">
-          <div><h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Users</h1>
-          <p className="text-sm text-slate-500">Manage your customers</p></div>
+      <main className="admin-page">
+        <PageHeader title="Users" description="Manage your customers">
           <div className="flex shrink-0 items-center gap-2">
-            <button type="button" disabled={loading} onClick={() => setAttempt((previous) => previous + 1)} aria-label="Refresh users" className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"><RefreshCw size={18} className={loading ? "animate-spin motion-reduce:animate-none" : ""} /><span className="hidden sm:inline">Refresh</span></button>
-            <button onClick={() => { setNotification(null); setAction({ type: "create", user: { name: "", email: "", role: "customer" } }); }} className="flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"><Plus size={20} />Add User</button>
+            <button type="button" disabled={loading} onClick={() => setAttempt((previous) => previous + 1)} aria-label="Refresh users" className="admin-button-secondary"><RefreshCw size={18} className={loading ? "animate-spin motion-reduce:animate-none" : ""} /><span className="hidden sm:inline">Refresh</span></button>
+            <button onClick={() => { setNotification(null); setAction({ type: "create", user: { name: "", email: "", role: "customer" } }); }} className="admin-button-primary"><Plus size={20} />Add User</button>
           </div>
-        </div>
+        </PageHeader>
 
 
         <div className="flex flex-col gap-3 xl:flex-row">
@@ -97,22 +94,7 @@ export default function Users() {
           </div>
         </div>
 
-        <DataTable label="Users" footer={pagination && !loading && !error && (
-          <div className="flex flex-col items-center gap-3 border-t border-slate-200 px-4 py-3 sm:flex-row sm:justify-between">
-            <p className="text-xs text-slate-500">
-              Showing <span className="font-medium text-slate-700">{users.length ? (page - 1) * limit + 1 : 0}–{users.length ? (page - 1) * limit + users.length : 0}</span> of <span className="font-medium text-slate-700">{pagination.total}</span> users
-            </p>
-            <div className="flex items-center gap-3">{totalPages >= 1 && (
-              <nav aria-label="Users pagination" className="flex items-center gap-1">
-                <button type="button" aria-label="Previous page" disabled={page <= 1} onClick={() => setPage(page - 1)} className={pageButtonClass}>‹</button>
-                {pageNumbers.map((number) => (
-                  <button key={number} type="button" aria-label={`Page ${number}`} aria-current={page === number ? "page" : undefined} onClick={() => setPage(number)} className={`flex h-8 min-w-8 items-center justify-center rounded-md px-2 text-sm font-medium transition ${page === number ? "bg-blue-600 text-white" : "border border-slate-200 text-slate-600 hover:bg-slate-50"}`}>{number}</button>
-                ))}
-                <button type="button" aria-label="Next page" disabled={page >= totalPages} onClick={() => setPage(page + 1)} className={pageButtonClass}>›</button>
-              </nav>
-            )}</div>
-          </div>
-        )}>
+        <DataTable label="Users" footer={pagination && !loading && !error && <Pagination page={page} pageSize={limit} total={pagination.total} onPageChange={setPage} label="users" />}>
           <thead>
             <tr>
               <th scope="col">Sr. No.</th>
@@ -127,7 +109,7 @@ export default function Users() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} className="text-center"><p role="status" className="py-8 text-slate-500">Loading users...</p></td></tr>
+              <tr><td colSpan={8} className="text-center"><Loader label="Loading users"/></td></tr>
             ) : error ? (
               <tr><td colSpan={8} className="text-center">
                 <div className="py-8">

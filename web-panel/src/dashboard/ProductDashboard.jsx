@@ -1,272 +1,57 @@
-import { useSearchParams } from "react-router-dom";
-import DataTable from "../components/DataTable";
-import DashboardLayout from "../components/DashboardLayout";
+import Loader from '../components/Loader';
+import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Pencil, Trash2, Plus, RefreshCw, Search, Eye } from 'lucide-react';
+import Pagination from '../components/Pagination';
+import PageHeader from '../components/PageHeader';
+import DataTable from '../components/DataTable';
+import DashboardLayout from '../components/DashboardLayout';
+import ProductDialog from '../components/ProductDialog';
+import NotificationPopup from '../components/NotificationPopup';
+import { apiRequest } from '../api';
 
-const ProductDashboard = () => {
-  const [searchParams] = useSearchParams();
-  const search = (searchParams.get("search") || "").trim().toLowerCase();
-  // Sample data — replace with real products later
-  const products = [
-    {
-      id: 1,
-      image:
-        "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=80&h=80&fit=crop",
-      name: "Ray-Ban Wayfarer Sunglasses",
-      category: "Sunglasses",
-      price: "$149.00",
-      stock: 120,
-      status: "Active",
-    },
-    {
-      id: 2,
-      image:
-        "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=80&h=80&fit=crop",
-      name: "Oakley Holbrook",
-      category: "Sunglasses",
-      price: "$189.00",
-      stock: 85,
-      status: "Active",
-    },
-    {
-      id: 3,
-      image:
-        "https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=80&h=80&fit=crop",
-      name: "Vogue Eyewear Frame",
-      category: "Eyeglasses",
-      price: "$99.00",
-      stock: 200,
-      status: "Active",
-    },
-    {
-      id: 4,
-      image:
-        "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?w=80&h=80&fit=crop",
-      name: "Titanium Round Frame",
-      category: "Eyeglasses",
-      price: "$129.00",
-      stock: 150,
-      status: "Active",
-    },
-    {
-      id: 5,
-      image:
-        "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=80&h=80&fit=crop",
-      name: "Blue Light Blocking Glasses",
-      category: "Eyeglasses",
-      price: "$79.00",
-      stock: 95,
-      status: "Inactive",
-    },
-  ];
+export default function ProductDashboard() {
+  const [params, setParams] = useSearchParams();
+  const search = params.get('search') || '';
+  const [catalog, setCatalog] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const [type, setType] = useState('');
+  const [brand, setBrand] = useState('');
+  const [status, setStatus] = useState('');
+  const [page, setPage] = useState(1);
+  const [selected, setSelected] = useState([]);
+  const [action, setAction] = useState(null);
+  const [notification, setNotification] = useState(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    async function load() {
+      setLoading(true); setFailed(false);
+      try { const data = await apiRequest('/admin/products', { signal: controller.signal }); if (!controller.signal.aborted) setCatalog(data.products); }
+      catch (error) { if (!controller.signal.aborted) { setFailed(true); setNotification({ type:'error', message:error.message }); } }
+      finally { if (!controller.signal.aborted) setLoading(false); }
+    }
+    load(); return () => controller.abort();
+  }, [attempt]);
+  const products = catalog.filter((p) => (!type || p.productType === type) && (!brand || p.brand === brand) && (!status || p.status === status) && `${p.name} ${p.sku} ${p.brand} ${p.productType}`.toLowerCase().includes(search.toLowerCase()));
+  const totalPages = Math.max(1, Math.ceil(products.length / 20));
+  const currentPage = Math.min(page, totalPages);
+  const shown = products.slice((currentPage - 1) * 20, currentPage * 20);
+  const assetUrl = (path) => path.startsWith('/') ? new URL(path, import.meta.env.VITE_API_URL || 'http://localhost:5001/api').href : path;
+  const selectClass = 'rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm';
+  return <DashboardLayout><main className="admin-page">
+    <PageHeader title="Products" description="Manage your product catalog"><div className="flex gap-2"><button disabled={loading} onClick={() => setAttempt((n) => n + 1)} className="admin-button-secondary"><RefreshCw size={16} />Refresh</button><Link to="/product/add" className="admin-button-primary"><Plus size={18} />Add Product</Link></div></PageHeader>
+    <div className="grid gap-3 rounded-xl border border-slate-100 bg-white p-2 sm:grid-cols-2 xl:grid-cols-[1fr_1fr_.8fr_1.5fr]">
+      <select aria-label="Product type" value={type} onChange={(e) => {setType(e.target.value);setPage(1);}} className={selectClass}><option value="">All Categories</option>{['Eyeglasses','Sunglasses'].map((v) => <option key={v}>{v}</option>)}</select>
+      <select aria-label="Brand" value={brand} onChange={(e) => {setBrand(e.target.value);setPage(1);}} className={selectClass}><option value="">All brands</option>{[...new Set(catalog.map((p) => p.brand))].map((v) => <option key={v}>{v}</option>)}</select>
+      <select aria-label="Status" value={status} onChange={(e) => {setStatus(e.target.value);setPage(1);}} className={selectClass}><option value="">All status</option><option value="active">Active</option><option value="inactive">Inactive</option></select>
+      <label className="flex min-w-0 items-center gap-2 rounded-lg border border-slate-200 px-3"><Search size={16} className="shrink-0 text-slate-400"/><input aria-label="Search products" placeholder="Search products..." value={search} onChange={(e) => {setParams({search:e.target.value},{replace:true});setPage(1);}} className="min-w-0 flex-1 bg-transparent py-2.5 text-sm outline-none" /></label>
+    </div>
+    <DataTable label="Products" footer={!loading && !failed && <Pagination page={currentPage} total={products.length} onPageChange={setPage} label="products" />}>
 
-  return (
-    <DashboardLayout>
-        <main className="flex-1 space-y-4 px-3 py-4 sm:space-y-6 sm:px-6 sm:py-6 lg:px-8">
-          {/* ============ PAGE TITLE ============ */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">
-                Products
-              </h1>
-              <p className="text-sm text-slate-500">
-                Manage your product catalog
-              </p>
-            </div>
-            <button className="inline-flex items-center justify-center gap-2 self-start rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98]">
-              <span className="text-base leading-none">+</span>
-              Add Product
-            </button>
-          </div>
-
-          {/* ============ FILTERS ============ */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-4">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              {/* Category */}
-              <select
-                aria-label="Filter by category"
-                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 sm:w-auto sm:min-w-[180px]"
-              >
-                <option>All Categories</option>
-                <option>Sunglasses</option>
-                <option>Eyeglasses</option>
-              </select>
-
-              {/* Brand */}
-              <select
-                aria-label="Filter by brand"
-                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 sm:w-auto sm:min-w-[180px]"
-              >
-                <option>All Brands</option>
-                <option>Ray-Ban</option>
-                <option>Oakley</option>
-                <option>Vogue</option>
-              </select>
-
-              {/* Status */}
-              <select
-                aria-label="Filter by status"
-                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 sm:w-auto sm:min-w-[160px]"
-              >
-                <option>All Status</option>
-                <option>Active</option>
-                <option>Inactive</option>
-              </select>
-
-              {/* Search */}
-              <div className="flex flex-1 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 sm:ml-auto sm:max-w-xs">
-                <span className="text-slate-400">🔍</span>
-                <input
-                  type="text"
-                  placeholder="Search products…"
-                  aria-label="Search products"
-                  className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* ============ PRODUCTS TABLE ============ */}
-          <DataTable label="Products" footer={
-            <div className="flex flex-col items-center gap-3 border-t border-slate-200 px-4 py-3 sm:flex-row sm:justify-between">
-              <p className="text-xs text-slate-500">
-                Showing <span className="font-medium text-slate-700">1–5</span>{" "}
-                of <span className="font-medium text-slate-700">568</span>{" "}
-                products
-              </p>
-
-              <div className="flex items-center gap-1">
-                {/* Prev */}
-                <button
-                  aria-label="Previous page"
-                  className="flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50"
-                >
-                  ‹
-                </button>
-
-                {/* Page numbers */}
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <button
-                    key={n}
-                    className={`flex h-8 w-8 items-center justify-center rounded-md text-sm font-medium transition ${
-                      n === 1
-                        ? "bg-blue-600 text-white"
-                        : "border border-slate-200 text-slate-600 hover:bg-slate-50"
-                    }`}
-                  >
-                    {n}
-                  </button>
-                ))}
-
-                {/* Ellipsis */}
-                <span className="px-1 text-slate-400">…</span>
-
-                {/* Next */}
-                <button
-                  aria-label="Next page"
-                  className="flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50"
-                >
-                  ›
-                </button>
-              </div>
-            </div>
-          }>
-            <thead>
-              <tr>
-                <th scope="col" className="w-10">
-                  <input
-                    type="checkbox"
-                    aria-label="Select all products"
-                    className="h-4 w-4 cursor-pointer rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                  />
-                </th>
-                <th scope="col">Image</th>
-                <th scope="col">Product Name</th>
-                <th scope="col">Category</th>
-                <th scope="col">Price</th>
-                <th scope="col">Stock</th>
-                <th scope="col">Status</th>
-                <th scope="col" className="text-right">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {!products.some((product) => !search || `${product.name} ${product.category}`.toLowerCase().includes(search)) && (
-                <tr><td colSpan={7} className="py-8 text-center text-slate-500">No products found.</td></tr>
-              )}
-              {products.filter((product) => !search || `${product.name} ${product.category}`.toLowerCase().includes(search)).map((p) => (
-                <tr key={p.id}>
-                  {/* Checkbox */}
-                  <td>
-                    <input
-                      type="checkbox"
-                      aria-label={`Select ${p.name}`}
-                      className="h-4 w-4 cursor-pointer rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                    />
-                  </td>
-
-                  {/* Image */}
-                  <td>
-                    <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-                      <img
-                        src={p.image}
-                        alt={p.name}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  </td>
-
-                  {/* Name */}
-                  <td className="font-medium text-slate-800">
-                    {p.name}
-                  </td>
-
-                  {/* Category */}
-                  <td className="text-slate-600">{p.category}</td>
-
-                  {/* Price */}
-                  <td className="text-slate-700">{p.price}</td>
-
-                  {/* Stock */}
-                  <td className="text-slate-700">{p.stock}</td>
-
-                  {/* Status */}
-                  <td>
-                    {p.status === "Active" ? (
-                      <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">
-                        Active
-                      </span>
-                    ) : (
-                      <span className="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-600">
-                        Inactive
-                      </span>
-                    )}
-                  </td>
-
-                  {/* Actions */}
-                  <td>
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        aria-label={`Edit ${p.name}`}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg text-blue-600 hover:bg-blue-50"
-                      >
-                        ✏️
-                      </button>
-                      <button
-                        aria-label={`Delete ${p.name}`}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg text-red-500 hover:bg-red-50"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </DataTable>
-        </main>
-    </DashboardLayout>
-  );
-};
-
-export default ProductDashboard;
+      <thead><tr><th><input type="checkbox" aria-label="Select all products on this page" checked={shown.length>0&&shown.every((p)=>selected.includes(p.id))} onChange={(e)=>setSelected((previous)=>e.target.checked?[...new Set([...previous,...shown.map((p)=>p.id)])]:previous.filter((id)=>!shown.some((p)=>p.id===id)))} className="accent-blue-600"/></th>{['Image','Product Name','Category','Price','Stock','Status','Actions'].map((label) => <th key={label}>{label}</th>)}</tr></thead>
+      <tbody>{loading ? <tr><td colSpan={8} className="text-center"><Loader label="Loading products"/></td></tr> : failed ? <tr><td colSpan={8} className="text-center"><button onClick={() => setAttempt((n)=>n+1)}>Try again</button></td></tr> : !shown.length ? <tr><td colSpan={8} className="text-center">No products found.</td></tr> : shown.map((p) => <tr key={p.id}><td><input type="checkbox" aria-label={`Select ${p.name}`} checked={selected.includes(p.id)} onChange={(e)=>setSelected((previous)=>e.target.checked?[...previous,p.id]:previous.filter((id)=>id!==p.id))} className="accent-blue-600"/></td><td><Link to={`/product/${p.id}`}><img src={assetUrl(p.image)} alt={p.name} className="h-12 w-16 object-contain" /></Link></td><td><Link to={`/product/${p.id}`} className="font-medium text-blue-600 hover:underline">{p.name}</Link><p className="text-xs text-slate-400">{p.sku} · {p.brand}</p></td><td>{p.productType}</td><td>₹{p.price.toLocaleString('en-IN')}</td><td>{p.stock}</td><td><span className={`rounded-full px-3 py-1 text-xs capitalize ${p.status==='active'?'bg-emerald-100 text-emerald-700':'bg-red-100 text-red-600'}`}>{p.status}</span></td><td><div className="flex gap-3"><Link aria-label={`View details for ${p.name}`} title="Product details" to={`/product/${p.id}`} className="rounded-lg bg-slate-50 p-2 text-slate-600 hover:bg-slate-100"><Eye size={16} /></Link><Link aria-label={`Edit ${p.name}`} to={`/product/${p.id}/edit`} className="rounded-lg bg-blue-50 p-2 text-blue-600"><Pencil size={16} /></Link><button aria-label={`Delete ${p.name}`} onClick={()=>setAction({type:'delete',product:p})} className="rounded-lg p-2 text-red-500 hover:bg-red-50"><Trash2 size={16} /></button></div></td></tr>)}</tbody>
+    </DataTable>
+  </main>{action && <ProductDialog action={action} onClose={()=>setAction(null)} onError={(message)=>setNotification({type:'error',message})} onSuccess={(message)=>{setAction(null);setNotification({type:'success',message});setAttempt((n)=>n+1);}} />}{notification && <NotificationPopup notification={notification} onClose={()=>setNotification(null)} />}</DashboardLayout>;
+}

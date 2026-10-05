@@ -1,0 +1,34 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { CircleCheck, CircleAlert, X } from 'lucide-react';
+import { normalizeStore, cartQuantity } from '../state/shopping';
+import { StoreContext } from './StoreContext';
+function read(key){try{const value=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(value)?value:[];}catch{return [];}}
+function initial(){return normalizeStore(read('collection-favorites'),read('store-cart'));}
+function Toast({toast,onDismiss}){
+  useEffect(()=>{const timer=setTimeout(()=>onDismiss(toast.id),4500);return()=>clearTimeout(timer);},[toast.id,onDismiss]);
+  const Icon=toast.type==='error'?CircleAlert:CircleCheck;
+  return <div className={`store-toast ${toast.type==='error'?'is-error':''}`} role={toast.type==='error'?'alert':'status'}><Icon size={20}/><p>{toast.message}</p><button type="button" aria-label="Dismiss notification" onClick={()=>onDismiss(toast.id)}><X size={16}/></button></div>;
+}
+export default function StoreProvider({children}){
+  const [store,setStore]=useState(initial);const current=useRef(store);
+  const [toasts,setToasts]=useState([]);const sequence=useRef(0);
+  const notify=useCallback((message,type='success',onDismiss)=>{
+    const id=++sequence.current;setToasts((previous)=>[...previous,{id,message,type,onDismiss}].slice(-4));
+  },[]);
+  const callbacks=useRef(new Map());
+  useEffect(()=>{for(const toast of toasts)if(toast.onDismiss)callbacks.current.set(toast.id,toast.onDismiss);},[toasts]);
+  const dismiss=useCallback((id)=>{setToasts((previous)=>previous.filter((toast)=>toast.id!==id));const callback=callbacks.current.get(id);callbacks.current.delete(id);callback?.();},[]);
+  function commit(next){current.current=next;setStore(next);try{localStorage.setItem('collection-favorites',JSON.stringify(next.favorites));localStorage.setItem('store-cart',JSON.stringify(next.cart));}catch{notify('Changes are saved for this session only.','error');}}
+  useEffect(()=>{function sync(event){if(['collection-favorites','store-cart'].includes(event.key)){const next=initial();current.current=next;setStore(next);}}window.addEventListener('storage',sync);return()=>window.removeEventListener('storage',sync);},[]);
+  function toggleFavorite(product){const id=typeof product==='string'?product:product.id;const saved=current.current.favorites.includes(id);commit({...current.current,favorites:saved?current.current.favorites.filter((value)=>value!==id):[...current.current.favorites,id]});notify(saved?'Removed from wishlist.':'Added to wishlist.');}
+  function removeFavorite(id){if(current.current.favorites.includes(id))toggleFavorite(id);}
+  function addToCart(product, options){
+    const existing=current.current.cart.find((item)=>item.id===product.id);const quantity=(existing?.quantity||0)+1;
+    const selection = options || {type:product.powered?'Powered Eyeglass':product.productType==='Sunglasses'?'Sunglass':'Zero Power',color:product.color,size:product.size};
+    if (existing?.options && JSON.stringify(existing.options)!==JSON.stringify(selection)) {notify('Remove the existing frame from your bag before adding a different selection.','error');return;}
+    try{const cart=cartQuantity(current.current.cart,product.id,quantity,product.stock).map(item=>item.id===product.id?{...item,options:selection}:item);commit({...current.current,cart});notify('Added to cart.');}catch(error){notify(error.message,'error');}
+  }
+  function removeFromCart(id){commit({...current.current,cart:current.current.cart.filter((item)=>item.id!==id)});notify('Removed from cart.');}
+  function changeQuantity(id,quantity,stock){if(quantity<1){removeFromCart(id);return;}try{const cart=cartQuantity(current.current.cart,id,quantity,stock);commit({...current.current,cart});notify('Cart quantity updated.');}catch(error){notify(error.message,'error');}}
+  return <StoreContext.Provider value={{...store,cartCount:store.cart.reduce((total,item)=>total+item.quantity,0),notify,toggleFavorite,removeFavorite,addToCart,removeFromCart,changeQuantity}}>{children}<div className="store-toast-stack" aria-label="Notifications">{toasts.map((toast)=><Toast key={toast.id} toast={toast} onDismiss={dismiss}/>)}</div></StoreContext.Provider>;
+}
