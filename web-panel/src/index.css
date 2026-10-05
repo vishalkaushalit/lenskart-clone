@@ -23,7 +23,7 @@
   .admin-button-secondary { @apply inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50; }
 }
 @layer components {
-  .product-editor-grid { @apply grid items-stretch gap-4 md:grid-cols-2 2xl:grid-cols-[1.1fr_1fr_1.1fr]; }
+  .product-editor-grid { @apply grid items-stretch gap-4 md:grid-cols-2; }
   .product-panel { @apply rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm; }
   .product-panel-title { @apply mb-6 flex items-center gap-2 text-sm font-bold text-slate-700; }
   .product-label { @apply block text-xs font-semibold text-slate-500; }
@@ -48,7 +48,7 @@
   .product-details-grid { @apply grid gap-6 lg:grid-cols-2 2xl:grid-cols-[1.1fr_1.5fr_1fr]; }
   .product-details-gallery { @apply grid grid-cols-[48px_minmax(0,1fr)] items-start gap-4; }
 }
-@media(min-width:1024px) { .product-editor-grid { grid-template-columns:1.1fr 1fr 1.1fr; } .product-details-grid { grid-template-columns:1.1fr 1.35fr 1fr; } }
+@media(min-width:1024px) { .product-editor-grid { grid-template-columns:1fr 1fr; } .product-details-grid { grid-template-columns:1.1fr 1.35fr 1fr; } }
 
 /* Shared dropdown styling for page filters and forms. */
 select {
@@ -103,3 +103,18 @@ select:disabled {
 @keyframes admin-backdrop-enter{from{opacity:0}to{opacity:1}}
 @keyframes admin-backdrop-leave{from{opacity:1}to{opacity:0}}
 @media(prefers-reduced-motion:reduce){.admin-notification,.admin-notification.is-leaving,.admin-notification::backdrop,.admin-notification.is-leaving::backdrop{animation:none}}
+
+/* Compact product editor; keep the main fields visible and secondary details expandable. */
+.product-editor-grid { align-items:start; }
+.product-editor-grid .product-panel-title { margin-bottom:16px; }
+.product-basic-fields { display:grid; gap:16px; }
+.product-editor-grid .product-large-image { height:220px; aspect-ratio:auto; }
+.product-editor-grid .product-thumb-strip { max-height:220px; }
+.product-editor-grid .product-image-grid { display:flex; flex-wrap:wrap; gap:8px; }
+.product-editor-grid .product-image-tile, .product-editor-grid .product-image-add { width:56px; height:56px; }
+.product-editor-grid .product-upload { min-height:160px; }
+.product-editor-grid .product-extra-fields { border:1px solid #e2e8f0; border-radius:10px; padding:14px; }
+.product-editor-grid .product-extra-fields summary { font-size:13px; color:#334155; }
+.product-editor-actions { position:sticky; bottom:12px; z-index:10; display:flex; flex-wrap:wrap; justify-content:flex-end; gap:12px; margin-top:16px; padding:12px 16px; border:1px solid #e2e8f0; border-radius:12px; background:#fff; box-shadow:0 4px 16px #0f172a12; }
+@media(min-width:640px) { .product-basic-fields { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(min-width:1024px) { .product-editor-grid { grid-template-columns:minmax(0,0.9fr) minmax(0,1.1fr); } }

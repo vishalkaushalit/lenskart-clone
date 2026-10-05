@@ -1,3 +1,4 @@
+import StatusBadge from '../components/StatusBadge';
 import Loader from '../components/Loader';
 import { useEffect, useState } from "react";
 import { useOutletContext, useSearchParams } from "react-router-dom";
@@ -127,11 +128,11 @@ export default function Users() {
                 <td className="font-medium text-slate-700">{user.userId ?? "—"}</td>
                 <td className="text-slate-600">{user.email}</td>
                 <td className="whitespace-nowrap text-slate-600">{user.phone || "—"}</td>
-                <td><span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize ${user.status === "inactive" ? "bg-red-100 text-red-600" : "bg-emerald-100 text-emerald-700"}`}>{user.status || "active"}</span></td>
+                <td><StatusBadge status={user.status||'active'}/></td>
                 <td className="whitespace-nowrap text-slate-600">{formatDate(user.createdAt)}</td>
                 <td>
                   <div className="flex justify-end gap-2">
-                    <button type="button" aria-label={`Edit ${user.name}`} onClick={() => { setNotification(null); setAction({ type: "edit", user }); }} className="flex h-8 w-8 items-center justify-center rounded-lg text-blue-600 hover:bg-blue-50"><Pencil size={16} /></button>
+                    <button type="button" aria-label={`Edit ${user.name}`} title="Edit user" onClick={() => { setNotification(null); setAction({ type: "edit", user }); }} className="flex h-8 w-8 items-center justify-center rounded-lg text-blue-600 hover:bg-blue-50"><Pencil size={16} /></button>
                     <button type="button" aria-label={`Delete ${user.name}`} title={user.id === currentUser.id ? "You cannot delete your own account" : "Delete user"} disabled={user.id === currentUser.id} onClick={() => { setNotification(null); setAction({ type: "delete", user }); }} className="flex h-8 w-8 items-center justify-center rounded-lg text-red-500 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"><Trash2 size={16} /></button>
                   </div>
                 </td>

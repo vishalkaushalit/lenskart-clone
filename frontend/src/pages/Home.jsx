@@ -1,3 +1,7 @@
+import {useEffect,useState} from 'react';
+import {apiRequest} from '../api/api';
+import Loader from '../components/Loader';
+import PopupMessage from '../components/PopupMessage';
 import HomeSlider from "../components/HomeSlider";
 import Categories from "../components/Categories";
 import free_lens_replacement from "/FLR1IN.webp";
@@ -26,10 +30,12 @@ const promotionalBanners = [
 ];
 
 const Home = () => {
+  const [categories,setCategories]=useState([]);const [loading,setLoading]=useState(true);const [error,setError]=useState('');const [attempt,setAttempt]=useState(0);
+  useEffect(()=>{const controller=new AbortController();async function load(){setLoading(true);setError('');try{const data=await apiRequest('/categories',{signal:controller.signal});if(!controller.signal.aborted)setCategories(data.categories);}catch(error){if(!controller.signal.aborted)setError(error.message);}finally{if(!controller.signal.aborted)setLoading(false);}}load();return()=>controller.abort();},[attempt]);
   return (
     <>
       <HomeSlider />
-      <Categories />
+      <>{loading?<Loader label="Loading categories"/>:error?<div className="p-8"><PopupMessage message={error}/><button onClick={()=>setAttempt(n=>n+1)}>Retry categories</button></div>:<Categories categories={categories}/>}</>
       <a href="#" className="block">
         <div>
           <img
@@ -39,9 +45,9 @@ const Home = () => {
           />
         </div>
       </a>
-      <Eyeglasses />
+      <Eyeglasses categories={categories}/>
       <Trending />
-      <Sunglasses />
+      <Sunglasses categories={categories}/>
       <NearbyStores />
       <Exclusive />
       <a href="#" className="block">

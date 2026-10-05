@@ -1,7 +1,13 @@
 import mongoose from 'mongoose';
+import {slugify} from '../utils/slugs.js';
 const validImage = (value) => typeof value === 'string' && value.length <= 2000 && (/^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value));
 const textList = { type: [String], default: [], validate: (values) => values.length <= 12 && values.every((value) => value.length <= 300) };
 const schema = new mongoose.Schema({
+  slug:{type:String,trim:true,maxlength:120,match:/^[a-z0-9]+(?:-[a-z0-9]+)*$/},
+  categoryIds: {type:[{type:mongoose.Schema.Types.ObjectId,ref:'Category'}],default:[],validate:values=>values.length<=50},
+  subcategoryIds: {type:[{type:mongoose.Schema.Types.ObjectId,ref:'Category'}],default:[],validate:values=>values.length<=50},
+  categoryId: {type:mongoose.Schema.Types.ObjectId,ref:'Category',default:null},
+  subcategoryId: {type:mongoose.Schema.Types.ObjectId,ref:'Category',default:null},
   sku: { type: String, required: true, unique: true, trim: true, maxlength: 100 },
   name: { type: String, required: true, trim: true, maxlength: 150 },
   image: { type: String, required: true, maxlength: 2000, validate: (value) => /^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value) },
@@ -39,4 +45,6 @@ const schema = new mongoose.Schema({
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },
   addedAt: { type: Date, default: Date.now },
 }, { timestamps: true });
+schema.index({slug:1},{unique:true,partialFilterExpression:{slug:{$type:'string'}}});
+schema.pre('validate',function(){if(!this.slug)this.slug=slugify(this.name);});
 export default mongoose.model('Product', schema);

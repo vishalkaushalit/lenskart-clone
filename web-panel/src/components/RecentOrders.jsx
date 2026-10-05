@@ -17,6 +17,7 @@ const RecentOrders = () => {
     }>
       <thead>
         <tr>
+          <th scope="col">Sr. No.</th>
           <th scope="col">Order ID</th>
           <th scope="col">Customer</th>
           <th scope="col">Amount</th>
@@ -26,6 +27,7 @@ const RecentOrders = () => {
       </thead>
       <tbody>
         <tr>
+          <td className="font-medium text-slate-700">1</td>
           <td className="whitespace-nowrap font-medium text-slate-800">
             #ORD-10245
           </td>
@@ -41,6 +43,7 @@ const RecentOrders = () => {
           </td>
         </tr>
         <tr>
+          <td className="font-medium text-slate-700">2</td>
           <td className="whitespace-nowrap font-medium text-slate-800">
             #ORD-10244
           </td>
@@ -56,6 +59,7 @@ const RecentOrders = () => {
           </td>
         </tr>
         <tr>
+          <td className="font-medium text-slate-700">3</td>
           <td className="whitespace-nowrap font-medium text-slate-800">
             #ORD-10243
           </td>
@@ -71,6 +75,7 @@ const RecentOrders = () => {
           </td>
         </tr>
         <tr>
+          <td className="font-medium text-slate-700">4</td>
           <td className="whitespace-nowrap font-medium text-slate-800">
             #ORD-10242
           </td>

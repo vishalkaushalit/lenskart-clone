@@ -31,7 +31,14 @@ const colors = {
 };
 
 export default function Collection() {
-  const [params] = useSearchParams();
+  const [params,setParams] = useSearchParams();
+  const [categories,setCategories]=useState([]);
+  const categoryValue=params.get('category')||'';
+  const subcategoryValue=params.get('subcategory')||'';
+  const categoryId=categories.find(row=>!row.parent&&(row.slug===categoryValue||row._id===categoryValue))?._id||'';
+  const subcategoryId=categories.find(row=>row.parent===categoryId&&(row.slug===subcategoryValue||row._id===subcategoryValue))?._id||'';
+  function setCategoryId(id){const next=new URLSearchParams(params);const row=categories.find(row=>row._id===id);if(row)next.set('category',row.slug);else next.delete('category');next.delete('subcategory');setParams(next);}
+  function setSubcategoryId(id){const next=new URLSearchParams(params);const row=categories.find(row=>row._id===id);if(row)next.set('subcategory',row.slug);else next.delete('subcategory');setParams(next);}
   const [catalog, setCatalog] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -42,9 +49,8 @@ export default function Collection() {
       setLoading(true);
       setError("");
       try {
-        const data = await apiRequest("/products", {
-          signal: controller.signal,
-        });
+        const [data,taxonomy] = await Promise.all([apiRequest("/products?all=1",{signal:controller.signal}),apiRequest("/categories",{signal:controller.signal})]);
+        if(!controller.signal.aborted)setCategories(taxonomy.categories);
         if (!controller.signal.aborted)
           setCatalog(Array.isArray(data.products) ? data.products : []);
       } catch (error) {
@@ -70,10 +76,13 @@ export default function Collection() {
   const { favorites, toggleFavorite, notify } = useStore();
   const [selectedColors, setSelectedColors] = useState({});
   const drawer = useRef(null);
+  const currentCategory=categories.find(row=>row._id===categoryId);
+  const currentSubcategory=categories.find(row=>row._id===subcategoryId);
   const query = (params.get("search") || "").trim().toLowerCase();
   const products = catalog.filter(
     (product) =>
       (tab === "All" || product.category === tab) &&
+      (!categoryId||(product.categoryIds||[product.categoryId]).includes(categoryId))&&(!subcategoryId||(product.subcategoryIds||[product.subcategoryId]).includes(subcategoryId))&&
       matchesFilters(product, filters) &&
       (!query ||
         `${product.name} ${product.shape} ${product.color}`
@@ -119,7 +128,9 @@ export default function Collection() {
     notify("Filters cleared.");
     setDraft({});
     setFilters({});
+    setCategoryId('');
   }
+  const taxonomyControls = (<div className="collection-taxonomy"><label>Category<select value={categoryId} onChange={event=>{setCategoryId(event.target.value);}}><option value="">All categories</option>{categories.filter(row=>!row.parent).map(row=><option key={row._id} value={row._id}>{row.name}</option>)}</select></label><label>Subcategory<select disabled={!categoryId} value={subcategoryId} onChange={event=>setSubcategoryId(event.target.value)}><option value="">All subcategories</option>{categories.filter(row=>row.parent===categoryId).map(row=><option key={row._id} value={row._id}>{row.name}</option>)}</select></label></div>);
   const sortControl = <CollectionSort value={sort} onChange={setSort} />;
   const filterControls = (
     <>
@@ -160,7 +171,7 @@ export default function Collection() {
 
   return (
     <section className="collection-page">
-      <aside className="collection-sidebar" aria-label="Collection filters">
+      <aside className="collection-sidebar" aria-label="Collection filters">{taxonomyControls}
         {sortControl}
         {filterControls}
       </aside>
@@ -169,14 +180,14 @@ export default function Collection() {
           <nav aria-label="Breadcrumb" className="collection-breadcrumb">
             <Link to="/">Eyewear</Link>
             <span>/</span>
-            <span>Eyeglasses</span>
-            <span>/</span>
-            <span>Promotions</span>
-            <span>/</span>
-            <strong>Eyeglasses</strong>
+            {currentSubcategory && currentCategory ? <>
+              <Link to={`/collection?category=${currentCategory.slug}`}>{currentCategory.name}</Link>
+              <span aria-hidden="true">/</span>
+              <strong aria-current="page">{currentSubcategory.name}</strong>
+            </> : <strong aria-current="page">{currentCategory?.name || 'All Products'}</strong>}
           </nav>
           <h1>
-            Eyeglasses <span>{products.length} Items</span>
+            {currentSubcategory?.name||currentCategory?.name||'All Products'} <span>{products.length} Items</span>
           </h1>
           <div className="collection-mobile-controls">
             {sortControl}
@@ -266,7 +277,7 @@ export default function Collection() {
                   {product.powered && (
                     <span className="collection-powered">POWERED</span>
                   )}
-                  <ProductGallery product={product} assetUrl={assetUrl} linkTo={`/products/${product.id}`} />
+                  <ProductGallery product={product} assetUrl={assetUrl} linkTo={`/products/${product.slug||product.id}`} />
                   <div className="collection-image-tools">
                     <button
                       className="collection-similar"
@@ -313,7 +324,7 @@ export default function Collection() {
                   </div>
                 </div>
                 <div className="collection-product-info">
-                  <h2><Link to={`/products/${product.id}`}>{product.name}</Link></h2>
+                  <h2><Link to={`/products/${product.slug||product.id}`}>{product.name}</Link></h2>
                   <span className="collection-size">
                     <b>{product.size}</b>Size
                   </span>
@@ -378,6 +389,7 @@ export default function Collection() {
             <X size={23} />
           </button>
         </div>
+        {taxonomyControls}
         {filterControls}
       </dialog>
     </section>

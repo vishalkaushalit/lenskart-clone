@@ -98,7 +98,7 @@ function OrderHistory() {
             <li key={order._id} className="rounded-xl border border-gray-200 p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="break-all text-sm font-semibold">Order #{order._id}</p>
+                  <p className="break-all text-sm font-semibold">Order #{order.orderId??'—'}</p>
                   <p className="mt-1 text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString("en-IN")}</p>
                 </div>
                 <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold capitalize">{order.status}</span>

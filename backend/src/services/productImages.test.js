@@ -20,6 +20,7 @@ test('legacy images have a gallery fallback and multi-image products preserve or
   assert.deepEqual(publicProduct({_id:'id',image:'a',images:['a','b']}).images,['a','b']);
 });
 test('saving a gallery sets its first image as the cover', async (t) => {
+  t.mock.method(Product,'exists',async()=>null);
   t.mock.method(Product,'create', async (fields) => {
     assert.equal(fields.image,'/assets/products/a.png');
     assert.deepEqual(fields.images,['/assets/products/a.png','/assets/products/b.png']);

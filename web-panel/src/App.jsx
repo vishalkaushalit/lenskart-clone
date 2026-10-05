@@ -7,7 +7,9 @@ import Logout from "./pages/Logout";
 import EditProduct from "./pages/EditProduct";
 import ProductDetails from "./pages/ProductDetails";
 import AddProduct from "./pages/AddProduct";
+import OrderDetails from "./pages/OrderDetails";
 import Commerce from "./pages/Commerce";
+import Categories from "./pages/Categories";
 import Users from "./pages/Users";
 
 export default function App() {
@@ -20,8 +22,10 @@ export default function App() {
         <Route path="/product/add" element={<AddProduct />} />
         <Route path="/product/:id/edit" element={<EditProduct />} />
         <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/orders/:id" element={<OrderDetails/>}/>
         <Route path="/orders" element={<Commerce key="orders" kind="orders"/>}/>
         <Route path="/coupons" element={<Commerce key="coupons" kind="coupons"/>}/>
+        <Route path="/categories" element={<Categories/>}/>
         <Route path="/users" element={<Users />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/logout" element={<Logout />} />

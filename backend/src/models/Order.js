@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
+import {nextOrderId} from '../services/orderIds.js';
 
 const orderSchema = new mongoose.Schema({
+  orderId:{type:Number,immutable:true,unique:true,sparse:true,min:1,validate:Number.isSafeInteger},
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
   requestId: {type:String},
   shipping: {type:Object}, billing: {type:Object},
@@ -25,4 +27,5 @@ const orderSchema = new mongoose.Schema({
 orderSchema.index({user:1,requestId:1},{unique:true,partialFilterExpression:{requestId:{$type:'string'}}});
 orderSchema.index({ user: 1, createdAt: -1, _id: -1 });
 
+orderSchema.pre('save',async function(){if(this.isNew&&!this.$locals.orderIdAssigned){this.orderId=await nextOrderId(this.$session());this.$locals.orderIdAssigned=true;}});
 export default mongoose.model('Order', orderSchema);

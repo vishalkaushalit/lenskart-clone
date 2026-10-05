@@ -41,7 +41,7 @@ export async function listOrders(req, res, next) {
   try {
     const pageSize = 10;
     const orders = await Order.find({ user: req.user._id })
-      .select('items totalAmount currency status createdAt')
+      .select('orderId items totalAmount currency status createdAt')
       .sort({ createdAt: -1, _id: -1 })
       .skip((page - 1) * pageSize)
       .limit(pageSize + 1)

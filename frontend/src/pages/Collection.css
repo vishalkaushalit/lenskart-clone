@@ -794,3 +794,5 @@ body:has(.collection-page) header { position:sticky; top:0; }
 @media(max-width:479px){.collection-mobile-controls .collection-sort>span{display:none}}
 
 .collection-gallery-link{display:block}.collection-product-info h2 a:hover{text-decoration:underline}
+
+.collection-taxonomy{display:grid;gap:12px;padding:16px}.collection-taxonomy label{font-size:14px;font-weight:500}.collection-taxonomy select{display:block;width:100%;border:1px solid #dedeea;border-radius:7px;padding:9px;margin-top:8px;background:white;font-size:12px}

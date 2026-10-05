@@ -86,3 +86,15 @@ test('reviews, FAQ and highlight images validate before saving', async () => {
   assert.deepEqual(productFields(content),content);
   for (const fields of [{reviews:[{name:'Customer',rating:6,text:'Review',date:'2026-10-05'}]},{faqs:[{question:'Question'}]},{highlightImages:{material:'javascript:alert(1)'}}]) await assert.rejects(new Product({...base,...fields}).validate());
 });
+
+test('multi-category membership preserves legacy category fallback',async()=>{
+ const {publicProduct}=await import('./productController.js');const ids=['123456789012345678901234','123456789012345678901235'];
+ assert.deepEqual(publicProduct({_id:'frame',categoryIds:ids}).categoryIds,ids);
+ assert.deepEqual(publicProduct({_id:'legacy',categoryId:ids[0]}).categoryIds,[ids[0]]);
+});
+test('subcategory membership requires its parent to be selected',async(t)=>{
+ const {default:Category}=await import('../models/Category.js');const root='123456789012345678901234',child='123456789012345678901235';
+ t.mock.method(Category,'find',()=>({async lean(){return [{_id:root,parent:null},{_id:child,parent:'123456789012345678901236'}];}}));
+ t.mock.method(Product,'create',()=>assert.fail('invalid assignment reached write'));
+ const res=response();await saveProduct({params:{},body:{categoryIds:[root],subcategoryIds:[child]}},res,assert.ifError);assert.equal(res.statusCode,400);
+});

@@ -20,6 +20,7 @@ function couponFields(body){const fields={};for(const key of ['code','type','val
 commerceAdmin.post('/coupons',wrap(async(req,res)=>{const coupon=await Coupon.create(couponFields(req.body));res.status(201).json({coupon});}));
 commerceAdmin.patch('/coupons/:id',wrap(async(req,res)=>{const coupon=await Coupon.findById(id(req.params.id));if(!coupon)fail('Coupon not found.',404);Object.assign(coupon,couponFields(req.body));await coupon.save();res.json({coupon});}));
 commerceAdmin.get('/orders',wrap(async(req,res)=>{const {page,limit}=pagination(req);const filter={};if(req.query.status){if(!['pending','confirmed','shipped','delivered','cancelled'].includes(req.query.status))fail('Invalid order status.');filter.status=req.query.status;}const total=await Order.countDocuments(filter);const orders=await Order.find(filter).populate('user','name email').sort({createdAt:-1}).skip((page-1)*limit).limit(limit).lean();res.json({orders,total,page});}));
+commerceAdmin.get('/orders/:id',wrap(async(req,res)=>{const order=await Order.findById(id(req.params.id)).populate('user','name email').lean();if(!order)fail('Order not found.',404);res.json({order});}));
 commerceAdmin.patch('/orders/:id',wrap(async(req,res)=>{
   if(!['pending','confirmed','shipped','delivered','cancelled'].includes(req.body?.status))fail('Invalid order status.');
   const orderId=id(req.params.id);const session=await mongoose.startSession();let order;

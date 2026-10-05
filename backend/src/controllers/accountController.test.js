@@ -58,7 +58,7 @@ test('duplicate emails return a useful conflict response', async (t) => {
 test('order history is scoped to the session user and paginated newest first', async (t) => {
   const orders = Array.from({ length: 11 }, (_, index) => ({ _id: String(index) }));
   const query = {
-    select(fields) { assert.equal(fields, 'items totalAmount currency status createdAt'); return this; },
+    select(fields) { assert.equal(fields, 'orderId items totalAmount currency status createdAt'); return this; },
     sort(order) { assert.deepEqual(order, { createdAt: -1, _id: -1 }); return this; },
     skip(count) { assert.equal(count, 10); return this; },
     limit(count) { assert.equal(count, 11); return this; },
