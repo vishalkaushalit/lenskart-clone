@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { fileURLToPath } from 'node:url';
 import { publicProducts, managedProducts } from './routes/productRoutes.js';
 import express from 'express';
+import {commerceAdmin,commercePublic} from './routes/commerceRoutes.js';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import session from 'express-session';
@@ -9,6 +10,8 @@ import MongoStore from 'connect-mongo';
 
 import { connectDB } from './config/db.js';
 import User from './models/User.js';
+import Order from './models/Order.js';
+import Coupon from './models/Coupon.js';
 import authRoutes from './routes/authRoutes.js';
 import accountRoutes from './routes/accountRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -94,6 +97,9 @@ async function startServer() {
       },
     }));
 
+    await Promise.all([Order.init(),Coupon.init()]);
+    app.use('/api/admin', commerceAdmin);
+    app.use('/api', commercePublic);
     app.use('/api/auth', authRoutes);
     app.use('/api/account', accountRoutes);
     app.use('/api/users', userRoutes);

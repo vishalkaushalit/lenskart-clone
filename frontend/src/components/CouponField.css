@@ -7,3 +7,5 @@
 .store-coupon button{border-radius:8px;padding:10px 18px;background:#000042;color:white;font-size:13px;font-weight:600;cursor:pointer}
 .store-coupon button:hover{background:#1d1958}
 .store-coupon p{font-size:11px;color:#73739d;line-height:1.6;margin-top:10px}
+
+.store-coupon-applied{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#009d7e;margin-top:14px}.store-coupon-applied button{background:transparent;color:#73739d;padding:4px;font-size:11px}.store-coupon button:disabled{opacity:.5;cursor:wait}

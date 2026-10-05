@@ -12,6 +12,7 @@ function Toast({toast,onDismiss}){
   return <div className={`store-toast ${toast.type==='error'?'is-error':''} ${closing?'is-leaving':''}`} role={toast.type==='error'?'alert':'status'}><Icon size={20}/><p>{toast.message}</p><button type="button" aria-label="Dismiss notification" onClick={()=>setClosing(true)}><X size={16}/></button></div>;
 }
 export default function StoreProvider({children}){
+  const [appliedCoupon,setAppliedCoupon]=useState(null);
   const [couponCode,updateCouponCode]=useState(()=>{try{return sessionStorage.getItem('store-coupon-code')||'';}catch{return '';}});
   function setCouponCode(code){updateCouponCode(code);try{sessionStorage.setItem('store-coupon-code',code);}catch{/* Retain the code for the current page session. */}}
   const [store,setStore]=useState(initial);const current=useRef(store);
@@ -34,5 +35,5 @@ export default function StoreProvider({children}){
   }
   function removeFromCart(id){commit({...current.current,cart:current.current.cart.filter((item)=>item.id!==id)});notify('Removed from cart.');}
   function changeQuantity(id,quantity,stock){if(quantity<1){removeFromCart(id);return;}try{const cart=cartQuantity(current.current.cart,id,quantity,stock);commit({...current.current,cart});notify('Cart quantity updated.');}catch(error){notify(error.message,'error');}}
-  return <StoreContext.Provider value={{...store,couponCode,setCouponCode,cartCount:store.cart.reduce((total,item)=>total+item.quantity,0),notify,toggleFavorite,removeFavorite,addToCart,removeFromCart,changeQuantity}}>{children}<div className="store-toast-stack" aria-label="Notifications">{toasts.map((toast)=><Toast key={toast.id} toast={toast} onDismiss={dismiss}/>)}</div></StoreContext.Provider>;
+  return <StoreContext.Provider value={{...store,couponCode,setCouponCode,appliedCoupon,setAppliedCoupon,clearCart:()=>{commit({...current.current,cart:[]});setAppliedCoupon(null);setCouponCode('');},cartCount:store.cart.reduce((total,item)=>total+item.quantity,0),notify,toggleFavorite,removeFavorite,addToCart,removeFromCart,changeQuantity}}>{children}<div className="store-toast-stack" aria-label="Notifications">{toasts.map((toast)=><Toast key={toast.id} toast={toast} onDismiss={dismiss}/>)}</div></StoreContext.Provider>;
 }
