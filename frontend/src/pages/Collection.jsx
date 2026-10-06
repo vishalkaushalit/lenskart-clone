@@ -1,7 +1,7 @@
 import {useCategories} from '../context/CategoryContext';
 import { matchesSearch } from "../state/productSearch";
 import Loader from '../components/Loader';
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
   ChevronDown,
@@ -71,22 +71,28 @@ function CollectionResults() {
   const currentCategory=categories.find(row=>row._id===categoryId);
   const currentSubcategory=categories.find(row=>row._id===subcategoryId);
   const query = (params.get("search") || "").trim();
-  const products = catalog.filter(
+  const brandQuery=(params.get("brand")||"").toLowerCase();
+  const shapeQuery=(params.get("shape")||"").toLowerCase();
+  const products = useMemo(() => {
+  const results = catalog.filter(
     (product) =>
       (tab === "All" || product.category === tab) &&
       (!categoryValue||Boolean(categoryId))&&(!subcategoryValue||Boolean(subcategoryId))&&
-      (!params.get("brand")||product.brand.toLowerCase()===params.get("brand").toLowerCase()) &&
-      (!params.get("shape")||product.shape.toLowerCase()===params.get("shape").toLowerCase()) &&
+      (!brandQuery||product.brand.toLowerCase()===brandQuery) &&
+      (!shapeQuery||product.shape.toLowerCase()===shapeQuery) &&
       (!categoryId||(product.categoryIds||[product.categoryId]).includes(categoryId))&&(!subcategoryId||(product.subcategoryIds||[product.subcategoryId]).includes(subcategoryId))&&
       matchesFilters(product, filters) &&
       matchesSearch(product, query),
   );
-  if (sort === "price-low") products.sort((a, b) => a.price - b.price);
-  if (sort === "price-high") products.sort((a, b) => b.price - a.price);
-  if (sort === "bestsellers") products.sort((a, b) => b.sales - a.sales);
+  if (sort === "price-low") results.sort((a, b) => a.price - b.price);
+  if (sort === "price-high") results.sort((a, b) => b.price - a.price);
+  if (sort === "bestsellers") results.sort((a, b) => b.sales - a.sales);
   if (sort === "newest")
-    products.sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
-  const availableFilters = { ...filterGroups };
+    results.sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
+  return results;
+  },[catalog,tab,categoryValue,categoryId,subcategoryValue,subcategoryId,brandQuery,shapeQuery,filters,query,sort]);
+  const availableFilters = useMemo(() => {
+  const options = { ...filterGroups };
   for (const [group, field] of Object.entries({
     Gender: "gender",
     "Shape & Style": "shape",
@@ -94,10 +100,12 @@ function CollectionResults() {
     Brand: "brand",
     "Frame Color": "color",
   })) {
-    availableFilters[group] = [
+    options[group] = [
       ...new Set(catalog.map((product) => product[field]).filter(Boolean)),
     ];
   }
+  return options;
+  },[catalog]);
   const count = Object.values(filters).flat().length;
 
   function toggle(group, value) {

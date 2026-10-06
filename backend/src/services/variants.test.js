@@ -24,6 +24,31 @@ test('admin sees inactive variants but their stock is excluded',async t=>{
   const [result]=await attachVariants([{_id:productId,hasVariants:true,availableColors:['Red'],availableSizes:['XL']}],true);assert.equal(result.stock,2);assert.equal(result.variants.length,2);
   assert.deepEqual(result.availableColors,['Blue']);assert.deepEqual(result.availableSizes,['M']);
 });
+test('batch variant attachment preserves product isolation, order and empty inventories',async t=>{
+  const secondId='123456789012345678901236';
+  const emptyId='123456789012345678901237';
+  const legacy={_id:'legacy',hasVariants:false,stock:7};
+  let calls=0;
+  t.mock.method(ProductVariant,'find',filter=>{
+    calls++;
+    assert.deepEqual(filter.productId.$in,[productId,secondId,emptyId]);
+    return {sort(){return this;},lean:async()=>[
+      {_id:'first',productId,size:'M',color:'Blue',stock:2,status:'active'},
+      {_id:'other',productId:secondId,size:'L',color:'Red',stock:4,status:'active'},
+      {_id:'second',productId,size:'L',color:'Blue',stock:3,status:'active'},
+      {_id:'hidden',productId:secondId,size:'S',color:'Black',stock:99,status:'inactive'},
+    ]};
+  });
+  const results=await attachVariants([{_id:productId,hasVariants:true},{_id:secondId,hasVariants:true},{_id:emptyId,hasVariants:true,stock:999},legacy],true);
+  assert.equal(calls,1);
+  assert.deepEqual(results[0].variants.map(row=>row.id),['first','second']);
+  assert.deepEqual(results[0].availableColors,['Blue']);
+  assert.deepEqual(results[0].availableSizes,['M','L']);
+  assert.equal(results[0].stock,5);assert.equal(results[1].stock,4);
+  assert.deepEqual(results[1].availableColors,['Red']);
+  assert.equal(results[2].stock,0);assert.deepEqual(results[2].variants,[]);
+  assert.strictEqual(results[3],legacy);
+});
 test('quote prices variants from the database and enforces their stock and combination',async t=>{
   t.mock.method(Product,'findOne',async()=>({_id:productId,hasVariants:true,name:'Frame',price:1500,stock:999}));
   let row={_id:variantId,productId,size:'L',color:'Blue',price:1800,stock:2};

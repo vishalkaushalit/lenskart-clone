@@ -250,7 +250,7 @@ Every web-panel table includes pagination and **Sr. No.** numbering that continu
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `6a5cdffa2ac1af0558b49162a22a8b8fda6368e22778aa93f22b9cb246f79843`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `316807030ed2ccb8b8b27e27fdfb5ad469334063cc489a7c445641e22005d468`.
 
 ### Actual npm commands
 
@@ -385,3 +385,5 @@ Saved status values consistently use the shared `StatusBadge` component across t
 The shared product/variant image gallery displays the large upload/drop area only when there are no images. With existing images, use the compact plus button to add photos. Removing the last image restores the upload area automatically.
 
 Variant add/edit pages share `product-editor-grid`, standard gallery sizing, panel borders/shadows and the sticky `product-editor-actions` footer with product add/edit pages. The surrounding list card is used only in list mode.
+
+ProductEditor memoizes the category tree when loaded category data changes. Active children are grouped by parent in one pass and reused while editing fields or images, avoiding repeated full-category scans for each parent.

@@ -1,5 +1,5 @@
 import ProductImageGallery from './ProductImageGallery';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Package, BadgeIndianRupee, X, Trash2 } from 'lucide-react';
 import NotificationPopup from './NotificationPopup';
@@ -8,6 +8,15 @@ import { apiRequest, productImageUrl } from '../api';
 export default function ProductEditor({ product = null }) {
   const editing = Boolean(product);
   const [categories,setCategories]=useState([]);
+  const categoryTree=useMemo(()=>{
+    const children=new Map();
+    for(const row of categories) {
+      if(!row.parent||!row.active)continue;
+      if(!children.has(row.parent))children.set(row.parent,[]);
+      children.get(row.parent).push(row);
+    }
+    return categories.filter(row=>!row.parent&&row.active).map(root=>({...root,children:children.get(root._id)||[]}));
+  },[categories]);
   const [categoryIds,setCategoryIds]=useState(product?.categoryIds|| (product?.categoryId?[product.categoryId]:[]));
   const [subcategoryIds,setSubcategoryIds]=useState(product?.subcategoryIds|| (product?.subcategoryId?[product.subcategoryId]:[]));
   useEffect(()=>{const controller=new AbortController();apiRequest('/admin/categories',{signal:controller.signal}).then(data=>setCategories(data.categories)).catch(error=>{if(!controller.signal.aborted)setNotification({type:'error',message:error.message});});return()=>controller.abort();},[]);
@@ -79,7 +88,7 @@ export default function ProductEditor({ product = null }) {
     <section className="product-panel product-basic-panel md:col-span-2"><h2 className="product-panel-title"><Package size={16}/>Basic Information</h2><div className="product-basic-fields">
       {text('name','Product Name','Enter product name')}{text('slug','URL Slug','Generated automatically when empty',false)}{text('subtitle','Subtitle','Dark Night Full Rim Square',false)}
       {select('productType','Product Type *',['Eyeglasses','Sunglasses'])}
-      <div className="sm:col-span-2"><h3 className="product-label">Categories &amp; Subcategories</h3><p className="mt-1 text-xs text-slate-400">Choose every collection where this product should appear.</p><div className="mt-3 max-h-48 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 overflow-auto rounded-lg border border-slate-200 p-3">{categories.filter(row=>!row.parent&&row.active).map(root=><div key={root._id}><label className="flex items-center gap-2 text-sm font-medium"><input type="checkbox" checked={categoryIds.includes(root._id)} onChange={event=>{setCategoryIds(previous=>event.target.checked?[...previous,root._id]:previous.filter(value=>value!==root._id));if(!event.target.checked)setSubcategoryIds(previous=>previous.filter(value=>!categories.some(row=>row._id===value&&row.parent===root._id)));}} className="accent-blue-600"/>{root.name}</label><div className="ml-6 mt-2 grid gap-2">{categories.filter(row=>row.parent===root._id&&row.active).map(child=><label key={child._id} className="flex items-center gap-2 text-xs text-slate-500"><input type="checkbox" checked={subcategoryIds.includes(child._id)} onChange={event=>{if(event.target.checked){setCategoryIds(previous=>previous.includes(root._id)?previous:[...previous,root._id]);setSubcategoryIds(previous=>[...previous,child._id]);}else setSubcategoryIds(previous=>previous.filter(value=>value!==child._id));}} className="accent-blue-600"/>{child.name}</label>)}</div></div>)}{!categories.some(row=>!row.parent&&row.active)&&<p className="text-xs text-slate-400">Add categories from the Categories page first.</p>}</div></div>
+      <div className="sm:col-span-2"><h3 className="product-label">Categories &amp; Subcategories</h3><p className="mt-1 text-xs text-slate-400">Choose every collection where this product should appear.</p><div className="mt-3 max-h-48 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 overflow-auto rounded-lg border border-slate-200 p-3">{categoryTree.map(root=><div key={root._id}><label className="flex items-center gap-2 text-sm font-medium"><input type="checkbox" checked={categoryIds.includes(root._id)} onChange={event=>{setCategoryIds(previous=>event.target.checked?[...previous,root._id]:previous.filter(value=>value!==root._id));if(!event.target.checked)setSubcategoryIds(previous=>previous.filter(value=>!categories.some(row=>row._id===value&&row.parent===root._id)));}} className="accent-blue-600"/>{root.name}</label><div className="ml-6 mt-2 grid gap-2">{root.children.map(child=><label key={child._id} className="flex items-center gap-2 text-xs text-slate-500"><input type="checkbox" checked={subcategoryIds.includes(child._id)} onChange={event=>{if(event.target.checked){setCategoryIds(previous=>previous.includes(root._id)?previous:[...previous,root._id]);setSubcategoryIds(previous=>[...previous,child._id]);}else setSubcategoryIds(previous=>previous.filter(value=>value!==child._id));}} className="accent-blue-600"/>{child.name}</label>)}</div></div>)}{!categoryTree.length&&<p className="text-xs text-slate-400">Add categories from the Categories page first.</p>}</div></div>
       {text('brand','Brand','Enter brand')}
       <label className="product-label">Description<textarea name="description" defaultValue={product?.description||''} maxLength={5000} placeholder="Enter product description..." rows={3} className={input}/></label>
       <details className="product-extra-fields sm:col-span-2" open><summary>Frame information</summary><div className="mt-3 grid gap-4 sm:grid-cols-2">{text('shape','Shape','Square')}{!product?.hasVariants&&text('color','Frame Color','Black')}{select('category','Frame Range',['Classic','Premium'])}{!product?.hasVariants&&select('size','Frame Size',['M','S','L'])}{select('gender','Gender',['Unisex','Men','Women'])}</div></details>

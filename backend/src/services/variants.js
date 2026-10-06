@@ -4,11 +4,23 @@ export async function attachVariants(products, admin = false) {
   const ids = products.filter(product => product.hasVariants).map(product => product._id);
   if (!ids.length) return products;
   const rows = await ProductVariant.find({ productId: { $in: ids }, ...(!admin ? { status: 'active' } : {}) }).sort({ createdAt: 1, _id: 1 }).lean();
+  const byProduct=new Map();
+  for(const row of rows) {
+    const id=String(row.productId);
+    let group=byProduct.get(id);
+    if(!group) {
+      group={variants:[],colors:new Set(),sizes:new Set(),stock:0};
+      byProduct.set(id,group);
+    }
+    group.variants.push(publicVariant(row));
+    if(row.status==='active') {
+      group.colors.add(row.color);group.sizes.add(row.size);group.stock+=row.stock;
+    }
+  }
   return products.map(product => {
     if (!product.hasVariants) return product;
-    const variants=rows.filter(row=>String(row.productId)===String(product._id));
-    const active=variants.filter(row=>row.status==='active');
+    const group=byProduct.get(String(product._id));
     // Variant records are the source of available options and inventory.
-    return {...product,variants:variants.map(publicVariant),availableColors:[...new Set(active.map(row=>row.color))],availableSizes:[...new Set(active.map(row=>row.size))],stock:active.reduce((sum,row)=>sum+row.stock,0)};
+    return {...product,variants:group?.variants||[],availableColors:[...(group?.colors||[])],availableSizes:[...(group?.sizes||[])],stock:group?.stock||0};
   });
 }

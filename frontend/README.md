@@ -289,7 +289,7 @@ Variant **Price** is the selling price; **Compare Price** (`originalPrice`) cont
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e4880a294f0e0924d5a4db8239bbc2efa10ead8a1042e928f660098cc0560d3c`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `65aba9c5e650fff318fcb9a5f428d76f57a1132fab67dae5674cca9a1e25a14e`.
 
 ### Actual npm commands
 
@@ -417,10 +417,10 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/pages/Collection.jsx | next.delete | `subcategory` |
 | src/pages/Collection.jsx | params.get | `search` |
 | src/pages/Collection.jsx | params.get | `brand` |
-| src/pages/Collection.jsx | params.get | `brand` |
-| src/pages/Collection.jsx | params.get | `shape` |
 | src/pages/Collection.jsx | params.get | `shape` |
 | src/pages/Collection.jsx | params.get | `brand` |
 | src/pages/Collection.jsx | params.get | `brand` |
 | src/pages/Profile.jsx | params.get | `tab` |
 <!-- AUTO-GENERATED:END -->
+
+Collection results memoize filtering/sorting by catalog, query, selected filters, taxonomy and sort order. Available filter choices are memoized by catalog. Opening filters, editing draft filters and wishlist updates reuse the unchanged computed results.
