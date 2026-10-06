@@ -250,7 +250,7 @@ Every web-panel table includes pagination and **Sr. No.** numbering that continu
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `316807030ed2ccb8b8b27e27fdfb5ad469334063cc489a7c445641e22005d468`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `1846d0ada416599ec3d8c36931fa9af72b114c88500d5adfa079a5a3158a9a51`.
 
 ### Actual npm commands
 
@@ -387,3 +387,11 @@ The shared product/variant image gallery displays the large upload/drop area onl
 Variant add/edit pages share `product-editor-grid`, standard gallery sizing, panel borders/shadows and the sticky `product-editor-actions` footer with product add/edit pages. The surrounding list card is used only in list mode.
 
 ProductEditor memoizes the category tree when loaded category data changes. Active children are grouped by parent in one pass and reused while editing fields or images, avoiding repeated full-category scans for each parent.
+
+The product list category filter uses readable, selectable parent-category options rather than dim native optgroup labels. Subcategories follow their parent with space indentation and no arrows. Selecting a parent filters the whole category; individual subcategories retain their original IDs.
+
+Shared notifications use a content-sized white popup with a border and 8px padding, positioned at the top right 12px below the dashboard header. They start dismissing after 1 second, with a 260ms exit animation. The close callback still runs on automatic or manual dismissal, preserving successful-save navigation. Notifications do not block the page or move keyboard focus.
+
+All modal popups across the storefront and web panel follow the product image slider size: 600px maximum width and 80dvh height, constrained to 90vw. `shared/Popup.css` is the single sizing source, using `product-popup` or `app-popup`; future modal popups must use these classes. Long dialog content scrolls inside. Compact toast notifications and filter drawers retain their separate interaction layouts.
+
+Design reference: [Lenskart](https://www.lenskart.com/) is the reference for future project UI changes, as recorded in the root `AGENTS.md`. Current desktop similar-items popup source uses 600px width, 90vw maximum width, 80vh maximum height, 16px corners, an 18px/800 heading and a scrolling item list. Shared dialogs use this width/height limit; existing user instructions remain authoritative.

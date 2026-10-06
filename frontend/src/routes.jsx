@@ -9,7 +9,7 @@ function StoreLayout() {
   return (
     <CategoryProvider>
       {!hideNavigation&&<Header />}
-      <main>
+      <main className="store-page-surface">
         <Outlet context={{setHideNavigation}} />
       </main>
       {!hideNavigation&&<Footer />}

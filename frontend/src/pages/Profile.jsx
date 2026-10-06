@@ -1,7 +1,7 @@
 import Loader from '../components/Loader';
 import PopupMessage from "../components/PopupMessage";
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { UserRound, Package } from "lucide-react";
 import { useAuth } from "../context/AuthState";
 import { apiRequest } from "../api/api";
@@ -90,7 +90,7 @@ function OrderHistory() {
         <div className="py-10 text-center">
           <p className="font-semibold">{page === 1 ? "No orders yet" : "No orders on this page"}</p>
           <p className="mt-2 text-sm text-gray-500">Your orders will appear here after you place one.</p>
-          <Link to="/" className="mt-5 inline-block rounded-lg bg-ink px-6 py-3 text-sm font-semibold text-white">Continue shopping</Link>
+
         </div>
       ) : (
         <ul className="mt-6 space-y-4">
@@ -145,8 +145,8 @@ export default function Profile() {
   }
 
   return (
-    <div className="bg-gray-50 py-10 sm:py-14">
-      <div className="mx-auto w-[90%] max-w-5xl">
+    <div className="store-page-surface py-10 sm:py-14">
+      <div className="store-container">
         <h1 className="text-3xl font-bold text-ink">My profile</h1>
         <p className="mt-2 text-sm text-gray-500">Manage your details and keep track of your orders.</p>
         <div role="tablist" aria-label="My account" className="mt-8 flex gap-2 border-b border-gray-200">

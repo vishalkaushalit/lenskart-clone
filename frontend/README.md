@@ -36,7 +36,8 @@ These values are embedded in browser bundles. Restart Vite after editing `.env`.
 | `/products/:id` | ProductDetails: active product by slug or ObjectId; gallery/popup, price, frame options, highlights, FAQ, reviews, and add to cart. |
 | `/wishlist` | Wishlist: browser-saved product IDs resolved to current API products. |
 | `/cart` | Cart: selected options, quantity controls, item deletion, original/current prices, coupon, and billing total in one card. |
-| `/checkout` | Protected checkout: addresses, COD selection, review step, coupon summary, idempotent order submission, and order success. |
+| `/checkout` | Protected checkout: addresses, COD selection, review step, coupon summary, idempotent order submission, and redirect to the thank-you page. |
+| `/thank-you/:id` | Protected order receipt, loaded from the signed-in customer’s saved order; supports refreshing the page. |
 | `/profile` | Protected account profile and order history. |
 | `/login`, `/register` | Authentication forms outside the normal store layout. |
 | `/forgot-password`, `/reset-password` | Placeholder messages; reset functionality is not implemented. |
@@ -105,7 +106,7 @@ The removed “Explore the Details” section is not rendered. Product gallery i
 | Store `appliedCoupon` / `setAppliedCoupon` | Successful quote plus cart signature; in-memory application state. |
 | `toggleFavorite`, `removeFavorite` | Add/remove saved product IDs. |
 | `addToCart`, `removeFromCart`, `changeQuantity`, `clearCart` | Cart mutations and stock checks; clearing cart clears coupon state. |
-| `notify` | Success/error toast messages. |
+| `notify` | Content-sized, white, bordered success/error notifications with 8px inner padding at the top right, 12px below the header’s visible bottom edge, aligned with the shared page gutter and updated on scroll/resize, with safe-area spacing, automatic dismissal after 1 second followed by a 260ms exit animation, and a close button. |
 
 ```js
 // Browser cart shape; the API always reads current prices from MongoDB.
@@ -167,7 +168,7 @@ const checkoutRequest = {
 };
 ```
 
-The backend ignores client prices, verifies options/stock, and computes payable. On success, the app shows the saved order and clears the cart. Missing products and excess quantities block checkout until corrected.
+The backend ignores client prices, verifies options/stock, and computes payable. On success, the app replaces the checkout URL with `/thank-you/:id`, shows the saved order, and clears the cart. The receipt loads from `GET /orders/:id`, scoped to the signed-in customer, so refreshing retains the receipt. Missing products and excess quantities block checkout until corrected.
 
 ## Styles and assets
 
@@ -215,12 +216,12 @@ This map covers every JavaScript/JSX/CSS source file. Media assets are grouped b
 | [`src/components/NotificationPopup.jsx`](src/components/NotificationPopup.jsx) | Notification UI for request outcomes. |
 | [`src/components/PopupMessage.jsx`](src/components/PopupMessage.jsx) | Inline error/status message. |
 | [`src/components/PremiumEyewear.jsx`](src/components/PremiumEyewear.jsx) | Premium brand promotions. |
-| [`src/components/ProductGallery.jsx`](src/components/ProductGallery.jsx) | Collection-card cover/gallery with arrows and selectable dots (optional thumbnail mode). |
+| [`src/components/ProductGallery.jsx`](src/components/ProductGallery.jsx) | Collection-card cover/gallery with selectable dots (optional thumbnail mode), without image navigation arrows. |
 | [`src/components/ProductImagePopup.jsx`](src/components/ProductImagePopup.jsx) | Enlarged product images with selection and close controls. |
 | [`src/components/ProductSearch.jsx`](src/components/ProductSearch.jsx) | Accessible product search form for desktop/mobile, Enter, and icon submission. |
 | [`src/components/ProtectedRoute.jsx`](src/components/ProtectedRoute.jsx) | Current signed-in guard used for checkout/profile routes. |
 | [`src/components/RecentOrders.jsx`](src/components/RecentOrders.jsx) | Dashboard recent-order table. Legacy customer-tree dashboard code, not mounted by current App.jsx routes. |
-| [`src/components/ShapeCollections.jsx`](src/components/ShapeCollections.jsx) | Category child/shape collection tiles. |
+| [`src/components/ShapeCollections.jsx`](src/components/ShapeCollections.jsx) | Eyeglasses and sunglasses shape tiles use white image backgrounds; their section retains the storefront background. |
 | [`src/components/StatDashboard.jsx`](src/components/StatDashboard.jsx) | Dashboard statistic cards. Legacy customer-tree dashboard code, not mounted by current App.jsx routes. |
 | [`src/components/StoreIcon.jsx`](src/components/StoreIcon.jsx) | Header cart/wishlist icons and counts. |
 | [`src/components/Sunglasses.jsx`](src/components/Sunglasses.jsx) | Homepage sunglass shape section. |
@@ -268,6 +269,40 @@ This map covers every JavaScript/JSX/CSS source file. Media assets are grouped b
 
 For products with `hasVariants`, the product page builds colors from active variants and sizes from the chosen color. Switching color retains the selected size when available, otherwise selects the first size for that color. Switching size/color resets the gallery to its first image and changes price, stock and images to the selected combination. Products without variants keep their existing options.
 
+Product detail color swatches and size buttons are 44px circles with 16px gaps between options. Size text and color labels are 12px. Each color label sits below its button with an 8px gap, and Frame Size starts 32px below the color options. Labels are outside the buttons so their height is included in the layout.
+
+Product detail share and wishlist icons match the header icons: 24px with a 1.8 stroke width.
+
+`--store-wishlist-coral` in `src/index.css` sets the shared coral red (`#ff5b4b`) for cart/wishlist count badges and selected wishlist hearts on collection cards, similar-product cards, and product details. Badge numbers remain white; hearts return to their original outline color when removed from the wishlist.
+
+`--store-page-background` in `src/index.css` sets the shared pale lavender (`#f3f2ff`) page background across the storefront: home, collection, product details, wishlist, cart, checkout, profile, and authentication pages. `store-page-surface` applies it to both route layouts; page-specific backgrounds use the same variable. Cards, headers and intentional promotional section colors retain their own backgrounds.
+
+Wishlist card typography is sized for the compact grid: 16px/600 product names, 18px/600 prices, 12px/600 View Similar text, and 16px/500 View buttons. Names, prices and View buttons use 24px line heights; View Similar uses 1.4.
+
+`src/pages/Wishlist.css` follows the public Lenskart wishlist layout and supplied screenshot: a full-width white heading bar, inline **Your Wishlist** and live item count separated by a dot, and a lavender (`#f2f2ff`) content area. The desktop heading uses 28px/600 with a 36px line height, and the count uses 20px/500 with a 28px line height. Desktop heading padding is 24px 32px 20px; cards start in a content area with 24px 32px padding. Mobile margins and typography scale down. No nonfunctional 3D toggle is included.
+
+Wishlist cards use compact vertical spacing: 14px above the price, 20px below it, and desktop content padding of 8px at the top and 16px at the bottom. Image sizing and grid widths stay consistent with the shared card layout.
+
+The cart heading displays “Cart” when empty and includes the item count when products are present. The empty cart shows a Continue shopping button below “Your bag is empty”, linking to `/collection`. Wishlist/cart headings, the empty checkout state and the profile order-history empty state omit Continue shopping links.
+
+`ScrollToTop.jsx` sits inside `BrowserRouter`, outside the lazy-page loading boundary. It resets scroll instantly before paint whenever the pathname or query changes, and sets browser scroll restoration to manual while mounted. Opening a page or another brand/category collection starts at the top rather than retaining the previous page position. Normal state changes such as wishlist actions do not reset scrolling.
+
+Collection filters omit the Category and Subcategory dropdowns in both the desktop sidebar and mobile drawer. Category/subcategory navigation links and URL-based catalog filtering still work; attribute filters, reset and sorting remain available.
+
+Header and footer content follow the wishlist's full-width alignment: 32px side margins on desktop/tablet and 16px below 768px. `--store-page-gutter` and `store-container` in `src/index.css` share these margins with the wishlist heading/card grid and section containers; header/footer backgrounds remain full-width.
+
+Cart and checkout use the same full-width horizontal alignment via `--store-page-gutter`, without their former 1440px cap or independent side padding. Both start with 28px top padding and use aligned top edges for their two-column item/form and bill-summary layouts. Grid children permit shrinking to prevent long content from pushing the summary out of alignment; the layouts stack on mobile.
+
+Checkout places the shared Apply Coupon field at the bottom of its order summary, below totals and applied-coupon details, matching the cart's bottom coupon placement.
+
+Top Categories image tiles use white backgrounds, including the Eyeglasses tile, while retaining rounded corners and image padding.
+
+The homepage Our Brands section displays six image tiles: Vincent Chase, Hustlr, John Jacobs, Aqualens, Lenskart Air and Hooper. Each tile links directly to `/collection?brand=...`, including before navigation data loads. Collection filtering shows matching catalog products or its existing empty state when that brand has no products. Tiles appear in three columns on desktop and two on mobile, without a duplicate text-link row.
+
+`WishlistCard.jsx` uses a rounded white card with a large image, an X to remove the saved product, a View Similar link filtering the collection by frame shape, product name, current price, and an outlined View button linking to product details. No red tag appears. Variant products use their first active variant for the displayed image and price. The grid retains the previous card widths: four columns on desktop, three at 1100px and below, two at 767px and below, and one below 360px. Gaps are 20px on desktop and 12px on mobile; unavailable saved products retain a removal control.
+
+`ProductCardImage.jsx` and its stylesheet provide the shared image area for collection, similar-product and wishlist cards. The area scales with card width at a 1.6 aspect ratio; the image fills it with centered `object-fit: cover` and no padding. Collection cards also omit the former top image padding. Image cropping is consistent across these cards; gallery thumbnails and the product detail gallery retain their own sizing.
+
 `src/state/productVariants.js` resolves combinations. A null variant price inherits the product price; an empty gallery inherits product images. Unavailable combinations cannot be purchased. Wishlist entries for variant products link to the product page to choose a combination.
 
 ```js
@@ -289,7 +324,7 @@ Variant **Price** is the selling price; **Compare Price** (`originalPrice`) cont
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `65aba9c5e650fff318fcb9a5f428d76f57a1132fab67dae5674cca9a1e25a14e`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `7f6f7f5cf02921db322d27f4a1af9a04928e5c1e488fe04c990579de76e291d7`.
 
 ### Actual npm commands
 
@@ -326,6 +361,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/DashboardHeader.jsx](src/components/DashboardHeader.jsx) | default export |
 | [src/components/Exclusive.jsx](src/components/Exclusive.jsx) | default export |
 | [src/components/Eyeglasses.jsx](src/components/Eyeglasses.jsx) | Eyeglasses |
+| [src/components/FreeCheckup.css](src/components/FreeCheckup.css) | Internal module / styles |
 | [src/components/FreeCheckup.jsx](src/components/FreeCheckup.jsx) | default export |
 | [src/components/GlassesModel.jsx](src/components/GlassesModel.jsx) | GlassesModel |
 | [src/components/HomeSlider.jsx](src/components/HomeSlider.jsx) | default export |
@@ -339,16 +375,25 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/PopupMessage.jsx](src/components/PopupMessage.jsx) | PopupMessage |
 | [src/components/PremiumEyewear.jsx](src/components/PremiumEyewear.jsx) | default export |
 | [src/components/ProductCard.jsx](src/components/ProductCard.jsx) | ProductCard |
+| [src/components/ProductCardImage.css](src/components/ProductCardImage.css) | Internal module / styles |
+| [src/components/ProductCardImage.jsx](src/components/ProductCardImage.jsx) | ProductCardImage |
 | [src/components/ProductGallery.jsx](src/components/ProductGallery.jsx) | ProductGallery |
 | [src/components/ProductImagePopup.jsx](src/components/ProductImagePopup.jsx) | ProductImagePopup |
+| [src/components/ProductPopup.css](src/components/ProductPopup.css) | Internal module / styles |
 | [src/components/ProductSearch.jsx](src/components/ProductSearch.jsx) | ProductSearch |
 | [src/components/ProtectedRoute.jsx](src/components/ProtectedRoute.jsx) | ProtectedRoute |
 | [src/components/RecentOrders.jsx](src/components/RecentOrders.jsx) | default export |
+| [src/components/ScrollToTop.jsx](src/components/ScrollToTop.jsx) | ScrollToTop |
 | [src/components/ShapeCollections.jsx](src/components/ShapeCollections.jsx) | ShapeCollections |
+| [src/components/SimilarProductCard.jsx](src/components/SimilarProductCard.jsx) | SimilarProductCard |
+| [src/components/SimilarProductsPopup.css](src/components/SimilarProductsPopup.css) | Internal module / styles |
+| [src/components/SimilarProductsPopup.jsx](src/components/SimilarProductsPopup.jsx) | SimilarProductsPopup |
 | [src/components/StatDashboard.jsx](src/components/StatDashboard.jsx) | default export |
 | [src/components/StoreIcon.jsx](src/components/StoreIcon.jsx) | StoreIcon |
 | [src/components/Sunglasses.jsx](src/components/Sunglasses.jsx) | Sunglasses |
 | [src/components/Trending.jsx](src/components/Trending.jsx) | default export |
+| [src/components/WishlistCard.css](src/components/WishlistCard.css) | Internal module / styles |
+| [src/components/WishlistCard.jsx](src/components/WishlistCard.jsx) | WishlistCard |
 | [src/context/AuthContext.jsx](src/context/AuthContext.jsx) | AuthProvider |
 | [src/context/AuthState.js](src/context/AuthState.js) | AuthContext, useAuth |
 | [src/context/CategoryContext.js](src/context/CategoryContext.js) | CategoryContext, useCategories |
@@ -375,6 +420,8 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/pages/Profile.jsx](src/pages/Profile.jsx) | Profile |
 | [src/pages/Register.jsx](src/pages/Register.jsx) | Register |
 | [src/pages/SavedProducts.css](src/pages/SavedProducts.css) | Internal module / styles |
+| [src/pages/ThankYou.jsx](src/pages/ThankYou.jsx) | ThankYou |
+| [src/pages/Wishlist.css](src/pages/Wishlist.css) | Internal module / styles |
 | [src/pages/Wishlist.jsx](src/pages/Wishlist.jsx) | Wishlist |
 | [src/routes.jsx](src/routes.jsx) | default export |
 | [src/state/checkout.js](src/state/checkout.js) | checkoutRows |
@@ -401,6 +448,7 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/App.jsx | React Route | `/cart` |
 | src/App.jsx | React Route | `/eyeglasses` |
 | src/App.jsx | React Route | `/checkout` |
+| src/App.jsx | React Route | `/thank-you/:id` |
 | src/App.jsx | React Route | `/profile` |
 | src/App.jsx | React Route | `*` |
 | src/App.jsx | React Route | `/login` |
@@ -412,9 +460,6 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/pages/Collection.jsx | params.get | `search` |
 | src/pages/Collection.jsx | params.get | `category` |
 | src/pages/Collection.jsx | params.get | `subcategory` |
-| src/pages/Collection.jsx | next.delete | `category` |
-| src/pages/Collection.jsx | next.delete | `subcategory` |
-| src/pages/Collection.jsx | next.delete | `subcategory` |
 | src/pages/Collection.jsx | params.get | `search` |
 | src/pages/Collection.jsx | params.get | `brand` |
 | src/pages/Collection.jsx | params.get | `shape` |
@@ -424,3 +469,35 @@ Paths below are local declarations; consult the API/page guide above for mounted
 <!-- AUTO-GENERATED:END -->
 
 Collection results memoize filtering/sorting by catalog, query, selected filters, taxonomy and sort order. Available filter choices are memoized by catalog. Opening filters, editing draft filters and wishlist updates reuse the unchanged computed results.
+
+Similar Products uses `SimilarProductCard`: a white image area with wishlist action, light-grey content, lens description, current/compare pricing and calculated discount, and a full-width View link. It resolves the first active variant for its gallery and pricing, keeps cards aligned, and scrolls horizontally on small screens.
+
+Similar-product mobile typography uses an 18px semibold title/price, 16px regular lens text, 15px compare/discount text and a 16px semibold View button. Desktop Similar Products stays inside the left product column. Three equal-width cards are visible at once on desktop, with 12px gaps and horizontal scrolling for additional cards. Compact desktop cards use an 18px title, 14px lens/discount text, a 16px price/View button, 12px horizontal padding and 28px separation before pricing. The Similar Products heading inherits the same 20px size, weight and line-height as the other left-column section headings, with 24px space before cards on desktop and 18px on mobile.
+
+Collection and similar-product card photos fill their landscape image area with centered `object-fit: cover` and no extra image padding. This removes excess white margins from square catalog photos and makes frames appear larger. Full product galleries keep their existing viewing behavior.
+
+The storefront product page omits the positive In stock label. Unavailable products show Currently out of stock and a disabled Out of stock purchase button; inventory checks remain active.
+
+Checkout omits the Edit cart link from the order summary.
+
+View Similar on collection and wishlist cards opens a shared dialog on the current page. It loads active products of the same product type and shape, excludes the selected product, and supports wishlist actions, loading/error/empty states, retry, Escape and close-button dismissal, scroll locking and focus restoration. Product View links still open the selected product details.
+
+The similar-items dialog uses stacked horizontal cards with a large image, product name, actual size badge, selling/compare prices, discount, wishlist control and a Buy link to product details. Its heading and close button remain outside the scrolling list. The first result receives a blue outline matching the reference layout.
+
+Product popups must keep the same dimensions going forward. Both the image slider and similar-items dialog use `product-popup` from `src/components/ProductPopup.css`: 600px maximum width and 80dvh height, constrained to 90vw, with shared mobile margins. Change this shared stylesheet when adjusting product popup sizing rather than adding page-specific dimensions.
+
+All modal popups across the storefront and web panel follow the product image slider size: 600px maximum width and 80dvh height, constrained to 90vw. `shared/Popup.css` is the single sizing source, using `product-popup` or `app-popup`; future modal popups must use these classes. Long dialog content scrolls inside. Compact toast notifications and filter drawers retain their separate interaction layouts.
+
+Design reference: [Lenskart](https://www.lenskart.com/) is the reference for future project UI changes, as recorded in the root `AGENTS.md`. Current desktop similar-items popup source uses 600px width, 90vw maximum width, 80vh maximum height, 16px corners, an 18px/800 heading and a scrolling item list. Shared dialogs use this width/height limit; existing user instructions remain authoritative.
+
+Similar-items popup typography: 18px/800 heading, 16px/600 product names, 16px/700 selling prices with 14px supporting text, 13px size/comparison text and 14px/600 Buy buttons. Mobile names/prices reduce to 14px and secondary text to 12–13px. Explicit line heights and wrapping keep long product names readable in the horizontal layout.
+
+Similar-items popup photos use 30% of each horizontal card and a 140px desktop / 110px mobile media area. Images are centered with contain sizing so the complete frame remains visible without distortion.
+
+Similar-items cards use 6px vertical / 8px horizontal padding, 6px gaps after titles and size badges, 6px before comparison prices, and 10px/8px spacing around the Buy divider to reduce card height while preserving text wrapping.
+
+Similar-items cards have a plain white background with transparent image wrappers, removing the gray gradient behind product photos. Images retain their proportions, and shorter text spacing plus 32px Buy buttons keep the cards compact.
+
+Popup images are enlarged by 20% within their 30% card column, preserving card and popup widths. The media wrapper clips overflow while the image remains centered.
+
+Similar-items cards use a consistent 3:7 image-to-content column ratio on desktop and mobile, matching the supplied reference.

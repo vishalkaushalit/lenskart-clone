@@ -111,8 +111,10 @@ Products support multiple size/color combinations with their own images, invento
 | Application | Source files | Guide |
 | --- | --- | --- |
 | backend | 60 | [README](backend/README.md) |
-| frontend | 79 | [README](frontend/README.md) |
+| frontend | 91 | [README](frontend/README.md) |
 | web-panel | 51 | [README](web-panel/README.md) |
 
 Update references with `npm run docs:sync`; verify with `npm run docs:check`. Run `npm run docs:hooks` once per clone to enable commit-time synchronization. Review written field explanations whenever behavior changes.
 <!-- AUTO-GENERATED:END -->
+
+Design reference: [Lenskart](https://www.lenskart.com/) is the reference for future project UI changes, as recorded in the root `AGENTS.md`. Current desktop similar-items popup source uses 600px width, 90vw maximum width, 80vh maximum height, 16px corners, an 18px/800 heading and a scrolling item list. Shared dialogs use this width/height limit; existing user instructions remain authoritative.

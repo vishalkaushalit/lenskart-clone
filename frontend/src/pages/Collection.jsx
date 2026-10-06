@@ -15,6 +15,7 @@ import { filterGroups, matchesFilters } from "../data/collection";
 import { apiRequest } from "../api/api";
 import { useStore } from "../context/StoreContext";
 import PopupMessage from "../components/PopupMessage";
+import SimilarProductsPopup from "../components/SimilarProductsPopup";
 import ProductCard from "../components/ProductCard";
 import CollectionSort from "../components/CollectionSort";
 import "./Collection.css";
@@ -31,8 +32,7 @@ function CollectionResults() {
   const subcategoryValue=params.get('subcategory')||'';
   const categoryId=categories.find(row=>!row.parent&&(row.slug===categoryValue||row._id===categoryValue))?._id||'';
   const subcategoryId=categories.find(row=>row.parent===categoryId&&(row.slug===subcategoryValue||row._id===subcategoryValue))?._id||'';
-  function setCategoryId(id){const next=new URLSearchParams(params);const row=categories.find(row=>row._id===id);if(row)next.set('category',row.slug);else next.delete('category');next.delete('subcategory');setParams(next);}
-  function setSubcategoryId(id){const next=new URLSearchParams(params);const row=categories.find(row=>row._id===id);if(row)next.set('subcategory',row.slug);else next.delete('subcategory');setParams(next);}
+  const [similarProduct,setSimilarProduct]=useState(null);
   const [catalog, setCatalog] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -130,7 +130,6 @@ function CollectionResults() {
     setFilters({});
     const next=new URLSearchParams(params);for(const key of ['category','subcategory','brand','shape'])next.delete(key);setParams(next);
   }
-  const taxonomyControls = (<div className="collection-taxonomy"><label>Category<select value={categoryId} onChange={event=>{setCategoryId(event.target.value);}}><option value="">All categories</option>{categories.filter(row=>!row.parent).map(row=><option key={row._id} value={row._id}>{row.name}</option>)}</select></label><label>Subcategory<select disabled={!categoryId} value={subcategoryId} onChange={event=>setSubcategoryId(event.target.value)}><option value="">All subcategories</option>{categories.filter(row=>row.parent===categoryId).map(row=><option key={row._id} value={row._id}>{row.name}</option>)}</select></label></div>);
   const sortControl = <CollectionSort value={sort} onChange={setSort} />;
   const filterControls = (
     <>
@@ -171,7 +170,7 @@ function CollectionResults() {
 
   return (
     <section className="collection-page">
-      <aside className="collection-sidebar" aria-label="Collection filters">{taxonomyControls}
+      <aside className="collection-sidebar" aria-label="Collection filters">
         {sortControl}
         {filterControls}
       </aside>
@@ -253,7 +252,7 @@ function CollectionResults() {
         )}
         {!loading && !error && (
           <div className="collection-grid">
-            {products.map(product=><ProductCard key={product.id} product={product} assetUrl={assetUrl} favorite={favorites.includes(product.id)} onFavorite={()=>toggleFavorite(product)} onSimilar={()=>{const next={'Shape & Style':[product.shape]};setFilters(next);setDraft(next);setTab('All');}}/>)}
+            {products.map(product=><ProductCard key={product.id} product={product} assetUrl={assetUrl} favorite={favorites.includes(product.id)} onFavorite={()=>toggleFavorite(product)} onSimilar={()=>setSimilarProduct(product)}/>)}
           </div>
         )}
         {!loading && !error && !products.length && (
@@ -287,9 +286,10 @@ function CollectionResults() {
             <X size={23} />
           </button>
         </div>
-        {taxonomyControls}
+
         {filterControls}
       </dialog>
+    {similarProduct&&<SimilarProductsPopup product={similarProduct} onClose={()=>setSimilarProduct(null)}/>}
     </section>
   );
 }

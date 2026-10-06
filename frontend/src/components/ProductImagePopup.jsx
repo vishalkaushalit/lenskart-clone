@@ -1,3 +1,4 @@
+import './ProductPopup.css';
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
@@ -21,7 +22,7 @@ export default function ProductImagePopup({ images, selected, name, assetUrl, on
     railRef.current?.children[selected]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }, [selected]);
   function move(direction) { onSelect((selected + direction + images.length) % images.length); }
-  return createPortal(<dialog ref={dialogRef} className="product-image-popup" aria-label={`${name} image gallery`}
+  return createPortal(<dialog ref={dialogRef} className="product-popup product-image-popup" aria-label={`${name} image gallery`}
     onCancel={event => { event.preventDefault(); onClose(); }}
     onClick={event => { if (event.target === event.currentTarget) { const rect=event.currentTarget.getBoundingClientRect(); if(event.clientX<rect.left || event.clientX>rect.right || event.clientY<rect.top || event.clientY>rect.bottom) onClose(); } }}
     onKeyDown={event => { if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') { event.preventDefault(); move(event.key === 'ArrowLeft' ? -1 : 1); } }}>

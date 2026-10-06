@@ -1,14 +1,22 @@
+import { useState } from 'react';
+import SimilarProductsPopup from '../components/SimilarProductsPopup';
 import Loader from '../components/Loader';
+import WishlistCard from '../components/WishlistCard';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import useSavedProducts from '../hooks/useSavedProducts';
 import PopupMessage from '../components/PopupMessage';
 import './SavedProducts.css';
+import './Wishlist.css';
 const asset=(path)=>path?.startsWith('/')?new URL(path,import.meta.env.VITE_API_URL||'http://localhost:5001/api').href:path;
 export default function Wishlist(){
-  const {favorites,removeFavorite,addToCart}=useStore();const {loading,items,error,retry}=useSavedProducts(favorites);
-  return <section className="saved-products-page"><div className="saved-page-heading"><div><h1>My wishlist</h1><p>{favorites.length} saved {favorites.length===1?'product':'products'}</p></div><Link to="/collection">Continue shopping</Link></div>
-    {loading?<Loader label="Loading wishlist"/>:error?<div><PopupMessage message={error}/><button className="saved-button" onClick={retry}>Try again</button></div>:!favorites.length?<div className="saved-empty"><Heart size={44}/><h2>Your wishlist is empty</h2><p>Tap the heart on a product to save it here.</p><Link to="/collection" className="saved-button">Explore eyeglasses</Link></div>:<div className="saved-items-grid">{items.map(({id,product})=><article className="saved-card" key={id}><button onClick={()=>removeFavorite(id)} className="delete-button absolute top-3 right-3" aria-label={`Remove ${product?.name||'unavailable product'} from wishlist`}><Trash2 size={18} aria-hidden="true" /></button>{product?<><Link to={`/products/${product.slug||id}`}><img src={asset(product.image)} alt={product.name}/></Link><div className="saved-card-info"><p>{product.brand}</p><h2><Link to={`/products/${product.slug||id}`}>{product.name}</Link></h2><strong>₹{product.price.toLocaleString('en-IN')}</strong><span className="saved-product-meta">{product.color} · Size {product.size}</span><>{product.hasVariants?<Link className="saved-button" to={`/products/${product.slug||id}`}>Choose size &amp; color</Link>:<button disabled={product.stock<1} onClick={()=>addToCart(product)} className="saved-button"><ShoppingBag size={16}/>{product.stock>0?'Add to cart':'Out of stock'}</button>}</></div></>:<div className="saved-unavailable"><h2>Product unavailable</h2><p>This product is no longer available. You can remove it from your wishlist.</p></div>}</article>)}</div>}
+  const [similarProduct,setSimilarProduct]=useState(null);
+  const {favorites,removeFavorite}=useStore();const {loading,items,error,retry}=useSavedProducts(favorites);
+  return <section className="saved-products-page wishlist-page"><div className="saved-page-heading wishlist-page-heading"><div><h1>Your Wishlist</h1><span className="wishlist-heading-dot" aria-hidden="true"/><p>{favorites.length} {favorites.length===1?'item':'items'}</p></div></div>
+    <div className="wishlist-page-content">
+    {loading?<Loader label="Loading wishlist"/>:error?<div><PopupMessage message={error}/><button className="saved-button" onClick={retry}>Try again</button></div>:!favorites.length?<div className="saved-empty"><Heart size={44}/><h2>Your wishlist is empty</h2><p>Tap the heart on a product to save it here.</p><Link to="/collection" className="saved-button">Explore eyeglasses</Link></div>:<div className="wishlist-items-grid">{items.map(({id,product})=><WishlistCard key={id} id={id} product={product} assetUrl={asset} onRemove={()=>removeFavorite(id)} onSimilar={()=>setSimilarProduct(product)}/>)}</div>}
+    </div>
+    {similarProduct&&<SimilarProductsPopup product={similarProduct} onClose={()=>setSimilarProduct(null)}/>}
   </section>;
 }

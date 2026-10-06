@@ -1,9 +1,9 @@
 .checkout-page {
-  max-width: 1440px;
-  margin: auto;
-  padding: 28px clamp(16px, 4vw, 60px) 60px;
+  max-width: none;
+  margin: 0;
+  padding: 28px var(--store-page-gutter) 60px;
   color: #000042;
-  background: #faf9f7;
+  background: var(--store-page-background);
   min-height: 65vh;
 }
 .checkout-back {
@@ -28,6 +28,10 @@
   grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
   gap: 24px;
   align-items: start;
+}
+.checkout-layout > form,
+.checkout-layout > aside {
+  min-width: 0;
 }
 .checkout-panel {
   background: white;

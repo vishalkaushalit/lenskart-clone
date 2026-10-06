@@ -6,6 +6,7 @@ import StoreLayout from "./routes";
 const Register=lazy(()=>import("./pages/Register"));
 const Wishlist=lazy(()=>import("./pages/Wishlist"));
 const Cart=lazy(()=>import("./pages/Cart"));
+const ThankYou=lazy(()=>import("./pages/ThankYou"));
 const Checkout=lazy(()=>import("./pages/Checkout"));
 const ProductDetails=lazy(()=>import("./pages/ProductDetails"));
 const Collection=lazy(()=>import("./pages/Collection"));
@@ -26,13 +27,14 @@ const App = () => {
         <Route path="/eyeglasses" element={<Collection />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/thank-you/:id" element={<ThankYou />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
         <Route path="*" element={<h1>Page not found</h1>} />
       </Route>
       <Route
         element={
-          <main className="flex min-h-dvh flex-col items-center justify-center">
+          <main className="store-page-surface flex min-h-dvh flex-col items-center justify-center">
             <Outlet />
           </main>
         }

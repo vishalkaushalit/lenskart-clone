@@ -5,7 +5,7 @@ const Login = () => {
   return (
     <>
       <section className="w-full py-12 sm:py-16">
-        <div className="mx-auto w-[90%] max-w-[1320px] ">
+        <div className="store-container ">
           <div className="flex items-center justify-center">
             {/* Main Card Container */}
             <div

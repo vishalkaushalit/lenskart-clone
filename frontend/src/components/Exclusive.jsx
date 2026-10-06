@@ -22,7 +22,7 @@ const Exclusive = () => {
   return (
     <>
       <section className="py-12 sm:py-16">
-        <div className="mx-auto w-[90%] max-w-[1320px]">
+        <div className="store-container">
           <h2 className="mb-7 text-xl sm:text-2xl font-extrabold text-ink">Exclusively at Lenskart</h2>
           <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3">
             {exclusiveCollections.map(({ name, image }) => (

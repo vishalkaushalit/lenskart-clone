@@ -343,7 +343,7 @@ Dashboard recent orders accept `recentPage` (1–10,000, default 1). The databas
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e81866c7ad512f79b52c438c2cbfbb205b0108f117ce3309af257d433cd14803`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e24f8437e7af7157346fcd1aa02ac43abdf303ec4ac8aca0885817a5bc350bfb`.
 
 ### Actual npm commands
 
@@ -453,6 +453,7 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/routes/commerceRoutes.js | commerceAdmin.patch | `/orders/:id` |
 | src/routes/commerceRoutes.js | commercePublic.post | `/coupons/validate` |
 | src/routes/commerceRoutes.js | commercePublic.post | `/orders` |
+| src/routes/commerceRoutes.js | commercePublic.get | `/orders/:id` |
 | src/routes/dashboardRoutes.js | router.get | `/` |
 | src/routes/productRoutes.js | publicProducts.get | `/` |
 | src/routes/productRoutes.js | publicProducts.get | `/navigation` |
@@ -726,3 +727,5 @@ export default mongoose.model('User', userSchema);
 `npm run products:variant-images` downloads color-matched online demo galleries and validates image signatures without writing to the database. Source pages and individual image URLs are recorded in `public/products/color-variant-image-sources.json`. Some sample color combinations use a similar frame model of the same shape. Run `npm run products:variant-images -- --apply` after reviewing the files to assign galleries to every existing size of each mapped color in one transaction; it also corrects frame-9’s default grey gallery. Prices, stock, sizes, color names and status stay intact. Missing mapped products/variants stop the transaction. Applying verifies the saved galleries. Requires internet/database access.
 
 Variant attachment uses one database query and groups rows by product ID in one pass. Serialization, active inventory totals and unique option sets are built together, avoiding a scan of all variants for each product. Products without variants remain unchanged; variant products with no rows return empty options and zero stock.
+
+Customer order receipts: `GET /api/orders/:id` requires authentication and returns only an order belonging to the signed-in user. Missing or other-customer orders return 404. The frontend uses this endpoint for refreshable `/thank-you/:id` pages.

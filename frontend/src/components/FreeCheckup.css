@@ -1,0 +1,47 @@
+.checkup-card {
+  background: white;
+  border-radius: 28px;
+}
+.checkup-card-photo {
+  aspect-ratio: 656 / 594;
+  overflow: hidden;
+}
+.checkup-card-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.checkup-card-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: clamp(16px, 2vw, 32px);
+  color: #333368;
+}
+.checkup-card-caption h3 {
+  font-size: clamp(14px, 1.5vw, 24px);
+  font-weight: 700;
+  line-height: 1.35;
+}
+.checkup-card-caption p {
+  margin-top: 8px;
+  color: #73739d;
+  font-size: clamp(12px, 1.2vw, 18px);
+  line-height: 1.5;
+}
+.checkup-card-arrow {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: clamp(32px, 4vw, 64px);
+  height: clamp(32px, 4vw, 64px);
+  border: 1px solid #e8e8f2;
+  border-radius: 50%;
+  color: #000042;
+  box-shadow: 0 4px 20px #00004208;
+}
+.checkup-card-arrow svg {
+  width: 50%;
+  height: 50%;
+}

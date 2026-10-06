@@ -1,0 +1,14 @@
+/* Lenskart desktop similar-items reference: 600px wide, 80vh limit, 16px corners.
+   Keep all modal popup dimensions here so future dialogs remain consistent. */
+.product-popup,
+.app-popup {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(600px, 90vw);
+  max-width: 600px;
+  height: 80dvh;
+  max-height: 80dvh;
+  border-radius: 16px;
+}
+.app-popup { overflow-y: auto; }

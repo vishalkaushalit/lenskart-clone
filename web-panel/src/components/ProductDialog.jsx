@@ -20,7 +20,7 @@ export default function ProductDialog({ action, onClose, onSuccess, onError }) {
     } catch (error) { onError(error.message); setBusy(false); }
   }
   const inputClass = 'product-field';
-  return <dialog ref={dialog} aria-labelledby="product-dialog-title" onCancel={(event) => { event.preventDefault(); if (!busy&&!uploading) onClose(); }} className="fixed inset-0 m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 text-slate-800 shadow-xl backdrop:bg-black/40">
+  return <dialog ref={dialog} aria-labelledby="product-dialog-title" onCancel={(event) => { event.preventDefault(); if (!busy&&!uploading) onClose(); }} className="app-popup border border-slate-200 bg-white p-6 text-slate-800 shadow-xl backdrop:bg-black/40">
     <div className="flex items-center justify-between"><h2 id="product-dialog-title" className="text-xl font-bold">{deleting ? 'Delete product' : product.id ? 'Edit product' : 'Add product'}</h2><button disabled={busy||uploading} onClick={onClose} aria-label="Close"><X size={20} /></button></div>
     <form onSubmit={submit} className="mt-5 space-y-4">
       {deleting ? <p>Delete {product.name}? This cannot be undone.</p> : <fieldset disabled={busy||uploading} className="grid grid-cols-1 gap-4 sm:grid-cols-2">

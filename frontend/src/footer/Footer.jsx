@@ -10,7 +10,7 @@ const Footer = () => {
   return (
     <>
       <footer className="bg-ink text-white">
-        <div className="mx-auto w-[90%] max-w-[1320px]">
+        <div className="store-container">
           <div className="flex flex-col gap-10 py-10 sm:py-12 lg:flex-row lg:items-center lg:justify-between">
             <div className="grid w-full grid-cols-2 gap-x-8 gap-y-9 sm:grid-cols-3 lg:w-auto lg:gap-x-16 xl:gap-x-20">
               <div className="ftr_list">

@@ -20,7 +20,7 @@ const PremiumEyewear = () => {
   return (
     <>
       <section className="premium_eyewear_sec">
-        <div className="mx-auto w-[90%] max-w-[1320px]">
+        <div className="store-container">
           <h2 className="mb-7 text-xl sm:text-2xl font-extrabold text-ink">Premium Eyewear</h2>
           <div className="grid gap-5 md:grid-cols-[42%_1fr] lg:gap-7">
             <div className="overflow-hidden rounded-xl">

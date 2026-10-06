@@ -3,7 +3,7 @@ import { creationDate } from '../date';
 import { matchesSearch } from "../search";
 import StatusBadge from '../components/StatusBadge';
 import Loader from '../components/Loader';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Trash2, Plus, RefreshCw, Search, Layers } from 'lucide-react';
 import Pagination from '../components/Pagination';
@@ -23,6 +23,11 @@ export default function ProductDashboard() {
   const [attempt, setAttempt] = useState(0);
   const [categories,setCategories]=useState([]);
   const [categoryId,setCategoryId]=useState('');
+  const categoryGroups=useMemo(()=>{
+    const children=new Map();
+    for(const row of categories){if(!row.parent)continue;if(!children.has(row.parent))children.set(row.parent,[]);children.get(row.parent).push(row);}
+    return categories.filter(row=>!row.parent).map(root=>({...root,children:children.get(root._id)||[]}));
+  },[categories]);
   const [type, setType] = useState('');
   const [brand, setBrand] = useState('');
   const [status, setStatus] = useState('');
@@ -50,7 +55,7 @@ export default function ProductDashboard() {
   return <DashboardLayout><main className="admin-page">
     <PageHeader title="Products" description="Manage your product catalog"><div className="flex gap-2"><button disabled={loading} onClick={() => setAttempt((n) => n + 1)} className="admin-button-secondary"><RefreshCw size={16} />Refresh</button><Link to="/product/add" className="admin-button-primary"><Plus size={18} />Add Product</Link></div></PageHeader>
     <div className="grid gap-3 rounded-xl border border-slate-100 bg-white p-2 sm:grid-cols-2 xl:grid-cols-[1fr_1fr_.8fr_1.5fr]">
-      <select aria-label="Category" value={categoryId} onChange={e=>{setCategoryId(e.target.value);setPage(1);}} className={selectClass}><option value="">All categories / subcategories</option>{categories.map(row=><option key={row._id} value={row._id}>{row.parent?'↳ ':''}{row.name}</option>)}</select><select aria-label="Product type" value={type} onChange={(e) => {setType(e.target.value);setPage(1);}} className={selectClass}><option value="">All Categories</option>{['Eyeglasses','Sunglasses'].map((v) => <option key={v}>{v}</option>)}</select>
+      <select aria-label="Category" value={categoryId} onChange={e=>{setCategoryId(e.target.value);setPage(1);}} className={selectClass}><option value="">All categories / subcategories</option>{categoryGroups.map(root=><Fragment key={root._id}><option value={root._id}>{root.name}</option>{root.children.map(child=><option key={child._id} value={child._id}>{'\u00a0\u00a0\u00a0\u00a0'}{child.name}</option>)}</Fragment>)}</select><select aria-label="Product type" value={type} onChange={(e) => {setType(e.target.value);setPage(1);}} className={selectClass}><option value="">All Categories</option>{['Eyeglasses','Sunglasses'].map((v) => <option key={v}>{v}</option>)}</select>
       <select aria-label="Brand" value={brand} onChange={(e) => {setBrand(e.target.value);setPage(1);}} className={selectClass}><option value="">All brands</option>{[...new Set(catalog.map((p) => p.brand))].map((v) => <option key={v}>{v}</option>)}</select>
       <select aria-label="Status" value={status} onChange={(e) => {setStatus(e.target.value);setPage(1);}} className={selectClass}><option value="">All status</option><option value="active">Active</option><option value="inactive">Inactive</option></select>
       <label className="flex min-w-0 items-center gap-2 rounded-lg border border-slate-200 px-3"><Search size={16} className="shrink-0 text-slate-400"/><input aria-label="Search products" type="search" maxLength={100} placeholder="Search products..." value={search} onChange={(e) => {setParams(previous => { const next = new URLSearchParams(previous); if (e.target.value) next.set("search", e.target.value); else next.delete("search"); next.delete("page"); return next; }, {replace:true});}} className="min-w-0 flex-1 bg-transparent py-2.5 text-sm outline-none" /></label>

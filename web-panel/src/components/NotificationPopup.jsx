@@ -1,34 +1,41 @@
 import { createPortal } from "react-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { CircleCheck, CircleAlert, X } from "lucide-react";
 
 export default function NotificationPopup({ notification, onClose }) {
-  const dialogRef = useRef(null);
+  const popupRef = useRef(null);
   const [closing,setClosing] = useState(false);
   const closeRef = useRef(onClose);
   useEffect(()=>{closeRef.current=onClose;},[onClose]);
-  useEffect(()=>{if(!closing)return;const timer=setTimeout(()=>closeRef.current(),260);return()=>clearTimeout(timer);},[closing]);
-  const success = notification.type === "success";
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    const previousFocus = document.activeElement;
-    dialog.showModal();
-    return () => {
-      dialog.close();
-      if (previousFocus?.isConnected) previousFocus.focus();
-    };
-  }, []);
-
-  const Icon = success ? CircleCheck : CircleAlert;
-
+  useEffect(()=>{
+    const timer=setTimeout(()=>setClosing(true),1000);
+    return()=>clearTimeout(timer);
+  },[]);
+  useEffect(()=>{
+    if(!closing)return;
+    const timer=setTimeout(()=>closeRef.current(),260);
+    return()=>clearTimeout(timer);
+  },[closing]);
+  useLayoutEffect(()=>{
+    function position(){
+      const bottom=Math.max(0,document.querySelector('header')?.getBoundingClientRect().bottom||0);
+      popupRef.current?.style.setProperty('--notification-header-bottom',`${bottom}px`);
+    }
+    position();
+    const observer=new ResizeObserver(position);
+    const header=document.querySelector('header');
+    if(header)observer.observe(header);
+    window.addEventListener('resize',position);
+    window.addEventListener('scroll',position,true);
+    return()=>{observer.disconnect();window.removeEventListener('resize',position);window.removeEventListener('scroll',position,true);};
+  },[]);
+  const success=notification.type==='success';
+  const Icon=success?CircleCheck:CircleAlert;
   return createPortal(
-    <dialog ref={dialogRef} aria-labelledby="notification-title" aria-describedby="notification-message" onKeyDown={(event) => event.stopPropagation()} onCancel={(event) => { event.stopPropagation(); event.preventDefault(); setClosing(true); }} className={`admin-notification ${closing?'is-leaving':''} fixed inset-0 m-auto w-[calc(100%-2rem)] max-w-sm rounded-2xl border border-slate-200 bg-white p-6 text-center text-slate-800 shadow-xl backdrop:bg-black/40`}>
-      <button type="button" onClick={()=>setClosing(true)} aria-label="Close notification" className="absolute right-3 top-3 rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
-      <div className={`mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full ${success ? "bg-emerald-100 text-emerald-600" : "bg-red-100 text-red-600"}`}><Icon size={32} /></div>
-      <h2 id="notification-title" className="text-xl font-bold">{success ? "Success" : "Something went wrong"}</h2>
-      <p id="notification-message" className="mt-3 break-words text-sm text-slate-600">{notification.message}</p>
-      <button type="button" autoFocus onClick={()=>setClosing(true)} className={`mt-6 w-full rounded-lg px-4 py-2.5 text-sm font-semibold text-white ${success ? "bg-blue-600 hover:bg-blue-700" : "bg-red-600 hover:bg-red-700"}`}>OK</button>
-    </dialog>, document.body
+    <div ref={popupRef} className={`admin-notification ${success?'':'is-error'} ${closing?'is-leaving':''}`} role={success?'status':'alert'}>
+      <Icon size={20} aria-hidden="true"/>
+      <p>{notification.message}</p>
+      <button type="button" onClick={()=>setClosing(true)} aria-label="Dismiss notification"><X size={16} aria-hidden="true"/></button>
+    </div>,document.body
   );
 }

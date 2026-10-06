@@ -222,7 +222,7 @@ const Header = () => {
         className={`z-[100] w-full bg-white text-black ${isFixed ? "fixed top-0 left-0 shadow-sm" : "relative"}`}
       >
         <div className="lg:hidden">
-          <div className="flex h-[40px] items-center justify-between bg-ink px-4 text-white">
+          <div className="store-header-inset flex h-[40px] items-center justify-between bg-ink text-white">
             <p className="text-[12px] font-light">
               4.5 <span className="text-yellow-400 text-[10px]">★</span> Rating
               | 50M+ Downloads
@@ -234,7 +234,7 @@ const Header = () => {
               Open in App
             </a>
           </div>
-          <div className="px-4 py-2">
+          <div className="store-container py-2">
             <div className="flex items-center justify-between gap-3">
               <a
                 href="#"
@@ -371,8 +371,8 @@ const Header = () => {
         </div>
 
         <div className="hidden lg:block">
-          <div className="border-b border-black/10 px-5 py-2">
-            <div className="mx-auto flex max-w-[1400px] items-center justify-between">
+          <div className="border-b border-black/10 py-2">
+            <div className="store-container flex items-center justify-between">
               <div className="flex items-center overflow-x-auto whitespace-nowrap [scrollbar-width:none]">
                 {topbarLinks.map((link) => (
                   <a
@@ -395,7 +395,7 @@ const Header = () => {
               </div>
             </div>
           </div>
-          <div className="flex min-h-[70px] w-full items-center gap-4 px-5">
+          <div className="store-container flex min-h-[70px] items-center gap-4">
             <Link
               className="grid shrink-0 place-items-center"
               to="/"

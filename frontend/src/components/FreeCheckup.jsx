@@ -4,18 +4,20 @@ import home_eye_test from "../assets/images/home_eye_test.webp";
 import online_eye_test from "../assets/images/online_eye_test.webp";
 
 import "swiper/css";
+import { ArrowRight } from "lucide-react";
+import "./FreeCheckup.css";
 
 const checkupList = [
-  { name: "Visit Nearest Store", image: store_eye_test, checkupUrl: "#" },
-  { name: "Schedule at Home", image: home_eye_test, checkupUrl: "#" },
-  { name: "Take an Online Eye Test", image: online_eye_test, checkupUrl: "#" },
+  { name: "Visit Nearest Store", description: "Walk in for quick eye test", image: store_eye_test, checkupUrl: "#" },
+  { name: "Schedule at Home", description: "Try 1000+ frames", image: home_eye_test, checkupUrl: "#" },
+  { name: "Take an Online Eye Test", description: "Anytime, anywhere", image: online_eye_test, checkupUrl: "#" },
 ];
 
 const FreeCheckup = () => {
   return (
     <>
       <section className="py-12 sm:py-16">
-        <div className="mx-auto w-[90%] max-w-[1320px]">
+        <div className="store-container">
           <h2 className="mb-7 text-xl sm:text-2xl font-extrabold text-ink">
             Get a FREE Eye Check Up
           </h2>
@@ -28,14 +30,18 @@ const FreeCheckup = () => {
             }}
             className="!pb-1"
           >
-            {checkupList.map(({ name, image, checkupUrl }) => (
+            {checkupList.map(({ name, description, image, checkupUrl }) => (
               <SwiperSlide key={name}>
                 <a
                   href={checkupUrl}
-                  className="block overflow-hidden rounded-xl transition-transform hover:scale-[1.02]"
+                  className="checkup-card block overflow-hidden transition-transform hover:scale-[1.02]"
                 >
-                  <div>
-                    <img loading="lazy" decoding="async" className="h-auto w-full" src={image} alt={name} />
+                  <div className="checkup-card-photo">
+                    <img loading="lazy" decoding="async" src={image} alt="" />
+                  </div>
+                  <div className="checkup-card-caption">
+                    <div><h3>{name}</h3><p>{description}</p></div>
+                    <span className="checkup-card-arrow" aria-hidden="true"><ArrowRight /></span>
                   </div>
                 </a>
               </SwiperSlide>

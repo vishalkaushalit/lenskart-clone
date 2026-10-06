@@ -1,3 +1,4 @@
+import "./ProductPopup.css";
 import { createPortal } from "react-dom";
 import { useEffect, useRef } from "react";
 import { CircleCheck, CircleAlert, X } from "lucide-react";
@@ -19,7 +20,7 @@ export default function NotificationPopup({ notification, onClose }) {
   const Icon = success ? CircleCheck : CircleAlert;
 
   return createPortal(
-    <dialog ref={dialogRef} aria-labelledby="notification-title" aria-describedby="notification-message" onKeyDown={(event) => event.stopPropagation()} onCancel={(event) => { event.stopPropagation(); event.preventDefault(); onClose(); }} className="fixed inset-0 m-auto w-[calc(100%-2rem)] max-w-sm rounded-2xl border border-slate-200 bg-white p-6 text-center text-slate-800 shadow-xl backdrop:bg-black/40">
+    <dialog ref={dialogRef} aria-labelledby="notification-title" aria-describedby="notification-message" onKeyDown={(event) => event.stopPropagation()} onCancel={(event) => { event.stopPropagation(); event.preventDefault(); onClose(); }} className="app-popup border border-slate-200 bg-white p-6 text-center text-slate-800 shadow-xl backdrop:bg-black/40">
       <button type="button" onClick={onClose} aria-label="Close notification" className="absolute right-3 top-3 rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
       <div className={`mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full ${success ? "bg-emerald-100 text-emerald-600" : "bg-red-100 text-red-600"}`}><Icon size={32} /></div>
       <h2 id="notification-title" className="text-xl font-bold">{success ? "Success" : "Something went wrong"}</h2>

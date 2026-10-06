@@ -6,13 +6,32 @@
   --color-ink: #000042;
 }
 
+:root {
+  --store-wishlist-coral: #ff5b4b;
+  --store-page-background: #f3f2ff;
+  --store-page-gutter: 32px;
+}
+.store-container {
+  width: calc(100% - 2 * var(--store-page-gutter));
+  margin-inline: auto;
+}
+.store-header-inset { padding-inline: var(--store-page-gutter); }
+@media(max-width:767px) {
+  :root { --store-page-gutter: 16px; }
+}
+body { background-color: var(--store-page-background); }
+.store-page-surface {
+  background-color: var(--store-page-background);
+  min-height: 70vh;
+}
+
 @layer base {
   html { scroll-behavior: smooth; }
   body { @apply m-0 bg-white font-sans text-black; }
   a { @apply text-inherit no-underline; }
 }
-.store-header-icon{position:relative;display:grid;place-items:center;flex-shrink:0;color:#000042;padding:3px}.store-header-count{position:absolute;right:-6px;top:-5px;display:grid;place-items:center;min-width:16px;height:16px;padding:0 3px;background:#000042;color:white;border:1px solid white;border-radius:20px;font-size:9px;font-weight:600;line-height:1}
-.store-toast-stack{position:fixed;z-index:1000;bottom:20px;left:50%;transform:translateX(-50%);width:min(440px,calc(100% - 28px));display:flex;flex-direction:column;gap:8px;pointer-events:none}.store-toast{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#000042;color:white;border:1px solid #ffffff30;border-radius:12px;box-shadow:0 6px 24px #00004230;font-size:12px;pointer-events:auto}.store-toast>svg{flex-shrink:0;color:#a9ead4}.store-toast p{flex:1;overflow-wrap:anywhere}.store-toast button{padding:4px;cursor:pointer}.store-toast.is-error{background:#9e3045}.store-toast.is-error>svg{color:white}
+.store-header-icon{position:relative;display:grid;place-items:center;flex-shrink:0;color:#000042;padding:3px}.store-header-count{position:absolute;right:-6px;top:-5px;display:grid;place-items:center;min-width:16px;height:16px;padding:0 3px;background:var(--store-wishlist-coral);color:white;border:1px solid white;border-radius:20px;font-size:9px;font-weight:600;line-height:1}
+.store-toast-stack{position:fixed;z-index:1000;top:calc(max(var(--toast-header-bottom,0px),env(safe-area-inset-top,0px)) + 12px);right:var(--store-page-gutter,16px);width:max-content;max-width:calc(100% - 2 * var(--store-page-gutter,16px));display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none}.store-toast{display:flex;align-items:center;gap:10px;padding:8px;width:max-content;max-width:100%;background:white;color:#000042;border:1px solid #e8e8f2;border-radius:12px;font-size:12px;pointer-events:auto}.store-toast>svg{flex-shrink:0;color:#009d7e}.store-toast p{flex:1;overflow-wrap:anywhere}.store-toast button{flex-shrink:0;padding:0;cursor:pointer}.store-toast.is-error{color:#9e3045;border-color:#9e3045}.store-toast.is-error>svg{color:#9e3045}
 .store-product-add-cart{display:flex;align-items:center;justify-content:center;width:100%;margin-top:24px;padding:13px;border-radius:9px;background:#000042;color:white;font-size:13px;font-weight:600;cursor:pointer}.store-product-add-cart:disabled{opacity:.4;cursor:not-allowed}.store-product-add-cart+.store-product-wishlist{margin-top:10px}
 
 .store-loader{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;width:100%;height:100dvh;background:rgba(255,255,255,.82);backdrop-filter:blur(3px);padding:32px}
@@ -31,8 +50,8 @@
 
 .store-toast{animation:store-toast-enter .4s cubic-bezier(.2,.8,.2,1) both}
 .store-toast.is-leaving{animation:store-toast-leave .26s ease-in both;pointer-events:none}
-@keyframes store-toast-enter{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes store-toast-leave{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(16px)}}
+@keyframes store-toast-enter{from{opacity:0;transform:translateY(-16px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes store-toast-leave{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-12px)}}
 @media(prefers-reduced-motion:reduce){.store-toast,.store-toast.is-leaving{animation:none}}
 
 /* Consistent delete controls across product, user, cart, wishlist, and editor views. */

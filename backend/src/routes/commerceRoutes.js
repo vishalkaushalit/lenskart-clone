@@ -94,3 +94,10 @@ commercePublic.post('/orders',requireAuth,wrap(async(req,res)=>{
   try{await session.withTransaction(async()=>{order=await Order.findOne({user:req.user._id,requestId:req.body.requestId}).session(session);if(order)return;const result=await quote(req.body.items,req.body.couponCode,session);for(const item of result.items){if(item.variant){const changed=await ProductVariant.updateOne({_id:item.variant,productId:item.product,status:'active',stock:{$gte:item.quantity}},{$inc:{stock:-item.quantity}},{session});if(changed.modifiedCount!==1)fail('Variant stock changed. Update your cart.',409);await Product.updateOne({_id:item.product},{$inc:{sales:item.quantity}},{session});}else{const changed=await Product.updateOne({_id:item.product,status:'active',stock:{$gte:item.quantity}},{$inc:{stock:-item.quantity,sales:item.quantity}},{session});if(changed.modifiedCount!==1)fail('Stock changed. Update your cart.',409);}} [order]=await Order.create([{user:req.user._id,requestId:req.body.requestId,items:result.items,totalAmount:result.total,subtotal:result.subtotal,discount:result.discount,couponCode:result.couponCode,shipping,billing,paymentMethod:'cod',status:'confirmed'}],{session});});}finally{await session.endSession();}
   res.status(201).json({success:true,order});
 }));
+
+// Scope order receipts to the signed-in customer, including after a page refresh.
+commercePublic.get('/orders/:id',requireAuth,wrap(async(req,res)=>{
+  const order=await Order.findOne({_id:id(req.params.id),user:req.user._id}).lean();
+  if(!order)fail('Order not found.',404);
+  res.json({order});
+}));

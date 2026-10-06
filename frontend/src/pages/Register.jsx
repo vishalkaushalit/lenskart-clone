@@ -37,7 +37,7 @@ export default function Register() {
 
   return (
     <section className="w-full py-12 sm:py-16">
-      <div className="mx-auto flex w-[90%] max-w-[1320px] flex-col overflow-hidden rounded-lg bg-white shadow-2xl lg:flex-row">
+      <div className="store-container flex flex-col overflow-hidden rounded-lg bg-white shadow-2xl lg:flex-row">
         <LoginImage />
         <div className="w-full p-6 sm:p-10 lg:w-1/2">
           <h1 className="text-3xl font-semibold">Create an account</h1>

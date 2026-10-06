@@ -201,7 +201,7 @@ const Trending = () => {
 
   return (
     <section ref={sectionRef} className="trending_sec">
-      <div className="mx-auto w-[90%] max-w-[1320px]">
+      <div className="store-container">
         <h2 className="mb-7 text-xl sm:text-2xl font-extrabold text-ink">#Trending at Lenskart</h2>
 
         <Swiper

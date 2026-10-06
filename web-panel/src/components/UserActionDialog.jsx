@@ -41,7 +41,7 @@ export default function UserActionDialog({ action, currentUserId, onClose, onSuc
   }
 
   return (
-    <dialog ref={dialogRef} aria-labelledby="user-action-title" onCancel={(event) => { event.preventDefault(); if (!busy) onClose(); }} className="fixed inset-0 m-auto w-[calc(100%-2rem)] max-w-lg rounded-2xl border border-slate-200 bg-white p-6 text-slate-800 shadow-xl backdrop:bg-black/40">
+    <dialog ref={dialogRef} aria-labelledby="user-action-title" onCancel={(event) => { event.preventDefault(); if (!busy) onClose(); }} className="app-popup border border-slate-200 bg-white p-6 text-slate-800 shadow-xl backdrop:bg-black/40">
       <div className="flex items-center justify-between gap-4">
         <h2 id="user-action-title" className="text-xl font-bold">{deleting ? "Delete user" : creating ? "Add user" : "Edit user"}</h2>
         <button type="button" disabled={busy} onClick={onClose} aria-label="Close dialog" className="rounded-lg p-1 hover:bg-slate-100 disabled:opacity-50"><X size={20} /></button>

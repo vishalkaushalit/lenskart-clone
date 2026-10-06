@@ -4,7 +4,7 @@ import User from '../models/User.js';
 import assert from 'node:assert/strict';
 import Coupon from '../models/Coupon.js';
 import Product from '../models/Product.js';
-import { discountAmount, quote, address, commerceAdmin } from './commerceRoutes.js';
+import { discountAmount, quote, address, commerceAdmin, commercePublic } from './commerceRoutes.js';
 import { requireAuth } from '../middleware/auth.js';
 
 test('coupon search filters both the total and rows before pagination', async t => {
@@ -109,4 +109,21 @@ test('direct coupon details supports page refresh and missing-record errors',asy
  const handler=commerceAdmin.stack.find(layer=>layer.route?.path==='/coupons/:id'&&layer.route.methods.get).route.stack.at(-1).handle;
  await handler({params:{id}},{json(data){assert.equal(data.coupon.code,'SAVE10');}},assert.ifError);
  mock.mock.mockImplementation(()=>({lean:async()=>null}));await handler({params:{id}},{status(code){assert.equal(code,404);return this;},json(data){assert.equal(data.message,'Coupon not found.');}},assert.ifError);
+});
+
+test('customer receipt lookup is scoped to the signed-in user', async t => {
+  const orderId='507f1f77bcf86cd799439011';
+  t.mock.method(Order,'findOne',filter=>{
+    assert.deepEqual(filter,{_id:orderId,user:'customer-id'});
+    return {lean:async()=>({ _id:orderId })};
+  });
+  const route=commercePublic.stack.find(layer=>layer.route?.path==='/orders/:id'&&layer.route.methods.get).route;
+  assert.equal(route.stack[0].handle,requireAuth);
+  await route.stack[1].handle({params:{id:orderId},user:{_id:'customer-id'}},{json(data){assert.equal(data.order._id,orderId);}},assert.ifError);
+});
+
+test('missing or other-customer receipts return 404', async t => {
+  t.mock.method(Order,'findOne',()=>({lean:async()=>null}));
+  const handler=commercePublic.stack.find(layer=>layer.route?.path==='/orders/:id'&&layer.route.methods.get).route.stack[1].handle;
+  await handler({params:{id:'507f1f77bcf86cd799439011'},user:{_id:'customer-id'}},{status(code){assert.equal(code,404);return this;},json(data){assert.equal(data.message,'Order not found.');}},assert.ifError);
 });
