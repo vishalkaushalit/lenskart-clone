@@ -1,6 +1,7 @@
 import {useCategories} from '../context/CategoryContext';
 import { useEffect, useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import ProductSearch from "../components/ProductSearch";
 import StoreIcon from "../components/StoreIcon";
 import AccountMenu from "../components/AccountMenu";
 import { useAuth } from "../context/AuthState";
@@ -10,7 +11,6 @@ import {
   UserRound,
   Menu,
   PhoneCall,
-  Search,
   X,
 } from "lucide-react";
 
@@ -172,8 +172,6 @@ const defaultMobileMenuItems = [
 ];
 
 const Header = () => {
-  const navigate=useNavigate();
-  function search(event){if(event.key==='Enter'){event.preventDefault();navigate(`/collection?search=${encodeURIComponent(event.currentTarget.value.trim())}`);setIsMenuOpen(false);}}
   const {categories}=useCategories();
   const roots=categories.filter(row=>!row.parent);
   const navigation=defaultNavigation;
@@ -272,15 +270,7 @@ const Header = () => {
                 </button>
               </div>
             </div>
-            <label className="mt-2 flex h-[40px] items-center gap-4 rounded-[10px] border-1 border-[#e6e6ef] px-3 text-[#73739d]">
-              <Search size={16} className="shrink-0 text-ink" />
-              <input
-                className="min-w-0 w-full bg-transparent text-[14px] outline-none placeholder:text-[#73739d]"
-                type="search"
-                placeholder={'Search "metal eyeglasses"'}
-                aria-label="Search products" onKeyDown={search}
-              />
-            </label>
+            <ProductSearch className="mt-2 flex h-[40px] items-center gap-4 rounded-[10px] border-1 border-[#e6e6ef] px-3 text-[#73739d]" placeholder={'Search "metal eyeglasses"'} iconSize={16} />
           </div>
         </div>
 
@@ -454,15 +444,7 @@ const Header = () => {
             </nav>
 
             <div className="ml-auto flex items-center gap-4 xl:gap-7">
-              <label className="bg-gray-100 hidden h-11 w-[120px] items-center gap-3.5 rounded-lg px-4 lg:flex xl:w-[250px]">
-                <Search size={20} color="black" aria-hidden="true" />
-                <input
-                  className="min-w-0 w-full bg-transparent text-base outline-none"
-                  type="search"
-                  placeholder={'Search "airy light glasses"'}
-                  aria-label="Search products" onKeyDown={search}
-                />
-              </label>
+              <ProductSearch className="bg-gray-100 hidden h-11 w-[120px] items-center gap-3.5 rounded-lg px-4 lg:flex xl:w-[250px]" placeholder={'Search "airy light glasses"'} iconSize={20} />
               <StoreIcon type="wishlist" />
               <StoreIcon type="cart" />
               <AccountMenu />

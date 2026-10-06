@@ -1,9 +1,39 @@
 import test from 'node:test';
+import Order from '../models/Order.js';
+import User from '../models/User.js';
 import assert from 'node:assert/strict';
 import Coupon from '../models/Coupon.js';
 import Product from '../models/Product.js';
 import { discountAmount, quote, address, commerceAdmin } from './commerceRoutes.js';
 import { requireAuth } from '../middleware/auth.js';
+
+test('coupon search filters both the total and rows before pagination', async t => {
+  let counted;
+  t.mock.method(Coupon, 'countDocuments', async filter => { counted = filter; return 1; });
+  t.mock.method(Coupon, 'find', filter => {
+    assert.deepEqual(filter, counted);
+    assert.equal(filter.$and[0].$or[0].code.$regex, 'SAVE');
+    const chain = { sort(){return this;}, skip(value){assert.equal(value,20);return this;}, limit(){return this;}, lean:async()=>[{code:'SAVE'}] };
+    return chain;
+  });
+  const handler=commerceAdmin.stack.find(layer=>layer.route?.path==='/coupons'&&layer.route.methods.get).route.stack[0].handle;
+  await handler({query:{search:' SAVE ',page:'2'}},{json(result){assert.equal(result.total,1);assert.equal(result.coupons[0].code,'SAVE');}},assert.ifError);
+});
+
+test('order search supports customer details and a numeric order ID', async t => {
+  t.mock.method(User, 'find', () => ({select(){return this;},lean:async()=>[{_id:'customer-id'}]}));
+  let counted;
+  t.mock.method(Order, 'countDocuments', async filter => {counted=filter;return 1;});
+  t.mock.method(Order, 'find', filter => {
+    assert.deepEqual(filter,counted);
+    assert.equal(filter.status,'confirmed');
+    assert.ok(filter.$and[0].$or.some(option=>option.user?.$in.includes('customer-id')));
+    assert.ok(filter.$and[1].$or.some(option=>option.orderId===123));
+    return {populate(){return this;},sort(){return this;},skip(){return this;},limit(){return this;},lean:async()=>[{orderId:123}]};
+  });
+  const handler=commerceAdmin.stack.find(layer=>layer.route?.path==='/orders'&&layer.route.methods.get).route.stack[0].handle;
+  await handler({query:{search:'John #123',status:'confirmed'}},{json(result){assert.equal(result.total,1);assert.equal(result.orders[0].orderId,123);}},assert.ifError);
+});
 const productId='123456789012345678901234';
 test('coupon amounts are rounded and cannot exceed the cart total',()=>{
   assert.equal(discountAmount({type:'percentage',value:25},1500),375);
@@ -29,6 +59,14 @@ test('expired and minimum-purchase coupons are rejected',async(t)=>{
   await assert.rejects(quote([{id:productId,quantity:1}],'SAVE'),/Minimum/);
   mock.mock.mockImplementation(async()=>({code:'SAVE',type:'fixed',value:100,minimum:0,expiresAt:new Date(0)}));
   await assert.rejects(quote([{id:productId,quantity:1}],'SAVE'),/expired/);
+});
+test('percentage coupon response includes its actual rate and calculated savings',async(t)=>{
+  t.mock.method(Product,'findOne',async()=>({_id:productId,name:'Frame',price:1500,stock:2,color:'Black',size:'M',productType:'Eyeglasses'}));
+  t.mock.method(Coupon,'findOne',async()=>({code:'SAVE10',type:'percentage',value:10,minimum:0}));
+  const result=await quote([{id:productId,quantity:1}],'SAVE10');
+  assert.equal(result.percentage,10);
+  assert.equal(result.discount,150);
+  assert.equal(result.total,1350);
 });
 test('address validation rejects missing and malformed fields',()=>{
   const input={name:'Customer',phone:'9999999999',email:'customer@example.com',address:'Street 1',city:'Delhi',state:'Delhi',pincode:'110001'};
@@ -64,4 +102,11 @@ test('online order placement is rejected before accessing the database',async()=
   let status;let message;const res={status(code){status=code;return this;},json(body){message=body.message;}};
   await handler({body:{paymentMethod:'online'}},res,assert.ifError);
   assert.equal(status,400);assert.match(message,/not connected/);
+});
+
+test('direct coupon details supports page refresh and missing-record errors',async t=>{
+ const id='123456789012345678901234';const mock=t.mock.method(Coupon,'findById',value=>{assert.equal(value,id);return {lean:async()=>({_id:id,code:'SAVE10',value:10})};});
+ const handler=commerceAdmin.stack.find(layer=>layer.route?.path==='/coupons/:id'&&layer.route.methods.get).route.stack.at(-1).handle;
+ await handler({params:{id}},{json(data){assert.equal(data.coupon.code,'SAVE10');}},assert.ifError);
+ mock.mock.mockImplementation(()=>({lean:async()=>null}));await handler({params:{id}},{status(code){assert.equal(code,404);return this;},json(data){assert.equal(data.message,'Coupon not found.');}},assert.ifError);
 });

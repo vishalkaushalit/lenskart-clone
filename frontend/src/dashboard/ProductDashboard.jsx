@@ -1,9 +1,14 @@
+import { Trash2 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { matchesSearch } from "../state/productSearch";
 import AsideBarDashboard from "../components/AsideBarDashboard";
 import DashboardHeader from "../components/DashboardHeader";
 
 const ProductDashboard = () => {
+  const [params, setParams] = useSearchParams();
+  const search = params.get("search") || "";
   // Sample data — replace with real products later
-  const products = [
+  const catalog = [
     {
       id: 1,
       image:
@@ -55,6 +60,8 @@ const ProductDashboard = () => {
       status: "Inactive",
     },
   ];
+
+  const products = catalog.filter(product => matchesSearch(product, search));
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-800">
@@ -133,6 +140,8 @@ const ProductDashboard = () => {
                 <input
                   type="text"
                   placeholder="Search products…"
+                  value={search}
+                  onChange={event => setParams(event.target.value ? { search: event.target.value } : {}, { replace: true })}
                   aria-label="Search products"
                   className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
                 />
@@ -166,6 +175,7 @@ const ProductDashboard = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-slate-700">
+                  {!products.length && <tr><td colSpan={8} className="px-4 py-8 text-center">No products found.</td></tr>}
                   {products.map((p) => (
                     <tr key={p.id} className="hover:bg-slate-50/60">
                       {/* Checkbox */}
@@ -226,9 +236,9 @@ const ProductDashboard = () => {
                           </button>
                           <button
                             aria-label={`Delete ${p.name}`}
-                            className="flex h-8 w-8 items-center justify-center rounded-lg text-red-500 hover:bg-red-50"
+                            className="delete-button"
                           >
-                            🗑️
+                            <Trash2 size={18} aria-hidden="true" />
                           </button>
                         </div>
                       </td>

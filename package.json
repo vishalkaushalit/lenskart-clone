@@ -1,0 +1,10 @@
+{
+  "name": "lenskart-clone-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:sync": "node scripts/sync-readmes.mjs --write",
+    "docs:check": "node scripts/sync-readmes.mjs --check",
+    "docs:hooks": "git config core.hooksPath .githooks"
+  }
+}

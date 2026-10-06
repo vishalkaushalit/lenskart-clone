@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+cd "$(git rev-parse --show-toplevel)"
+# Generate against staged code, so unstaged work does not enter the documentation.
+node scripts/sync-readmes.mjs --staged --write
+if ! node scripts/sync-readmes.mjs --staged --check; then
+  echo 'READMEs were updated. Review the explanations, stage the four README files, and commit again.' >&2
+  exit 1
+fi

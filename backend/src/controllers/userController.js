@@ -147,3 +147,13 @@ export async function createUser(req, res, next) {
     next(error);
   }
 }
+
+// Direct admin edit pages fetch only public account fields, never credentials.
+export async function userDetails(req, res, next) {
+  if (!/^[a-f\d]{24}$/i.test(req.params.id)) return res.status(400).json({message:'Invalid user ID.'});
+  try {
+    const user=await User.findById(req.params.id).select('_id userId name email phone status role createdAt updatedAt').lean();
+    if(!user)return res.status(404).json({message:'User not found.'});
+    res.json({user:{id:String(user._id),userId:user.userId,name:user.name,email:user.email,phone:user.phone||'',accountStatus:user.status||'active',role:user.role,createdAt:user.createdAt,updatedAt:user.updatedAt}});
+  } catch(error){next(error);}
+}

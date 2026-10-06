@@ -1,0 +1,15 @@
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import DashboardLayout from '../components/DashboardLayout';
+import PageHeader from '../components/PageHeader';
+import Loader from '../components/Loader';
+import PopupMessage from '../components/PopupMessage';
+import StatusBadge from '../components/StatusBadge';
+import { apiRequest, productImageUrl } from '../api';
+export default function ResourceDetails({kind}) {
+ const {id}=useParams();const [result,setResult]=useState({loading:true});const [attempt,setAttempt]=useState(0);
+ useEffect(()=>{const controller=new AbortController();async function load(){setResult({loading:true});try{const data=await apiRequest(kind==='categories'?'/admin/categories':kind==='users'?`/users/${id}`:`/admin/coupons/${id}`,{signal:controller.signal});const record=kind==='categories'?data.categories.find(row=>row._id===id):data[kind==='users'?'user':'coupon'];if(!record)throw new Error('Record not found.');if(!controller.signal.aborted)setResult({loading:false,record,categories:data.categories||[]});}catch(error){if(!controller.signal.aborted)setResult({loading:false,error:error.message});}}load();return()=>controller.abort();},[kind,id,attempt]);
+ const row=result.record;
+ const fields=!row?{}:kind==='users'?{Name:row.name,'User ID':row.userId,Email:row.email,Phone:row.phone,Role:row.role,'Account access':row.accountStatus,Created:row.createdAt}:kind==='categories'?{Name:row.name,Slug:row.slug,Parent:result.categories.find(root=>root._id===row.parent)?.name||'Main category','Display type':row.kind,'Display order':row.sortOrder,Status:row.active?'active':'inactive'}:{Code:row.code,'Discount type':row.type,Discount:row.type==='percentage'?`${row.value}%`:`₹${row.value}`,'Minimum purchase':`₹${row.minimum}`,Expiry:row.expiresAt?new Date(row.expiresAt).toLocaleDateString('en-IN',{timeZone:'Asia/Kolkata'}):'No expiry',Status:!row.active?'inactive':row.expiresAt&&new Date(row.expiresAt)<new Date()?'expired':'active'};
+ return <DashboardLayout><main className="admin-page"><PageHeader title={{users:'User Details',categories:'Category Details',coupons:'Coupon Details'}[kind]} description="View saved information"><Link to={`/${kind}`} className="admin-button-secondary">Back to {kind}</Link><Link to={`/${kind}/${id}/edit`} className="admin-button-primary">Edit</Link></PageHeader>{result.loading?<Loader/>:result.error?<div><PopupMessage message={result.error}/><button className="admin-button-secondary" onClick={()=>setAttempt(n=>n+1)}>Try again</button></div>:<section className="product-panel">{kind==='categories'&&row.image&&<img src={productImageUrl(row.image)} alt={row.name} className="mb-5 h-32 w-32 rounded-lg object-contain"/>}<dl className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{Object.entries(fields).map(([label,value])=><div key={label}><dt className="mb-1 text-sm text-slate-400">{label}</dt><dd className="break-words text-sm font-medium text-slate-700">{['Status','Account access'].includes(label)?<StatusBadge status={value}/>:value??'—'}</dd></div>)}</dl></section>}</main></DashboardLayout>;
+}

@@ -1,3 +1,4 @@
+import ProductSearch from "./ProductSearch";
 
 import { Menu, Bell } from "lucide-react";
 
@@ -14,14 +15,7 @@ const DashboardHeader = () => {
           <Menu />
         </label>
 
-        <div className="w-full flex items-center gap-2 rounded-lg bg-slate-100 px-4 py-2.5 sm:flex">
-          {/* <span className="text-slate-400">🔍</span> */}
-          <input
-            type="text"
-            placeholder="Search anything..."
-            className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
-          />
-        </div>
+        <ProductSearch className="w-full flex items-center gap-2 rounded-lg bg-slate-100 px-4 py-2.5" placeholder="Search products..." />
 
         {/* Right side */}
         <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-4">

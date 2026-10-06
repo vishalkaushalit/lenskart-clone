@@ -17,6 +17,8 @@ import authRoutes from './routes/authRoutes.js';
 import accountRoutes from './routes/accountRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import { initializeUserIds } from './services/userIds.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
+import ProductVariant from './models/ProductVariant.js';
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -98,10 +100,11 @@ async function startServer() {
       },
     }));
 
-    await Promise.all([Order.init(),Coupon.init()]);
+    await Promise.all([Order.init(),Coupon.init(),ProductVariant.init()]);
     app.use('/api/categories',publicCategories);
     app.use('/api/admin/categories',adminCategories);
     app.use('/api/admin', commerceAdmin);
+    app.use('/api/admin/dashboard', dashboardRoutes);
     app.use('/api', commercePublic);
     app.use('/api/auth', authRoutes);
     app.use('/api/account', accountRoutes);

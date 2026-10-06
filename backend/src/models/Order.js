@@ -10,6 +10,7 @@ const orderSchema = new mongoose.Schema({
   subtotal: {type:Number,min:0},discount: {type:Number,min:0,default:0},couponCode: {type:String,default:""},
   items: [{
     product: {type:mongoose.Schema.Types.ObjectId,ref:"Product"},
+    variant: {type:mongoose.Schema.Types.ObjectId,ref:"ProductVariant",default:null},
     options: {color:String,size:String,type:{type:String}},
     name: { type: String, required: true },
     quantity: { type: Number, required: true, min: 1 },

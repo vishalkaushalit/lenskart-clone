@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import Product from '../models/Product.js';
-import { listProducts, saveProduct, productFields, productDetails, storefrontProductDetails } from './productController.js';
+import { listProducts, saveProduct, productFields, publicProduct, productDetails, storefrontProductDetails } from './productController.js';
 import { managedProducts } from '../routes/productRoutes.js';
 import { requireAuth } from '../middleware/auth.js';
 const response = () => ({ statusCode:200, status(code) { this.statusCode=code; return this; }, json(body) { this.body=body; return this; } });
@@ -72,7 +72,10 @@ test('storefront details only returns active products', async (t) => {
 
 test('storefront detail fields are editable and reject invalid sizes and oversized highlights', async () => {
   const fields = { subtitle:'Black square frame', lensTypes:['Powered Eyeglasses'], availableColors:['Black'], availableSizes:['S','M'], offerTitle:'Offer', offerText:'Use code FRAME', deliveryInformation:'Dispatch in two days', assurances:['One year warranty'], material:'Acetate', hinge:'Metal hinge', temple:'Flexible arms', nosepad:'Built in nose pads' };
-  assert.deepEqual(productFields(fields), fields);
+  const {availableColors,availableSizes,...editableFields}=fields;
+  assert.deepEqual(productFields(fields), editableFields);
+  const legacy=publicProduct({_id:'legacy',availableColors,availableSizes});
+  assert.deepEqual(legacy.availableColors,availableColors);assert.deepEqual(legacy.availableSizes,availableSizes);
   const base = { sku:'detail-test',name:'Frame',image:'/assets/products/square.webp',shape:'Square',brand:'Brand',price:1500,originalPrice:2000,color:'Black',...fields };
   await new Product(base).validate();
   await assert.rejects(new Product({...base, availableSizes:['invalid']}).validate());
@@ -83,7 +86,9 @@ test('reviews, FAQ and highlight images validate before saving', async () => {
   const base={sku:'content-test',name:'Frame',image:'/assets/products/square.webp',shape:'Square',brand:'Brand',price:1500,originalPrice:2000,color:'Black'};
   const content={faqs:[{question:'Which size?',answer:'Medium.'}],reviews:[{name:'Customer',rating:5,text:'Comfortable',date:'2026-10-05'}],highlightImages:{material:'/assets/products/square.webp'},availableSizes:['M/L','XL']};
   await new Product({...base,...content}).validate();
-  assert.deepEqual(productFields(content),content);
+  const {availableSizes,...editableContent}=content;
+  assert.deepEqual(productFields(content),editableContent);
+  assert.deepEqual(publicProduct({_id:'legacy',availableSizes}).availableSizes,availableSizes);
   for (const fields of [{reviews:[{name:'Customer',rating:6,text:'Review',date:'2026-10-05'}]},{faqs:[{question:'Question'}]},{highlightImages:{material:'javascript:alert(1)'}}]) await assert.rejects(new Product({...base,...fields}).validate());
 });
 

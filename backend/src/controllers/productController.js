@@ -1,10 +1,11 @@
+import { attachVariants } from '../services/variants.js';
 import {availableSlug,validSlug} from '../utils/slugs.js';
 import Category from '../models/Category.js';
 import Product from '../models/Product.js';
-const editable = ['slug', 'categoryIds', 'subcategoryIds', 'categoryId', 'subcategoryId', 'faqs', 'reviews', 'highlightImages', 'subtitle', 'lensTypes', 'availableColors', 'availableSizes', 'offerTitle', 'offerText', 'deliveryInformation', 'assurances', 'material', 'hinge', 'temple', 'nosepad', 'description', 'features', 'sku', 'name', 'image', 'images', 'category', 'productType', 'shape', 'brand', 'price', 'originalPrice', 'color', 'size', 'gender', 'stock', 'status', 'powered'];
+const editable = ['slug', 'categoryIds', 'subcategoryIds', 'categoryId', 'subcategoryId', 'faqs', 'reviews', 'highlightImages', 'subtitle', 'lensTypes', 'offerTitle', 'offerText', 'deliveryInformation', 'assurances', 'material', 'hinge', 'temple', 'nosepad', 'description', 'features', 'sku', 'name', 'image', 'images', 'category', 'productType', 'shape', 'brand', 'price', 'originalPrice', 'color', 'size', 'gender', 'stock', 'status', 'powered'];
 export function publicProduct(product) {
   const result = { id: String(product._id) };
-  for (const key of [...editable, 'sales', 'rating', 'addedAt']) result[key] = product[key];
+  for (const key of [...editable, 'availableColors', 'availableSizes', 'sales', 'rating', 'addedAt', 'hasVariants', 'variants', 'createdAt', 'updatedAt']) result[key] = product[key];
   result.categoryIds=product.categoryIds?.length?product.categoryIds.map(String):(product.categoryId?[String(product.categoryId)]:[]);
   result.subcategoryIds=product.subcategoryIds?.length?product.subcategoryIds.map(String):(product.subcategoryId?[String(product.subcategoryId)]:[]);
   result.images = product.images?.length ? product.images : [product.image];
@@ -20,13 +21,13 @@ export async function listProducts(req, res, next) {
     let filter=req.query?.all==='1'?{status:'active'}:{status:'active',productType:'Eyeglasses'};
     if(req.query?.ids){const ids=String(req.query.ids).split(',');if(ids.length>50||ids.some(id=>!/^[a-f\d]{24}$/i.test(id)))return res.status(400).json({message:'Provide up to 50 valid product IDs.'});filter={status:'active',_id:{$in:[...new Set(ids)]}};}
     const products = await Product.find(filter).sort({ addedAt: 1, _id: 1 }).lean();
-    res.json({ success: true, products: products.map(publicProduct) });
+    res.json({ success: true, products: (await attachVariants(products)).map(publicProduct) });
   } catch (error) { next(error); }
 }
 export async function adminProducts(req, res, next) {
   try {
     const products = await Product.find({}).sort({ createdAt: -1, _id: -1 }).lean();
-    res.json({ success: true, products: products.map(publicProduct) });
+    res.json({ success: true, products: (await attachVariants(products, true)).map(publicProduct) });
   } catch (error) { next(error); }
 }
 function failure(error, res, next) {
@@ -84,7 +85,7 @@ export async function productDetails(req, res, next) {
   try {
     const product = await Product.findById(req.params.id).lean();
     if (!product) return res.status(404).json({ message: 'Product not found.' });
-    res.json({ success: true, product: publicProduct(product) });
+    res.json({ success: true, product: publicProduct((await attachVariants([product], true))[0]) });
   } catch (error) { next(error); }
 }
 
@@ -93,7 +94,7 @@ export async function storefrontProductDetails(req, res, next) {
   try {
     const product = await Product.findOne({ ...(/^[a-f\d]{24}$/i.test(req.params.id)?{_id:req.params.id}:{slug:req.params.id}), status: 'active' }).lean();
     if (!product) return res.status(404).json({ message: 'This product is no longer available.' });
-    res.json({ success: true, product: publicProduct(product) });
+    res.json({ success: true, product: publicProduct((await attachVariants([product]))[0]) });
   } catch (error) { next(error); }
 }
 

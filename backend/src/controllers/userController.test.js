@@ -163,3 +163,14 @@ test('unsupported and non-string sort orders are rejected', async (t) => {
     assert.equal(res.statusCode, 400);
   }
 });
+
+test('direct user detail exposes edit fields without credentials and requires admin access',async t=>{
+ const {userDetails}=await import('./userController.js');const id='123456789012345678901234';
+ t.mock.method(User,'findById',value=>{assert.equal(value,id);return {select(fields){assert.ok(!fields.includes('password'));return this;},lean:async()=>({_id:id,name:'Person',email:'person@example.com',phone:'9999999999',role:'customer',status:'inactive',passwordHash:'secret'})};});
+ const res=response();await userDetails({params:{id}},res,assert.ifError);assert.equal(res.body.user.accountStatus,'inactive');assert.equal(res.body.user.phone,'9999999999');assert.equal(res.body.user.passwordHash,undefined);
+ const route=userRoutes.stack.find(layer=>layer.route?.path==='/:id'&&layer.route.methods.get).route;assert.equal(route.stack[0].handle,requireAuth);let status;route.stack[1].handle({user:{role:'customer'}},{status(code){status=code;return this;},json(){}},()=>assert.fail('customer allowed'));assert.equal(status,403);
+});
+test('direct user detail rejects invalid or missing records',async t=>{
+ const {userDetails}=await import('./userController.js');const invalid=response();await userDetails({params:{id:'invalid'}},invalid,assert.ifError);assert.equal(invalid.statusCode,400);
+ t.mock.method(User,'findById',()=>({select(){return this;},lean:async()=>null}));const missing=response();await userDetails({params:{id:'123456789012345678901234'}},missing,assert.ifError);assert.equal(missing.statusCode,404);
+});

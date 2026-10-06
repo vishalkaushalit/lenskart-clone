@@ -1,4 +1,5 @@
 import express from 'express';
+import variantRoutes from './variantRoutes.js';
 import { uploadProductImage } from '../services/productImages.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 import { productNavigation, listProducts, adminProducts, saveProduct, deleteProduct, productDetails, storefrontProductDetails } from '../controllers/productController.js';
@@ -8,6 +9,7 @@ publicProducts.get('/navigation',productNavigation);
 publicProducts.get('/:id', storefrontProductDetails);
 export const managedProducts = express.Router();
 managedProducts.use(requireAuth, requireRole('admin'));
+managedProducts.use('/:id/variants', variantRoutes);
 managedProducts.post('/images', express.raw({ type: ['image/jpeg', 'image/png', 'image/webp'], limit: '5mb' }), uploadProductImage);
 managedProducts.get('/', adminProducts);
 managedProducts.get('/:id', productDetails);

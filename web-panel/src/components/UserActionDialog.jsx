@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X } from "lucide-react";
+import { X, Trash2 } from "lucide-react";
 import { apiRequest } from "../api";
 
 export default function UserActionDialog({ action, currentUserId, onClose, onSuccess, onError }) {
@@ -53,18 +53,18 @@ export default function UserActionDialog({ action, currentUserId, onClose, onSuc
           <>
             <div>
               <label htmlFor="edit-user-name" className="mb-2 block text-sm font-semibold">Name</label>
-              <input id="edit-user-name" value={name} onChange={(event) => setName(event.target.value)} maxLength={100} required disabled={busy} className="w-full rounded-lg border border-slate-300 px-3 py-2.5" />
+              <input id="edit-user-name" value={name} onChange={(event) => setName(event.target.value)} maxLength={100} required disabled={busy} className="admin-field" />
             </div>
             <div>
               <label htmlFor="edit-user-email" className="mb-2 block text-sm font-semibold">Email</label>
-              <input id="edit-user-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} maxLength={254} required disabled={busy} className="w-full rounded-lg border border-slate-300 px-3 py-2.5" />
+              <input id="edit-user-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} maxLength={254} required disabled={busy} className="admin-field" />
             </div>
-            <div><label htmlFor="user-phone" className="mb-2 block text-sm font-semibold">Phone</label><input id="user-phone" type="tel" value={phone} maxLength={30} onChange={(event) => setPhone(event.target.value)} disabled={busy} className="w-full rounded-lg border border-slate-300 px-3 py-2.5" /></div>
-            <div><label htmlFor="user-status" className="mb-2 block text-sm font-semibold">Account access</label><select id="user-status" value={status} onChange={(event) => setStatus(event.target.value)} disabled={busy || user.id === currentUserId} className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5"><option value="active">Enabled</option><option value="inactive">Disabled</option></select></div>
-            {creating && <div><label htmlFor="user-password" className="mb-2 block text-sm font-semibold">Password</label><input id="user-password" type="password" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={8} required disabled={busy} className="w-full rounded-lg border border-slate-300 px-3 py-2.5" /></div>}
+            <div><label htmlFor="user-phone" className="mb-2 block text-sm font-semibold">Phone</label><input id="user-phone" type="tel" value={phone} maxLength={30} onChange={(event) => setPhone(event.target.value)} disabled={busy} className="admin-field" /></div>
+            <div><label htmlFor="user-status" className="mb-2 block text-sm font-semibold">Account access</label><select id="user-status" value={status} onChange={(event) => setStatus(event.target.value)} disabled={busy || user.id === currentUserId} className="admin-field"><option value="active">Enabled</option><option value="inactive">Disabled</option></select></div>
+            {creating && <div><label htmlFor="user-password" className="mb-2 block text-sm font-semibold">Password</label><input id="user-password" type="password" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={8} required disabled={busy} className="admin-field" /></div>}
             <div>
               <label htmlFor="edit-user-role" className="mb-2 block text-sm font-semibold">Role</label>
-              <select id="edit-user-role" value={role} onChange={(event) => setRole(event.target.value)} disabled={busy || user.id === currentUserId} className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 disabled:opacity-50">
+              <select id="edit-user-role" value={role} onChange={(event) => setRole(event.target.value)} disabled={busy || user.id === currentUserId} className="admin-field">
                 <option value="customer">Customer</option>
                 <option value="admin">Admin</option>
               </select>
@@ -73,7 +73,7 @@ export default function UserActionDialog({ action, currentUserId, onClose, onSuc
         )}
         <div className="flex justify-end gap-3 pt-2">
           <button type="button" disabled={busy} onClick={onClose} className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold disabled:opacity-50">Cancel</button>
-          <button type="submit" disabled={busy} className={`rounded-lg px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50 ${deleting ? "bg-red-600 hover:bg-red-700" : "bg-blue-600 hover:bg-blue-700"}`}>{busy ? (deleting ? "Deleting..." : "Saving...") : (deleting ? "Delete user" : "Save changes")}</button>
+          <button type="submit" disabled={busy} className={`rounded-lg px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50 ${deleting ? "delete-button" : "bg-blue-600 hover:bg-blue-700"}`}>{deleting && <Trash2 size={18} aria-hidden="true" />}{busy ? (deleting ? "Deleting..." : "Saving...") : (deleting ? "Delete user" : "Save changes")}</button>
         </div>
       </form>
     </dialog>

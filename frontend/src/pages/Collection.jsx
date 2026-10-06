@@ -1,4 +1,5 @@
 import {useCategories} from '../context/CategoryContext';
+import { matchesSearch } from "../state/productSearch";
 import Loader from '../components/Loader';
 import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -7,31 +8,23 @@ import {
   Filter,
   Glasses,
   Grid2X2,
-  Heart,
-  PanelsTopLeft,
-  BadgePercent,
   Sparkles,
-  Star,
   X,
 } from "lucide-react";
 import { filterGroups, matchesFilters } from "../data/collection";
 import { apiRequest } from "../api/api";
 import { useStore } from "../context/StoreContext";
 import PopupMessage from "../components/PopupMessage";
-import ProductGallery from "../components/ProductGallery";
+import ProductCard from "../components/ProductCard";
 import CollectionSort from "../components/CollectionSort";
 import "./Collection.css";
 
-const money = new Intl.NumberFormat("en-IN");
-const colors = {
-  Black: "#242424",
-  Brown: "#594744",
-  Grey: "#b1b8bc",
-  Gold: "#c5ae77",
-  Pink: "#dc8b9d",
-};
-
 export default function Collection() {
+  const [params] = useSearchParams();
+  return <CollectionResults key={params.get("search") || ""} />;
+}
+
+function CollectionResults() {
   const [params,setParams] = useSearchParams();
   const {categories}=useCategories();
   const categoryValue=params.get('category')||'';
@@ -74,11 +67,10 @@ export default function Collection() {
   const [draft, setDraft] = useState({});
   const [filters, setFilters] = useState({});
   const { favorites, toggleFavorite, notify } = useStore();
-  const [selectedColors, setSelectedColors] = useState({});
   const drawer = useRef(null);
   const currentCategory=categories.find(row=>row._id===categoryId);
   const currentSubcategory=categories.find(row=>row._id===subcategoryId);
-  const query = (params.get("search") || "").trim().toLowerCase();
+  const query = (params.get("search") || "").trim();
   const products = catalog.filter(
     (product) =>
       (tab === "All" || product.category === tab) &&
@@ -87,10 +79,7 @@ export default function Collection() {
       (!params.get("shape")||product.shape.toLowerCase()===params.get("shape").toLowerCase()) &&
       (!categoryId||(product.categoryIds||[product.categoryId]).includes(categoryId))&&(!subcategoryId||(product.subcategoryIds||[product.subcategoryId]).includes(subcategoryId))&&
       matchesFilters(product, filters) &&
-      (!query ||
-        `${product.name} ${product.shape} ${product.color}`
-          .toLowerCase()
-          .includes(query)),
+      matchesSearch(product, query),
   );
   if (sort === "price-low") products.sort((a, b) => a.price - b.price);
   if (sort === "price-high") products.sort((a, b) => b.price - a.price);
@@ -190,8 +179,9 @@ export default function Collection() {
             </> : <strong aria-current="page">{params.get('brand') || currentCategory?.name || 'All Products'}</strong>}
           </nav>
           <h1>
-            {params.get('brand')||currentSubcategory?.name||currentCategory?.name||'All Products'} <span>{products.length} Items</span>
+            {query ? `Search results for “${query}”` : params.get('brand')||currentSubcategory?.name||currentCategory?.name||'All Products'} <span>{products.length} Items</span>
           </h1>
+          {query && <Link to="/collection">Clear search</Link>}
           <div className="collection-mobile-controls">
             {sortControl}
             <button onClick={() => drawer.current.showModal()}>
@@ -255,117 +245,14 @@ export default function Collection() {
         )}
         {!loading && !error && (
           <div className="collection-grid">
-            {products.map((product) => (
-              <article className="collection-card" key={product.id}>
-                <div className="collection-product-image">
-                  {product.rating > 0 && (
-                    <span className="collection-rating">
-                      <Star size={13} fill="currentColor" />
-                      {product.rating}
-                    </span>
-                  )}
-                  <button
-                    className="collection-heart"
-                    aria-label={`${favorites.includes(product.id) ? "Remove" : "Add"} ${product.name} ${favorites.includes(product.id) ? "from" : "to"} wishlist`}
-                    aria-pressed={favorites.includes(product.id)}
-                    onClick={() => toggleFavorite(product)}
-                  >
-                    <Heart
-                      size={23}
-                      fill={
-                        favorites.includes(product.id) ? "currentColor" : "none"
-                      }
-                    />
-                  </button>
-                  {product.powered && (
-                    <span className="collection-powered">POWERED</span>
-                  )}
-                  <ProductGallery product={product} assetUrl={assetUrl} linkTo={`/products/${product.slug||product.id}`} />
-                  <div className="collection-image-tools">
-                    <button
-                      className="collection-similar"
-                      onClick={() => {
-                        const next = { "Shape & Style": [product.shape] };
-                        setFilters(next);
-                        setDraft(next);
-                        setTab("All");
-                      }}
-                    >
-                      <PanelsTopLeft size={15} />
-                      View Similar
-                    </button>
-                    <div className="collection-swatches">
-                      {[
-                        product.color,
-                        product.color === "Pink" ? "Black" : "Pink",
-                      ].map((color) => (
-                        <button
-                          key={color}
-                          title={color}
-                          aria-label={`Select ${color} for ${product.name}`}
-                          aria-pressed={
-                            (selectedColors[product.id] || product.color) ===
-                            color
-                          }
-                          className={
-                            (selectedColors[product.id] || product.color) ===
-                            color
-                              ? "chosen"
-                              : ""
-                          }
-                          style={{ "--swatch": colors[color] || "#73739d" }}
-                          onClick={() =>
-                            setSelectedColors((previous) => ({
-                              ...previous,
-                              [product.id]: color,
-                            }))
-                          }
-                        />
-                      ))}
-                      <span>+2</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="collection-product-info">
-                  <h2><Link to={`/products/${product.slug||product.id}`}>{product.name}</Link></h2>
-                  <span className="collection-size">
-                    <b>{product.size}</b>Size
-                  </span>
-                  <span className="collection-selected-color">
-                    {selectedColors[product.id] || product.color}
-                  </span>
-                  <p className="collection-price">
-                    <strong>₹{money.format(product.price)}</strong> with Free
-                    BLU lenses
-                  </p>
-                  {product.originalPrice > product.price && (
-                    <p className="collection-discount">
-                      <del>₹{money.format(product.originalPrice)}</del>{" "}
-                      <span>
-                        (
-                        {product.originalPrice > 0
-                          ? Math.round(
-                              (1 - product.price / product.originalPrice) * 100,
-                            )
-                          : 0}
-                        % OFF)
-                      </span>
-                    </p>
-                  )}
-                </div>
-                <div className="collection-offer">
-                  <BadgePercent size={16} fill="currentColor" />
-                  Use code SINGLE for this price
-                </div>
-              </article>
-            ))}
+            {products.map(product=><ProductCard key={product.id} product={product} assetUrl={assetUrl} favorite={favorites.includes(product.id)} onFavorite={()=>toggleFavorite(product)} onSimilar={()=>{const next={'Shape & Style':[product.shape]};setFilters(next);setDraft(next);setTab('All');}}/>)}
           </div>
         )}
         {!loading && !error && !products.length && (
           <div className="collection-empty">
             <Glasses size={40} />
             <h2>No frames found</h2>
-            <p>Try another collection or clear your filters.</p>
+            <p>{query ? `No products match “${query}”. Try a brand, color, or frame shape.` : "Try another collection or clear your filters."}</p>
             <button
               onClick={() => {
                 reset();

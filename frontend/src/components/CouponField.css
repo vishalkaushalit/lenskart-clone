@@ -8,4 +8,19 @@
 .store-coupon button:hover{background:#1d1958}
 .store-coupon p{font-size:11px;color:#73739d;line-height:1.6;margin-top:10px}
 
-.store-coupon-applied{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#009d7e;margin-top:14px}.store-coupon-applied button{background:transparent;color:#73739d;padding:4px;font-size:11px}.store-coupon button:disabled{opacity:.5;cursor:wait}
+.store-coupon button:disabled{opacity:.5;cursor:wait}
+.store-coupon-discount{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:16px 0;color:#262629;font-size:14px;line-height:1.5;font-weight:400}
+.store-coupon-discount-label{display:flex;align-items:center;gap:8px;min-width:0;overflow-wrap:anywhere}
+.store-coupon-discount-label svg{flex-shrink:0;width:18px;height:18px}
+.store-coupon-discount-amount{color:#00a85a;white-space:nowrap;font-variant-numeric:tabular-nums;margin:0;font-weight:400}
+.store-coupon-total{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-top:1px solid #dddde2;padding-top:18px;margin-top:8px;font-size:18px;line-height:1.4;color:#262629;font-weight:600}
+.store-coupon-total strong{font-weight:600}
+.store-coupon-total-values{display:flex;align-items:baseline;justify-content:flex-end;flex-wrap:wrap;gap:8px;text-align:right;font-variant-numeric:tabular-nums}
+.store-coupon-total-values del{font-size:14px;font-weight:400;color:#606067;white-space:nowrap}
+.store-coupon-total-values strong{white-space:nowrap}
+.store-coupon-applied-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px;color:#606067;font-size:14px;line-height:1.5;font-weight:400}
+.store-coupon-chip{display:inline-flex;align-items:center;gap:10px;border:0;border-radius:10px;padding:5px 10px;background:#e9f5ee;color:#008957;font-size:12px;line-height:1.5;font-weight:500;cursor:pointer}
+.store-coupon-chip svg{width:16px;height:16px}
+.store-coupon-chip:hover{background:#dcefe4}
+.checkout-totals .store-coupon-discount{color:#262629;padding:10px 0}
+@media(max-width:380px){.store-coupon-total{font-size:16px}.store-coupon-total-values del{font-size:12px}.store-coupon-applied-row{font-size:13px}.store-coupon-discount{font-size:13px;gap:8px}}

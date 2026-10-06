@@ -34,3 +34,10 @@
 @keyframes store-toast-enter{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes store-toast-leave{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(16px)}}
 @media(prefers-reduced-motion:reduce){.store-toast,.store-toast.is-leaving{animation:none}}
+
+/* Consistent delete controls across product, user, cart, wishlist, and editor views. */
+button.delete-button.delete-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;min-width:36px;height:36px;padding:8px;border:1px solid #f0dce2;border-radius:9px;background:#fff8f9;color:#bd6678;font-size:13px;font-weight:500;line-height:1;cursor:pointer;transition:background-color .15s,color .15s,border-color .15s}
+button.delete-button.delete-button:hover:not(:disabled){background:#ffeef1;color:#c85168;border-color:#f4ccd4}
+button.delete-button.delete-button:focus-visible{outline:2px solid #c85168;outline-offset:3px}
+button.delete-button.delete-button:disabled{opacity:.4;cursor:not-allowed}
+button.delete-button.delete-button svg{width:18px;height:18px;flex-shrink:0}

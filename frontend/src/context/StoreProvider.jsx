@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CircleCheck, CircleAlert, X } from 'lucide-react';
-import { normalizeStore, cartQuantity } from '../state/shopping';
+import { normalizeStore, cartQuantity, cartKey } from '../state/shopping';
 import { StoreContext } from './StoreContext';
 function read(key){try{const value=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(value)?value:[];}catch{return [];}}
 function initial(){return normalizeStore(read('collection-favorites'),read('store-cart'));}
@@ -28,12 +28,14 @@ export default function StoreProvider({children}){
   function toggleFavorite(product){const id=typeof product==='string'?product:product.id;const saved=current.current.favorites.includes(id);commit({...current.current,favorites:saved?current.current.favorites.filter((value)=>value!==id):[...current.current.favorites,id]});notify(saved?'Removed from wishlist.':'Added to wishlist.');}
   function removeFavorite(id){if(current.current.favorites.includes(id))toggleFavorite(id);}
   function addToCart(product, options){
-    const existing=current.current.cart.find((item)=>item.id===product.id);const quantity=(existing?.quantity||0)+1;
+    if(product.hasVariants&&!product.variantId){notify('Choose a size and color on the product page.','error');return;}
+    const key=cartKey(product);
+    const existing=current.current.cart.find((item)=>cartKey(item)===key);const quantity=(existing?.quantity||0)+1;
     const selection = options || {type:product.powered?'Powered Eyeglass':product.productType==='Sunglasses'?'Sunglass':'Zero Power',color:product.color,size:product.size};
     if (existing?.options && JSON.stringify(existing.options)!==JSON.stringify(selection)) {notify('Remove the existing frame from your bag before adding a different selection.','error');return;}
-    try{const cart=cartQuantity(current.current.cart,product.id,quantity,product.stock).map(item=>item.id===product.id?{...item,options:selection}:item);commit({...current.current,cart});notify('Added to cart.');}catch(error){notify(error.message,'error');}
+    try{const cart=cartQuantity(current.current.cart,key,quantity,product.stock,product.variantId).map(item=>cartKey(item)===key?{...item,options:selection}:item);commit({...current.current,cart});notify('Added to cart.');}catch(error){notify(error.message,'error');}
   }
-  function removeFromCart(id){commit({...current.current,cart:current.current.cart.filter((item)=>item.id!==id)});notify('Removed from cart.');}
+  function removeFromCart(id){commit({...current.current,cart:current.current.cart.filter((item)=>cartKey(item)!==id)});notify('Removed from cart.');}
   function changeQuantity(id,quantity,stock){if(quantity<1){removeFromCart(id);return;}try{const cart=cartQuantity(current.current.cart,id,quantity,stock);commit({...current.current,cart});notify('Cart quantity updated.');}catch(error){notify(error.message,'error');}}
   return <StoreContext.Provider value={{...store,couponCode,setCouponCode,appliedCoupon,setAppliedCoupon,clearCart:()=>{commit({...current.current,cart:[]});setAppliedCoupon(null);setCouponCode('');},cartCount:store.cart.reduce((total,item)=>total+item.quantity,0),notify,toggleFavorite,removeFavorite,addToCart,removeFromCart,changeQuantity}}>{children}<div className="store-toast-stack" aria-label="Notifications">{toasts.map((toast)=><Toast key={toast.id} toast={toast} onDismiss={dismiss}/>)}</div></StoreContext.Provider>;
 }

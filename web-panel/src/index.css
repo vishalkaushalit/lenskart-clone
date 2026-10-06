@@ -12,7 +12,8 @@
 @layer components {
   .admin-page { @apply flex-1 space-y-6 px-3 py-6 sm:px-6 lg:px-8; }
   .admin-table thead tr { @apply border-b border-slate-200 bg-slate-50 text-left text-sm font-semibold normal-case tracking-normal text-slate-700; }
-  .admin-table th { @apply px-3 py-3 font-semibold; }
+  .admin-table th { @apply sticky top-0 z-10 bg-slate-50 px-3 py-3 font-semibold; }
+  .admin-table-scroll { max-height: min(65vh, 640px); overflow: auto; }
   .admin-table tbody { @apply divide-y divide-slate-100 text-xs text-slate-700; }
   .admin-table tbody tr { @apply hover:bg-slate-50/60; }
   .admin-table td { @apply px-3 py-3; }
@@ -45,7 +46,7 @@
   .product-thumb-strip img { @apply h-full w-full object-contain; }
   .product-large-image { @apply aspect-square w-full rounded-xl bg-slate-50 object-contain; }
   .product-main-image { @apply mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-slate-100 p-3 text-xs font-medium text-blue-500; }
-  .product-details-grid { @apply grid gap-6 lg:grid-cols-2 2xl:grid-cols-[1.1fr_1.5fr_1fr]; }
+  .product-details-grid { @apply grid items-start gap-6 lg:grid-cols-2 2xl:grid-cols-[1.1fr_1.5fr_1fr]; }
   .product-details-gallery { @apply grid grid-cols-[48px_minmax(0,1fr)] items-start gap-4; }
 }
 @media(min-width:1024px) { .product-editor-grid { grid-template-columns:1fr 1fr; } .product-details-grid { grid-template-columns:1.1fr 1.35fr 1fr; } }
@@ -118,3 +119,59 @@ select:disabled {
 .product-editor-actions { position:sticky; bottom:12px; z-index:10; display:flex; flex-wrap:wrap; justify-content:flex-end; gap:12px; margin-top:16px; padding:12px 16px; border:1px solid #e2e8f0; border-radius:12px; background:#fff; box-shadow:0 4px 16px #0f172a12; }
 @media(min-width:640px) { .product-basic-fields { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(min-width:1024px) { .product-editor-grid { grid-template-columns:minmax(0,0.9fr) minmax(0,1.1fr); } }
+
+/* Consistent delete controls across product, user, cart, wishlist, and editor views. */
+button.delete-button.delete-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;min-width:36px;height:36px;padding:8px;border:1px solid #f0dce2;border-radius:9px;background:#fff8f9;color:#bd6678;font-size:13px;font-weight:500;line-height:1;cursor:pointer;transition:background-color .15s,color .15s,border-color .15s}
+button.delete-button.delete-button:hover:not(:disabled){background:#ffeef1;color:#c85168;border-color:#f4ccd4}
+button.delete-button.delete-button:focus-visible{outline:2px solid #c85168;outline-offset:3px}
+button.delete-button.delete-button:disabled{opacity:.4;cursor:not-allowed}
+button.delete-button.delete-button svg{width:18px;height:18px;flex-shrink:0}
+
+/* Variant editors use the same grid, gallery and action bar as products. */
+.variant-manager > .product-panel-title { margin-bottom:12px; }
+.variant-table { max-height:280px; }
+.variant-table th { position:sticky; top:0; background:#fff; z-index:1; }
+.variant-form-fields, .variant-form-gallery { min-width:0; }
+.variant-form-gallery { display:flex; flex-direction:column; }
+.variant-form-gallery > .product-panel { flex:1; }
+
+.admin-action-link { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; width:36px; height:36px; border-radius:9px; background:#eff6ff; color:#2563eb; }
+.admin-action-link:hover { background:#dbeafe; }
+.admin-action-link:focus-visible { outline:2px solid #2563eb; outline-offset:3px; }
+
+.admin-action-power { background:#fef2f2; color:#dc2626; }
+.admin-action-power:hover { background:#fee2e2; }
+.admin-action-power:focus-visible { outline-color:#dc2626; }
+
+button.delete-button.admin-action-delete { width:36px; padding:0; }
+button.delete-button.admin-action-delete svg { width:16px; height:16px; }
+
+/* Shared field styling for all create/edit forms; file and checkbox controls retain their own layout. */
+.admin-field, .product-field {
+  display:block;
+  width:100%;
+  min-width:0;
+  min-height:42px;
+  border:1px solid #e2e8f0;
+  border-radius:8px;
+  padding:9px 12px;
+  background-color:#fff;
+  color:#334155;
+  font-size:14px;
+  font-weight:400;
+  line-height:22px;
+  outline:none;
+  transition:border-color .15s, box-shadow .15s;
+}
+select.admin-field, select.product-field { padding-right:40px; }
+textarea.admin-field, textarea.product-field { resize:vertical; }
+.admin-field::placeholder, .product-field::placeholder { color:#94a3b8; }
+.admin-field:focus, .product-field:focus {
+  border-color:#3b82f6;
+  box-shadow:0 0 0 2px #dbeafe;
+}
+.admin-field:disabled, .product-field:disabled {
+  background-color:#f8fafc;
+  cursor:not-allowed;
+  opacity:.6;
+}

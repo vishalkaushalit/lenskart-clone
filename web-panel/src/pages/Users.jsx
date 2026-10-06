@@ -1,8 +1,9 @@
+import ActionLink from '../components/ActionLink';
 import StatusBadge from '../components/StatusBadge';
 import Loader from '../components/Loader';
 import { useEffect, useState } from "react";
-import { useOutletContext, useSearchParams } from "react-router-dom";
-import { Pencil, Trash2, Plus, Search, RefreshCw } from "lucide-react";
+import { Link, useOutletContext, useSearchParams } from "react-router-dom";
+import { Trash2, Plus, Search, RefreshCw } from "lucide-react";
 import NotificationPopup from "../components/NotificationPopup";
 import UserActionDialog from "../components/UserActionDialog";
 import DashboardLayout from "../components/DashboardLayout";
@@ -74,7 +75,7 @@ export default function Users() {
         <PageHeader title="Users" description="Manage your customers">
           <div className="flex shrink-0 items-center gap-2">
             <button type="button" disabled={loading} onClick={() => setAttempt((previous) => previous + 1)} aria-label="Refresh users" className="admin-button-secondary"><RefreshCw size={18} className={loading ? "animate-spin motion-reduce:animate-none" : ""} /><span className="hidden sm:inline">Refresh</span></button>
-            <button onClick={() => { setNotification(null); setAction({ type: "create", user: { name: "", email: "", role: "customer" } }); }} className="admin-button-primary"><Plus size={20} />Add User</button>
+            <Link to="/users/add" className="admin-button-primary"><Plus size={20}/>Add User</Link>
           </div>
         </PageHeader>
 
@@ -104,7 +105,7 @@ export default function Users() {
               <th scope="col">Email</th>
               <th scope="col">Phone</th>
               <th scope="col">Status</th>
-              <th scope="col">Joined On</th>
+              <th scope="col">Created On</th>
               <th scope="col" className="text-right">Actions</th>
             </tr>
           </thead>
@@ -132,8 +133,8 @@ export default function Users() {
                 <td className="whitespace-nowrap text-slate-600">{formatDate(user.createdAt)}</td>
                 <td>
                   <div className="flex justify-end gap-2">
-                    <button type="button" aria-label={`Edit ${user.name}`} title="Edit user" onClick={() => { setNotification(null); setAction({ type: "edit", user }); }} className="flex h-8 w-8 items-center justify-center rounded-lg text-blue-600 hover:bg-blue-50"><Pencil size={16} /></button>
-                    <button type="button" aria-label={`Delete ${user.name}`} title={user.id === currentUser.id ? "You cannot delete your own account" : "Delete user"} disabled={user.id === currentUser.id} onClick={() => { setNotification(null); setAction({ type: "delete", user }); }} className="flex h-8 w-8 items-center justify-center rounded-lg text-red-500 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"><Trash2 size={16} /></button>
+                    <ActionLink to={`/users/${user.id}`} action="view" label="View user"/><ActionLink to={`/users/${user.id}/edit`} action="edit" label={`Edit ${user.name}`}/>
+                    <button type="button" aria-label={`Delete ${user.name}`} title={user.id === currentUser.id ? "You cannot delete your own account" : "Delete user"} disabled={user.id === currentUser.id} onClick={() => { setNotification(null); setAction({ type: "delete", user }); }} className="delete-button admin-action-delete"><Trash2 size={16} aria-hidden="true" /></button>
                   </div>
                 </td>
               </tr>

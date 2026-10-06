@@ -1,0 +1,200 @@
+[
+  {
+    "sku": "frame-1",
+    "page": "https://www.lenskart.com/vincent-chase-vc-e17100-c1-eyeglasses.html",
+    "images": [
+      {
+        "local": "/assets/products/sample-frame-1-1.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/black-full-rim-wayfarer-vincent-chase-classic-acetate-vc-e17100-c1-eyeglasses_img_2632_03_04_2024.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-1-2.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/black-full-rim-wayfarer-vincent-chase-classic-acetate-vc-e17100-c1-eyeglasses_img_2629_03_04_2024.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-1-3.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/black-full-rim-wayfarer-vincent-chase-classic-acetate-vc-e17100-c1-eyeglasses_img_2634_03_04_2024.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-1-4.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/black-full-rim-wayfarer-vincent-chase-classic-acetate-vc-e17100-c1-eyeglasses_img_2635_03_04_2024.jpg"
+      }
+    ]
+  },
+  {
+    "sku": "frame-2",
+    "page": "https://www.lenskart.com/lenskart-lk-e18244-m-black-eyeglass.html",
+    "images": [
+      {
+        "local": "/assets/products/sample-frame-2-1.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/lenskart-lk-e18244-m-black-eyeglasses_244229dsc_2652_20_08_2026.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-2-2.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/lenskart-lk-e18244-m-black-eyeglasses_244229dsc_2651_20_08_2026.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-2-3.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/lenskart-lk-e18244-m-black-eyeglasses_244229dsc_2654_20_08_2026.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-2-4.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/lenskart-lk-e18244-m-black-eyeglasses_244229dsc_2657_20_08_2026.jpg"
+      }
+    ]
+  },
+  {
+    "sku": "frame-3",
+    "page": "https://www.lenskart.com/vincent-chase-vc-e13787-c2-eyeglasses.html?productId=146622",
+    "images": [
+      {
+        "local": "/assets/products/sample-frame-3-1.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/matte-gunmetal-grey-full-rim-geometric-vincent-chase-sleek-steel-vc-e13787-c2-eyeglasses_ccg_3285.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-3-2.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/matte-gunmetal-grey-full-rim-geometric-vincent-chase-sleek-steel-vc-e13787-c2-eyeglasses_ccg_3284.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-3-3.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/matte-gunmetal-grey-full-rim-geometric-vincent-chase-sleek-steel-vc-e13787-c2-eyeglasses_146622_3_09_01_2025.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-3-4.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/matte-gunmetal-grey-full-rim-geometric-vincent-chase-sleek-steel-vc-e13787-c2-eyeglasses_146622_4_09_01_2025.jpg"
+      }
+    ]
+  },
+  {
+    "sku": "frame-4",
+    "page": "https://www.lenskart.com/lenskart-lk-e15180-c1-eyeglasses.html",
+    "images": [
+      {
+        "local": "/assets/products/sample-frame-4-1.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/lenskart-lk-e15180-c1-eyeglasses_g_0101_20_01_2023.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-4-2.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/lenskart-lk-e15180-c1-eyeglasses_g_0100_20_01_2023.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-4-3.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/gold-full-rim-round-lenskart-studio-hip-hop-lk-e15180-c1-eyeglasses_lk_eye_pid_205397_8285_00059_30_03_2023.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-4-4.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/gold-full-rim-round-lenskart-studio-hip-hop-lk-e15180-c1-eyeglasses_lk_eye_pid_205397_8284_00058_30_03_2023.jpg"
+      }
+    ]
+  },
+  {
+    "sku": "frame-5",
+    "page": "https://www.lenskart.com/john-jacobs-jj-e70142-c1-eyeglasses.html",
+    "images": [
+      {
+        "local": "/assets/products/sample-frame-5-1.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//j/i/john-jacobs-jj-e70142-c1-eyeglasses_dsc2633_14_05_2025.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-5-2.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//j/i/john-jacobs-jj-e70142-c1-eyeglasses_dsc2631_14_05_2025.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-5-3.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//j/i/gold-full-rim-aviator-john-jacobs-supreme-steel-jj-e70142-eyeglass_233411_1_24_05_2025.png"
+      },
+      {
+        "local": "/assets/products/sample-frame-5-4.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//j/i/gold-full-rim-aviator-john-jacobs-supreme-steel-jj-e70142-eyeglass_233411_2_24_05_2025.png"
+      }
+    ]
+  },
+  {
+    "sku": "frame-6",
+    "page": "https://www.lenskart.com/lenskart-air-la-e14101-c2-c2-eyeglasses.html",
+    "images": [
+      {
+        "local": "/assets/products/sample-frame-6-1.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/pink-transparent-full-rim-cat-eye-lenskart-air-fusion-la-e14101-c2-eyeglasses__dsc5116_11_09_2025.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-6-2.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/pink-transparent-full-rim-cat-eye-lenskart-air-fusion-la-e14101-c2-eyeglasses__dsc5115_11_09_2025.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-6-3.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/pink-transparent-full-rim-cat-eye-lenskart-air-fusion-la-e14101-c2-eyeglasses__dsc5117_11_09_2025.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-6-4.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/pink-transparent-full-rim-cat-eye-lenskart-air-fusion-la-e14101-c2-eyeglasses__dsc5118_11_09_2025.jpg"
+      }
+    ]
+  },
+  {
+    "sku": "frame-7",
+    "page": "https://www.lenskart.com/john-jacobs-jj-e70199-c1-eyeglasses.html",
+    "images": [
+      {
+        "local": "/assets/products/sample-frame-7-1.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//j/i/john-jacobs-jj-e70199-c1-eyeglasses_dsc2639_19_12_2025.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-7-2.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//j/i/john-jacobs-jj-e70199-c1-eyeglasses_dsc2638_19_12_2025.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-7-3.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//j/i/john-jacobs-jj-e70199-c1-eyeglasses_dsc2641_19_12_2025.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-7-4.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//j/i/john-jacobs-jj-e70199-c1-eyeglasses_dsc2642_19_12_2025.jpg"
+      }
+    ]
+  },
+  {
+    "sku": "frame-8",
+    "page": "https://www.lenskart.com/lenskart-studio-lke000419-c1-eyeglasses.html",
+    "images": [
+      {
+        "local": "/assets/products/sample-frame-8-1.png",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/dark-brown-full-rim-square-lenskart-studio-lke000419-eyeglasses_228043_7feb25.png"
+      },
+      {
+        "local": "/assets/products/sample-frame-8-2.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/lenskart-studio-lke000419-c1-eyeglasses__dsc2225_13_12_2024.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-8-3.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/dark-brown-full-rim-square-lenskart-studio-lke000419-eyeglasses_228043_2_13_06_2026.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-8-4.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/dark-brown-full-rim-square-lenskart-studio-lke000419-eyeglasses_228043_4_13_06_2026.jpg"
+      }
+    ]
+  },
+  {
+    "sku": "frame-9",
+    "page": "https://www.lenskart.com/lenskart-lk-e15180-c1-eyeglasses.html",
+    "images": [
+      {
+        "local": "/assets/products/sample-frame-9-1.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/lenskart-lk-e15180-c1-eyeglasses_g_0101_20_01_2023.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-9-2.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/lenskart-lk-e15180-c1-eyeglasses_g_0100_20_01_2023.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-9-3.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/gold-full-rim-round-lenskart-studio-hip-hop-lk-e15180-c1-eyeglasses_lk_eye_pid_205397_8285_00059_30_03_2023.jpg"
+      },
+      {
+        "local": "/assets/products/sample-frame-9-4.jpg",
+        "source": "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//l/i/gold-full-rim-round-lenskart-studio-hip-hop-lk-e15180-c1-eyeglasses_lk_eye_pid_205397_8284_00058_30_03_2023.jpg"
+      }
+    ]
+  }
+]

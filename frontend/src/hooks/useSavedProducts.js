@@ -7,7 +7,7 @@ export default function useSavedProducts(ids){
     async function load(){
       const requested=key?key.split(','):[];setResult({loading:true,items:[],error:''});
       try{
-        const validIds=requested.filter(id=>/^[a-f\d]{24}$/i.test(id));
+        const validIds=[...new Set(requested.filter(id=>/^[a-f\d]{24}$/i.test(id)))];
         const products=[];
         for(let offset=0;offset<validIds.length;offset+=50){const data=await apiRequest(`/products?ids=${validIds.slice(offset,offset+50).join(',')}`,{signal:controller.signal});products.push(...data.products);}
         const byId=new Map(products.map(product=>[product.id,product]));
