@@ -1,3 +1,5 @@
+import { useSearchParams } from 'react-router-dom';
+import NotificationPopup from '../components/NotificationPopup';
 import { useEffect, useState } from 'react';
 import { RefreshCw } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
@@ -9,6 +11,13 @@ import Loader from '../components/Loader';
 import { apiRequest } from '../api';
 
 export default function Dashboard() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const loginNotification = searchParams.get('login') === 'success';
+  function dismissLoginNotification() {
+    const next = new URLSearchParams(searchParams);
+    next.delete('login');
+    setSearchParams(next, { replace: true });
+  }
   const [recentPage,setRecentPage]=useState(1);
   const [days, setDays] = useState('7');
   const [attempt, setAttempt] = useState(0);
@@ -39,5 +48,6 @@ export default function Dashboard() {
     {result.loading && <Loader label="Loading dashboard" />}
     {result.error && <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{result.error}{result.data && <p>Showing the last loaded data.</p>}<button type="button" onClick={refresh} className="ml-3 underline">Try again</button></div>}
     {result.data && <><StatDashboard stats={result.data.stats} changes={result.data.changes} /><ChartDashboard sales={result.data.sales} statuses={result.data.statuses} /><RecentOrders orders={result.data.recentOrders} pagination={result.data.recentPagination} onPageChange={page=>{setRecentPage(page);setResult(previous=>({...previous,loading:true}));}} loading={result.loading} /></>}
+    {!result.loading && loginNotification && <NotificationPopup notification={{ type: 'success', message: 'Logged in successfully.' }} duration={3000} onClose={dismissLoginNotification} />}
   </main></DashboardLayout>;
 }

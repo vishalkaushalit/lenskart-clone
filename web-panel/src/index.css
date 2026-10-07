@@ -83,18 +83,8 @@ select:disabled {
 }
 
 .admin-loader{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;width:100%;height:100dvh;background:rgba(255,255,255,.82);backdrop-filter:blur(3px);padding:32px}
-.admin-loader-scene{position:relative;width:70px;height:70px;perspective:500px;display:grid;place-items:center}
-.admin-loader-cube{position:relative;width:30px;height:30px;transform-style:preserve-3d;animation:admin-loader-cube-spin 3s linear infinite}
-.admin-loader-face{position:absolute;inset:0;border:1px solid #ffffff80;border-radius:5px;background:linear-gradient(135deg,#60a5fae6,#2563ebe6);box-shadow:inset 0 0 12px #ffffff30;backface-visibility:visible}
-.admin-loader-face.is-front{transform:translateZ(15px)}
-.admin-loader-face.is-back{transform:rotateY(180deg) translateZ(15px)}
-.admin-loader-face.is-right{transform:rotateY(90deg) translateZ(15px);background:linear-gradient(135deg,#818cf8e6,#4f46e5e6)}
-.admin-loader-face.is-left{transform:rotateY(-90deg) translateZ(15px);background:linear-gradient(135deg,#818cf8e6,#4f46e5e6)}
-.admin-loader-face.is-top{transform:rotateX(90deg) translateZ(15px);background:linear-gradient(135deg,#c4b5fde6,#8b5cf6e6)}
-.admin-loader-face.is-bottom{transform:rotateX(-90deg) translateZ(15px);background:linear-gradient(135deg,#c4b5fde6,#8b5cf6e6)}
-.admin-loader-shadow{position:absolute;bottom:3px;width:40px;height:6px;background:#6366f130;filter:blur(5px);border-radius:50%}
-@keyframes admin-loader-cube-spin{from{transform:rotateX(-25deg) rotateY(35deg)}to{transform:rotateX(335deg) rotateY(395deg)}}
-@media(prefers-reduced-motion:reduce){.admin-loader-cube{animation:none;transform:rotateX(-25deg) rotateY(35deg)}}
+.admin-loader-video{display:block;width:160px;max-width:100%;height:160px;object-fit:contain}
+
 
 /* Content-sized notifications sit below the dashboard header. */
 .admin-notification{position:fixed;z-index:1000;top:calc(max(var(--notification-header-bottom,0px),env(safe-area-inset-top,0px)) + 12px);right:24px;width:max-content;max-width:calc(100% - 48px);display:flex;align-items:center;gap:10px;padding:8px;background:white;color:#000042;border:1px solid #e8e8f2;border-radius:12px;font-size:12px;animation:admin-notification-enter .4s cubic-bezier(.2,.8,.2,1) both}

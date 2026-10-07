@@ -1,3 +1,4 @@
+import { LoaderProvider } from '../../shared/LoadingOverlay.jsx';
 import {lazy,Suspense} from 'react';
 import Loader from './components/Loader';
 import { Link, Navigate, Route, Routes } from "react-router-dom";
@@ -20,7 +21,7 @@ const Users=lazy(()=>import("./pages/Users"));
 
 export default function App() {
   return (
-    <Suspense fallback={<Loader label="Loading page"/>}><Routes>
+    <LoaderProvider className="admin"><Suspense fallback={<Loader label="Loading page"/>}><Routes>
       <Route element={<AdminRoute />}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -57,6 +58,6 @@ export default function App() {
           </main>
         } />
       </Route>
-    </Routes></Suspense>
+    </Routes></Suspense></LoaderProvider>
   );
 }

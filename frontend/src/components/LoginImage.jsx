@@ -59,7 +59,7 @@ const LoginImage = () => {
             </svg>
           </Link>
 
-          <h1 className="text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
+          <h1 className="text-2xl font-bold leading-tight text-white sm:text-3xl">
             Welcome to ShopAdmin
           </h1>
           <p className="mt-3 max-w-md text-sm text-slate-300 sm:text-base">

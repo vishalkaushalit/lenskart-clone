@@ -250,7 +250,7 @@ Every web-panel table includes pagination and **Sr. No.** numbering that continu
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `1846d0ada416599ec3d8c36931fa9af72b114c88500d5adfa079a5a3158a9a51`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `9ea039483e0a50d7767d844efc1109d27128f533ff066d289f532801f27ca459`.
 
 ### Actual npm commands
 
@@ -281,7 +281,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/DashboardLayout.jsx](src/components/DashboardLayout.jsx) | DashboardLayout |
 | [src/components/DataTable.jsx](src/components/DataTable.jsx) | DataTable |
 | [src/components/ImageUploadField.jsx](src/components/ImageUploadField.jsx) | ImageUploadField |
-| [src/components/Loader.jsx](src/components/Loader.jsx) | Loader |
+| [src/components/Loader.jsx](src/components/Loader.jsx) | Internal module / styles |
 | [src/components/NotificationPopup.jsx](src/components/NotificationPopup.jsx) | NotificationPopup |
 | [src/components/PageHeader.jsx](src/components/PageHeader.jsx) | PageHeader |
 | [src/components/Pagination.jsx](src/components/Pagination.jsx) | Pagination |
@@ -360,6 +360,8 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/components/DashboardHeader.jsx | next.delete | `search` |
 | src/components/DashboardHeader.jsx | next.delete | `search` |
 | src/components/DashboardHeader.jsx | next.delete | `page` |
+| src/dashboard/Dashboard.jsx | searchParams.get | `login` |
+| src/dashboard/Dashboard.jsx | next.delete | `login` |
 | src/dashboard/ProductDashboard.jsx | params.get | `search` |
 | src/dashboard/ProductDashboard.jsx | params.get | `page` |
 | src/dashboard/ProductDashboard.jsx | next.delete | `search` |
@@ -395,3 +397,9 @@ Shared notifications use a content-sized white popup with a border and 8px paddi
 All modal popups across the storefront and web panel follow the product image slider size: 600px maximum width and 80dvh height, constrained to 90vw. `shared/Popup.css` is the single sizing source, using `product-popup` or `app-popup`; future modal popups must use these classes. Long dialog content scrolls inside. Compact toast notifications and filter drawers retain their separate interaction layouts.
 
 Design reference: [Lenskart](https://www.lenskart.com/) is the reference for future project UI changes, as recorded in the root `AGENTS.md`. Current desktop similar-items popup source uses 600px width, 90vw maximum width, 80vh maximum height, 16px corners, an 18px/800 heading and a scrolling item list. Shared dialogs use this width/height limit; existing user instructions remain authoritative.
+
+The shared loading overlay uses the supplied `loader-eyewear.mp4`, stored as `../shared/loader.mp4`, and plays it silently at normal 1× speed on a continuous loop using inline video playback. The centered video replaces the CSS cube animation; loading states retain their accessible status labels.
+
+`LoaderProvider` in `../shared/LoadingOverlay.jsx` displays the video overlay while requests are pending and reveals content immediately when loading ends, with no minimum duration. It covers content with an opaque background and makes underlying controls inert until loading ends. Overlapping loaders share one overlay.
+
+Successful admin login redirects to `/dashboard?login=success` in the web panel. The authenticated dashboard keeps the flag until the shared “Logged in successfully.” success notification has appeared after dashboard loading finishes. The login toast stays visible for three seconds; dismissing it removes the flag from the URL so refreshing the cleaned URL does not repeat it.

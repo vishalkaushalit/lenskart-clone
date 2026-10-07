@@ -28,7 +28,7 @@ const LoginForm = () => {
           return;
         }
         window.location.assign(
-          `${adminUrl.replace(/\/$/, "")}/dashboard`
+          `${adminUrl.replace(/\/$/, "")}/dashboard?login=success`
         );
         return;
       }

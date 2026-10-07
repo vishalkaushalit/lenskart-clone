@@ -1,7 +1,7 @@
 import SimilarProductCard from "../components/SimilarProductCard";
 import { resolveVariant } from "../state/productVariants";
 import Loader from "../components/Loader";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   ChevronLeft,
@@ -76,6 +76,28 @@ const guides = [
   ],
 ];
 function Details({ product: baseProduct, products }) {
+  const mainRef = useRef(null);
+  const infoRef = useRef(null);
+  useEffect(() => {
+    const columns = [mainRef.current, infoRef.current];
+    const header = document.querySelector('header');
+    function updateStickyOffset() {
+      const headerHeight = header?.getBoundingClientRect().height || 0;
+      for (const column of columns) {
+        const offset = Math.min(headerHeight + 16, window.innerHeight - column.getBoundingClientRect().height - 16);
+        column.style.setProperty('--product-column-sticky-top', `${offset}px`);
+      }
+    }
+    updateStickyOffset();
+    const observer = new ResizeObserver(updateStickyOffset);
+    columns.forEach(column => observer.observe(column));
+    if (header) observer.observe(header);
+    window.addEventListener('resize', updateStickyOffset);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateStickyOffset);
+    };
+  }, []);
   const variants = baseProduct.variants || [];
   const [selected, setSelected] = useState(0);
   const [imagePopup, setImagePopup] = useState(false);
@@ -185,7 +207,7 @@ function Details({ product: baseProduct, products }) {
   return (
     <>
       <div className="store-product-layout">
-        <div className="store-product-main">
+        <div ref={mainRef} className="store-product-main">
           <section className="store-product-photos" aria-label="Product images">
             <div className="detail-thumb-rail">
               {images.map((image, index) => (
@@ -317,7 +339,7 @@ function Details({ product: baseProduct, products }) {
             </section>
           )}
         </div>
-        <aside className="store-product-info">
+        <aside ref={infoRef} className="store-product-info">
           <div className="detail-title-row">
             <div>
               <h1>{product.name}</h1>

@@ -324,7 +324,7 @@ Variant **Price** is the selling price; **Compare Price** (`originalPrice`) cont
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `7f6f7f5cf02921db322d27f4a1af9a04928e5c1e488fe04c990579de76e291d7`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `0a9f21412e258f8b9162bf6ec0508dc31b95cdd01d0d60fc9cda21bcb3d6454d`.
 
 ### Actual npm commands
 
@@ -365,7 +365,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/FreeCheckup.jsx](src/components/FreeCheckup.jsx) | default export |
 | [src/components/GlassesModel.jsx](src/components/GlassesModel.jsx) | GlassesModel |
 | [src/components/HomeSlider.jsx](src/components/HomeSlider.jsx) | default export |
-| [src/components/Loader.jsx](src/components/Loader.jsx) | Loader |
+| [src/components/Loader.jsx](src/components/Loader.jsx) | Internal module / styles |
 | [src/components/LoadingScreen.jsx](src/components/LoadingScreen.jsx) | LoadingScreen |
 | [src/components/LoginForm.jsx](src/components/LoginForm.jsx) | default export |
 | [src/components/LoginImage.jsx](src/components/LoginImage.jsx) | default export |
@@ -501,3 +501,23 @@ Similar-items cards have a plain white background with transparent image wrapper
 Popup images are enlarged by 20% within their 30% card column, preserving card and popup widths. The media wrapper clips overflow while the image remains centered.
 
 Similar-items cards use a consistent 3:7 image-to-content column ratio on desktop and mobile, matching the supplied reference.
+
+The product page keeps Add to cart after the FAQs in the product information column. The purchase area sticks to the bottom of the viewport until scrolling reaches its original position, then remains in the normal page layout. Out-of-stock selections retain the disabled purchase button.
+
+The shared loading overlay uses the supplied `loader-eyewear.mp4`, stored as `../shared/loader.mp4`, and plays it silently at normal 1× speed on a continuous loop using inline video playback. The centered video replaces the CSS cube animation; loading states retain their accessible status labels.
+
+`LoaderProvider` in `../shared/LoadingOverlay.jsx` displays the video overlay while requests are pending and reveals content immediately when loading ends, with no minimum duration. It covers content with an opaque background and makes underlying controls inert until loading ends. Overlapping loaders share one overlay.
+
+Authentication routes use `.store-auth-layout` with a full dynamic viewport minimum height to center login and registration cards vertically. Auth card containers have a 960px maximum width and retain responsive side gutters. Taller cards expand the page and remain scrollable on smaller screens.
+
+Registration uses compact page/card padding, field spacing and input heights to avoid excess vertical overflow on desktop. Short viewports and stacked mobile cards still scroll when their actual content exceeds the available height.
+
+Successful admin login redirects to `/dashboard?login=success` in the web panel. The authenticated dashboard keeps the flag until the shared “Logged in successfully.” success notification has appeared after dashboard loading finishes. The login toast stays visible for three seconds; dismissing it removes the flag from the URL so refreshing the cleaned URL does not repeat it.
+
+Wishlist cards use an 18px remove icon and 14px View button text, retaining their existing clickable areas.
+
+Product-page FAQ and Product Details accordions share a white background in both collapsed and expanded states. A subtle separator below the FAQ section separates it from Product Details.
+
+The closed Product Details accordion shows a bottom separator; its expanded styling is unchanged. The purchase area has no top margin.
+
+On two-column product pages, both columns scroll normally until the shorter column reaches its bottom, then it stays sticky while the taller column continues until both bottoms align. This works whether the left or right column is taller. Each sticky offset adapts to column, header and viewport heights; columns shorter than the viewport stay below the header. Mobile retains normal stacked scrolling.

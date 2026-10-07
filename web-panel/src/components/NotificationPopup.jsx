@@ -2,15 +2,15 @@ import { createPortal } from "react-dom";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { CircleCheck, CircleAlert, X } from "lucide-react";
 
-export default function NotificationPopup({ notification, onClose }) {
+export default function NotificationPopup({ notification, onClose, duration = 1000 }) {
   const popupRef = useRef(null);
   const [closing,setClosing] = useState(false);
   const closeRef = useRef(onClose);
   useEffect(()=>{closeRef.current=onClose;},[onClose]);
   useEffect(()=>{
-    const timer=setTimeout(()=>setClosing(true),1000);
+    const timer=setTimeout(()=>setClosing(true),duration);
     return()=>clearTimeout(timer);
-  },[]);
+  },[duration]);
   useEffect(()=>{
     if(!closing)return;
     const timer=setTimeout(()=>closeRef.current(),260);

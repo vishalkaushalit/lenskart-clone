@@ -1,3 +1,4 @@
+import { LoaderProvider } from '../../shared/LoadingOverlay.jsx';
 import {lazy,Suspense} from 'react';
 import Loader from './components/Loader';
 import { Routes, Route, Outlet } from "react-router-dom";
@@ -17,7 +18,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   return (
-    <Suspense fallback={<Loader label="Loading page"/>}><Routes>
+    <LoaderProvider className="store"><Suspense fallback={<Loader label="Loading page"/>}><Routes>
       <Route element={<StoreLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/collection" element={<Collection />} />
@@ -34,7 +35,7 @@ const App = () => {
       </Route>
       <Route
         element={
-          <main className="store-page-surface flex min-h-dvh flex-col items-center justify-center">
+          <main className="store-page-surface store-auth-layout">
             <Outlet />
           </main>
         }
@@ -52,7 +53,7 @@ const App = () => {
           element={<p>Reset password — coming soon.</p>}
         />
       </Route>
-    </Routes></Suspense>
+    </Routes></Suspense></LoaderProvider>
   );
 };
 

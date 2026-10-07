@@ -375,11 +375,11 @@
   object-fit: contain;
 }
 .detail-purchase {
-  position: static;
-  background: white;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
   padding: 18px 0 max(8px, env(safe-area-inset-bottom));
-  margin-top: 20px;
-  border-top: 1px solid #ededf5;
+  margin-top: 0;
 }
 .store-product-stock {
   color: #008f72;
@@ -695,8 +695,14 @@ body:has(.store-product-page) header {
 .detail-accordions {
   margin: 22px -16px 0;
 }
+.detail-accordions > details {
+  background: white;
+}
 .detail-accordions > details:first-child {
-  background: #f3f2ff;
+  border-bottom: 1px solid #ededf5;
+}
+.detail-accordions > details:last-child:not([open]) {
+  border-bottom: 1px solid #ededf5;
 }
 .detail-accordions summary {
   display: flex;
@@ -1525,4 +1531,14 @@ body:has(.store-product-page) header {
   .detail-similar-view { font-size:16px; line-height:20px; min-height:44px; padding:12px 8px; margin-top:16px; border-radius:8px; }
   .detail-similar-photo > button { top:6px; right:6px; }
   .detail-similar-photo > button svg { width:20px; height:20px; }
+}
+
+/* Keep the shorter column visible until both column bottoms align. */
+@media (min-width: 768px) {
+  .store-product-main,
+  .store-product-info {
+    position: sticky;
+    top: var(--product-column-sticky-top, 16px);
+    align-self: start;
+  }
 }
