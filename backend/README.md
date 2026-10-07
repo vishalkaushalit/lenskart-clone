@@ -343,7 +343,7 @@ Dashboard recent orders accept `recentPage` (1–10,000, default 1). The databas
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e24f8437e7af7157346fcd1aa02ac43abdf303ec4ac8aca0885817a5bc350bfb`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `6fac707436d08be6c7b6fcbf61487f3753120cc451b19c9e6c7c04e8d42b1e39`.
 
 ### Actual npm commands
 
