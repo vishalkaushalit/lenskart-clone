@@ -324,7 +324,7 @@ Variant **Price** is the selling price; **Compare Price** (`originalPrice`) cont
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `947f8fa67d0424f9525d8ccf3dc44e4ea6fccab1dd0f581c0082690dc176699f`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `9ab2f5b5186204d20d4ef66827004b782bb520385d43715f8f498223a1ab48d0`.
 
 ### Actual npm commands
 
@@ -555,3 +555,5 @@ The pending request implementation is shared with the admin panel in `shared/req
 Password fields use the shared `PasswordInput` component with an eye button to show/hide the value. Passwords start hidden; the keyboard-accessible toggle preserves input validation and autocomplete and never submits the form.
 
 Product detail loading is independent of the recommendations catalog. The selected product renders as soon as its detail request finishes; recommendations arrive separately, and their failure does not block the product page. The catalog request is reused while navigating between product details within the mounted page.
+
+Internal collection links in the homepage Notes section use React Router `Link` to avoid document reloads. Cart-to-checkout navigation also uses `Link`, and checkout submission prevents native form navigation. Storefront/admin transitions load the other application’s document because they are separate browser builds.

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Notes = () => {
   return (
     <>
@@ -15,17 +17,17 @@ const Notes = () => {
             </p>
             <p className="mt-5 text-sm leading-6">
               We sell a wide range of eyewear products including prescription{" "}
-              <a className="underline" href="/collection?category=eyeglasses">
+              <Link className="underline" to="/collection?category=eyeglasses">
                 eyeglasses
-              </a>
+              </Link>
               ,{" "}
-              <a className="underline" href="/collection?category=sunglasses">
+              <Link className="underline" to="/collection?category=sunglasses">
                 sunglasses
-              </a>
+              </Link>
               , and other products such as{" "}
-              <a className="underline" href="/collection?category=contact-lenses">
+              <Link className="underline" to="/collection?category=contact-lenses">
                 contact lenses
-              </a>{" "}
+              </Link>{" "}
               and eyewear accessories. Our brands are designed to be
               aspirational and appeal to a wide range of customer segments.
             </p>
