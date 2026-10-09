@@ -324,7 +324,7 @@ Variant **Price** is the selling price; **Compare Price** (`originalPrice`) cont
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `80c20211c814d135a56d73ebc1c360cfc522599126940963ea9b994cf2ed43a1`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `a331726f86616f8878480801d91a3b1727a0686cbf48224f93fbee459b6bc085`.
 
 ### Actual npm commands
 

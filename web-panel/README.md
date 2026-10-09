@@ -250,7 +250,7 @@ Every web-panel table includes pagination and **Sr. No.** numbering that continu
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `3adf2313795a439b66613619e2f8b9dc5bbe9e231484d917f67ffe740b0d3254`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `7cee375272d9f427145f9a3a289a53160837332b05ff033bbcb295ef75621bc2`.
 
 ### Actual npm commands
 
@@ -417,3 +417,5 @@ For variant products, each selected variant needs its own matching `tryOnImage`;
 API reads now share identical in-flight GET requests using `shared/requestClient.js`. Per-consumer cancellation lets Strict Mode remounts reuse a pending request. Writes, retries after completion and different query parameters stay independent. The admin session is checked once when the route guard mounts, rather than on every pathname change. Its user stays in memory during navigation and profile updates. Refreshing the browser runs one restoration check. A protected API returning 401 clears the local admin session and redirects to login; logout ends the server session and leaves the panel. API authorization remains enforced on every protected request.
 
 Password fields use the shared `PasswordInput` component with an eye button to show/hide the value. Passwords start hidden; the keyboard-accessible toggle preserves input validation and autocomplete and never submits the form.
+
+The sidebar’s Orders and Track Orders entries both use React Router navigation to `/orders`, preserving the mounted app and session instead of performing a document reload.
