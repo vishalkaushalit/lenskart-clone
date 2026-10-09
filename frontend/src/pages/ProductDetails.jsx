@@ -1,9 +1,11 @@
+import VirtualTryOn from "../components/VirtualTryOn";
 import SimilarProductCard from "../components/SimilarProductCard";
 import { resolveVariant } from "../state/productVariants";
 import Loader from "../components/Loader";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
+  ScanFace,
   ChevronLeft,
   ChevronRight,
   Heart,
@@ -100,6 +102,7 @@ function Details({ product: baseProduct, products }) {
   }, []);
   const variants = baseProduct.variants || [];
   const [selected, setSelected] = useState(0);
+  const [tryOn, setTryOn] = useState(false);
   const [imagePopup, setImagePopup] = useState(false);
   const [highlight, setHighlight] = useState("");
   const [guide, setGuide] = useState(null);
@@ -270,6 +273,7 @@ function Details({ product: baseProduct, products }) {
               </div>
             )}
           </section>
+          <button className="detail-try-on-button" onClick={() => setTryOn(true)}><ScanFace size={20} aria-hidden="true" /> Virtual Try-On</button>
           <section className="detail-section">
             <h2>How to Buy Your Glasses</h2>
             <div className="detail-guide-row">
@@ -625,6 +629,7 @@ function Details({ product: baseProduct, products }) {
           </div>
         </aside>
       </div>
+      {tryOn && <VirtualTryOn key={`${product.id}-${product.variantId || "base"}`} name={product.name} image={product.tryOnImage ? assetUrl(product.tryOnImage) : ""} onClose={() => setTryOn(false)} />}
       {imagePopup && (
         <ProductImagePopup
           images={images}

@@ -343,7 +343,7 @@ Dashboard recent orders accept `recentPage` (1–10,000, default 1). The databas
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `c5ea096a230f39e25d1d6ea5a7ae79749587aa98b2ce6e8d14715e3b5fb0b6b3`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `deaa9d5ca9ff4b95890a7183bad6ceb93724350049e84ad1b6a6054d22c4de3a`.
 
 ### Actual npm commands
 
@@ -420,6 +420,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/services/productImages.test.js](src/services/productImages.test.js) | Internal module / styles |
 | [src/services/search.js](src/services/search.js) | searchTerms, textSearch |
 | [src/services/search.test.js](src/services/search.test.js) | Internal module / styles |
+| [src/services/tryOn.test.js](src/services/tryOn.test.js) | Internal module / styles |
 | [src/services/userIds.js](src/services/userIds.js) | initializeUserIds, nextUserId |
 | [src/services/userIds.test.js](src/services/userIds.test.js) | Internal module / styles |
 | [src/services/variants.js](src/services/variants.js) | attachVariants, publicVariant |
@@ -594,6 +595,7 @@ const schema = new mongoose.Schema({
   sku: { type: String, required: true, unique: true, trim: true, maxlength: 100 },
   name: { type: String, required: true, trim: true, maxlength: 150 },
   image: { type: String, required: true, maxlength: 2000, validate: (value) => /^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value) },
+  tryOnImage: { type: String, default: '', maxlength: 2000, validate: value => !value || validImage(value) },
   images: { type: [String], default: [], validate: (values) => values.length <= 8 && values.every(validImage) },
   description: { type: String, trim: true, maxlength: 5000, default: '' },
   features: { type: [String], default: [], validate: (values) => values.length <= 20 && values.every((value) => value.length <= 200) },
@@ -650,6 +652,7 @@ const schema = new mongoose.Schema({
   originalPrice: { type: Number, default: null, min: 0, max: 1000000, validate: { validator: function(value) { return value == null || this.price == null || value >= this.price; }, message: 'Compare price cannot be below price.' } },
   stock: { type: Number, default: 0, min: 0, validate: Number.isSafeInteger },
   // Ordered gallery; first image is the variant cover. Empty inherits product images.
+  tryOnImage: { type: String, default: '', maxlength: 2000, validate: value => !value || image(value) },
   images: { type: [String], default: [], validate: values => values.length <= 8 && values.every(image) },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },
 }, { timestamps: true });
@@ -733,3 +736,7 @@ Customer order receipts: `GET /api/orders/:id` requires authentication and retur
 ## Vercel hosting
 
 This app deploys with the other applications from the repository root. See [Single-project Vercel deployment](../README.md#single-project-vercel-deployment) for configuration, storage and verification.
+
+## Virtual try-on metadata
+
+Products and product variants accept an optional `tryOnImage` string (default empty, maximum 2000 characters). It uses the same allowed local `/assets/products/` or HTTP(S) image URLs as galleries and is included in public product/variant projections. Admin-only product/variant mutations persist it; uploads use the existing authenticated image endpoint and storage configuration. Face video and landmarks never reach the API. See [asset preparation](../README.md#live-virtual-try-on).

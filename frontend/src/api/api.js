@@ -1,22 +1,10 @@
-const API_URL = (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api')).replace(/\/$/,'');
+import { createRequestClient } from './requestClient';
 
-export async function apiRequest(path, options = {}) {
-  const response = await fetch(`${API_URL}${path}`, {
-    ...options,
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+const API_URL = (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api')).replace(/\/$/, '');
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    const error = new Error(data.message || 'Request failed.');
-    error.status = response.status;
-    throw error;
-  }
-
-  return data;
+const request = createRequestClient(API_URL);
+export function apiRequest(path, options = {}) {
+  const headers = new Headers(options.headers);
+  if (!headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
+  return request(path, { ...options, headers });
 }

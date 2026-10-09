@@ -5,5 +5,5 @@ export function resolveVariant(product, options = {}, variantId) {
   if (!variant || variantId && variant.id !== variantId) return null;
   const price = variant.price ?? product.price;
   const images = variant.images.length ? variant.images : product.images;
-  return { ...product, variantId: variant.id, price, originalPrice: Math.max(variant.originalPrice ?? product.originalPrice ?? price, price), stock: variant.stock, color: variant.color, size: variant.size, images, image: images?.[0] || product.image };
+  return { ...product, variantId: variant.id, tryOnImage: variant.tryOnImage || '', price, originalPrice: Math.max(variant.originalPrice ?? product.originalPrice ?? price, price), stock: variant.stock, color: variant.color, size: variant.size, images, image: images?.[0] || product.image };
 }

@@ -1,3 +1,4 @@
+import PasswordInput from '../../../shared/PasswordInput';
 import PopupMessage from "./PopupMessage";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -90,7 +91,7 @@ const LoginForm = () => {
             Password
           </label>
 
-          <input
+          <PasswordInput
             id="login-password"
             type="password"
             value={password}

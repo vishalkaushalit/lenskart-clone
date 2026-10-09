@@ -250,7 +250,7 @@ Every web-panel table includes pagination and **Sr. No.** numbering that continu
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e20e5fc1d24f5e74794e08dfab3b5819e975b55b1c9b9ecdb1cc1c528fbb9ca6`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `3adf2313795a439b66613619e2f8b9dc5bbe9e231484d917f67ffe740b0d3254`.
 
 ### Actual npm commands
 
@@ -407,3 +407,13 @@ Successful admin login redirects to `/dashboard?login=success` in the web panel.
 ## Vercel hosting
 
 This app deploys with the other applications from the repository root. See [Single-project Vercel deployment](../README.md#single-project-vercel-deployment) for configuration, storage and verification.
+
+## Preparing live try-on
+
+The product editor and each variant editor have an optional try-on image upload field. Upload a tightly cropped transparent PNG/WebP front view with a centered bridge, at least 100 pixels wide, a width/height ratio of at least 1.5 and no larger than 4 MB. The field checks visible pixels and transparency before uploading; it cannot verify the photographic angle or whether the frame matches the product, so inspect the preview. Use clear lens interiors and omit the arms behind the face. Save is blocked while an upload is running.
+
+For variant products, each selected variant needs its own matching `tryOnImage`; a product-level image is not inherited across colors. Missing images leave the storefront button available with an availability message. Removing the image and saving disables camera try-on for that frame. See [Live virtual try-on](../README.md#live-virtual-try-on).
+
+API reads now share identical in-flight GET requests using `shared/requestClient.js`. Per-consumer cancellation lets Strict Mode remounts reuse a pending request. Writes, retries after completion and different query parameters stay independent. The admin session is checked once when the route guard mounts, rather than on every pathname change. Its user stays in memory during navigation and profile updates. Refreshing the browser runs one restoration check. A protected API returning 401 clears the local admin session and redirects to login; logout ends the server session and leaves the panel. API authorization remains enforced on every protected request.
+
+Password fields use the shared `PasswordInput` component with an eye button to show/hide the value. Passwords start hidden; the keyboard-accessible toggle preserves input validation and autocomplete and never submits the form.

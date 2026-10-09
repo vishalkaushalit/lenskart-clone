@@ -11,6 +11,7 @@ const schema = new mongoose.Schema({
   originalPrice: { type: Number, default: null, min: 0, max: 1000000, validate: { validator: function(value) { return value == null || this.price == null || value >= this.price; }, message: 'Compare price cannot be below price.' } },
   stock: { type: Number, default: 0, min: 0, validate: Number.isSafeInteger },
   // Ordered gallery; first image is the variant cover. Empty inherits product images.
+  tryOnImage: { type: String, default: '', maxlength: 2000, validate: value => !value || image(value) },
   images: { type: [String], default: [], validate: values => values.length <= 8 && values.every(image) },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },
 }, { timestamps: true });

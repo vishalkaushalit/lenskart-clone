@@ -1,3 +1,4 @@
+import ImageUploadField from './ImageUploadField';
 import ProductImageGallery from './ProductImageGallery';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -26,6 +27,7 @@ export default function ProductEditor({ product = null }) {
   const [highlightImages,setHighlightImages] = useState(()=>Object.fromEntries(['material','hinge','temple','nosepad'].map(key=>[key,product?.highlightImages?.[key]?{path:product.highlightImages[key],url:productImageUrl(product.highlightImages[key])}:null])));
   const previews = useRef([]);
   const uploads = useRef(new Map());
+  const [tryOnUploading,setTryOnUploading] = useState(false);
   const [busy,setBusy] = useState(false);
   const [notification,setNotification] = useState(null);
   const navigate = useNavigate();
@@ -56,6 +58,7 @@ export default function ProductEditor({ product = null }) {
   }
   async function submit(event) {
     event.preventDefault();
+    if(tryOnUploading)return;
     if (!images.length) {setNotification({type:'error',message:'Upload at least one product image.'});return;}
     const fields = Object.fromEntries(new FormData(event.currentTarget));
     fields.categoryIds=categoryIds;fields.subcategoryIds=subcategoryIds;
@@ -77,7 +80,7 @@ export default function ProductEditor({ product = null }) {
   const input='product-field';
   function text(name,label,placeholder,required=true) {return <label className="product-label">{label}{required&&<span className="text-red-500"> *</span>}<input name={name} defaultValue={product?.[name]||''} placeholder={placeholder} required={required} maxLength={name==='name'?150:name==='shape'||name==='color'?50:100} className={input}/></label>;}
   function select(name,label,values) {return <label className="product-label">{label.replace(/\s*\*$/, '')}{label.endsWith('*')&&<span className="text-red-500"> *</span>}<select name={name} defaultValue={product?.[name]||values[0]} className={input}>{values.map((value)=><option key={value}>{value}</option>)}</select></label>;}
-  const imagePanel=<ProductImageGallery images={images} setImages={setImages} choose={choose} busy={busy}/>;
+  const imagePanel=<div><ProductImageGallery images={images} setImages={setImages} choose={choose} busy={busy}/><div className="product-panel mt-4"><ImageUploadField name="tryOnImage" label="Virtual try-on image (optional)" initialValue={product?.tryOnImage||''} transparentOnly onUploading={setTryOnUploading}/><p className="mt-3 text-xs text-slate-500">Upload a tightly cropped, straight-on frame with transparent background and clear lens interiors. Keep the bridge centered. Gallery photos are not used for live try-on. Products with variants need a matching image on each variant.</p></div></div>;
   return <><form onSubmit={submit}><fieldset disabled={busy||notification?.type==='success'} className={`product-editor-grid ${editing?'is-editing':''}`}>
     {imagePanel}
     <section className="product-panel flex flex-col"><h2 className="product-panel-title"><BadgeIndianRupee size={16}/>Pricing &amp; Inventory</h2><div className="grid gap-5 sm:grid-cols-2">
@@ -104,5 +107,5 @@ export default function ProductEditor({ product = null }) {
         <div className="space-y-3"><h3 className="product-label">Customer reviews</h3>{reviews.map((review,index)=><div key={index} className="relative rounded-lg border border-slate-200 p-3 pb-12 space-y-2"><div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_80px_minmax(0,1fr)]">{['name','rating','date','text'].map(key=><label key={key} className={`product-label min-w-0 capitalize ${key==='text'?'sm:col-span-3':''}`}>{key==='text'?'Message':key}{key==='text'?<textarea required rows={3} maxLength={2000} value={review.text} onChange={e=>setReviews(previous=>previous.map((item,i)=>i===index?{...item,text:e.target.value}:item))} className={input}/>:<input required type={key==='rating'?'number':key==='date'?'date':'text'} min={key==='rating'?1:undefined} max={key==='rating'?5:undefined} step={key==='rating'?1:undefined} maxLength={key==='name'?100:2000} value={key==='date'?review.date?.slice(0,10)||'':review[key]} onChange={e=>setReviews(previous=>previous.map((item,i)=>i===index?{...item,[key]:e.target.value}:item))} className={input}/>}</label>)}</div><button type="button" aria-label={`Delete review ${index+1}`} title="Delete review" className="delete-button absolute right-2 bottom-2" onClick={()=>setReviews(previous=>previous.filter((_,i)=>i!==index))}><Trash2 size={18} aria-hidden="true" /></button></div>)}<button type="button" disabled={reviews.length>=100} className="admin-button-secondary" onClick={()=>setReviews(previous=>[...previous,{name:'',rating:5,date:'',text:''}])}>Add review</button><p className="text-xs text-slate-400">Add actual customer feedback.</p></div></div>
       </div></details>
     </div></section>
-  </fieldset>    <div className="product-editor-actions"><Link to={editing?`/product/${product.id}`:'/product'} className="admin-button-secondary">Cancel</Link><button disabled={busy} className="admin-button-primary">{busy?'Saving...':editing?'Update Product':'Save Product'}</button></div></form>{notification&&<NotificationPopup notification={notification} onClose={()=>{if(notification.type==='success')navigate(`/product/${notification.id}`);else setNotification(null);}}/>}</>;
+  </fieldset>    <div className="product-editor-actions"><Link to={editing?`/product/${product.id}`:'/product'} className="admin-button-secondary">Cancel</Link><button disabled={busy||tryOnUploading} className="admin-button-primary">{busy?'Saving...':editing?'Update Product':'Save Product'}</button></div></form>{notification&&<NotificationPopup notification={notification} onClose={()=>{if(notification.type==='success')navigate(`/product/${notification.id}`);else setNotification(null);}}/>}</>;
 }

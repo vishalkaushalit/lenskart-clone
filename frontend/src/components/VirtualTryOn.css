@@ -1,0 +1,25 @@
+@import '../../../shared/Popup.css';
+.virtual-try-on { padding: 24px; border: 0; overflow-y: auto; background: #fff; color: #000042; }
+.virtual-try-on::backdrop { background: rgb(0 0 35 / 55%); }
+.try-on-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.try-on-heading h2 { font-size: 24px; font-weight: 700; margin: 0; }
+.try-on-heading p { font-size: 13px; margin-top: 4px; }
+.try-on-heading button { padding: 8px; border-radius: 50%; background: #f4f6f6; }
+.try-on-intro, .try-on-status { margin: 16px 0; font-size: 14px; }
+.try-on-stage { position: relative; overflow: hidden; border-radius: 12px; background: #eef5f4; }
+.try-on-stage canvas { width: 100%; height: auto; display: block; }
+.try-on-stage canvas[hidden] { display: none; }
+.try-on-video { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.try-on-placeholder { min-height: 220px; display: grid; place-content: center; justify-items: center; gap: 14px; padding: 20px; text-align: center; }
+.try-on-start { display: flex; align-items: center; justify-content: center; gap: 8px; width: min(220px, 100%); min-height: 44px; padding: 10px 20px; margin-inline: auto; border: 1px solid #000042; border-radius: 8px; background: #000042; color: #fff; font-size: 14px; font-weight: 600; line-height: 1.4; cursor: pointer; }
+.try-on-start:hover { background: #202060; border-color: #202060; }
+.try-on-start svg { flex-shrink: 0; }
+.try-on-adjustments { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; font-size: 13px; }
+.try-on-adjustments input { display: block; width: 100%; margin-top: 8px; accent-color: #007e87; }
+.try-on-adjustments button { justify-self: start; text-decoration: underline; }
+.try-on-note { margin-top: 16px; font-size: 12px; color: #596470; line-height: 1.6; }
+.try-on-error { padding: 12px; margin-bottom: 12px; background: #fff0ef; color: #a12b26; border-radius: 8px; font-size: 14px; }
+.try-on-unavailable { display: grid; justify-items: center; gap: 20px; padding: 48px 0; text-align: center; }
+.try-on-unavailable h3 { font-size: 20px; font-weight: 600; }
+.virtual-try-on button:focus-visible { outline: 3px solid #007e87; outline-offset: 3px; }
+@media (max-width: 480px) { .virtual-try-on { padding: 18px; } }

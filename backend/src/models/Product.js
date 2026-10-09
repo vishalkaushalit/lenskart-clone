@@ -12,6 +12,7 @@ const schema = new mongoose.Schema({
   sku: { type: String, required: true, unique: true, trim: true, maxlength: 100 },
   name: { type: String, required: true, trim: true, maxlength: 150 },
   image: { type: String, required: true, maxlength: 2000, validate: (value) => /^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value) },
+  tryOnImage: { type: String, default: '', maxlength: 2000, validate: value => !value || validImage(value) },
   images: { type: [String], default: [], validate: (values) => values.length <= 8 && values.every(validImage) },
   description: { type: String, trim: true, maxlength: 5000, default: '' },
   features: { type: [String], default: [], validate: (values) => values.length <= 20 && values.every((value) => value.length <= 200) },

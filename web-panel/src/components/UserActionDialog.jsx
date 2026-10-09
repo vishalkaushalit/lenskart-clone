@@ -1,3 +1,4 @@
+import PasswordInput from '../../../shared/PasswordInput';
 import { useEffect, useRef, useState } from "react";
 import { X, Trash2 } from "lucide-react";
 import { apiRequest } from "../api";
@@ -61,7 +62,7 @@ export default function UserActionDialog({ action, currentUserId, onClose, onSuc
             </div>
             <div><label htmlFor="user-phone" className="mb-2 block text-sm font-semibold">Phone</label><input id="user-phone" type="tel" value={phone} maxLength={30} onChange={(event) => setPhone(event.target.value)} disabled={busy} className="admin-field" /></div>
             <div><label htmlFor="user-status" className="mb-2 block text-sm font-semibold">Account access</label><select id="user-status" value={status} onChange={(event) => setStatus(event.target.value)} disabled={busy || user.id === currentUserId} className="admin-field"><option value="active">Enabled</option><option value="inactive">Disabled</option></select></div>
-            {creating && <div><label htmlFor="user-password" className="mb-2 block text-sm font-semibold">Password</label><input id="user-password" type="password" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={8} required disabled={busy} className="admin-field" /></div>}
+            {creating && <div><label htmlFor="user-password" className="mb-2 block text-sm font-semibold">Password</label><PasswordInput id="user-password" type="password" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={8} required disabled={busy} className="admin-field" /></div>}
             <div>
               <label htmlFor="edit-user-role" className="mb-2 block text-sm font-semibold">Role</label>
               <select id="edit-user-role" value={role} onChange={(event) => setRole(event.target.value)} disabled={busy || user.id === currentUserId} className="admin-field">

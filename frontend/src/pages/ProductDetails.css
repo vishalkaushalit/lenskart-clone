@@ -1651,3 +1651,26 @@ body:has(.store-product-page) header {
     align-self: start;
   }
 }
+
+/* Compact gallery action, using the same navy as the purchase button. */
+.detail-try-on-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: min(220px, 100%);
+  min-height: 44px;
+  padding: 10px 20px;
+  margin: 16px auto 24px;
+  border: 1px solid #000042;
+  border-radius: 8px;
+  background: #000042;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.detail-try-on-button svg { flex-shrink: 0; }
+.detail-try-on-button:hover { background: #202060; border-color: #202060; }
+.detail-try-on-button:focus-visible { outline: 3px solid #008f72; outline-offset: 3px; }

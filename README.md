@@ -110,8 +110,8 @@ Products support multiple size/color combinations with their own images, invento
 
 | Application | Source files | Guide |
 | --- | --- | --- |
-| backend | 60 | [README](backend/README.md) |
-| frontend | 91 | [README](frontend/README.md) |
+| backend | 61 | [README](backend/README.md) |
+| frontend | 95 | [README](frontend/README.md) |
 | web-panel | 51 | [README](web-panel/README.md) |
 
 Update references with `npm run docs:sync`; verify with `npm run docs:check`. Run `npm run docs:hooks` once per clone to enable commit-time synchronization. Review written field explanations whenever behavior changes.
@@ -134,3 +134,15 @@ The Vercel install command explicitly includes development dependencies for both
 `npm run build` builds both browser apps into root `dist/`, copies the panel into `dist/admin/`, and copies existing backend product images to `dist/assets/products/`. New hosted uploads use Blob URLs and are limited to **4 MB per image** to stay below Vercel's function request limit. Local standalone backend uploads still use `backend/public/products`. Existing images must be committed to the repository to be included at build time.
 
 The root `api/index.js` awaits cached backend initialization before dispatching requests. Local `npm start --prefix backend` still starts the standalone API. Hosted secure cookies use Express proxy trust; all three apps share one origin and session cookie.
+
+## Live virtual try-on
+
+Product detail pages have a **Virtual Try-On** button beneath the image gallery. In the admin product editor, upload a **Virtual try-on image**; for variant products, upload a separate matching image in each variant editor. Save the product/variant before checking the storefront. Existing products without prepared assets show an availability message and do not request camera access.
+
+Use a tightly cropped, front-facing PNG or WebP with a transparent background and transparent lens interiors (unless the lenses are intentionally tinted). Center the bridge; avoid side views, white backgrounds and large margins. The upload field checks transparency, a landscape aspect ratio and the 4 MB limit. Use the actual product frame rather than a generic illustration.
+
+Shoppers click **Start camera**, grant camera permission, face good light and remove existing glasses. MediaPipe detects eye landmarks and positions a 2D frame overlay with head-tilt tracking. Size and height sliders adjust the visual placement. This implementation is a visual approximation, not calibrated sizing, depth occlusion, or a full 3D model. True side views require per-frame 3D assets and a 3D renderer.
+
+Camera access requires HTTPS (localhost is supported). Video stays in the browser; no face imagery is sent to the API or stored. The model downloads from Google's MediaPipe model storage on start, so an internet connection is required. Closing the dialog, stopping the camera, leaving the page or hiding the tab releases the stream. Camera permission/device and model-loading failures show retry guidance.
+
+`frontend/scripts/prepare-try-on.mjs` copies the installed MediaPipe WASM files into generated `frontend/public/try-on/wasm/` before dev/build; these files are ignored by Git and included in the deployed static build. Run `node --test frontend/src/utils/tryOnPlacement.test.mjs` for placement and variant-isolation checks; API schema/projection tests run with `npm test --prefix backend`.

@@ -324,7 +324,7 @@ Variant **Price** is the selling price; **Compare Price** (`originalPrice`) cont
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `9e8e91c5bc2070311bf3e124a076865e71aa6cd4502240accfa3b124694783a8`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `80c20211c814d135a56d73ebc1c360cfc522599126940963ea9b994cf2ed43a1`.
 
 ### Actual npm commands
 
@@ -334,6 +334,8 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | build | `vite build` |
 | lint | `eslint .` |
 | preview | `vite preview` |
+| prebuild | `node scripts/prepare-try-on.mjs` |
+| predev | `node scripts/prepare-try-on.mjs` |
 
 ### Environment keys used in source
 
@@ -345,6 +347,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | --- | --- |
 | [src/App.jsx](src/App.jsx) | default export |
 | [src/api/api.js](src/api/api.js) | apiRequest |
+| [src/api/requestClient.js](src/api/requestClient.js) | Internal module / styles |
 | [src/assets/css/LoadingScreen.css](src/assets/css/LoadingScreen.css) | Internal module / styles |
 | [src/assets/js/script.js](src/assets/js/script.js) | Internal module / styles |
 | [src/components/AccountMenu.jsx](src/components/AccountMenu.jsx) | AccountMenu |
@@ -392,6 +395,8 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/StoreIcon.jsx](src/components/StoreIcon.jsx) | StoreIcon |
 | [src/components/Sunglasses.jsx](src/components/Sunglasses.jsx) | Sunglasses |
 | [src/components/Trending.jsx](src/components/Trending.jsx) | default export |
+| [src/components/VirtualTryOn.css](src/components/VirtualTryOn.css) | Internal module / styles |
+| [src/components/VirtualTryOn.jsx](src/components/VirtualTryOn.jsx) | VirtualTryOn |
 | [src/components/WishlistCard.css](src/components/WishlistCard.css) | Internal module / styles |
 | [src/components/WishlistCard.jsx](src/components/WishlistCard.jsx) | WishlistCard |
 | [src/context/AuthContext.jsx](src/context/AuthContext.jsx) | AuthProvider |
@@ -434,6 +439,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/state/productVariants.test.js](src/state/productVariants.test.js) | Internal module / styles |
 | [src/state/shopping.js](src/state/shopping.js) | cartKey, cartQuantity, normalizeStore |
 | [src/state/shopping.test.js](src/state/shopping.test.js) | Internal module / styles |
+| [src/utils/tryOnPlacement.js](src/utils/tryOnPlacement.js) | tryOnPlacement |
 
 ### Route declarations
 
@@ -527,3 +533,23 @@ On two-column product pages, both columns scroll normally until the shorter colu
 ## Vercel hosting
 
 This app deploys with the other applications from the repository root. See [Single-project Vercel deployment](../README.md#single-project-vercel-deployment) for configuration, storage and verification.
+
+## Product virtual try-on
+
+The product gallery has a Virtual Try-On button opening the shared-size `product-popup` dialog. Camera starts only on an explicit click. MediaPipe is dynamically imported, and inference runs at most ten times per second while the video preview renders normally. A matching transparent `tryOnImage` from the product or selected variant is anchored to eye landmarks; variants never inherit another color's image. Missing assets show an availability state. Streams, inference animation and detector resources are released on stop/unmount; hiding the tab stops the camera.
+
+This is a 2D visual overlay with tilt, size and height adjustments. It does not measure fit or provide 3D side views. See [Live virtual try-on setup](../README.md#live-virtual-try-on) for asset preparation, browser requirements and privacy behavior. The model is fetched from Google when started; WASM is copied from the installed package before dev/build and hosted with the app.
+
+The gallery Virtual Try-On action is centered, capped at 220px wide with a 44px minimum height, and uses the purchase button’s navy background with white text. Its styles live in `ProductDetails.css`.
+
+The try-on popup’s camera and Back to product buttons use the same compact navy styling: up to 220px wide, at least 44px tall, centered with white text.
+
+## Repeated API requests
+
+`apiRequest` shares identical pending GET requests through `src/api/requestClient.js`. Concurrent components and Strict Mode effect remounts subscribe to one network request. Aborting one consumer does not interrupt others; when every consumer leaves, the underlying fetch is aborted after the immediate remount window. Completed and failed responses are not cached, so retries and later navigation request fresh data. Different paths, queries and request settings remain independent. Writes are never deduplicated and separate subsequent reads from earlier pending reads.
+
+Run `node --test frontend/src/api/requestClient.test.mjs` to check sharing, cancellation, retries and mutation behavior. React Strict Mode remains enabled. An OPTIONS preflight followed by GET/POST is a browser CORS exchange rather than a duplicate application request.
+
+The pending request implementation is shared with the admin panel in `shared/requestClient.js`; the frontend module re-exports it. Each browser app retains its own API base URL and body headers.
+
+Password fields use the shared `PasswordInput` component with an eye button to show/hide the value. Passwords start hidden; the keyboard-accessible toggle preserves input validation and autocomplete and never submits the form.

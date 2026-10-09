@@ -2,7 +2,7 @@ import { attachVariants } from '../services/variants.js';
 import {availableSlug,validSlug} from '../utils/slugs.js';
 import Category from '../models/Category.js';
 import Product from '../models/Product.js';
-const editable = ['slug', 'categoryIds', 'subcategoryIds', 'categoryId', 'subcategoryId', 'faqs', 'reviews', 'highlightImages', 'subtitle', 'lensTypes', 'offerTitle', 'offerText', 'deliveryInformation', 'assurances', 'material', 'hinge', 'temple', 'nosepad', 'description', 'features', 'sku', 'name', 'image', 'images', 'category', 'productType', 'shape', 'brand', 'price', 'originalPrice', 'color', 'size', 'gender', 'stock', 'status', 'powered'];
+const editable = ['slug', 'categoryIds', 'subcategoryIds', 'categoryId', 'subcategoryId', 'faqs', 'reviews', 'highlightImages', 'tryOnImage', 'subtitle', 'lensTypes', 'offerTitle', 'offerText', 'deliveryInformation', 'assurances', 'material', 'hinge', 'temple', 'nosepad', 'description', 'features', 'sku', 'name', 'image', 'images', 'category', 'productType', 'shape', 'brand', 'price', 'originalPrice', 'color', 'size', 'gender', 'stock', 'status', 'powered'];
 export function publicProduct(product) {
   const result = { id: String(product._id) };
   for (const key of [...editable, 'availableColors', 'availableSizes', 'sales', 'rating', 'addedAt', 'hasVariants', 'variants', 'createdAt', 'updatedAt']) result[key] = product[key];

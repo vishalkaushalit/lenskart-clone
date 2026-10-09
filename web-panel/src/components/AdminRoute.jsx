@@ -1,18 +1,17 @@
 import Loader from './Loader';
 import PopupMessage from "./PopupMessage";
 import { useEffect, useState } from "react";
-import { Outlet,useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { apiRequest, frontendUrl } from "../api";
 
 export default function AdminRoute() {
-  const {pathname}=useLocation();
   const [session, setSession] = useState({ loading: true, user: null, error: "" });
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
     async function checkSession() {
-      setSession({ loading: true, user: null, error: "" });
+      setSession(previous => ({ ...previous, loading: !previous.user, error: "" }));
       try {
         const data = await apiRequest("/auth/me", { signal: controller.signal });
         if (!controller.signal.aborted) setSession({ loading: false, user: data.user, error: "" });
@@ -22,7 +21,13 @@ export default function AdminRoute() {
     }
     checkSession();
     return () => controller.abort();
-  }, [attempt,pathname]);
+  }, [attempt]);
+
+  useEffect(() => {
+    function expireSession() { setSession({ loading: false, user: null, error: "" }); }
+    window.addEventListener('admin-session-expired', expireSession);
+    return () => window.removeEventListener('admin-session-expired', expireSession);
+  }, []);
 
   useEffect(() => {
     if (!session.loading && !session.error && (!session.user || session.user.role !== "admin")) {

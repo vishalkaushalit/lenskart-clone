@@ -15,7 +15,7 @@ router.get('/', async (req, res, next) => {
 async function save(req, res, next) {
   if (req.params.variantId && !/^[a-f\d]{24}$/i.test(req.params.variantId)) return res.status(400).json({ message: 'Invalid variant ID.' });
   const fields = {};
-  for (const key of ['size', 'color', 'price', 'originalPrice', 'stock', 'images', 'status']) if (Object.hasOwn(req.body || {}, key)) fields[key] = req.body[key];
+  for (const key of ['size', 'color', 'price', 'originalPrice', 'stock', 'images', 'tryOnImage', 'status']) if (Object.hasOwn(req.body || {}, key)) fields[key] = req.body[key];
   let session;
   try {
     session = await mongoose.startSession(); let variant;

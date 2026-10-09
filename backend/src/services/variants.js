@@ -1,5 +1,5 @@
 import ProductVariant from '../models/ProductVariant.js';
-export const publicVariant = row => ({ id: String(row._id), productId: String(row.productId), size: row.size, color: row.color, price: row.price, originalPrice: row.originalPrice, stock: row.stock, images: row.images, status: row.status, createdAt: row.createdAt, updatedAt: row.updatedAt });
+export const publicVariant = row => ({ id: String(row._id), productId: String(row.productId), size: row.size, color: row.color, price: row.price, originalPrice: row.originalPrice, stock: row.stock, images: row.images, tryOnImage: row.tryOnImage || '', status: row.status, createdAt: row.createdAt, updatedAt: row.updatedAt });
 export async function attachVariants(products, admin = false) {
   const ids = products.filter(product => product.hasVariants).map(product => product._id);
   if (!ids.length) return products;

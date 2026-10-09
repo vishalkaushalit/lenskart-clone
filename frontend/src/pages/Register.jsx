@@ -1,3 +1,4 @@
+import PasswordInput from '../../../shared/PasswordInput';
 import PopupMessage from "../components/PopupMessage";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -50,7 +51,7 @@ export default function Register() {
             ].map(({ label, name, ...props }) => (
               <div key={name}>
                 <label htmlFor={`register-${name}`} className="mb-1 block font-medium">{label}</label>
-                <input {...props} id={`register-${name}`} name={name} required className="w-full rounded-lg border border-gray-300 px-4 py-2.5" />
+                {props.type === "password" ? <PasswordInput {...props} id={`register-${name}`} name={name} required className="w-full rounded-lg border border-gray-300 px-4 py-2.5" /> : <input {...props} id={`register-${name}`} name={name} required className="w-full rounded-lg border border-gray-300 px-4 py-2.5" />}
               </div>
             ))}
             {error && <PopupMessage message={error} onClose={() => setError("")} />}
