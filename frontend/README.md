@@ -153,7 +153,7 @@ The provider validates stored arrays, handles malformed storage, and listens for
 
 ## Checkout fields and flow
 
-Address form field names are prefixed `delivery-` / `billing-`: `name`, `phone`, `email`, `address`, optional `landmark`, `city`, `state`, `pincode`. The prefix identifies which form section owns a value; the submitted nested object uses unprefixed keys. `sameBilling` copies delivery into billing. `paymentMethod` chooses COD/online; online remains unavailable for submission. `review` stores the first submit's address values for confirmation. Editing the form clears review. `placing` prevents repeated clicks, `requestId` stays stable across retry, and `order` stores the successful response.
+Address form field names are prefixed `delivery-` / `billing-`: `name`, `phone`, `email`, `address`, optional `landmark`, `city`, `state`, `pincode`. The prefix identifies which form section owns a value; the submitted nested object uses unprefixed keys. `sameBilling` copies delivery into billing. `paymentMethod` chooses COD/online; online remains unavailable for submission. `review` stores the first submit's address values for confirmation. Editing the form clears review. `placing` prevents repeated clicks, `requestId` stays stable across retry, and `completedOrderId` stores the successful order ID.
 
 ```js
 // Payload built after the Review order step.
@@ -168,7 +168,7 @@ const checkoutRequest = {
 };
 ```
 
-The backend ignores client prices, verifies options/stock, and computes payable. On success, the app replaces the checkout URL with `/thank-you/:id`, shows the saved order, and clears the cart. The receipt loads from `GET /orders/:id`, scoped to the signed-in customer, so refreshing retains the receipt. Missing products and excess quantities block checkout until corrected.
+The backend ignores client prices, verifies options/stock, and computes payable. On success, the app replaces the checkout URL with `/thank-you/:id`, shows the saved order, and clears the cart. The completed order takes precedence over the empty-cart redirect, including while the receipt page loads. The receipt loads from `GET /orders/:id`, scoped to the signed-in customer, so refreshing retains the receipt. Missing products and excess quantities block checkout until corrected.
 
 ## Styles and assets
 
@@ -324,7 +324,7 @@ Variant **Price** is the selling price; **Compare Price** (`originalPrice`) cont
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `0a9f21412e258f8b9162bf6ec0508dc31b95cdd01d0d60fc9cda21bcb3d6454d`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `f3b5c371843d10dd55676e106e0bbbff7f3bdc89a127ddb74d0b1dcd973ac403`.
 
 ### Actual npm commands
 
@@ -470,9 +470,11 @@ Paths below are local declarations; consult the API/page guide above for mounted
 
 Collection results memoize filtering/sorting by catalog, query, selected filters, taxonomy and sort order. Available filter choices are memoized by catalog. Opening filters, editing draft filters and wishlist updates reuse the unchanged computed results.
 
+At tablet widths (768–1023px), We Assure you stacks its three assurances vertically, with each icon beside its label and Learn More action.
+
 Similar Products uses `SimilarProductCard`: a white image area with wishlist action, light-grey content, lens description, current/compare pricing and calculated discount, and a full-width View link. It resolves the first active variant for its gallery and pricing, keeps cards aligned, and scrolls horizontally on small screens.
 
-Similar-product mobile typography uses an 18px semibold title/price, 16px regular lens text, 15px compare/discount text and a 16px semibold View button. Desktop Similar Products stays inside the left product column. Three equal-width cards are visible at once on desktop, with 12px gaps and horizontal scrolling for additional cards. Compact desktop cards use an 18px title, 14px lens/discount text, a 16px price/View button, 12px horizontal padding and 28px separation before pricing. The Similar Products heading inherits the same 20px size, weight and line-height as the other left-column section headings, with 24px space before cards on desktop and 18px on mobile.
+Similar-product mobile typography uses an 18px semibold title/price, 16px regular lens text, 15px compare/discount text and a 16px semibold View button. Desktop Similar Products stays inside the left product column. Two equal-width cards are visible at once on desktop, with 12px gaps and horizontal scrolling for additional cards. Compact desktop cards use an 18px title, 14px lens/discount text, a 16px price/View button, 12px horizontal padding and 28px separation before pricing. The Similar Products heading inherits the same 20px size, weight and line-height as the other left-column section headings, with 24px space before cards on desktop and 18px on mobile.
 
 Collection and similar-product card photos fill their landscape image area with centered `object-fit: cover` and no extra image padding. This removes excess white margins from square catalog photos and makes frames appear larger. Full product galleries keep their existing viewing behavior.
 

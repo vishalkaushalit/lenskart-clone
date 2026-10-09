@@ -592,6 +592,26 @@ body:has(.store-product-page) header {
 .detail-trust-art svg {
   margin: 0;
 }
+@media (min-width: 768px) and (max-width: 1023px) {
+  .detail-assurances {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .detail-assurances > div {
+    display: grid;
+    grid-template-columns: 68px minmax(0, 1fr);
+    column-gap: 16px;
+    align-items: center;
+  }
+  .detail-assurances .detail-trust-art {
+    grid-row: span 2;
+    margin-bottom: 0;
+  }
+  .detail-assurances button {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
 .detail-highlights h2 small {
   font-size: 9px;
   background: #f3f3ff;
@@ -1218,12 +1238,15 @@ body:has(.store-product-page) header {
 }
 @media (max-width: 1023px) {
   .detail-similar-row > .detail-similar-card {
-    width: min(320px, calc(100vw - 48px));
+    width: min(250px, calc(100vw - 48px));
     flex-shrink: 0;
   }
   .detail-guide-card {
     min-width: 180px;
     min-height: 240px;
+  }
+  .detail-similar-price {
+    padding-top: 0px;
   }
 }
 @media (max-width: 767px) {
@@ -1500,37 +1523,123 @@ body:has(.store-product-page) header {
   }
 }
 
-.detail-similar > h2 { margin:0 0 24px; }
-.detail-similar-row { gap:16px; }
-@media (min-width: 1024px) {
-  /* Match the desktop reference card without squeezing its text into three columns. */
-  .detail-similar { margin-top:28px; padding:32px 24px; }
-  .detail-similar > h2 { margin-bottom:24px; }
-  .detail-similar-row { grid-auto-columns:calc((100% - 24px) / 3); gap:12px; }
-  .detail-similar-card { border-radius:16px; }
-  .detail-similar-content { padding:28px 24px 24px; }
-  .detail-similar-content h3 { font-size:clamp(20px, 2vw, 32px); font-weight:700; line-height:1.25; }
-  .detail-similar-content > p { margin-top:8px; font-size:clamp(18px, 1.75vw, 28px); line-height:1.3; }
-  .detail-similar-price { padding-top:clamp(40px, 5vw, 80px); font-size:clamp(20px, 2vw, 32px); line-height:1.25; }
-  .detail-similar-price strong { font-weight:700; }
-  .detail-similar-price p { margin-top:8px; font-size:clamp(18px, 1.75vw, 28px); line-height:1.3; }
-  .detail-similar-price span { font-size:clamp(17px, 1.625vw, 26px); font-weight:600; }
-  .detail-similar-view { margin-top:24px; min-height:70px; padding:16px; font-size:clamp(20px, 1.75vw, 28px); font-weight:700; line-height:36px; border-radius:12px; }
-  .detail-similar-photo > button { top:12px; right:14px; }
-  .detail-similar-photo > button svg { width:28px; height:28px; }
+.detail-similar > h2 {
+  margin: 0 0 24px;
 }
-@media(max-width:767px) { .detail-similar > h2 { margin-bottom:18px; } }
+.detail-similar-row {
+  gap: 16px;
+}
+@media (min-width: 1024px) {
+  /* Show three similar-product cards at a time in the desktop product column. */
+  .detail-similar {
+    margin-top: 28px;
+    padding: 32px 24px;
+  }
+  .detail-similar > h2 {
+    margin-bottom: 24px;
+  }
+  .detail-similar-row {
+    grid-auto-columns: calc((100% - 12px) / 3);
+    gap: 12px;
+  }
+  .detail-similar-card {
+    border-radius: 16px;
+  }
+  .detail-similar-content {
+    padding: 28px 24px 24px;
+  }
+  .detail-similar-content h3 {
+    font-size: clamp(20px, 2vw, 32px);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .detail-similar-content > p {
+    margin-top: 8px;
+    font-size: clamp(18px, 1.75vw, 28px);
+    line-height: 1.3;
+  }
+  .detail-similar-price {
+    padding-top: clamp(40px, 5vw, 80px);
+    font-size: clamp(20px, 2vw, 32px);
+    line-height: 1.25;
+  }
+  .detail-similar-price strong {
+    font-weight: 700;
+  }
+  .detail-similar-price p {
+    margin-top: 8px;
+    font-size: clamp(18px, 1.75vw, 28px);
+    line-height: 1.3;
+  }
+  .detail-similar-price span {
+    font-size: clamp(17px, 1.625vw, 26px);
+    font-weight: 600;
+  }
+  .detail-similar-view {
+    margin-top: 24px;
+    min-height: 70px;
+    padding: 16px;
+    font-size: clamp(20px, 1.75vw, 28px);
+    font-weight: 700;
+    line-height: 36px;
+    border-radius: 12px;
+  }
+  .detail-similar-photo > button {
+    top: 12px;
+    right: 14px;
+  }
+  .detail-similar-photo > button svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+@media (max-width: 767px) {
+  .detail-similar > h2 {
+    margin-bottom: 18px;
+  }
+}
 
 @media (min-width: 1024px) {
-  .detail-similar-content { padding:16px 12px; }
-  .detail-similar-content h3 { font-size:18px; line-height:1.35; }
-  .detail-similar-content > p { font-size:14px; line-height:1.4; margin-top:6px; }
-  .detail-similar-price { padding-top:28px; font-size:16px; line-height:1.4; }
-  .detail-similar-price p { font-size:14px; margin-top:6px; }
-  .detail-similar-price span { font-size:14px; }
-  .detail-similar-view { font-size:16px; line-height:20px; min-height:44px; padding:12px 8px; margin-top:16px; border-radius:8px; }
-  .detail-similar-photo > button { top:6px; right:6px; }
-  .detail-similar-photo > button svg { width:20px; height:20px; }
+  .detail-similar-content {
+    padding: 16px 12px;
+  }
+  .detail-similar-content h3 {
+    font-size: 18px;
+    line-height: 1.35;
+  }
+  .detail-similar-content > p {
+    font-size: 14px;
+    line-height: 1.4;
+    margin-top: 6px;
+  }
+  .detail-similar-price {
+    padding-top: 28px;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+  .detail-similar-price p {
+    font-size: 14px;
+    margin-top: 6px;
+  }
+  .detail-similar-price span {
+    font-size: 14px;
+  }
+  .detail-similar-view {
+    font-size: 16px;
+    line-height: 20px;
+    min-height: 44px;
+    padding: 12px 8px;
+    margin-top: 16px;
+    border-radius: 8px;
+  }
+  .detail-similar-photo > button {
+    top: 6px;
+    right: 6px;
+  }
+  .detail-similar-photo > button svg {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 /* Keep the shorter column visible until both column bottoms align. */
