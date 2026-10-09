@@ -110,7 +110,7 @@ Products support multiple size/color combinations with their own images, invento
 
 | Application | Source files | Guide |
 | --- | --- | --- |
-| backend | 61 | [README](backend/README.md) |
+| backend | 62 | [README](backend/README.md) |
 | frontend | 95 | [README](frontend/README.md) |
 | web-panel | 51 | [README](web-panel/README.md) |
 
@@ -146,3 +146,11 @@ Shoppers click **Start camera**, grant camera permission, face good light and re
 Camera access requires HTTPS (localhost is supported). Video stays in the browser; no face imagery is sent to the API or stored. The model downloads from Google's MediaPipe model storage on start, so an internet connection is required. Closing the dialog, stopping the camera, leaving the page or hiding the tab releases the stream. Camera permission/device and model-loading failures show retry guidance.
 
 `frontend/scripts/prepare-try-on.mjs` copies the installed MediaPipe WASM files into generated `frontend/public/try-on/wasm/` before dev/build; these files are ignored by Git and included in the deployed static build. Run `node --test frontend/src/utils/tryOnPlacement.test.mjs` for placement and variant-isolation checks; API schema/projection tests run with `npm test --prefix backend`.
+
+## API performance
+
+The Vercel API region is configured as `bom1` (Mumbai) to match the MongoDB Atlas region. Redeploy after changing `vercel.json`; the build-machine region shown in logs can differ from the function runtime region. If the database moves, update the configured function region too.
+
+Sessions reuse the Mongoose MongoDB client and its database instead of opening a second connection pool. Independent model initialization runs together. Orders/coupons fetch their count and page concurrently, sorted by creation date and `_id` for stable pagination. Compound indexes support order date sorting, order status/date filtering, and coupon date sorting. Model initialization creates missing indexes; the first startup after adding indexes can take longer. Dashboard queries no longer all wait for the online-session scan. Product details render independently of the recommendations catalog request.
+
+Run backend tests and the application builds before deployment. Compare the same authenticated API request in DevTools before/after redeploy, separating the first request from subsequent requests. Live database query plans and latency have not been benchmarked by these code checks. Cold initialization still connects to MongoDB, verifies indexes and checks legacy user IDs; large collections or Atlas resource limits can remain bottlenecks. No shared response cache is added for account or order data.

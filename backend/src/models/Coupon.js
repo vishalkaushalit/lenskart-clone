@@ -7,5 +7,6 @@ const schema=new mongoose.Schema({
   expiresAt:{type:Date,default:null},
   active:{type:Boolean,default:true},
 },{timestamps:true});
+schema.index({createdAt:-1,_id:-1});
 schema.pre('validate',function(){if(this.type==='percentage'&&this.value>100)this.invalidate('value','Percentage must not exceed 100.');});
 export default mongoose.model('Coupon',schema);

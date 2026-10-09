@@ -324,7 +324,7 @@ Variant **Price** is the selling price; **Compare Price** (`originalPrice`) cont
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `a331726f86616f8878480801d91a3b1727a0686cbf48224f93fbee459b6bc085`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `947f8fa67d0424f9525d8ccf3dc44e4ea6fccab1dd0f581c0082690dc176699f`.
 
 ### Actual npm commands
 
@@ -553,3 +553,5 @@ Run `node --test frontend/src/api/requestClient.test.mjs` to check sharing, canc
 The pending request implementation is shared with the admin panel in `shared/requestClient.js`; the frontend module re-exports it. Each browser app retains its own API base URL and body headers.
 
 Password fields use the shared `PasswordInput` component with an eye button to show/hide the value. Passwords start hidden; the keyboard-accessible toggle preserves input validation and autocomplete and never submits the form.
+
+Product detail loading is independent of the recommendations catalog. The selected product renders as soon as its detail request finishes; recommendations arrive separately, and their failure does not block the product page. The catalog request is reused while navigating between product details within the mounted page.

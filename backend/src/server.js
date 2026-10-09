@@ -79,10 +79,10 @@ export function initializeApp() {
 
     await connectDB();
     await initializeUserIds(User.collection);
-    await User.init();
 
     const sessionStore = MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI,
+      client: mongoose.connection.getClient(),
+      dbName: mongoose.connection.name,
       collectionName: 'sessions',
     });
 
@@ -104,7 +104,7 @@ export function initializeApp() {
       },
     }));
 
-    await Promise.all([Order.init(),Coupon.init(),ProductVariant.init()]);
+    await Promise.all([User.init(),Order.init(),Coupon.init(),ProductVariant.init()]);
     app.use('/api/categories',publicCategories);
     app.use('/api/admin/categories',adminCategories);
     app.use('/api/admin', commerceAdmin);

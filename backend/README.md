@@ -343,7 +343,7 @@ Dashboard recent orders accept `recentPage` (1–10,000, default 1). The databas
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `deaa9d5ca9ff4b95890a7183bad6ceb93724350049e84ad1b6a6054d22c4de3a`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `ef446cc58c54beb058120265fe8a5c917528f66e06e38144dc86019c448ae296`.
 
 ### Actual npm commands
 
@@ -407,6 +407,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/routes/commerceRoutes.js](src/routes/commerceRoutes.js) | address, commerceAdmin, commercePublic, discountAmount, quote |
 | [src/routes/commerceRoutes.test.js](src/routes/commerceRoutes.test.js) | Internal module / styles |
 | [src/routes/dashboardRoutes.js](src/routes/dashboardRoutes.js) | default export |
+| [src/routes/listPerformance.test.js](src/routes/listPerformance.test.js) | Internal module / styles |
 | [src/routes/productRoutes.js](src/routes/productRoutes.js) | managedProducts, publicProducts |
 | [src/routes/userRoutes.js](src/routes/userRoutes.js) | default export |
 | [src/routes/variantRoutes.js](src/routes/variantRoutes.js) | default export |
@@ -535,6 +536,7 @@ const schema=new mongoose.Schema({
   expiresAt:{type:Date,default:null},
   active:{type:Boolean,default:true},
 },{timestamps:true});
+schema.index({createdAt:-1,_id:-1});
 schema.pre('validate',function(){if(this.type==='percentage'&&this.value>100)this.invalidate('value','Percentage must not exceed 100.');});
 export default mongoose.model('Coupon',schema);
 ```
@@ -572,6 +574,9 @@ const orderSchema = new mongoose.Schema({
 
 orderSchema.index({user:1,requestId:1},{unique:true,partialFilterExpression:{requestId:{$type:'string'}}});
 orderSchema.index({ user: 1, createdAt: -1, _id: -1 });
+
+orderSchema.index({ createdAt: -1, _id: -1 });
+orderSchema.index({ status: 1, createdAt: -1, _id: -1 });
 
 orderSchema.pre('save',async function(){if(this.isNew&&!this.$locals.orderIdAssigned){this.orderId=await nextOrderId(this.$session());this.$locals.orderIdAssigned=true;}});
 export default mongoose.model('Order', orderSchema);
@@ -740,3 +745,7 @@ This app deploys with the other applications from the repository root. See [Sing
 ## Virtual try-on metadata
 
 Products and product variants accept an optional `tryOnImage` string (default empty, maximum 2000 characters). It uses the same allowed local `/assets/products/` or HTTP(S) image URLs as galleries and is included in public product/variant projections. Admin-only product/variant mutations persist it; uploads use the existing authenticated image endpoint and storage configuration. Face video and landmarks never reach the API. See [asset preparation](../README.md#live-virtual-try-on).
+
+## Query and connection performance
+
+The MongoDB-backed session store reuses `mongoose.connection.getClient()` with the connected database name. User/order/coupon/variant model initialization runs concurrently after user-ID initialization. Admin orders and coupons run independent count/page reads in parallel and use stable `{createdAt:-1,_id:-1}` sorting. New order indexes cover creation-date sorting and status/date queries; coupons have a creation-date index. Dashboard session scanning runs alongside independent totals, aggregates and recent-order reads. See [API performance](../README.md#api-performance) for deployment and measurement notes.

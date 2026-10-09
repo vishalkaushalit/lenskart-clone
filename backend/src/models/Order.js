@@ -28,5 +28,8 @@ const orderSchema = new mongoose.Schema({
 orderSchema.index({user:1,requestId:1},{unique:true,partialFilterExpression:{requestId:{$type:'string'}}});
 orderSchema.index({ user: 1, createdAt: -1, _id: -1 });
 
+orderSchema.index({ createdAt: -1, _id: -1 });
+orderSchema.index({ status: 1, createdAt: -1, _id: -1 });
+
 orderSchema.pre('save',async function(){if(this.isNew&&!this.$locals.orderIdAssigned){this.orderId=await nextOrderId(this.$session());this.$locals.orderIdAssigned=true;}});
 export default mongoose.model('Order', orderSchema);

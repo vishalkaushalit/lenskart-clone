@@ -646,22 +646,17 @@ function Details({ product: baseProduct, products }) {
 export default function ProductDetails() {
   const { id } = useParams();
   const [result, setResult] = useState({ loading: true });
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
     async function load() {
       setResult({ loading: true });
       try {
-        const [data, catalog] = await Promise.all([
-          apiRequest(`/products/${id}`, { signal: controller.signal }),
-          apiRequest("/products", { signal: controller.signal }).catch(() => ({
-            products: [],
-          })),
-        ]);
+        const data = await apiRequest(`/products/${id}`, { signal: controller.signal });
         if (!controller.signal.aborted)
           setResult({
             product: data.product,
-            products: catalog.products || [],
             loading: false,
           });
       } catch (error) {
@@ -676,6 +671,13 @@ export default function ProductDetails() {
     load();
     return () => controller.abort();
   }, [id, attempt]);
+  useEffect(() => {
+    const controller = new AbortController();
+    apiRequest('/products', { signal: controller.signal }).then(data => {
+      if (!controller.signal.aborted) setRelatedProducts(data.products || []);
+    }).catch(() => { /* Recommendations must not block product details. */ });
+    return () => controller.abort();
+  }, []);
   return (
     <section className="store-product-page">
       {result.loading ? (
@@ -696,7 +698,7 @@ export default function ProductDetails() {
         <Details
           key={result.product.id}
           product={result.product}
-          products={result.products}
+          products={relatedProducts}
         />
       )}
     </section>

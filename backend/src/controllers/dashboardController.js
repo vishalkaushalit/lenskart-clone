@@ -28,11 +28,11 @@ export async function dashboardSummary(req, res, next) {
     const range = dashboardRange(req.query.days);
     const recentPage=Number(req.query.recentPage??1);
     if(!Number.isSafeInteger(recentPage)||recentPage<1||recentPage>10000)throw Object.assign(new Error('Invalid recent-order page.'),{status:400});
-    const online = await loggedInUserIds();
+    const online = loggedInUserIds();
     const periodGroup = { $group: { _id: null, orders: { $sum: 1 }, pending: { $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] } }, completed: { $sum: { $cond: [{ $eq: ['$status', 'delivered'] }, 1, 0] } }, revenue: { $sum: { $cond: [{ $eq: ['$status', 'delivered'] }, '$totalAmount', 0] } } } };
     const [users, activeUsers, products, aggregated, recentOrders] = await Promise.all([
       User.countDocuments({}),
-      User.countDocuments({ _id: { $in: online }, status: { $ne: 'inactive' } }),
+      online.then(ids => User.countDocuments({ _id: { $in: ids }, status: { $ne: 'inactive' } })),
       Product.countDocuments({}),
       Order.aggregate([
         { $match: { createdAt: { $gte: range.previousStart, $lt: range.end } } },
