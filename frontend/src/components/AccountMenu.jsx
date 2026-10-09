@@ -11,7 +11,7 @@ export default function AccountMenu({ mobile = false, onNavigate }) {
   const [error, setError] = useState("");
   const containerRef = useRef(null);
   const buttonRef = useRef(null);
-  const adminUrl = import.meta.env.VITE_ADMIN_URL;
+  const adminUrl = (import.meta.env.VITE_ADMIN_URL || (import.meta.env.PROD ? `${window.location.origin}/admin` : ''));
   const panelId = mobile ? "mobile-account-dropdown" : "account-dropdown";
 
   useEffect(() => {

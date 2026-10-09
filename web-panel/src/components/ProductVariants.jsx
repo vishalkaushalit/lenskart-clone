@@ -20,7 +20,7 @@ export default function ProductVariants({ product, onChange, mode='list', initia
   const paging=useTablePagination(product.variants||[],5,product.id);
   const update = (key,value) => setForm(previous=>({...previous,[key]:value}));
   function choose(files) {
-    if (files.length+images.length>8 || files.some(file=>file.size>5*1024*1024 || !['image/jpeg','image/png','image/webp'].includes(file.type))) {setError('Choose up to 8 JPG, PNG or WebP images, at most 5 MB each.');return;}
+    if (files.length+images.length>8 || files.some(file=>file.size>4*1024*1024 || !['image/jpeg','image/png','image/webp'].includes(file.type))) {setError('Choose up to 8 JPG, PNG or WebP images, at most 4 MB each.');return;}
     const next=files.map(file=>({file,url:URL.createObjectURL(file)}));
     previews.current.push(...next.map(image=>image.url));setImages(previous=>[...previous,...next]);setError('');
   }

@@ -22,7 +22,7 @@ const LoginForm = () => {
       const user = await login(email, password);
 
       if (user.role === "admin") {
-        const adminUrl = import.meta.env.VITE_ADMIN_URL;
+        const adminUrl = (import.meta.env.VITE_ADMIN_URL || (import.meta.env.PROD ? `${window.location.origin}/admin` : ''));
         if (!adminUrl) {
           setError("The web-panel URL is not configured.");
           return;

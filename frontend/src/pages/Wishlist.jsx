@@ -9,7 +9,7 @@ import useSavedProducts from '../hooks/useSavedProducts';
 import PopupMessage from '../components/PopupMessage';
 import './SavedProducts.css';
 import './Wishlist.css';
-const asset=(path)=>path?.startsWith('/')?new URL(path,import.meta.env.VITE_API_URL||'http://localhost:5001/api').href:path;
+const asset=(path)=>path?.startsWith('/')?new URL(path,import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api')).href:path;
 export default function Wishlist(){
   const [similarProduct,setSimilarProduct]=useState(null);
   const {favorites,removeFavorite}=useStore();const {loading,items,error,retry}=useSavedProducts(favorites);

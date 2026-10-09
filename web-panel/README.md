@@ -78,7 +78,7 @@ ProductDetails displays gallery, price, stock, category/specifications, and edit
 | `faqs[].question/answer` | FAQ entries, add/remove controls, max 20. |
 | `reviews[].name/rating/date/text` | Reviewer, score 1–5, date, and actual feedback; max 100. |
 
-Gallery state retains local previews and uploaded/remote paths while editing. `chooseHighlight` handles selection for highlight images. Uploaded bytes use `/admin/products/images` with JPEG/PNG/WebP MIME types and max 5 MB; do not post a base64 JSON image. `busy` controls save state; upload state prevents saving partially uploaded images. Price and stock fields are converted to numbers; multiline entries become arrays before submission.
+Gallery state retains local previews and uploaded/remote paths while editing. `chooseHighlight` handles selection for highlight images. Uploaded bytes use `/admin/products/images` with JPEG/PNG/WebP MIME types and max 4 MB; do not post a base64 JSON image. `busy` controls save state; upload state prevents saving partially uploaded images. Price and stock fields are converted to numbers; multiline entries become arrays before submission.
 
 Server-managed fields such as `rating`, `sales`, and `addedAt` are not normal editable form inputs. Full model limits, field relationships, and legacy category compatibility are in the backend guide.
 
@@ -234,7 +234,7 @@ Save a base product first, then use **Variants** in the products table’s **Act
 - **Size / Color:** identify the combination; duplicates for a product are rejected, including color names differing only in case.
 - **Price:** optional override; blank inherits the base product price.
 - **Stock:** quantity for this combination. Once variants exist, the base stock input is replaced by a computed active-variant sum; stock is edited per variant.
-- **Variant images:** upload up to 8 JPG, PNG or WebP files, at most 5 MB each. The shared `ProductImageGallery.jsx` provides the same controls as the product editor: click or drag-and-drop multiple files, add more images, preview thumbnails and the large image, remove images, and use **Set as main image** or click a gallery tile to choose the cover. The first image is the cover. Files are previewed locally and uploaded on save; failed saves reuse completed uploads. Empty galleries inherit product images.
+- **Variant images:** upload up to 8 JPG, PNG or WebP files, at most 4 MB each. The shared `ProductImageGallery.jsx` provides the same controls as the product editor: click or drag-and-drop multiple files, add more images, preview thumbnails and the large image, remove images, and use **Set as main image** or click a gallery tile to choose the cover. The first image is the cover. Files are previewed locally and uploaded on save; failed saves reuse completed uploads. Empty galleries inherit product images.
 - **Status:** active appears in the storefront; inactive hides the combination while retaining its identity for past orders. Use Edit to activate it again.
 
 `productId` is supplied by the product-page URL. The UI uses admin-only variant endpoints and refreshes product data after a successful save; validation and upload errors appear beside the form. Saving the first variant enables variant inventory, so add the combinations you want to sell before relying on the new product stock.
@@ -250,7 +250,7 @@ Every web-panel table includes pagination and **Sr. No.** numbering that continu
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `9ea039483e0a50d7767d844efc1109d27128f533ff066d289f532801f27ca459`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e20e5fc1d24f5e74794e08dfab3b5819e975b55b1c9b9ecdb1cc1c528fbb9ca6`.
 
 ### Actual npm commands
 
@@ -263,7 +263,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 
 ### Environment keys used in source
 
-`VITE_API_URL`, `VITE_FRONTEND_URL`. Values are never read from .env files.
+`BASE_URL`, `PROD`, `VITE_API_URL`, `VITE_FRONTEND_URL`. Values are never read from .env files.
 
 ### Source inventory and exported symbols
 
@@ -403,3 +403,7 @@ The shared loading overlay uses the supplied `loader-eyewear.mp4`, stored as `..
 `LoaderProvider` in `../shared/LoadingOverlay.jsx` displays the video overlay while requests are pending and reveals content immediately when loading ends, with no minimum duration. It covers content with an opaque background and makes underlying controls inert until loading ends. Overlapping loaders share one overlay.
 
 Successful admin login redirects to `/dashboard?login=success` in the web panel. The authenticated dashboard keeps the flag until the shared “Logged in successfully.” success notification has appeared after dashboard loading finishes. The login toast stays visible for three seconds; dismissing it removes the flag from the URL so refreshing the cleaned URL does not repeat it.
+
+## Vercel hosting
+
+This app deploys with the other applications from the repository root. See [Single-project Vercel deployment](../README.md#single-project-vercel-deployment) for configuration, storage and verification.

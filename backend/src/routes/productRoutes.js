@@ -10,7 +10,7 @@ publicProducts.get('/:id', storefrontProductDetails);
 export const managedProducts = express.Router();
 managedProducts.use(requireAuth, requireRole('admin'));
 managedProducts.use('/:id/variants', variantRoutes);
-managedProducts.post('/images', express.raw({ type: ['image/jpeg', 'image/png', 'image/webp'], limit: '5mb' }), uploadProductImage);
+managedProducts.post('/images', express.raw({ type: ['image/jpeg', 'image/png', 'image/webp'], limit: '4mb' }), uploadProductImage);
 managedProducts.get('/', adminProducts);
 managedProducts.get('/:id', productDetails);
 managedProducts.post('/', saveProduct);

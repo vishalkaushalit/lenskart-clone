@@ -50,7 +50,7 @@ export default function ProductDashboard() {
   const totalPages = Math.max(1, Math.ceil(products.length / 20));
   const currentPage = Math.min(page, totalPages);
   const shown = products.slice((currentPage - 1) * 20, currentPage * 20);
-  const assetUrl = (path) => path.startsWith('/') ? new URL(path, import.meta.env.VITE_API_URL || 'http://localhost:5001/api').href : path;
+  const assetUrl = (path) => path.startsWith('/') ? new URL(path, import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api')).href : path;
   const selectClass = 'rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm';
   return <DashboardLayout><main className="admin-page">
     <PageHeader title="Products" description="Manage your product catalog"><div className="flex gap-2"><button disabled={loading} onClick={() => setAttempt((n) => n + 1)} className="admin-button-secondary"><RefreshCw size={16} />Refresh</button><Link to="/product/add" className="admin-button-primary"><Plus size={18} />Add Product</Link></div></PageHeader>

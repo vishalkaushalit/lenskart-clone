@@ -1,3 +1,4 @@
+import { put } from '@vercel/blob';
 import { randomUUID } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -12,9 +13,13 @@ export async function uploadProductImage(req, res, next) {
   const extension = imageExtension(req.body);
   if (!extension) return res.status(400).json({ message: 'Upload a JPEG, PNG, or WebP image.' });
   try {
+    const name = `${randomUUID()}.${extension}`;
+    if (process.env.VERCEL || process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID) {
+      const blob = await put(`products/${name}`, req.body, { access: 'public', contentType: `image/${extension === 'jpg' ? 'jpeg' : extension}` });
+      return res.status(201).json({ success: true, image: blob.url });
+    }
     const directory = fileURLToPath(new URL('../../public/products/', import.meta.url));
     await mkdir(directory, { recursive: true });
-    const name = `${randomUUID()}.${extension}`;
     await writeFile(`${directory}${name}`, req.body, { flag: 'wx' });
     res.status(201).json({ success: true, image: `/assets/products/${name}` });
   } catch (error) { next(error); }

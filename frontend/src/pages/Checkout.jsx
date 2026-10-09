@@ -13,7 +13,7 @@ import './Checkout.css';
 import { apiRequest } from '../api/api';
 import { checkoutRows } from '../state/checkout';
 const money=value=>`₹${value.toLocaleString('en-IN',{maximumFractionDigits:2})}`;
-const asset=path=>path?.startsWith('/')?new URL(path,import.meta.env.VITE_API_URL||'http://localhost:5001/api').href:path;
+const asset=path=>path?.startsWith('/')?new URL(path,import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api')).href:path;
 const addressFields=[['name','Full name','name'],['phone','Phone number','tel'],['email','Email address','email'],['address','Street address','street-address'],['landmark','Landmark (optional)','off'],['city','City','address-level2'],['state','State','address-level1'],['pincode','Pincode','postal-code']];
 function AddressFields({prefix,user}){
   return <div className="checkout-fields">{addressFields.map(([name,label,complete])=><label key={name} className={name==='address'?'checkout-wide':''} htmlFor={`${prefix}-${name}`}>{label}{name!=='landmark'&&<span> *</span>}<input id={`${prefix}-${name}`} name={`${prefix}-${name}`} defaultValue={name==='name'?user?.name||'':name==='email'?user?.email||'':''} type={name==='email'?'email':name==='phone'?'tel':'text'} autoComplete={`section-${prefix} ${complete}`} required={name!=='landmark'} maxLength={name==='email'?254:name==='address'?300:100} pattern={name==='pincode'?'[1-9][0-9]{5}':name==='phone'?'[+]?[0-9 ()-]{10,20}':undefined} inputMode={name==='pincode'?'numeric':name==='phone'?'tel':undefined} title={name==='pincode'?'Enter a six-digit Indian pincode':undefined}/></label>)}</div>;

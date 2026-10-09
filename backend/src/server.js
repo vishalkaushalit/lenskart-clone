@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { fileURLToPath } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 import { publicProducts, managedProducts } from './routes/productRoutes.js';
 import express from 'express';
 import {publicCategories,adminCategories} from './routes/categoryRoutes.js';
@@ -22,10 +22,12 @@ import ProductVariant from './models/ProductVariant.js';
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+if (process.env.VERCEL) app.set('trust proxy', 1);
 
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.ADMIN_URL,
+  ...(process.env.VERCEL ? [process.env.VERCEL_URL, process.env.VERCEL_PROJECT_PRODUCTION_URL].filter(Boolean).map(host => `https://${host}`) : []),
 ].filter(Boolean);
 
 app.use(cors({
@@ -67,8 +69,10 @@ app.get(['/', '/api/health'], (req, res) => {
   });
 });
 
-async function startServer() {
-  try {
+let initialization;
+export function initializeApp() {
+  if (initialization) return initialization;
+  initialization = (async () => {
     if (!process.env.SESSION_SECRET) {
       throw new Error('SESSION_SECRET is required');
     }
@@ -125,25 +129,23 @@ async function startServer() {
 
       res.status(error.status === 413 ? 413 : 500).json({
         success: false,
-        message: error.status === 413 ? (req.is('application/json')?'The form is too large. Reduce the content and try again.':'Each image must be smaller than 5 MB.') : 'Something went wrong. Please try again.',
+        message: error.status === 413 ? (req.is('application/json')?'The form is too large. Reduce the content and try again.':'Each image must be smaller than 4 MB.') : 'Something went wrong. Please try again.',
       });
     });
 
-    app.listen(PORT, () => {
-      console.log(`Backend running at http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.error("Backend startup failed:", error.name);
-    console.error("Error code:", error.code);
-    console.error("Details:", error.message);
-    process.exit(1);
-  }
+    return app;
+  })();
+  return initialization;
 }
 
-startServer();
+export default app;
 
-/*
-  This configuration is for your current localhost setup. Production needs HTTPS;
-  if hosted behind a proxy, configure Express’s trust proxy to match your hosting
-  setup so secure cookies work.
-*/
+// Importing this module from the Vercel handler must not start a listener.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  initializeApp().then(() => {
+    app.listen(PORT, () => console.log(`Backend running at http://localhost:${PORT}`));
+  }).catch(error => {
+    console.error('Backend startup failed:', error.message);
+    process.exitCode = 1;
+  });
+}

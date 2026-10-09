@@ -324,7 +324,7 @@ Variant **Price** is the selling price; **Compare Price** (`originalPrice`) cont
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `f3b5c371843d10dd55676e106e0bbbff7f3bdc89a127ddb74d0b1dcd973ac403`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `9e8e91c5bc2070311bf3e124a076865e71aa6cd4502240accfa3b124694783a8`.
 
 ### Actual npm commands
 
@@ -337,7 +337,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 
 ### Environment keys used in source
 
-`VITE_ADMIN_URL`, `VITE_API_URL`. Values are never read from .env files.
+`PROD`, `VITE_ADMIN_URL`, `VITE_API_URL`. Values are never read from .env files.
 
 ### Source inventory and exported symbols
 
@@ -523,3 +523,7 @@ Product-page FAQ and Product Details accordions share a white background in both
 The closed Product Details accordion shows a bottom separator; its expanded styling is unchanged. The purchase area has no top margin.
 
 On two-column product pages, both columns scroll normally until the shorter column reaches its bottom, then it stays sticky while the taller column continues until both bottoms align. This works whether the left or right column is taller. Each sticky offset adapts to column, header and viewport heights; columns shorter than the viewport stay below the header. Mobile retains normal stacked scrolling.
+
+## Vercel hosting
+
+This app deploys with the other applications from the repository root. See [Single-project Vercel deployment](../README.md#single-project-vercel-deployment) for configuration, storage and verification.

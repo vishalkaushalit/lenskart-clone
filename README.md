@@ -118,3 +118,17 @@ Update references with `npm run docs:sync`; verify with `npm run docs:check`. Ru
 <!-- AUTO-GENERATED:END -->
 
 Design reference: [Lenskart](https://www.lenskart.com/) is the reference for future project UI changes, as recorded in the root `AGENTS.md`. Current desktop similar-items popup source uses 600px width, 90vw maximum width, 80vh maximum height, 16px corners, an 18px/800 heading and a scrolling item list. Shared dialogs use this width/height limit; existing user instructions remain authoritative.
+
+## Single-project Vercel deployment
+
+Deploy the repository root as one Vercel project: storefront `/`, panel `/admin/`, API `/api/`. Root `vercel.json` supplies installation, build, output and routing settings; choose the **Other** framework preset and Node.js **22.x**. Do not select an application subdirectory.
+
+1. Push these changes to GitHub and import the repository into Vercel.
+2. Add server environment variables `MONGODB_URI` (Atlas / replica set supporting transactions) and a strong random `SESSION_SECRET`. Set `NODE_ENV=production`.
+3. Create a **public Vercel Blob store** connected to this project and its deployment environments. Supply `BLOB_READ_WRITE_TOKEN` if the store connection does not provide SDK credentials. Keep database and Blob credentials server-only.
+4. Deploy. The build clears browser URL overrides and uses the current origin automatically; no `VITE_*` variables are needed. Vercel preview and production origins are allowed automatically. For a custom domain, set both `FRONTEND_URL` and `ADMIN_URL` to its exact HTTPS origin, without `/admin` or a trailing slash, and redeploy.
+5. Check `/api/health`, login, `/admin/dashboard`, refreshing product/admin routes, checkout and image uploads. These checks require a live database and Blob store; a local build alone does not verify them.
+
+`npm run build` builds both browser apps into root `dist/`, copies the panel into `dist/admin/`, and copies existing backend product images to `dist/assets/products/`. New hosted uploads use Blob URLs and are limited to **4 MB per image** to stay below Vercel's function request limit. Local standalone backend uploads still use `backend/public/products`. Existing images must be committed to the repository to be included at build time.
+
+The root `api/index.js` awaits cached backend initialization before dispatching requests. Local `npm start --prefix backend` still starts the standalone API. Hosted secure cookies use Express proxy trust; all three apps share one origin and session cookie.

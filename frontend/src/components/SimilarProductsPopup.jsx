@@ -8,7 +8,7 @@ import { useStore } from '../context/StoreContext';
 import ProductCardImage from './ProductCardImage';
 import { resolveVariant } from '../state/productVariants';
 import './SimilarProductsPopup.css';
-const assetUrl=path=>path?.startsWith('/')?new URL(path,import.meta.env.VITE_API_URL||'http://localhost:5001/api').href:path;
+const assetUrl=path=>path?.startsWith('/')?new URL(path,import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api')).href:path;
 function SimilarPopupCard({product:base,favorite,onFavorite}){
   const variant=base.variants?.find(row=>row.status==='active');
   const product=variant?resolveVariant(base,variant)||base:base;

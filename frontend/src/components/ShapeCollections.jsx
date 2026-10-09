@@ -1,7 +1,7 @@
 import {Link} from 'react-router-dom';
 import {Swiper,SwiperSlide} from 'swiper/react';
 import 'swiper/css';
-const imageUrl=path=>path?.startsWith('/')?new URL(path,import.meta.env.VITE_API_URL||'http://localhost:5001/api').href:path;
+const imageUrl=path=>path?.startsWith('/')?new URL(path,import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api')).href:path;
 export default function ShapeCollections({categories=[],name}){
  const root=categories.find(row=>!row.parent&&row.name===name);const shapes=categories.filter(row=>row.parent===root?._id&&row.kind==='shape');
  if(!root||!shapes.length)return null;

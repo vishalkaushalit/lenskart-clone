@@ -29,7 +29,7 @@ NODE_ENV=development
 # production enables the Secure cookie flag; production requires HTTPS.
 ```
 
-`src/server.js` connects MongoDB, initializes user IDs and indexes, configures CORS and request-origin checks, creates the session store, mounts routes, serves images, and handles errors. `src/config/db.js` checks `MONGODB_URI` and connects with a 10-second server-selection timeout. JSON requests are limited to 512 KB; image uploads accept JPEG, PNG, or WebP up to 5 MB each.
+`src/server.js` connects MongoDB, initializes user IDs and indexes, configures CORS and request-origin checks, creates the session store, mounts routes, serves images, and handles errors. `src/config/db.js` checks `MONGODB_URI` and connects with a 10-second server-selection timeout. JSON requests are limited to 512 KB; image uploads accept JPEG, PNG, or WebP up to 4 MB each.
 
 ## Authentication and identifiers
 
@@ -326,7 +326,7 @@ Variants are stored in the separate MongoDB `productvariants` collection (`Produ
 }
 ```
 
-Admin endpoints: `GET` and `POST /api/admin/products/:id/variants`; `PATCH /api/admin/products/:id/variants/:variantId`. Uploaded files use the existing `POST /api/admin/products/images` endpoint (JPG, PNG, WebP, 5 MB per image). Edits are scoped to both parent and variant. Disable a variant using `status: inactive` to preserve order references.
+Admin endpoints: `GET` and `POST /api/admin/products/:id/variants`; `PATCH /api/admin/products/:id/variants/:variantId`. Uploaded files use the existing `POST /api/admin/products/images` endpoint (JPG, PNG, WebP, 4 MB per image). Edits are scoped to both parent and variant. Disable a variant using `status: inactive` to preserve order references.
 
 Creating the first variant transactionally sets `products.hasVariants = true`. Legacy products retain parent inventory until then. Public product responses include only active variants and expose their summed stock; admin responses include inactive variants too, but omit their stock from the sum. Parent stock is no longer used for purchasing a variant product.
 
@@ -343,7 +343,7 @@ Dashboard recent orders accept `recentPage` (1–10,000, default 1). The databas
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `6fac707436d08be6c7b6fcbf61487f3753120cc451b19c9e6c7c04e8d42b1e39`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `c5ea096a230f39e25d1d6ea5a7ae79749587aa98b2ce6e8d14715e3b5fb0b6b3`.
 
 ### Actual npm commands
 
@@ -360,7 +360,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 
 ### Environment keys used in source
 
-`ADMIN_URL`, `FRONTEND_URL`, `MONGODB_URI`, `NODE_ENV`, `PORT`, `SESSION_SECRET`. Values are never read from .env files.
+`ADMIN_URL`, `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID`, `FRONTEND_URL`, `MONGODB_URI`, `NODE_ENV`, `PORT`, `SESSION_SECRET`, `VERCEL`, `VERCEL_PROJECT_PRODUCTION_URL`, `VERCEL_URL`. Values are never read from .env files.
 
 ### Source inventory and exported symbols
 
@@ -411,7 +411,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/routes/userRoutes.js](src/routes/userRoutes.js) | default export |
 | [src/routes/variantRoutes.js](src/routes/variantRoutes.js) | default export |
 | [src/routes/variantRoutes.test.js](src/routes/variantRoutes.test.js) | Internal module / styles |
-| [src/server.js](src/server.js) | Internal module / styles |
+| [src/server.js](src/server.js) | initializeApp |
 | [src/services/loginStatus.js](src/services/loginStatus.js) | loggedInUserIds |
 | [src/services/loginStatus.test.js](src/services/loginStatus.test.js) | Internal module / styles |
 | [src/services/orderIds.js](src/services/orderIds.js) | initializeOrderIds, nextOrderId |
@@ -729,3 +729,7 @@ export default mongoose.model('User', userSchema);
 Variant attachment uses one database query and groups rows by product ID in one pass. Serialization, active inventory totals and unique option sets are built together, avoiding a scan of all variants for each product. Products without variants remain unchanged; variant products with no rows return empty options and zero stock.
 
 Customer order receipts: `GET /api/orders/:id` requires authentication and returns only an order belonging to the signed-in user. Missing or other-customer orders return 404. The frontend uses this endpoint for refreshable `/thank-you/:id` pages.
+
+## Vercel hosting
+
+This app deploys with the other applications from the repository root. See [Single-project Vercel deployment](../README.md#single-project-vercel-deployment) for configuration, storage and verification.

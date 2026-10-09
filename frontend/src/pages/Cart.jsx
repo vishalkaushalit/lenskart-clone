@@ -10,7 +10,7 @@ import useSavedProducts from '../hooks/useSavedProducts';
 import PopupMessage from '../components/PopupMessage';
 import './SavedProducts.css';
 const money=value=>`₹${value.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
-const asset=(path)=>path?.startsWith('/')?new URL(path,import.meta.env.VITE_API_URL||'http://localhost:5001/api').href:path;
+const asset=(path)=>path?.startsWith('/')?new URL(path,import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api')).href:path;
 export default function Cart(){
   const {cart,appliedCoupon,cartCount,removeFromCart,changeQuantity}=useStore();const {loading,items:rawItems,error,retry}=useSavedProducts(cart.map((item)=>item.id));
   const items=checkoutRows(rawItems,cart);

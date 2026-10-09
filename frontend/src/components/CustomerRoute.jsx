@@ -26,8 +26,8 @@ export default function CustomerRoute() {
       <p>
         Please use a customer account to access this page.
         {' '}
-        {import.meta.env.VITE_ADMIN_URL && (
-          <a href={`${import.meta.env.VITE_ADMIN_URL.replace(/\/$/, '')}/dashboard`}>
+        {(import.meta.env.VITE_ADMIN_URL || (import.meta.env.PROD ? `${window.location.origin}/admin` : '')) && (
+          <a href={`${(import.meta.env.VITE_ADMIN_URL || (import.meta.env.PROD ? `${window.location.origin}/admin` : '')).replace(/\/$/, '')}/dashboard`}>
             Open admin dashboard
           </a>
         )}

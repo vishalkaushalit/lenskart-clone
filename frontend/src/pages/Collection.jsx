@@ -59,7 +59,7 @@ function CollectionResults() {
     path?.startsWith("/")
       ? new URL(
           path,
-          import.meta.env.VITE_API_URL || "http://localhost:5001/api",
+          import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api'),
         ).href
       : path;
   const [sort, setSort] = useState("recommended");
