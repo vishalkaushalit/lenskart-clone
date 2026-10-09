@@ -7,6 +7,6 @@
     "docs:check": "node scripts/sync-readmes.mjs --check",
     "docs:hooks": "git config core.hooksPath .githooks",
     "build": "node scripts/build-vercel.mjs",
-    "vercel:install": "npm ci && npm ci --prefix frontend && npm ci --prefix web-panel && npm ci --prefix backend"
+    "vercel:install": "npm ci && npm ci --include=dev --prefix frontend && npm ci --include=dev --prefix web-panel && npm ci --prefix backend"
   }
 }
