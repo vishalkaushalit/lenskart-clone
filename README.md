@@ -4,6 +4,7 @@ An eyewear store with a customer-facing React app, a separate React administrati
 
 ## Project guides
 
+- [API reference](API_REFERENCE.md): all project API endpoints, access requirements, inputs, and external resources.
 - [Backend](backend/README.md): server setup, every database field, API endpoints, authentication, scripts, and file responsibilities.
 - [Frontend](frontend/README.md): customer pages, search, product display, shopping state, billing, checkout, and UI files.
 - [Web panel](web-panel/README.md): administration pages, product form fields, categories, users, coupons, orders, and live dashboard.

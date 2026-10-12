@@ -33,7 +33,7 @@ NODE_ENV=development
 
 ## Authentication and identifiers
 
-- `store.sid`: browser session cookie; HTTP-only, SameSite=Lax, and a 24-hour lifetime. Both apps use `credentials: 'include'`.
+- `store.sid`: browser session cookie; HTTP-only, SameSite=Lax, and a seven-day lifetime (604,800,000 ms). MongoDB session expiry follows the cookie expiry. Both apps use `credentials: 'include'`. Restart or redeploy the backend to apply changes; log in again to receive the new lifetime.
 - `req.session.userId`: MongoDB account `_id` saved after login; it is not the display `userId` number.
 - `requireAuth`: resolves the current account and blocks unauthenticated/disabled accounts.
 - `requireRole('admin')`: protects all administration operations.
@@ -343,7 +343,7 @@ Dashboard recent orders accept `recentPage` (1–10,000, default 1). The databas
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `ef446cc58c54beb058120265fe8a5c917528f66e06e38144dc86019c448ae296`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `6d95ea1baf70c396322e2ca1f54d3d96c2bdf267970ae1ef4cca5d8321a648ea`.
 
 ### Actual npm commands
 
