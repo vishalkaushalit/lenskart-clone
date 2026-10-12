@@ -1,5 +1,6 @@
 import ImageUploadField from './ImageUploadField';
 import ProductImageGallery from './ProductImageGallery';
+import ProductImageLibrary from './ProductImageLibrary';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Package, BadgeIndianRupee, X, Trash2 } from 'lucide-react';
@@ -80,7 +81,7 @@ export default function ProductEditor({ product = null }) {
   const input='product-field';
   function text(name,label,placeholder,required=true) {return <label className="product-label">{label}{required&&<span className="text-red-500"> *</span>}<input name={name} defaultValue={product?.[name]||''} placeholder={placeholder} required={required} maxLength={name==='name'?150:name==='shape'||name==='color'?50:100} className={input}/></label>;}
   function select(name,label,values) {return <label className="product-label">{label.replace(/\s*\*$/, '')}{label.endsWith('*')&&<span className="text-red-500"> *</span>}<select name={name} defaultValue={product?.[name]||values[0]} className={input}>{values.map((value)=><option key={value}>{value}</option>)}</select></label>;}
-  const imagePanel=<div><ProductImageGallery images={images} setImages={setImages} choose={choose} busy={busy}/><div className="product-panel mt-4"><ImageUploadField name="tryOnImage" label="Virtual try-on image (optional)" initialValue={product?.tryOnImage||''} transparentOnly onUploading={setTryOnUploading}/><p className="mt-3 text-xs text-slate-500">Upload a tightly cropped, straight-on frame with transparent background and clear lens interiors. Keep the bridge centered. Gallery photos are not used for live try-on. Products with variants need a matching image on each variant.</p></div></div>;
+  const imagePanel=<div><ProductImageGallery images={images} setImages={setImages} choose={choose} busy={busy}/><ProductImageLibrary choose={choose} busy={busy} count={images.length}/><div className="product-panel mt-4"><ImageUploadField name="tryOnImage" label="Virtual try-on image (optional)" initialValue={product?.tryOnImage||''} transparentOnly onUploading={setTryOnUploading}/><p className="mt-3 text-xs text-slate-500">Upload a tightly cropped, straight-on frame with transparent background and clear lens interiors. Keep the bridge centered. Gallery photos are not used for live try-on. Products with variants need a matching image on each variant.</p></div></div>;
   return <><form onSubmit={submit}><fieldset disabled={busy||notification?.type==='success'} className={`product-editor-grid ${editing?'is-editing':''}`}>
     {imagePanel}
     <section className="product-panel flex flex-col"><h2 className="product-panel-title"><BadgeIndianRupee size={16}/>Pricing &amp; Inventory</h2><div className="grid gap-5 sm:grid-cols-2">

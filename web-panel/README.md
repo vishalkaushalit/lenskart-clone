@@ -250,7 +250,7 @@ Every web-panel table includes pagination and **Sr. No.** numbering that continu
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `7cee375272d9f427145f9a3a289a53160837332b05ff033bbcb295ef75621bc2`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `cbd822a0a86bbf80444ac581e6a52e1e5aa7e1830427e1c8be388ed32936da31`.
 
 ### Actual npm commands
 
@@ -289,6 +289,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/ProductDialog.jsx](src/components/ProductDialog.jsx) | ProductDialog |
 | [src/components/ProductEditor.jsx](src/components/ProductEditor.jsx) | ProductEditor |
 | [src/components/ProductImageGallery.jsx](src/components/ProductImageGallery.jsx) | ProductImageGallery |
+| [src/components/ProductImageLibrary.jsx](src/components/ProductImageLibrary.jsx) | ProductImageLibrary |
 | [src/components/ProductVariants.jsx](src/components/ProductVariants.jsx) | ProductVariants |
 | [src/components/RecentOrders.jsx](src/components/RecentOrders.jsx) | RecentOrders |
 | [src/components/StatDashboard.jsx](src/components/StatDashboard.jsx) | StatDashboard |
@@ -419,3 +420,7 @@ API reads now share identical in-flight GET requests using `shared/requestClient
 Password fields use the shared `PasswordInput` component with an eye button to show/hide the value. Passwords start hidden; the keyboard-accessible toggle preserves input validation and autocomplete and never submits the form.
 
 The sidebar’s Orders and Track Orders entries both use React Router navigation to `/orders`, preserving the mounted app and session instead of performing a document reload.
+
+## Built-in product image library
+
+The product add/edit form includes an Eyeglasses/Sunglasses image library sourced from `frontend/src/assets/images/eyeglasses/` and `frontend/src/assets/images/sunglasses/`. Select a category and click an image to add it to the product gallery. Library images follow the existing upload flow when saving, with the same eight-image and 4 MB limits. The first gallery image is the cover; images can be reordered or removed before saving. Manual file uploads remain available. These gallery assets are not prepared virtual try-on images.
