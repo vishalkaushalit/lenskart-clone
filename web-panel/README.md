@@ -250,7 +250,7 @@ Every web-panel table includes pagination and **Sr. No.** numbering that continu
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `62d8b0298a3b53db36eb7fb48bcf45990351adcd6da25232fb0f7bd0f4a760f2`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `2cd61ea8d97e16bff64706309d755287755ecb59a89e65cca2df1835ebd52363`.
 
 ### Actual npm commands
 
@@ -428,3 +428,5 @@ The product add/edit form includes an Eyeglasses/Sunglasses image library source
 Image uploads send the original filename in `X-File-Name`; the backend preserves a sanitized readable name with a unique suffix.
 
 Homepage shape card images come from each shape category’s saved image URL. In Categories, edit the shape beneath Eyeglasses or Sunglasses, upload its Category image and save. Product gallery uploads remain separate from category images. Reload the storefront to fetch the updated categories.
+
+An unavailable saved image shows recovery guidance in the upload field. Re-upload the original and save the category/product. A database URL alone does not copy a local file to Vercel; hosted uploads require a public Blob store.

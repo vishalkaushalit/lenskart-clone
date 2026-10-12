@@ -9,3 +9,6 @@ frontend/public/try-on/wasm/
 # Local build caches and macOS folder metadata
 .vite/
 .DS_Store
+
+# Local catalog migration checkpoints and previous database image URLs
+output/blob-migration/

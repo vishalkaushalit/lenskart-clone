@@ -111,7 +111,7 @@ Products support multiple size/color combinations with their own images, invento
 
 | Application | Source files | Guide |
 | --- | --- | --- |
-| backend | 62 | [README](backend/README.md) |
+| backend | 63 | [README](backend/README.md) |
 | frontend | 93 | [README](frontend/README.md) |
 | web-panel | 52 | [README](web-panel/README.md) |
 
@@ -159,3 +159,9 @@ Run backend tests and the application builds before deployment. Compare the same
 Unused starter graphics, obsolete loader assets and unreferenced marketing media have been removed. Product/category images and virtual try-on runtime files remain because setup scripts, image libraries or stored database URLs can load them dynamically.
 
 Generated `dist/` directories and Vite caches are disposable and ignored by Git. Run the relevant build command to recreate production bundles; development regenerates Vite caches. macOS `.DS_Store` metadata is also ignored.
+
+Missing `/assets/products/*` files return HTTP 404 after the static filesystem check, rather than the storefront HTML fallback. If a saved image is missing, re-upload it through the hosted panel and save its record. Ensure the deployment has a connected public Vercel Blob store.
+
+Existing local catalog images can be migrated to Blob with `npm run images:migrate-blob --prefix backend` (validation) and `npm run images:migrate-blob --prefix backend -- --apply` (upload and link database records). See the backend guide; migration checkpoints are kept locally under `output/blob-migration/`.
+
+The existing catalog image files have been migrated to public Vercel Blob storage and removed from `backend/public/products/`. MongoDB records use Blob URLs. Frontend promotional/library assets remain local because the apps still use them. The build copies any remaining product-directory files; it does not need the migrated image copies. Local uploads use Blob when backend Blob credentials are configured. Seed/download scripts can recreate local catalog files and paths; migrate those new records before using them on Vercel.

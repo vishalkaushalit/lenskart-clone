@@ -18,6 +18,10 @@
       "handle": "filesystem"
     },
     {
+      "src": "/assets/products/.*",
+      "status": 404
+    },
+    {
       "src": "/admin(?:/.*)?",
       "dest": "/admin/index.html"
     },

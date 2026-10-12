@@ -343,7 +343,7 @@ Dashboard recent orders accept `recentPage` (1–10,000, default 1). The databas
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `b1c92a86513e4a24105766177492e2e8ed8df5ef6ced648436ea582598e38315`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `71def9dba61f82e5e5023628a410d06fd7ac1a6f4fbf5e5ea6ef398ad9cd3b32`.
 
 ### Actual npm commands
 
@@ -357,6 +357,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | products:dummy-images | `node scripts/add-dummy-product-images.js` |
 | products:sample-variants | `node scripts/add-sample-variants.js` |
 | products:variant-images | `node scripts/add-color-variant-images.js` |
+| images:migrate-blob | `node scripts/migrate-images-to-blob.js` |
 
 ### Environment keys used in source
 
@@ -375,6 +376,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [scripts/backfill-slugs.js](scripts/backfill-slugs.js) | Internal module / styles |
 | [scripts/backfill-user-ids.js](scripts/backfill-user-ids.js) | Internal module / styles |
 | [scripts/fill-product-details.js](scripts/fill-product-details.js) | Internal module / styles |
+| [scripts/migrate-images-to-blob.js](scripts/migrate-images-to-blob.js) | Internal module / styles |
 | [scripts/seed-categories.js](scripts/seed-categories.js) | Internal module / styles |
 | [scripts/seed-home-categories.js](scripts/seed-home-categories.js) | Internal module / styles |
 | [scripts/seed-products.js](scripts/seed-products.js) | Internal module / styles |
@@ -417,7 +419,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/services/loginStatus.test.js](src/services/loginStatus.test.js) | Internal module / styles |
 | [src/services/orderIds.js](src/services/orderIds.js) | initializeOrderIds, nextOrderId |
 | [src/services/orderIds.test.js](src/services/orderIds.test.js) | Internal module / styles |
-| [src/services/productImages.js](src/services/productImages.js) | imageExtension, uploadFilename, uploadProductImage |
+| [src/services/productImages.js](src/services/productImages.js) | blobStorageConfigured, imageExtension, uploadFilename, uploadProductImage |
 | [src/services/productImages.test.js](src/services/productImages.test.js) | Internal module / styles |
 | [src/services/search.js](src/services/search.js) | searchTerms, textSearch |
 | [src/services/search.test.js](src/services/search.test.js) | Internal module / styles |
@@ -751,3 +753,13 @@ Products and product variants accept an optional `tryOnImage` string (default em
 The MongoDB-backed session store reuses `mongoose.connection.getClient()` with the connected database name. User/order/coupon/variant model initialization runs concurrently after user-ID initialization. Admin orders and coupons run independent count/page reads in parallel and use stable `{createdAt:-1,_id:-1}` sorting. New order indexes cover creation-date sorting and status/date queries; coupons have a creation-date index. Dashboard session scanning runs alongside independent totals, aggregates and recent-order reads. See [API performance](../README.md#api-performance) for deployment and measurement notes.
 
 Product image uploads accept an optional URL-encoded `X-File-Name` header. Stored names contain its sanitized basename plus a UUID and the signature-detected extension; existing image URLs remain valid.
+
+Hosted image uploads return 503 with storage-specific recovery guidance if Blob credentials are missing or the store rejects an upload. Configure `BLOB_READ_WRITE_TOKEN`, or both `BLOB_STORE_ID` and Vercel-provided OIDC credentials. Connect a public store to the correct deployment environment and redeploy. Underlying storage failures log the error class without exposing credentials.
+
+## Catalog image migration to Blob
+
+Run `npm run images:migrate-blob` from `backend` to validate local catalog images and MongoDB references without changing storage or records. Run `npm run images:migrate-blob -- --apply` to upload images in `public/products/` to public Blob storage and replace local image URLs in categories, products and variants, including galleries, highlights and try-on images. Frontend promotional assets are excluded. Existing external image URLs and local files remain unchanged.
+
+Uploads use content hashes and readable filenames, and retries reuse existing blobs. `output/blob-migration/catalog.json` is an ignored local checkpoint containing upload mappings and previous image fields; preserve it for recovery. All sources are validated before upload, and database changes commit in one transaction with checks against concurrent record edits. Known shape category images missing locally can recover from their matching type/shape catalog asset; missing product/variant images stop the migration. Uploaded blobs may remain if the database transaction fails; rerun after resolving the failure. MongoDB must support transactions.
+
+The migrated catalog’s local image copies were removed after verifying the public Blob URLs. Existing product, variant and category records load images from Blob. `public/products/` retains source manifests; setup/download scripts may regenerate local files and references, which must be migrated before hosted use. The migration report retains the previous URLs for reference, but restoring those local URLs requires restoring their image files too. Keep Blob credentials configured locally and on Vercel so new uploads continue using Blob.

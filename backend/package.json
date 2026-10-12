@@ -11,7 +11,8 @@
     "products:seed": "node scripts/seed-products.js",
     "products:dummy-images": "node scripts/add-dummy-product-images.js",
     "products:sample-variants": "node scripts/add-sample-variants.js",
-    "products:variant-images": "node scripts/add-color-variant-images.js"
+    "products:variant-images": "node scripts/add-color-variant-images.js",
+    "images:migrate-blob": "node scripts/migrate-images-to-blob.js"
   },
   "keywords": [],
   "author": "",

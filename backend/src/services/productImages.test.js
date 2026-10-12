@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { imageExtension, uploadProductImage, uploadFilename } from './productImages.js';
+import { imageExtension, uploadProductImage, uploadFilename, blobStorageConfigured } from './productImages.js';
 import { publicProduct, saveProduct } from '../controllers/productController.js';
 import Product from '../models/Product.js';
 test('uploads check image signatures rather than filename or MIME alone', () => {
@@ -44,4 +44,13 @@ test('upload basenames are readable, bounded and safe for storage', () => {
   assert.equal(uploadFilename('%invalid'), 'product');
   assert.equal(uploadFilename(), 'product');
   assert.equal(uploadFilename('a'.repeat(200) + '.jpg').length, 80);
+});
+
+test('hosted storage requires a read-write token or complete OIDC credentials', () => {
+  assert.equal(blobStorageConfigured({}), false);
+  assert.equal(blobStorageConfigured({ VERCEL: '1' }), false);
+  assert.equal(blobStorageConfigured({ BLOB_STORE_ID: 'store' }), false);
+  assert.equal(blobStorageConfigured({ VERCEL_OIDC_TOKEN: 'oidc' }), false);
+  assert.equal(blobStorageConfigured({ BLOB_READ_WRITE_TOKEN: 'token' }), true);
+  assert.equal(blobStorageConfigured({ BLOB_STORE_ID: 'store', VERCEL_OIDC_TOKEN: 'oidc' }), true);
 });

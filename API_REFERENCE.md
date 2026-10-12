@@ -123,3 +123,5 @@ Legacy, unmounted frontend dashboard files also reference Unsplash placeholder p
 Update this inventory when adding, removing or changing API routes.
 
 Image uploads may include `X-File-Name` (URL-encoded original filename) to retain a readable basename alongside a unique suffix.
+
+Hosted image uploads return HTTP 503 with a storage-specific message when Blob credentials are missing or the upload fails.
