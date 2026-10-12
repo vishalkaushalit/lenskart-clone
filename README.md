@@ -132,7 +132,7 @@ Deploy the repository root as one Vercel project: storefront `/`, panel `/admin/
 
 The Vercel install command explicitly includes development dependencies for both browser apps, so their Vite build tools remain available even when `NODE_ENV=production` is configured. Backend installation remains production-only.
 
-`npm run build` builds both browser apps into root `dist/`, copies the panel into `dist/admin/`, and copies existing backend product images to `dist/assets/products/`. New hosted uploads use Blob URLs and are limited to **4 MB per image** to stay below Vercel's function request limit. Local standalone backend uploads still use `backend/public/products`. Existing images must be committed to the repository to be included at build time.
+`npm run build` builds both browser apps into root `dist/`, copies the panel into `dist/admin/`, and copies existing backend product images to `dist/assets/products/`. New hosted uploads use Blob URLs and are limited to **4 MB per image** to stay below Vercel's function request limit. All new web-panel uploads use public Vercel Blob storage, including local development; no local filesystem fallback is allowed. Existing images must be committed to the repository to be included at build time.
 
 The root `api/index.js` awaits cached backend initialization before dispatching requests. Local `npm start --prefix backend` still starts the standalone API. Hosted secure cookies use Express proxy trust; all three apps share one origin and session cookie.
 
@@ -165,3 +165,5 @@ Missing `/assets/products/*` files return HTTP 404 after the static filesystem c
 Existing local catalog images can be migrated to Blob with `npm run images:migrate-blob --prefix backend` (validation) and `npm run images:migrate-blob --prefix backend -- --apply` (upload and link database records). See the backend guide; migration checkpoints are kept locally under `output/blob-migration/`.
 
 The existing catalog image files have been migrated to public Vercel Blob storage and removed from `backend/public/products/`. MongoDB records use Blob URLs. Frontend promotional/library assets remain local because the apps still use them. The build copies any remaining product-directory files; it does not need the migrated image copies. Local uploads use Blob when backend Blob credentials are configured. Seed/download scripts can recreate local catalog files and paths; migrate those new records before using them on Vercel.
+
+All web-panel image uploads (product galleries, variants, categories, highlights, library selections and virtual try-on images) use the shared Blob-only endpoint. Blob credentials are required locally and on Vercel. Missing credentials or storage failures return HTTP 503; images are never saved to local disk as a fallback. Save the form after uploading to persist the returned Blob URL in MongoDB.

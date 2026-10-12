@@ -1,7 +1,5 @@
 import { put, BlobError } from '@vercel/blob';
 import { randomUUID } from 'node:crypto';
-import { mkdir, writeFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 export function imageExtension(buffer) {
   if (!Buffer.isBuffer(buffer)) return null;
   if (buffer.length >= 8 && buffer.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10]))) return 'png';
@@ -17,30 +15,25 @@ export function uploadFilename(encodedName = '') {
 export function blobStorageConfigured(env = process.env) {
   return Boolean(env.BLOB_READ_WRITE_TOKEN || (env.BLOB_STORE_ID && env.VERCEL_OIDC_TOKEN));
 }
-export async function uploadProductImage(req, res, next) {
-  const extension = imageExtension(req.body);
-  if (!extension) return res.status(400).json({ message: 'Upload a JPEG, PNG, or WebP image.' });
-  try {
-    const name = `${uploadFilename(req.headers?.['x-file-name'])}-${randomUUID()}.${extension}`;
-    if (process.env.VERCEL || process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID) {
-      if (!blobStorageConfigured()) {
-        return res.status(503).json({ message: 'Image storage is not configured. Connect a public Vercel Blob store to this project and deployment environment, then redeploy.' });
-      }
-      let blob;
-      try {
-        blob = await put(`products/${name}`, req.body, { access: 'public', contentType: `image/${extension === 'jpg' ? 'jpeg' : extension}` });
-      } catch (error) {
-        console.error('Image storage upload failed:', error.name);
-        const message = error instanceof BlobError
-          ? 'Image storage rejected the upload. Check the public Blob store connection, credentials and storage limits in Vercel, then retry.'
-          : 'Image storage upload failed. Check Vercel function logs and the Blob store configuration, then retry.';
-        return res.status(503).json({ message });
-      }
-      return res.status(201).json({ success: true, image: blob.url });
+// All web-panel image fields share this Blob-only upload handler.
+export function createImageUploadHandler({ upload = put, env = process.env } = {}) {
+  return async function uploadProductImage(req, res) {
+    const extension = imageExtension(req.body);
+    if (!extension) return res.status(400).json({ message: 'Upload a JPEG, PNG, or WebP image.' });
+    if (!blobStorageConfigured(env)) {
+      return res.status(503).json({ message: 'Image storage is not configured. Configure a public Vercel Blob store for this backend. On Vercel, connect it to the deployment environment and redeploy.' });
     }
-    const directory = fileURLToPath(new URL('../../public/products/', import.meta.url));
-    await mkdir(directory, { recursive: true });
-    await writeFile(`${directory}${name}`, req.body, { flag: 'wx' });
-    res.status(201).json({ success: true, image: `/assets/products/${name}` });
-  } catch (error) { next(error); }
+    const name = `${uploadFilename(req.headers?.['x-file-name'])}-${randomUUID()}.${extension}`;
+    try {
+      const blob = await upload(`products/${name}`, req.body, { access: 'public', contentType: `image/${extension === 'jpg' ? 'jpeg' : extension}` });
+      return res.status(201).json({ success: true, image: blob.url });
+    } catch (error) {
+      console.error('Image storage upload failed:', error.name);
+      const message = error instanceof BlobError
+        ? 'Image storage rejected the upload. Check the public Blob store connection, credentials and storage limits, then retry.'
+        : 'Image storage upload failed. Check backend logs and the Blob store configuration, then retry.';
+      return res.status(503).json({ message });
+    }
+  };
 }
+export const uploadProductImage = createImageUploadHandler();

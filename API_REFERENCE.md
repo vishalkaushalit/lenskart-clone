@@ -52,7 +52,7 @@ All endpoints in this section require **Admin** access.
 | POST | `/api/admin/products` | Create a product using the editable fields below. |
 | PATCH | `/api/admin/products/:id` | Update supplied editable product fields. |
 | DELETE | `/api/admin/products/:id` | Delete a product, subject to backend checks. |
-| POST | `/api/admin/products/images` | Upload raw JPEG, PNG or WebP bytes, maximum 4 MB. Use the image MIME type as `Content-Type`, not multipart FormData. Returns `image` (local asset path or hosted Blob URL). |
+| POST | `/api/admin/products/images` | Upload raw JPEG, PNG or WebP bytes, maximum 4 MB. Use the image MIME type as `Content-Type`, not multipart FormData. Returns `image` (public Blob URL). |
 | GET | `/api/admin/products/:id/variants` | List a product's variants. |
 | POST | `/api/admin/products/:id/variants` | Create a size/color variant. |
 | PATCH | `/api/admin/products/:id/variants/:variantId` | Update a variant. |
@@ -125,3 +125,5 @@ Update this inventory when adding, removing or changing API routes.
 Image uploads may include `X-File-Name` (URL-encoded original filename) to retain a readable basename alongside a unique suffix.
 
 Hosted image uploads return HTTP 503 with a storage-specific message when Blob credentials are missing or the upload fails.
+
+All web-panel image uploads (product galleries, variants, categories, highlights, library selections and virtual try-on images) use the shared Blob-only endpoint. Blob credentials are required locally and on Vercel. Missing credentials or storage failures return HTTP 503; images are never saved to local disk as a fallback. Save the form after uploading to persist the returned Blob URL in MongoDB.

@@ -216,7 +216,7 @@ Paths below include `/api`. Authentication is cookie/session-based. Responses us
 | `POST /admin/products` | Admin | Create editable product fields. |
 | `PATCH /admin/products/:id` | Admin | Update editable product fields. |
 | `DELETE /admin/products/:id` | Admin | Delete requested product. |
-| `POST /admin/products/images` | Admin | Raw JPEG/PNG/WebP bytes, not multipart; returns local `image` path. |
+| `POST /admin/products/images` | Admin | Raw JPEG/PNG/WebP bytes, not multipart; returns the public Blob `image` URL. |
 | `GET /admin/categories` | Admin | All categories and children. |
 | `POST /admin/categories` | Admin | Create category fields. |
 | `PATCH /admin/categories/:id` | Admin | Update category, preserving its parent. |
@@ -343,7 +343,7 @@ Dashboard recent orders accept `recentPage` (1–10,000, default 1). The databas
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `71def9dba61f82e5e5023628a410d06fd7ac1a6f4fbf5e5ea6ef398ad9cd3b32`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `9335bd91623b43252544b4d266b68000369764c51c9aeb2f9e137a11450ed884`.
 
 ### Actual npm commands
 
@@ -361,7 +361,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 
 ### Environment keys used in source
 
-`ADMIN_URL`, `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID`, `FRONTEND_URL`, `MONGODB_URI`, `NODE_ENV`, `PORT`, `SESSION_SECRET`, `VERCEL`, `VERCEL_PROJECT_PRODUCTION_URL`, `VERCEL_URL`. Values are never read from .env files.
+`ADMIN_URL`, `FRONTEND_URL`, `MONGODB_URI`, `NODE_ENV`, `PORT`, `SESSION_SECRET`, `VERCEL`, `VERCEL_PROJECT_PRODUCTION_URL`, `VERCEL_URL`. Values are never read from .env files.
 
 ### Source inventory and exported symbols
 
@@ -419,7 +419,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/services/loginStatus.test.js](src/services/loginStatus.test.js) | Internal module / styles |
 | [src/services/orderIds.js](src/services/orderIds.js) | initializeOrderIds, nextOrderId |
 | [src/services/orderIds.test.js](src/services/orderIds.test.js) | Internal module / styles |
-| [src/services/productImages.js](src/services/productImages.js) | blobStorageConfigured, imageExtension, uploadFilename, uploadProductImage |
+| [src/services/productImages.js](src/services/productImages.js) | blobStorageConfigured, createImageUploadHandler, imageExtension, uploadFilename, uploadProductImage |
 | [src/services/productImages.test.js](src/services/productImages.test.js) | Internal module / styles |
 | [src/services/search.js](src/services/search.js) | searchTerms, textSearch |
 | [src/services/search.test.js](src/services/search.test.js) | Internal module / styles |
@@ -763,3 +763,5 @@ Run `npm run images:migrate-blob` from `backend` to validate local catalog image
 Uploads use content hashes and readable filenames, and retries reuse existing blobs. `output/blob-migration/catalog.json` is an ignored local checkpoint containing upload mappings and previous image fields; preserve it for recovery. All sources are validated before upload, and database changes commit in one transaction with checks against concurrent record edits. Known shape category images missing locally can recover from their matching type/shape catalog asset; missing product/variant images stop the migration. Uploaded blobs may remain if the database transaction fails; rerun after resolving the failure. MongoDB must support transactions.
 
 The migrated catalog’s local image copies were removed after verifying the public Blob URLs. Existing product, variant and category records load images from Blob. `public/products/` retains source manifests; setup/download scripts may regenerate local files and references, which must be migrated before hosted use. The migration report retains the previous URLs for reference, but restoring those local URLs requires restoring their image files too. Keep Blob credentials configured locally and on Vercel so new uploads continue using Blob.
+
+All web-panel image uploads (product galleries, variants, categories, highlights, library selections and virtual try-on images) use the shared Blob-only endpoint. Blob credentials are required locally and on Vercel. Missing credentials or storage failures return HTTP 503; images are never saved to local disk as a fallback. Save the form after uploading to persist the returned Blob URL in MongoDB.
