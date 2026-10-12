@@ -121,3 +121,5 @@ Legacy, unmounted frontend dashboard files also reference Unsplash placeholder p
 - Database field details and setup: [backend guide](backend/README.md).
 
 Update this inventory when adding, removing or changing API routes.
+
+Image uploads may include `X-File-Name` (URL-encoded original filename) to retain a readable basename alongside a unique suffix.

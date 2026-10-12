@@ -324,7 +324,7 @@ Variant **Price** is the selling price; **Compare Price** (`originalPrice`) cont
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `9ab2f5b5186204d20d4ef66827004b782bb520385d43715f8f498223a1ab48d0`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `7b6769707f989924ab39b429093945af7f1648583d43d4bf8e8b41c465e6ea1b`.
 
 ### Actual npm commands
 
@@ -348,8 +348,6 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/App.jsx](src/App.jsx) | default export |
 | [src/api/api.js](src/api/api.js) | apiRequest |
 | [src/api/requestClient.js](src/api/requestClient.js) | Internal module / styles |
-| [src/assets/css/LoadingScreen.css](src/assets/css/LoadingScreen.css) | Internal module / styles |
-| [src/assets/js/script.js](src/assets/js/script.js) | Internal module / styles |
 | [src/components/AccountMenu.jsx](src/components/AccountMenu.jsx) | AccountMenu |
 | [src/components/AsideBarDashboard.jsx](src/components/AsideBarDashboard.jsx) | default export |
 | [src/components/Brands.jsx](src/components/Brands.jsx) | default export |
@@ -557,3 +555,7 @@ Password fields use the shared `PasswordInput` component with an eye button to s
 Product detail loading is independent of the recommendations catalog. The selected product renders as soon as its detail request finishes; recommendations arrive separately, and their failure does not block the product page. The catalog request is reused while navigating between product details within the mounted page.
 
 Internal collection links in the homepage Notes section use React Router `Link` to avoid document reloads. Cart-to-checkout navigation also uses `Link`, and checkout submission prevents native form navigation. Storefront/admin transitions load the other application’s document because they are separate browser builds.
+
+Shape collection cards use the category image URL returned by `/api/categories`, falling back to the parent category image when no shape image is saved. Upload a replacement through the admin category editor and save the category; the homepage uses that saved URL on its next load. Relative `/assets/products/` paths resolve against the API host, and hosted Blob URLs are used directly.
+
+Eyeglasses and sunglasses shape collection sections retain the page background. Only the circular image backgrounds are white; a small CSS brightness adjustment lifts images’ pale gray backdrop to white while retaining the carousel layout, spacing and labels.

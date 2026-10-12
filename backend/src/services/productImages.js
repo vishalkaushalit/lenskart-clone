@@ -9,11 +9,16 @@ export function imageExtension(buffer) {
   if (buffer.length >= 12 && buffer.toString('ascii',0,4) === 'RIFF' && buffer.toString('ascii',8,12) === 'WEBP') return 'webp';
   return null;
 }
+export function uploadFilename(encodedName = '') {
+  let original;
+  try { original = decodeURIComponent(encodedName); } catch { original = ''; }
+  return original.split(/[\\/]/).pop().replace(/\.[^.]*$/, '').toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80) || 'product';
+}
 export async function uploadProductImage(req, res, next) {
   const extension = imageExtension(req.body);
   if (!extension) return res.status(400).json({ message: 'Upload a JPEG, PNG, or WebP image.' });
   try {
-    const name = `${randomUUID()}.${extension}`;
+    const name = `${uploadFilename(req.headers?.['x-file-name'])}-${randomUUID()}.${extension}`;
     if (process.env.VERCEL || process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID) {
       const blob = await put(`products/${name}`, req.body, { access: 'public', contentType: `image/${extension === 'jpg' ? 'jpeg' : extension}` });
       return res.status(201).json({ success: true, image: blob.url });

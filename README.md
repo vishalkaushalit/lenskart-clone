@@ -112,7 +112,7 @@ Products support multiple size/color combinations with their own images, invento
 | Application | Source files | Guide |
 | --- | --- | --- |
 | backend | 62 | [README](backend/README.md) |
-| frontend | 95 | [README](frontend/README.md) |
+| frontend | 93 | [README](frontend/README.md) |
 | web-panel | 52 | [README](web-panel/README.md) |
 
 Update references with `npm run docs:sync`; verify with `npm run docs:check`. Run `npm run docs:hooks` once per clone to enable commit-time synchronization. Review written field explanations whenever behavior changes.
@@ -155,3 +155,7 @@ The Vercel API region is configured as `bom1` (Mumbai) to match the MongoDB Atla
 Sessions reuse the Mongoose MongoDB client and its database instead of opening a second connection pool. Independent model initialization runs together. Orders/coupons fetch their count and page concurrently, sorted by creation date and `_id` for stable pagination. Compound indexes support order date sorting, order status/date filtering, and coupon date sorting. Model initialization creates missing indexes; the first startup after adding indexes can take longer. Dashboard queries no longer all wait for the online-session scan. Product details render independently of the recommendations catalog request.
 
 Run backend tests and the application builds before deployment. Compare the same authenticated API request in DevTools before/after redeploy, separating the first request from subsequent requests. Live database query plans and latency have not been benchmarked by these code checks. Cold initialization still connects to MongoDB, verifies indexes and checks legacy user IDs; large collections or Atlas resource limits can remain bottlenecks. No shared response cache is added for account or order data.
+
+Unused starter graphics, obsolete loader assets and unreferenced marketing media have been removed. Product/category images and virtual try-on runtime files remain because setup scripts, image libraries or stored database URLs can load them dynamically.
+
+Generated `dist/` directories and Vite caches are disposable and ignored by Git. Run the relevant build command to recreate production bundles; development regenerates Vite caches. macOS `.DS_Store` metadata is also ignored.

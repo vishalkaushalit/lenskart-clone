@@ -250,7 +250,7 @@ Every web-panel table includes pagination and **Sr. No.** numbering that continu
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `cbd822a0a86bbf80444ac581e6a52e1e5aa7e1830427e1c8be388ed32936da31`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `62d8b0298a3b53db36eb7fb48bcf45990351adcd6da25232fb0f7bd0f4a760f2`.
 
 ### Actual npm commands
 
@@ -424,3 +424,7 @@ The sidebar’s Orders and Track Orders entries both use React Router navigation
 ## Built-in product image library
 
 The product add/edit form includes an Eyeglasses/Sunglasses image library sourced from `frontend/src/assets/images/eyeglasses/` and `frontend/src/assets/images/sunglasses/`. Select a category and click an image to add it to the product gallery. Library images follow the existing upload flow when saving, with the same eight-image and 4 MB limits. The first gallery image is the cover; images can be reordered or removed before saving. Manual file uploads remain available. These gallery assets are not prepared virtual try-on images.
+
+Image uploads send the original filename in `X-File-Name`; the backend preserves a sanitized readable name with a unique suffix.
+
+Homepage shape card images come from each shape category’s saved image URL. In Categories, edit the shape beneath Eyeglasses or Sunglasses, upload its Category image and save. Product gallery uploads remain separate from category images. Reload the storefront to fetch the updated categories.

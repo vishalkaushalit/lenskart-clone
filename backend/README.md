@@ -343,7 +343,7 @@ Dashboard recent orders accept `recentPage` (1–10,000, default 1). The databas
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `6d95ea1baf70c396322e2ca1f54d3d96c2bdf267970ae1ef4cca5d8321a648ea`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `b1c92a86513e4a24105766177492e2e8ed8df5ef6ced648436ea582598e38315`.
 
 ### Actual npm commands
 
@@ -417,7 +417,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/services/loginStatus.test.js](src/services/loginStatus.test.js) | Internal module / styles |
 | [src/services/orderIds.js](src/services/orderIds.js) | initializeOrderIds, nextOrderId |
 | [src/services/orderIds.test.js](src/services/orderIds.test.js) | Internal module / styles |
-| [src/services/productImages.js](src/services/productImages.js) | imageExtension, uploadProductImage |
+| [src/services/productImages.js](src/services/productImages.js) | imageExtension, uploadFilename, uploadProductImage |
 | [src/services/productImages.test.js](src/services/productImages.test.js) | Internal module / styles |
 | [src/services/search.js](src/services/search.js) | searchTerms, textSearch |
 | [src/services/search.test.js](src/services/search.test.js) | Internal module / styles |
@@ -749,3 +749,5 @@ Products and product variants accept an optional `tryOnImage` string (default em
 ## Query and connection performance
 
 The MongoDB-backed session store reuses `mongoose.connection.getClient()` with the connected database name. User/order/coupon/variant model initialization runs concurrently after user-ID initialization. Admin orders and coupons run independent count/page reads in parallel and use stable `{createdAt:-1,_id:-1}` sorting. New order indexes cover creation-date sorting and status/date queries; coupons have a creation-date index. Dashboard session scanning runs alongside independent totals, aggregates and recent-order reads. See [API performance](../README.md#api-performance) for deployment and measurement notes.
+
+Product image uploads accept an optional URL-encoded `X-File-Name` header. Stored names contain its sanitized basename plus a UUID and the signature-detected extension; existing image URLs remain valid.

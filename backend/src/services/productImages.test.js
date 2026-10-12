@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { imageExtension, uploadProductImage } from './productImages.js';
+import { imageExtension, uploadProductImage, uploadFilename } from './productImages.js';
 import { publicProduct, saveProduct } from '../controllers/productController.js';
 import Product from '../models/Product.js';
 test('uploads check image signatures rather than filename or MIME alone', () => {
@@ -36,4 +36,12 @@ test('empty and oversized galleries are rejected', async () => {
     await saveProduct({params:{},body:{images}},res,assert.ifError);
     assert.equal(res.code,400);
   }
+});
+
+test('upload basenames are readable, bounded and safe for storage', () => {
+  assert.equal(uploadFilename(encodeURIComponent('Eyeglasses Square.webp')), 'eyeglasses-square');
+  assert.equal(uploadFilename(encodeURIComponent('../../Sunglasses Round.png')), 'sunglasses-round');
+  assert.equal(uploadFilename('%invalid'), 'product');
+  assert.equal(uploadFilename(), 'product');
+  assert.equal(uploadFilename('a'.repeat(200) + '.jpg').length, 80);
 });

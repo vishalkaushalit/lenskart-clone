@@ -32,7 +32,7 @@ export default function ProductVariants({ product, onChange, mode='list', initia
       const paths=[];
       for (const image of images) {
         if(image.path)paths.push(image.path);
-        else {if(!uploads.current.has(image.url)){const data=await apiRequest('/admin/products/images',{method:'POST',body:image.file,headers:{'Content-Type':image.file.type}});uploads.current.set(image.url,data.image);}paths.push(uploads.current.get(image.url));}
+        else {if(!uploads.current.has(image.url)){const data=await apiRequest('/admin/products/images',{method:'POST',body:image.file,headers:{'Content-Type':image.file.type,'X-File-Name':encodeURIComponent(image.file.name)}});uploads.current.set(image.url,data.image);}paths.push(uploads.current.get(image.url));}
       }
       await apiRequest(`/admin/products/${product.id}/variants${editing?`/${editing}`:''}`,{method:editing?'PATCH':'POST',body:JSON.stringify({...form,images:paths,price:form.price===''?null:Number(form.price),originalPrice:form.originalPrice===''?null:Number(form.originalPrice),stock:Number(form.stock)})});setForm(empty);setImages([]);setEditing(null);onChange();}
     catch(error){setError(error.message);}finally{setBusy(false);}

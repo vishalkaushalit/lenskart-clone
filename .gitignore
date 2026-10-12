@@ -5,3 +5,7 @@ dist/
 .env.*
 !.env.example
 frontend/public/try-on/wasm/
+
+# Local build caches and macOS folder metadata
+.vite/
+.DS_Store

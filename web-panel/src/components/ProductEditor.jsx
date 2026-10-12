@@ -52,7 +52,7 @@ export default function ProductEditor({ product = null }) {
     if (!image) return '';
     if (image.path) return image.path;
     if (!uploads.current.has(image.url)) {
-      const data=await apiRequest('/admin/products/images',{method:'POST',body:image.file,headers:{'Content-Type':image.file.type}});
+      const data=await apiRequest('/admin/products/images',{method:'POST',body:image.file,headers:{'Content-Type':image.file.type,'X-File-Name':encodeURIComponent(image.file.name)}});
       uploads.current.set(image.url,data.image);
     }
     return uploads.current.get(image.url);
