@@ -39,3 +39,14 @@ test('same-color variants inherit the product try-on image and can override it',
   product.color = '';
   assert.equal(resolveVariant(product, { size: 'L', color: 'Black' }).tryOnImage, '');
 });
+test('one color image is reused across sizes without leaking into other colors', () => {
+  const product = { hasVariants: true, variants: [
+    { id: 's', size: 'S', color: ' Black ', tryOnImage: 'black.png', status: 'active', images: [] },
+    { id: 'm', size: 'M', color: 'Black', status: 'active', images: [] },
+    { id: 'l', size: 'L', color: 'Blue', status: 'active', images: [] },
+  ] };
+  assert.equal(resolveVariant(product, { size: 'M', color: 'Black' }).tryOnImage, 'black.png');
+  assert.equal(resolveVariant(product, { size: 'L', color: 'Blue' }).tryOnImage, '');
+  product.variants[1].tryOnImage = 'custom.png';
+  assert.equal(resolveVariant(product, { size: 'M', color: 'Black' }).tryOnImage, 'custom.png');
+});

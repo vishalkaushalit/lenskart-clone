@@ -321,10 +321,12 @@ The collection uses `ProductCard.jsx` for the rounded reference layout: floating
 
 Variant **Price** is the selling price; **Compare Price** (`originalPrice`) controls the crossed-out price and savings. Both can be blank/null to inherit the corresponding product price. Explicit compare prices must be at least the effective selling price. Variant forms, view pages and tables show both prices. Storefront cards, product details, cart and checkout use the selected variant comparison price; legacy variants continue inheriting product values.
 
+Try-on images are shared across sizes of the same color: upload and save an image on one variant, then leave the other sizes’ try-on uploads empty. A variant’s own image takes priority, followed by another variant of the same color, then the matching base product color. Colors are matched ignoring case and surrounding spaces. The variant editor previews the reused image.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `65ce28f7fc3ee351033839e917799d90d45e1d0100418df458e266ee37581940`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `d65bf65f8c9e2e68554138f8245effbe873fc2e60ef1fe15788d12e211fdba33`.
 
 ### Actual npm commands
 
@@ -534,7 +536,7 @@ This app deploys with the other applications from the repository root. See [Sing
 
 ## Product virtual try-on
 
-The product gallery has a Virtual Try-On button opening the shared-size `product-popup` dialog. Camera starts only on an explicit click. MediaPipe is dynamically imported, and inference runs at most ten times per second while the video preview renders normally. A matching transparent `tryOnImage` from the product or selected variant is anchored to eye landmarks; a variant’s own image takes priority, with the product image used as a fallback only for matching frame colors. Other colors and products without a base color do not inherit the image. Missing assets show an availability state. Streams, inference animation and detector resources are released on stop/unmount; hiding the tab stops the camera.
+The product gallery has a Virtual Try-On button opening the shared-size `product-popup` dialog. Camera starts only on an explicit click. MediaPipe is dynamically imported, and inference runs at most ten times per second while the video preview renders normally. A matching transparent `tryOnImage` from the product or selected variant is anchored to eye landmarks; a variant’s own image takes priority, followed by another size’s image of the same color, then the matching base product image. Images are never inherited across colors. Missing assets show an availability state. Streams, inference animation and detector resources are released on stop/unmount; hiding the tab stops the camera.
 
 This is a 2D visual overlay with tilt, size and height adjustments. It does not measure fit or provide 3D side views. See [Live virtual try-on setup](../README.md#live-virtual-try-on) for asset preparation, browser requirements and privacy behavior. The model is fetched from Google when started; WASM is copied from the installed package before dev/build and hosted with the app.
 

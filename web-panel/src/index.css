@@ -127,7 +127,7 @@ button.delete-button.delete-button svg{width:18px;height:18px;flex-shrink:0}
 
 /* Variant editors use the same grid, gallery and action bar as products. */
 .variant-manager > .product-panel-title { margin-bottom:12px; }
-.variant-table { max-height:280px; }
+.variant-table { max-height:none; }
 .variant-table th { position:sticky; top:0; background:#fff; z-index:1; }
 .variant-form-fields, .variant-form-gallery { min-width:0; }
 .variant-form-gallery { display:flex; flex-direction:column; }

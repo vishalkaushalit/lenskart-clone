@@ -106,6 +106,8 @@ Administration lists link to separate view, add and edit pages for products, var
 
 Products support multiple size/color combinations with their own images, inventory and optional prices. Save the product in the web panel, then choose **Variants** from its **Actions** column to open the separate page for adding and editing combinations, with the same image-upload gallery as the product form. The backend stores them separately in `productvariants`, linked by `productId`; storefront selections and checkout use the chosen variant. See the application guides for every field and endpoint.
 
+Try-on images are shared across sizes of the same color: upload and save an image on one variant, then leave the other sizes’ try-on uploads empty. A variant’s own image takes priority, followed by another variant of the same color, then the matching base product color. Colors are matched ignoring case and surrounding spaces. The variant editor previews the reused image.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated application summary
 
