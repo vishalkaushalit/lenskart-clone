@@ -138,7 +138,7 @@ The root `api/index.js` awaits cached backend initialization before dispatching 
 
 ## Live virtual try-on
 
-Product detail pages have a **Virtual Try-On** button beneath the image gallery. In the admin product editor, upload a **Virtual try-on image**; for variant products, upload a separate matching image in each variant editor. Save the product/variant before checking the storefront. Existing products without prepared assets show an availability message and do not request camera access.
+Product detail pages have a **Virtual Try-On** button beneath the image gallery. In the admin product editor, upload a **Virtual try-on image**; for variant products, upload a separate matching image in each variant editor when its color differs from the base product. Same-color variants can use the product image unless they have their own override. Save the product/variant before checking the storefront. Existing products without prepared assets show an availability message and do not request camera access.
 
 Use a tightly cropped, front-facing PNG or WebP with a transparent background and transparent lens interiors (unless the lenses are intentionally tinted). Center the bridge; avoid side views, white backgrounds and large margins. The upload field checks transparency, a landscape aspect ratio and the 4 MB limit. Use the actual product frame rather than a generic illustration.
 

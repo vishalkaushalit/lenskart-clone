@@ -5,5 +5,7 @@ export function resolveVariant(product, options = {}, variantId) {
   if (!variant || variantId && variant.id !== variantId) return null;
   const price = variant.price ?? product.price;
   const images = variant.images.length ? variant.images : product.images;
-  return { ...product, variantId: variant.id, tryOnImage: variant.tryOnImage || '', price, originalPrice: Math.max(variant.originalPrice ?? product.originalPrice ?? price, price), stock: variant.stock, color: variant.color, size: variant.size, images, image: images?.[0] || product.image };
+  const sameColor = Boolean(product.color?.trim()) && product.color.trim().toLowerCase() === variant.color.trim().toLowerCase();
+  const tryOnImage = variant.tryOnImage || (sameColor ? product.tryOnImage : '') || '';
+  return { ...product, variantId: variant.id, tryOnImage, price, originalPrice: Math.max(variant.originalPrice ?? product.originalPrice ?? price, price), stock: variant.stock, color: variant.color, size: variant.size, images, image: images?.[0] || product.image };
 }

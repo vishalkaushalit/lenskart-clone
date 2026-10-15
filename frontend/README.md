@@ -324,7 +324,7 @@ Variant **Price** is the selling price; **Compare Price** (`originalPrice`) cont
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `7b6769707f989924ab39b429093945af7f1648583d43d4bf8e8b41c465e6ea1b`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `65ce28f7fc3ee351033839e917799d90d45e1d0100418df458e266ee37581940`.
 
 ### Actual npm commands
 
@@ -534,7 +534,7 @@ This app deploys with the other applications from the repository root. See [Sing
 
 ## Product virtual try-on
 
-The product gallery has a Virtual Try-On button opening the shared-size `product-popup` dialog. Camera starts only on an explicit click. MediaPipe is dynamically imported, and inference runs at most ten times per second while the video preview renders normally. A matching transparent `tryOnImage` from the product or selected variant is anchored to eye landmarks; variants never inherit another color's image. Missing assets show an availability state. Streams, inference animation and detector resources are released on stop/unmount; hiding the tab stops the camera.
+The product gallery has a Virtual Try-On button opening the shared-size `product-popup` dialog. Camera starts only on an explicit click. MediaPipe is dynamically imported, and inference runs at most ten times per second while the video preview renders normally. A matching transparent `tryOnImage` from the product or selected variant is anchored to eye landmarks; a variant’s own image takes priority, with the product image used as a fallback only for matching frame colors. Other colors and products without a base color do not inherit the image. Missing assets show an availability state. Streams, inference animation and detector resources are released on stop/unmount; hiding the tab stops the camera.
 
 This is a 2D visual overlay with tilt, size and height adjustments. It does not measure fit or provide 3D side views. See [Live virtual try-on setup](../README.md#live-virtual-try-on) for asset preparation, browser requirements and privacy behavior. The model is fetched from Google when started; WASM is copied from the installed package before dev/build and hosted with the app.
 

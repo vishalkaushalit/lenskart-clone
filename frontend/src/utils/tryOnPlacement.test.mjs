@@ -25,8 +25,17 @@ test('no frame is drawn for missing, invalid or tiny eye spans', () => {
   assert.equal(tryOnPlacement(landmarks, 640, 480, 0), null);
 });
 test('variant preview never inherits an image of another frame color', () => {
-  const product = { hasVariants: true, tryOnImage: 'black.png', price: 100, variants: [{ id: 'blue', size: 'M', color: 'Blue', status: 'active', images: [] }] };
+  const product = { hasVariants: true, color: 'Black', tryOnImage: 'black.png', price: 100, variants: [{ id: 'blue', size: 'M', color: 'Blue', status: 'active', images: [] }] };
   assert.equal(resolveVariant(product, { size: 'M', color: 'Blue' }).tryOnImage, '');
   product.variants[0].tryOnImage = 'blue.png';
   assert.equal(resolveVariant(product, { size: 'M', color: 'Blue' }).tryOnImage, 'blue.png');
+});
+test('same-color variants inherit the product try-on image and can override it', () => {
+  const product = { hasVariants: true, color: ' Black ', tryOnImage: 'black.png', price: 100, variants: [{ id: 'black', size: 'L', color: 'BLACK', status: 'active', images: [] }] };
+  assert.equal(resolveVariant(product, { size: 'L', color: 'Black' }).tryOnImage, 'black.png');
+  product.variants[0].tryOnImage = 'large-black.png';
+  assert.equal(resolveVariant(product, { size: 'L', color: 'Black' }).tryOnImage, 'large-black.png');
+  product.variants[0].tryOnImage = '';
+  product.color = '';
+  assert.equal(resolveVariant(product, { size: 'L', color: 'Black' }).tryOnImage, '');
 });

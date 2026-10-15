@@ -28,10 +28,10 @@ export default function ProductImageLibrary({ choose, busy, count }) {
         {groups.map(value => <option key={value} value={value}>{value === 'eyeglasses' ? 'Eyeglasses' : 'Sunglasses'}</option>)}
       </select>
     </label>
-    <div className="product-image-grid mt-3">
+    <div className="product-library-grid">
       {Object.entries(assets).filter(([path]) => path.includes(`/${group}/`)).map(([path, url]) => {
         const name = path.split('/').pop().replace('.webp', '').replace('cateye', 'cat eye');
-        return <button key={path} type="button" className="product-image-tile" disabled={busy || loading || count >= 8} onClick={() => select(path, url)} aria-label={`Add ${group} ${name} image`}>
+        return <button key={path} type="button" className="product-library-tile" disabled={busy || loading || count >= 8} onClick={() => select(path, url)} aria-label={`Add ${group} ${name} image`}>
           <img src={url} alt={`${group} ${name}`} loading="lazy" />
           <span className="text-xs capitalize">{name}</span>
         </button>;

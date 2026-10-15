@@ -250,7 +250,7 @@ Every web-panel table includes pagination and **Sr. No.** numbering that continu
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `b66d1c88a5aa22a2a01577b0cdadb3b219fb774665e103956ea7425353293f1f`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `360572d92f693863406ac408eb96daa0c6f3c5be8f17d6b4c81c08c9dc94dd66`.
 
 ### Actual npm commands
 
@@ -413,7 +413,7 @@ This app deploys with the other applications from the repository root. See [Sing
 
 The product editor and each variant editor have an optional try-on image upload field. Upload a tightly cropped transparent PNG/WebP front view with a centered bridge, at least 100 pixels wide, a width/height ratio of at least 1.5 and no larger than 4 MB. The field checks visible pixels and transparency before uploading; it cannot verify the photographic angle or whether the frame matches the product, so inspect the preview. Use clear lens interiors and omit the arms behind the face. Save is blocked while an upload is running.
 
-For variant products, each selected variant needs its own matching `tryOnImage`; a product-level image is not inherited across colors. Missing images leave the storefront button available with an availability message. Removing the image and saving disables camera try-on for that frame. See [Live virtual try-on](../README.md#live-virtual-try-on).
+For variant products, a variant’s own `tryOnImage` takes priority. A variant without one can use the saved product-level image only when its color matches the product color (ignoring case and surrounding spaces). Other colors need their own matching image. Save the product after uploading, then reload the storefront. Missing images leave the storefront button available with an availability message. Removing the image and saving disables camera try-on for that frame. See [Live virtual try-on](../README.md#live-virtual-try-on).
 
 API reads now share identical in-flight GET requests using `shared/requestClient.js`. Per-consumer cancellation lets Strict Mode remounts reuse a pending request. Writes, retries after completion and different query parameters stay independent. The admin session is checked once when the route guard mounts, rather than on every pathname change. Its user stays in memory during navigation and profile updates. Refreshing the browser runs one restoration check. A protected API returning 401 clears the local admin session and redirects to login; logout ends the server session and leaves the panel. API authorization remains enforced on every protected request.
 
@@ -422,6 +422,10 @@ Password fields use the shared `PasswordInput` component with an eye button to s
 The sidebar’s Orders and Track Orders entries both use React Router navigation to `/orders`, preserving the mounted app and session instead of performing a document reload.
 
 ## Built-in product image library
+
+Product add/edit pages show the gallery and image library on the left, with Pricing & Inventory and the Virtual try-on image panel stacked on the right. Basic Information spans the full width below both columns. On smaller screens the columns stack.
+
+Library choices use a responsive grid with dedicated image and label spacing. Labels wrap within each tile, and the upload hint stays below the complete grid.
 
 The product add/edit form includes an Eyeglasses/Sunglasses image library sourced from `frontend/src/assets/images/eyeglasses/` and `frontend/src/assets/images/sunglasses/`. Select a category and click an image to add it to the product gallery. Library images follow the existing upload flow when saving, with the same eight-image and 4 MB limits. The first gallery image is the cover; images can be reordered or removed before saving. Manual file uploads remain available. These gallery assets are not prepared virtual try-on images.
 
