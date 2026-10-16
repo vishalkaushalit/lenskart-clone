@@ -14,7 +14,9 @@
     "products:variant-images": "node scripts/add-color-variant-images.js",
     "images:migrate-blob": "node scripts/migrate-images-to-blob.js",
     "reviews:sample": "node scripts/add-sample-reviews.js",
-    "reviews:sample-verified": "node scripts/add-verified-sample-reviews.js"
+    "reviews:sample-verified": "node scripts/add-verified-sample-reviews.js",
+    "orders:unique-waybills": "node scripts/ensure-unique-waybills.js",
+    "orders:demo-history": "node scripts/backfill-demo-order-history.js"
   },
   "keywords": [],
   "author": "",

@@ -91,3 +91,14 @@ test('cancellation restores the ordered variant once, including inactive variant
  const handler=commerceAdmin.stack.find(layer=>layer.route?.path==='/orders/:id'&&layer.route.methods.patch).route.stack.at(-1).handle;
  const req={params:{id:productId},body:{status:'cancelled'}};await handler(req,{json(){}},assert.ifError);await handler(req,{json(){}},assert.ifError);assert.equal(restores,1);
 });
+test('variants expose readable color-size slugs and disambiguate normalized collisions', async t => {
+  t.mock.method(ProductVariant, 'find', () => ({ sort(){return this;},lean:async()=>[
+    { _id: 'one', productId, color: 'Black', size: 'S', status: 'active', stock: 1 },
+    { _id: 'two', productId, color: 'Rose Gold', size: 'M/L', status: 'active', stock: 1 },
+    { _id: 'three', productId, color: 'Rose-Gold', size: 'M/L', status: 'active', stock: 1 },
+  ] }));
+  const [product] = await attachVariants([{ _id: productId, hasVariants: true }], true);
+  assert.equal(product.variants[0].slug, 'black-s');
+  assert.equal(product.variants[1].slug, 'rose-gold-m-l-two');
+  assert.equal(product.variants[2].slug, 'rose-gold-m-l-three');
+});

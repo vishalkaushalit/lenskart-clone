@@ -271,10 +271,24 @@ The Product Details Reviews tab combines the product-editor review array with ap
 
 Reviews are combined by product across all sizes and colors. Switching variants keeps the same review list, count and average rating. Customer submissions reference the purchased product, with one review per product per order even if multiple variants were purchased.
 
+Variant add/edit forms show three fields per row on desktop (two on smaller tablets, one on mobile). The optional variant try-on image panel sits in the right column beneath the fields; the gallery remains on the left.
+
+Product and category view/edit links use saved slugs. Admin product URLs accept both slug and legacy ObjectId, and product pages replace legacy URLs with the canonical slug. Variant view/edit URLs use generated color-size slugs (for example `black-s`); collisions after normalization include the variant ID to disambiguate. Changing variant color/size changes this generated slug; legacy variant ID links remain valid. API writes continue to use database IDs. Orders, users, coupons and other records without dedicated slugs retain ID URLs.
+
+## Delete actions across admin record pages
+
+Saved products, variants, categories, coupons and users expose Delete from their list/detail/edit screens. Reviews keep their delete action in Reviews & Approvals. Order lists, details, status editing and tracking show Delete, enabled only for cancelled orders. New-record forms and the admin’s own account cannot be deleted. All actions open a shared-size confirmation popup and retain errors there; successful deletion returns to the corresponding list or refreshes it. Categories with children or product assignments must be unassigned first. Ordered variants remain protected. Completed orders are retained.
+
+Waybill/tracking numbers are unique across orders, ignoring letter case and surrounding spaces. Orders without waybills may keep an empty value. Duplicate saves return a clear conflict message. Run `npm run orders:unique-waybills` in backend to audit existing values, trim surrounding spaces and install the unique index; it refuses to change records when duplicates are found.
+
+Successful admin logout and unauthorized session responses clear the shared browser session flag. Product Details variant pagination uses 20 rows, matching the variants manager. Products referenced by orders cannot be deleted; set them Inactive to retain historical receipts and cancellation inventory references.
+
+Order tracking uses the shared polling hook with the admin request client. Product Details memoizes combined review sorting so image selection and tab changes do not repeat the sort.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `3ef014910b68bc6ea406c9d59bb60752cc4ed25369147309ce0d9705ef38885a`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `7b8cfc632738acd5e995bb2614cb7b53b7128dc3d124caba01543e144b09fe0c`.
 
 ### Actual npm commands
 
@@ -304,6 +318,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/DashboardHeader.jsx](src/components/DashboardHeader.jsx) | default export |
 | [src/components/DashboardLayout.jsx](src/components/DashboardLayout.jsx) | DashboardLayout |
 | [src/components/DataTable.jsx](src/components/DataTable.jsx) | DataTable |
+| [src/components/DeleteRecordButton.jsx](src/components/DeleteRecordButton.jsx) | DeleteRecordButton |
 | [src/components/ImageUploadField.jsx](src/components/ImageUploadField.jsx) | ImageUploadField |
 | [src/components/Loader.jsx](src/components/Loader.jsx) | Internal module / styles |
 | [src/components/NotificationPopup.jsx](src/components/NotificationPopup.jsx) | NotificationPopup |

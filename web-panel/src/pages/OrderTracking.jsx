@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import DeleteRecordButton from '../components/DeleteRecordButton';
+import { useOrderTracking } from '../../../shared/useOrderTracking.js';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Check, Clock3 } from 'lucide-react';
 import DashboardLayout from '../components/DashboardLayout';
 import PageHeader from '../components/PageHeader';
@@ -10,38 +11,17 @@ import { shipmentMessage } from '../../../shared/shipment.js';
 
 const date = value => new Date(value).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
 export default function OrderTracking() {
+  const navigate=useNavigate();
   const { id } = useParams();
-  const [result, setResult] = useState({ loading: true });
-  const [attempt, setAttempt] = useState(0);
-  const [refreshing, setRefreshing] = useState(false);
-  useEffect(() => {
-    const controller = new AbortController();
-    let inFlight = false;
-    let terminal = false;
-    async function load() {
-      if (inFlight || controller.signal.aborted) return;
-      inFlight = true; setRefreshing(true);
-      try {
-        const data = await apiRequest(`/admin/orders/${encodeURIComponent(id)}`, { signal: controller.signal });
-        if (!controller.signal.aborted) {
-          terminal = ['delivered', 'cancelled'].includes(data.order.status);
-          setResult({ id, order: data.order, checkedAt: new Date(), loading: false });
-        }
-      } catch (error) {
-        if (!controller.signal.aborted) setResult(previous => previous.id === id && previous.order ? { ...previous, error: error.message } : { id, error: error.message, loading: false });
-      } finally { inFlight = false; if (!controller.signal.aborted) setRefreshing(false); }
-    }
-    load();
-    const timer = setInterval(() => { if (!document.hidden && !terminal) load(); }, 30000);
-    return () => { controller.abort(); clearInterval(timer); };
-  }, [id, attempt]);
+  const { result, refreshing, refresh } = useOrderTracking(id, apiRequest, '/admin/orders');
   const order = result.id === id ? result.order : null;
   return <DashboardLayout><main className="admin-page">
     <PageHeader title="Order Tracking" description={order ? `Order #${order.orderId ?? '—'} · ${order.user?.name || 'Deleted account'}` : 'View shipment progress and timeline'}>
       <Link to="/track-orders" className="admin-button-secondary">Back to tracking</Link>
       <Link to={`/orders/${id}`} className="admin-button-secondary">Order details</Link>
       <Link to={`/orders/${id}/edit`} className="admin-button-primary">Update shipment</Link>
-      <button disabled={refreshing} onClick={() => setAttempt(value => value + 1)} className="admin-button-secondary">{refreshing ? 'Refreshing…' : 'Refresh'}</button>
+      <button disabled={refreshing} onClick={refresh} className="admin-button-secondary">{refreshing ? 'Refreshing…' : 'Refresh'}</button>
+      {order&&<DeleteRecordButton path={`/admin/orders/${order._id}`} label={`order #${order.orderId??'—'}`} disabled={order.status!=='cancelled'} onDeleted={()=>navigate('/orders')}/>}
     </PageHeader>
     {result.loading || result.id !== id ? <Loader label="Loading order tracking" /> : <>
       {result.error && <p role="alert" className="text-sm text-red-600">{result.error}</p>}

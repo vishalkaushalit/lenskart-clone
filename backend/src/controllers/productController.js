@@ -2,6 +2,7 @@ import { attachVariants } from '../services/variants.js';
 import {availableSlug,validSlug} from '../utils/slugs.js';
 import Category from '../models/Category.js';
 import Product from '../models/Product.js';
+import Order from '../models/Order.js';
 import { approvedReviews } from './reviewController.js';
 const editable = ['slug', 'categoryIds', 'subcategoryIds', 'categoryId', 'subcategoryId', 'faqs', 'reviews', 'highlightImages', 'tryOnImage', 'subtitle', 'lensTypes', 'offerTitle', 'offerText', 'deliveryInformation', 'assurances', 'material', 'hinge', 'temple', 'nosepad', 'description', 'features', 'sku', 'name', 'image', 'images', 'category', 'productType', 'shape', 'brand', 'price', 'originalPrice', 'color', 'size', 'gender', 'stock', 'status', 'powered'];
 export function publicProduct(product) {
@@ -75,6 +76,7 @@ export async function saveProduct(req, res, next) {
 export async function deleteProduct(req, res, next) {
   if (!/^[a-f\d]{24}$/i.test(req.params.id)) return res.status(400).json({ message: 'Invalid product ID.' });
   try {
+    if (await Order.exists({ 'items.product': req.params.id })) return res.status(409).json({ message: 'This product is used in an order. Set its status to Inactive instead.' });
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found.' });
     res.json({ success: true, message: 'Product deleted.' });
@@ -82,12 +84,13 @@ export async function deleteProduct(req, res, next) {
 }
 
 export async function productDetails(req, res, next) {
-  if (!/^[a-f\d]{24}$/i.test(req.params.id)) return res.status(400).json({ message: 'Invalid product ID.' });
+  if (!validSlug(req.params.id) && !/^[a-f\d]{24}$/i.test(req.params.id)) return res.status(400).json({ message: 'Invalid product ID.' });
   try {
-    const product = await Product.findById(req.params.id).lean();
+    const product = await (/^[a-f\d]{24}$/i.test(req.params.id) ? Product.findById(req.params.id) : Product.findOne({ slug: req.params.id })).lean();
     if (!product) return res.status(404).json({ message: 'Product not found.' });
-    const result = publicProduct((await attachVariants([product], true))[0]);
-    result.customerReviews = await approvedReviews(product._id);
+    const [variants, reviews] = await Promise.all([attachVariants([product], true), approvedReviews(product._id)]);
+    const result = publicProduct(variants[0]);
+    result.customerReviews = reviews;
     res.json({ success: true, product: result });
   } catch (error) { next(error); }
 }
@@ -97,9 +100,11 @@ export async function storefrontProductDetails(req, res, next) {
   try {
     const product = await Product.findOne({ ...(/^[a-f\d]{24}$/i.test(req.params.id)?{_id:req.params.id}:{slug:req.params.id}), status: 'active' }).lean();
     if (!product) return res.status(404).json({ message: 'This product is no longer available.' });
-    product.reviews = [...await approvedReviews(product._id), ...(product.reviews || [])]
+    const [variants, reviews] = await Promise.all([attachVariants([product]), approvedReviews(product._id)]);
+    const result = variants[0];
+    result.reviews = [...reviews, ...(product.reviews || [])]
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    res.json({ success: true, product: publicProduct((await attachVariants([product]))[0]) });
+    res.json({ success: true, product: publicProduct(result) });
   } catch (error) { next(error); }
 }
 

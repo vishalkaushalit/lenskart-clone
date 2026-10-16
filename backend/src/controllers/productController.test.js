@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import Product from '../models/Product.js';
+import Order from '../models/Order.js';
 import CustomerReview from '../models/CustomerReview.js';
-import { listProducts, saveProduct, productFields, publicProduct, productDetails, storefrontProductDetails } from './productController.js';
+import { listProducts, deleteProduct, saveProduct, productFields, publicProduct, productDetails, storefrontProductDetails } from './productController.js';
 import { managedProducts } from '../routes/productRoutes.js';
 import { requireAuth } from '../middleware/auth.js';
 const response = () => ({ statusCode:200, status(code) { this.statusCode=code; return this; }, json(body) { this.body=body; return this; } });
@@ -53,7 +54,7 @@ test('product details returns the gallery, description, and features', async (t)
 
 test('details handles missing products and invalid IDs', async (t) => {
   t.mock.method(Product, 'findById', () => ({ async lean() { return null; } }));
-  for (const [id, status] of [['invalid', 400], ['123456789012345678901234', 404]]) {
+  for (const [id, status] of [['invalid!', 400], ['123456789012345678901234', 404]]) {
     const res = response();
     await productDetails({ params: { id } }, res, assert.ifError);
     assert.equal(res.statusCode, status);
@@ -120,4 +121,44 @@ test('batch product lookup validates IDs and includes active products of all typ
   assert.equal(res.body.product.customerReviews[0].verifiedPurchase, true);
   assert.equal(res.body.product.customerReviews[0].name, 'Buyer');
   assert.deepEqual(productFields({ customerReviews: res.body.product.customerReviews }), {});
+});
+test('admin product details resolves product slugs while preserving database identity', async t => {
+  t.mock.method(Product, 'findOne', filter => { assert.deepEqual(filter, { slug: 'test-frame' }); return { lean: async () => ({ _id: '123456789012345678901234', slug: 'test-frame' }) }; });
+  t.mock.method(CustomerReview, 'find', () => ({ select(){return this;},sort(){return this;},lean:async()=>[] }));
+  const res = response(); await productDetails({ params: { id: 'test-frame' } }, res, assert.ifError);
+  assert.equal(res.body.product.id, '123456789012345678901234');
+  assert.equal(res.body.product.slug, 'test-frame');
+});
+
+test('products referenced by orders cannot be deleted, preserving receipts and cancellation inventory', async t => {
+  t.mock.method(Order, 'exists', async filter => { assert.deepEqual(filter, { 'items.product': '123456789012345678901234' }); return true; });
+  t.mock.method(Product, 'findByIdAndDelete', () => assert.fail('ordered product deleted'));
+  const res = response(); await deleteProduct({ params: { id: '123456789012345678901234' } }, res, assert.ifError);
+  assert.equal(res.statusCode, 409); assert.match(res.body.message, /Inactive/);
+});
+test('unreferenced products can be deleted and missing products return not found', async t => {
+  t.mock.method(Order, 'exists', async () => false);
+  let found = true;
+  t.mock.method(Product, 'findByIdAndDelete', async () => found ? { _id: '123456789012345678901234' } : null);
+  let res = response(); await deleteProduct({ params: { id: '123456789012345678901234' } }, res, assert.ifError); assert.equal(res.body.success, true);
+  found = false; res = response(); await deleteProduct({ params: { id: '123456789012345678901234' } }, res, assert.ifError); assert.equal(res.statusCode, 404);
+});
+test('product detail reads start variants and approved reviews concurrently', { timeout: 1000 }, async t => {
+  const { default: ProductVariant } = await import('../models/ProductVariant.js');
+  const id = '123456789012345678901234';
+  const product = { _id: id, slug: 'frame', hasVariants: true, reviews: [] };
+  let finishVariants;
+  t.mock.method(Product, 'findById', () => ({ lean: async () => ({ ...product }) }));
+  t.mock.method(Product, 'findOne', () => ({ lean: async () => ({ ...product }) }));
+  t.mock.method(ProductVariant, 'find', () => ({ sort(){return this;},lean:()=>new Promise(resolve=>{finishVariants=resolve;}) }));
+  t.mock.method(CustomerReview, 'find', () => {
+    assert.equal(typeof finishVariants, 'function');
+    finishVariants([]);
+    return { select(){return this;},sort(){return this;},lean:async()=>[] };
+  });
+  for (const handler of [productDetails, storefrontProductDetails]) {
+    finishVariants = undefined;
+    const res = response(); await handler({ params: { id } }, res, assert.ifError);
+    assert.equal(res.body.product.id, id);
+  }
 });

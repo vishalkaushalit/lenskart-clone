@@ -1,5 +1,6 @@
 import ProductVariant from '../models/ProductVariant.js';
-export const publicVariant = row => ({ id: String(row._id), productId: String(row.productId), size: row.size, color: row.color, price: row.price, originalPrice: row.originalPrice, stock: row.stock, images: row.images, tryOnImage: row.tryOnImage || '', status: row.status, createdAt: row.createdAt, updatedAt: row.updatedAt });
+import { slugify } from '../utils/slugs.js';
+export const publicVariant = row => ({ id: String(row._id), slug: `${slugify(row.color)}-${slugify(row.size)}`, productId: String(row.productId), size: row.size, color: row.color, price: row.price, originalPrice: row.originalPrice, stock: row.stock, images: row.images, tryOnImage: row.tryOnImage || '', status: row.status, createdAt: row.createdAt, updatedAt: row.updatedAt });
 export async function attachVariants(products, admin = false) {
   const ids = products.filter(product => product.hasVariants).map(product => product._id);
   if (!ids.length) return products;
@@ -16,6 +17,11 @@ export async function attachVariants(products, admin = false) {
     if(row.status==='active') {
       group.colors.add(row.color);group.sizes.add(row.size);group.stock+=row.stock;
     }
+  }
+  for (const group of byProduct.values()) {
+    const counts = new Map();
+    for (const variant of group.variants) counts.set(variant.slug, (counts.get(variant.slug) || 0) + 1);
+    for (const variant of group.variants) if (counts.get(variant.slug) > 1 || ['add', 'edit'].includes(variant.slug)) variant.slug += `-${variant.id}`;
   }
   return products.map(product => {
     if (!product.hasVariants) return product;

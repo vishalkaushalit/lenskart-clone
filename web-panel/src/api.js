@@ -1,4 +1,5 @@
 import { createRequestClient } from '../../shared/requestClient';
+import { rememberSession } from '../../shared/sessionHint.js';
 export const frontendUrl = (import.meta.env.VITE_FRONTEND_URL || (import.meta.env.PROD ? window.location.origin : 'http://localhost:5173')).replace(/\/$/, '');
 const apiUrl = (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api')).replace(/\/$/, '');
 
@@ -8,7 +9,11 @@ export function apiRequest(path, options = {}) {
   if (options.body && !(options.body instanceof Blob) && !(options.body instanceof FormData) && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');
   }
-  return request(path, { ...options, headers }).catch(error => {
+  return request(path, { ...options, headers }).then(data => {
+    if (path === '/auth/logout' && options.method?.toUpperCase() === 'POST') rememberSession(false);
+    return data;
+  }).catch(error => {
+    if (error.status === 401) rememberSession(false);
     if (error.status === 401 && path !== '/auth/me') window.dispatchEvent(new Event('admin-session-expired'));
     throw error;
   });

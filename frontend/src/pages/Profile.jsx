@@ -54,7 +54,7 @@ function ProfileDetails({ user }) {
   );
 }
 
-function OrderHistory() {
+function OrderHistory({ active }) {
   const [page, setPage] = useState(1);
   const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState({ orders: [], hasMore: false });
@@ -62,6 +62,7 @@ function OrderHistory() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (!active) return;
     const controller = new AbortController();
     async function loadOrders() {
       setLoading(true);
@@ -77,7 +78,7 @@ function OrderHistory() {
     }
     loadOrders();
     return () => controller.abort();
-  }, [page, attempt]);
+  }, [page, attempt, active]);
 
   return (
     <section className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8" aria-labelledby="order-history-heading">
@@ -130,8 +131,11 @@ function OrderHistory() {
 
 export default function Profile() {
   const { user } = useAuth();
-  const [params]=useSearchParams();
-  const [activeTab, setActiveTab] = useState(params.get("tab")==="orders"?"orders":"profile");
+  const [params, setParams]=useSearchParams();
+  const activeTab = params.get('tab') === 'orders' ? 'orders' : 'profile';
+  function setActiveTab(tab) {
+    setParams(previous => { const next = new URLSearchParams(previous); next.set('tab', tab); return next; });
+  }
   const tabs = [
     { id: "profile", label: "Profile" },
     { id: "orders", label: "Order History" },
@@ -178,7 +182,7 @@ export default function Profile() {
             <ProfileDetails key={user.id} user={user} />
           </div>
           <div id="account-panel-orders" role="tabpanel" aria-labelledby="account-tab-orders" tabIndex={0} hidden={activeTab !== "orders"}>
-            <OrderHistory key={user.id} />
+            <OrderHistory key={user.id} active={activeTab === 'orders'} />
           </div>
         </div>
       </div>

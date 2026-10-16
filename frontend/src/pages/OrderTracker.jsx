@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useOrderTracking } from '../../../shared/useOrderTracking.js';
 import { Link, useParams } from 'react-router-dom';
 import { Check, Clock3, Package, Truck } from 'lucide-react';
 import Loader from '../components/Loader';
@@ -10,34 +10,11 @@ import { orderTimeline } from '../utils/orderTimeline';
 const date = value => new Date(value).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
 export default function OrderTracker() {
   const { id } = useParams();
-  const [result, setResult] = useState({ loading: true });
-  const [attempt, setAttempt] = useState(0);
-  const [refreshing, setRefreshing] = useState(false);
-  useEffect(() => {
-    const controller = new AbortController();
-    let inFlight = false;
-    let terminal = false;
-    async function load() {
-      if (inFlight || controller.signal.aborted) return;
-      inFlight = true; setRefreshing(true);
-      try {
-        const data = await apiRequest(`/orders/${encodeURIComponent(id)}`, { signal: controller.signal });
-        if (!controller.signal.aborted) {
-          terminal = ['delivered', 'cancelled'].includes(data.order.status);
-          setResult({ id, order: data.order, checkedAt: new Date(), loading: false });
-        }
-      } catch (error) {
-        if (!controller.signal.aborted) setResult(previous => previous.id === id && previous.order ? { ...previous, error: error.message } : { id, loading: false, error: error.message });
-      } finally { inFlight = false; if (!controller.signal.aborted) setRefreshing(false); }
-    }
-    load();
-    const timer = setInterval(() => { if (!document.hidden && !terminal) load(); }, 30000);
-    return () => { controller.abort(); clearInterval(timer); };
-  }, [id, attempt]);
+  const { result, refreshing, refresh } = useOrderTracking(id, apiRequest, '/orders');
   const order = result.id === id ? result.order : null;
   return <section className="store-container py-10 sm:py-14">
     <Link to="/profile?tab=orders" className="text-sm font-semibold underline">Back to my orders</Link>
-    <div className="mt-5 flex flex-wrap items-center justify-between gap-4"><h1 className="flex items-center gap-2 text-2xl font-bold text-ink"><Truck aria-hidden="true" />Track your order{order && ` #${order.orderId ?? '—'}`}</h1><button disabled={refreshing} onClick={() => setAttempt(value => value + 1)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm disabled:opacity-50">{refreshing ? 'Refreshing…' : 'Refresh status'}</button></div>
+    <div className="mt-5 flex flex-wrap items-center justify-between gap-4"><h1 className="flex items-center gap-2 text-2xl font-bold text-ink"><Truck aria-hidden="true" />Track your order{order && ` #${order.orderId ?? '—'}`}</h1><button disabled={refreshing} onClick={refresh} className="rounded-lg border border-gray-300 px-4 py-2 text-sm disabled:opacity-50">{refreshing ? 'Refreshing…' : 'Refresh status'}</button></div>
     {result.loading || result.id !== id ? <Loader label="Loading order tracking" /> : <>
       {result.error && <p role="alert" className="mt-5 text-sm text-red-600">{result.error}</p>}
       {order && <div className="mt-6 grid items-start gap-6 lg:grid-cols-2">

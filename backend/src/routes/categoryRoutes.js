@@ -1,10 +1,12 @@
 import {availableSlug,validSlug} from '../utils/slugs.js';
 import express from 'express';
 import Category from '../models/Category.js';
+import { deleteCategory } from '../controllers/deletionController.js';
 import {requireAuth,requireRole} from '../middleware/auth.js';
 export const publicCategories=express.Router();
 export const adminCategories=express.Router();
 adminCategories.use(requireAuth,requireRole('admin'));
+adminCategories.delete('/:id', deleteCategory);
 const wrap=fn=>(req,res,next)=>Promise.resolve(fn(req,res)).catch(error=>{if(error.code===11000)return res.status(409).json({message:'A category with this name or slug already exists.'});if(['ValidationError','CastError'].includes(error.name))return res.status(400).json({message:'Check the category fields.'});next(error);});
 publicCategories.get('/',wrap(async(req,res)=>{const rows=await Category.find({active:true}).sort({sortOrder:1,name:1}).lean();const roots=new Set(rows.filter(row=>!row.parent).map(row=>String(row._id)));res.json({categories:rows.filter(row=>!row.parent||roots.has(String(row.parent)))});}));
 adminCategories.get('/',wrap(async(req,res)=>res.json({categories:await Category.find().sort({sortOrder:1,name:1}).lean()})));

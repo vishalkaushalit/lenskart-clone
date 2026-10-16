@@ -25,3 +25,14 @@ test('shipment fields are validated and arbitrary timestamps cannot be injected'
   updateShipment(order, { trackingNumber: '123', shipmentBookedAt: '1900-01-01', carrierCollectedAt: '1900-01-01' }, now);
   assert.equal(order.shipmentBookedAt, now); assert.equal(order.carrierCollectedAt, undefined);
 });
+
+test('nonempty waybills have a case-insensitive unique database index while blanks are excluded', async () => {
+  const { default: Order } = await import('../models/Order.js');
+  const [keys, options] = Order.schema.indexes().find(([, options]) => options.name === 'trackingNumber_unique');
+  assert.deepEqual(keys, { trackingNumber: 1 });
+  assert.equal(options.unique, true);
+  assert.equal(options.collation.strength, 2);
+  assert.deepEqual(options.partialFilterExpression, { trackingNumber: { $type: 'string', $gt: '' } });
+  const order = new Order({ trackingNumber: '  AwB123  ' });
+  assert.equal(order.trackingNumber, 'AwB123');
+});

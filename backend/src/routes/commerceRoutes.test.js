@@ -127,3 +127,14 @@ test('missing or other-customer receipts return 404', async t => {
   const handler=commercePublic.stack.find(layer=>layer.route?.path==='/orders/:id'&&layer.route.methods.get).route.stack[1].handle;
   await handler({params:{id:'507f1f77bcf86cd799439011'},user:{_id:'customer-id'}},{status(code){assert.equal(code,404);return this;},json(data){assert.equal(data.message,'Order not found.');}},assert.ifError);
 });
+
+test('duplicate waybill saves return a tracking conflict instead of a coupon error', async t => {
+  const { default: mongoose } = await import('mongoose');
+  const session = { withTransaction: async callback => callback(), endSession: async () => {} };
+  t.mock.method(mongoose, 'startSession', async () => session);
+  t.mock.method(Order, 'findById', () => ({ session: async () => ({ status: 'confirmed', items: [], save: async () => { throw Object.assign(new Error('duplicate'), { code: 11000, keyPattern: { trackingNumber: 1 } }); } }) }));
+  const handler = commerceAdmin.stack.find(layer => layer.route?.path === '/orders/:id' && layer.route.methods.patch).route.stack[0].handle;
+  const res = { statusCode:200, status(value){this.statusCode=value;return this;}, json(body){this.body=body;} };
+  await handler({ params: { id: productId }, body: { status:'confirmed',trackingNumber:'AWB123' } }, res, assert.ifError);
+  assert.equal(res.statusCode, 409); assert.match(res.body.message, /waybill\/tracking number.*another order/);
+});

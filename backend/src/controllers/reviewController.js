@@ -51,7 +51,7 @@ export async function listReviews(req, res, next) {
     const filter = status === 'all' ? {} : { status: status === 'unapproved' ? { $in: ['pending', 'rejected'] } : status };
     const [total, reviews] = await Promise.all([
       CustomerReview.countDocuments(filter),
-      CustomerReview.find(filter).populate('product', 'name').populate('order', 'orderId deliveredAt updatedAt').sort({ createdAt: -1, _id: -1 }).skip((page - 1) * 20).limit(20).lean(),
+      CustomerReview.find(filter).populate('product', 'name slug').populate('order', 'orderId deliveredAt updatedAt').sort({ createdAt: -1, _id: -1 }).skip((page - 1) * 20).limit(20).lean(),
     ]);
     res.json({ reviews, total, page });
   } catch (error) { next(error); }

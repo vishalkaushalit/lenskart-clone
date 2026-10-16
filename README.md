@@ -120,14 +120,16 @@ Admins can save the carrier and waybill/tracking number in the order editor. Cus
 
 Reviews are combined by product across all sizes and colors. Switching variants keeps the same review list, count and average rating. Customer submissions reference the purchased product, with one review per product per order even if multiple variants were purchased.
 
+Product and category view/edit links use saved slugs. Admin product URLs accept both slug and legacy ObjectId, and product pages replace legacy URLs with the canonical slug. Variant view/edit URLs use generated color-size slugs (for example `black-s`); collisions after normalization include the variant ID to disambiguate. Changing variant color/size changes this generated slug; legacy variant ID links remain valid. API writes continue to use database IDs. Orders, users, coupons and other records without dedicated slugs retain ID URLs.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated application summary
 
 | Application | Source files | Guide |
 | --- | --- | --- |
-| backend | 72 | [README](backend/README.md) |
+| backend | 78 | [README](backend/README.md) |
 | frontend | 101 | [README](frontend/README.md) |
-| web-panel | 55 | [README](web-panel/README.md) |
+| web-panel | 56 | [README](web-panel/README.md) |
 
 Update references with `npm run docs:sync`; verify with `npm run docs:check`. Run `npm run docs:hooks` once per clone to enable commit-time synchronization. Review written field explanations whenever behavior changes.
 <!-- AUTO-GENERATED:END -->

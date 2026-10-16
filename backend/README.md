@@ -372,10 +372,24 @@ Admin product detail responses include approved customer submissions as a separa
 
 Reviews are combined by product across all sizes and colors. Switching variants keeps the same review list, count and average rating. Customer submissions reference the purchased product, with one review per product per order even if multiple variants were purchased.
 
+Product and category view/edit links use saved slugs. Admin product URLs accept both slug and legacy ObjectId, and product pages replace legacy URLs with the canonical slug. Variant view/edit URLs use generated color-size slugs (for example `black-s`); collisions after normalization include the variant ID to disambiguate. Changing variant color/size changes this generated slug; legacy variant ID links remain valid. API writes continue to use database IDs. Orders, users, coupons and other records without dedicated slugs retain ID URLs.
+
+## Additional admin deletions
+
+Admin-only DELETE endpoints exist for `/api/admin/categories/:id`, `/api/admin/coupons/:id` and `/api/admin/orders/:id`. Categories cannot be deleted while they have children or are assigned to products through legacy or multi-category fields. Coupon deletion leaves historical order discounts/code snapshots intact. Order deletion uses a transaction and a cancelled-status filter, refuses orders with customer reviews, and does not change stock again because cancellation already restored it. Completed and active orders cannot be deleted. Existing product, variant, user and review delete endpoints remain in use.
+
+Waybill/tracking numbers are unique across orders, ignoring letter case and surrounding spaces. Orders without waybills may keep an empty value. Duplicate saves return a clear conflict message. Run `npm run orders:unique-waybills` in backend to audit existing values, trim surrounding spaces and install the unique index; it refuses to change records when duplicates are found.
+
+`npm run orders:demo-history` previews missing demo timeline/courier values; add `-- --write` to apply. It interpolates missing stage times within existing order dates, preserves recorded values, statuses, waybills, and updatedAt, and assigns example couriers only when absent. Delivered orders without a delivery timestamp use their previous updatedAt, preserving the existing review unlock time. These backfilled timestamps and carriers are synthetic demo data. Orders with inconsistent dates or concurrent changes are skipped; repeat runs do not duplicate events.
+
+Product deletion refuses records referenced by any order (409) so historical receipts and cancellation inventory remain intact. Use Inactive for ordered products.
+
+Product detail endpoints fetch variants and approved reviews concurrently after loading the parent product, avoiding sequential independent database reads. Admin responses keep customer reviews separate from editable product reviews.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `d0cc186b7656cbbb17b42b7020fc65a22683afa446137e44550d28ec4d0e0dcb`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `f8693692611dcd19e4a2cce69d3cac23fc2dd86925747fb8332364518c2452d6`.
 
 ### Actual npm commands
 
@@ -392,6 +406,8 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | images:migrate-blob | `node scripts/migrate-images-to-blob.js` |
 | reviews:sample | `node scripts/add-sample-reviews.js` |
 | reviews:sample-verified | `node scripts/add-verified-sample-reviews.js` |
+| orders:unique-waybills | `node scripts/ensure-unique-waybills.js` |
+| orders:demo-history | `node scripts/backfill-demo-order-history.js` |
 
 ### Environment keys used in source
 
@@ -407,10 +423,12 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [scripts/add-sample-variants.js](scripts/add-sample-variants.js) | Internal module / styles |
 | [scripts/add-verified-sample-reviews.js](scripts/add-verified-sample-reviews.js) | Internal module / styles |
 | [scripts/backfill-category-slugs.js](scripts/backfill-category-slugs.js) | Internal module / styles |
+| [scripts/backfill-demo-order-history.js](scripts/backfill-demo-order-history.js) | Internal module / styles |
 | [scripts/backfill-order-ids.js](scripts/backfill-order-ids.js) | Internal module / styles |
 | [scripts/backfill-product-details.js](scripts/backfill-product-details.js) | Internal module / styles |
 | [scripts/backfill-slugs.js](scripts/backfill-slugs.js) | Internal module / styles |
 | [scripts/backfill-user-ids.js](scripts/backfill-user-ids.js) | Internal module / styles |
+| [scripts/ensure-unique-waybills.js](scripts/ensure-unique-waybills.js) | Internal module / styles |
 | [scripts/fill-product-details.js](scripts/fill-product-details.js) | Internal module / styles |
 | [scripts/migrate-images-to-blob.js](scripts/migrate-images-to-blob.js) | Internal module / styles |
 | [scripts/seed-categories.js](scripts/seed-categories.js) | Internal module / styles |
@@ -423,6 +441,8 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/controllers/accountController.test.js](src/controllers/accountController.test.js) | Internal module / styles |
 | [src/controllers/dashboardController.js](src/controllers/dashboardController.js) | change, dashboardRange, dashboardSummary, salesSeries |
 | [src/controllers/dashboardController.test.js](src/controllers/dashboardController.test.js) | Internal module / styles |
+| [src/controllers/deletionController.js](src/controllers/deletionController.js) | deleteCancelledOrder, deleteCategory, deleteCoupon |
+| [src/controllers/deletionController.test.js](src/controllers/deletionController.test.js) | Internal module / styles |
 | [src/controllers/productController.js](src/controllers/productController.js) | adminProducts, deleteProduct, listProducts, productDetails, productFields, productNavigation, publicProduct, saveProduct, storefrontProductDetails |
 | [src/controllers/productController.test.js](src/controllers/productController.test.js) | Internal module / styles |
 | [src/controllers/reviewController.js](src/controllers/reviewController.js) | approvedReviews, canReview, deleteReview, listReviews, moderateReview, orderReviews, reviewAvailableAt, submitReview |
@@ -454,6 +474,8 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/routes/variantRoutes.js](src/routes/variantRoutes.js) | default export |
 | [src/routes/variantRoutes.test.js](src/routes/variantRoutes.test.js) | Internal module / styles |
 | [src/server.js](src/server.js) | initializeApp |
+| [src/services/demoOrderHistory.js](src/services/demoOrderHistory.js) | demoOrderHistory |
+| [src/services/demoOrderHistory.test.js](src/services/demoOrderHistory.test.js) | Internal module / styles |
 | [src/services/loginStatus.js](src/services/loginStatus.js) | loggedInUserIds |
 | [src/services/loginStatus.test.js](src/services/loginStatus.test.js) | Internal module / styles |
 | [src/services/orderIds.js](src/services/orderIds.js) | initializeOrderIds, nextOrderId |
@@ -489,6 +511,7 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/routes/authRoutes.js | router.get | `/me` |
 | src/routes/authRoutes.js | router.post | `/logout` |
 | src/routes/authRoutes.js | router.get | `/admin-check` |
+| src/routes/categoryRoutes.js | adminCategories.delete | `/:id` |
 | src/routes/categoryRoutes.js | publicCategories.get | `/` |
 | src/routes/categoryRoutes.js | adminCategories.get | `/` |
 | src/routes/categoryRoutes.js | adminCategories.post | `/` |
@@ -496,6 +519,8 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/routes/commerceRoutes.js | commerceAdmin.get | `/reviews` |
 | src/routes/commerceRoutes.js | commerceAdmin.patch | `/reviews/:id` |
 | src/routes/commerceRoutes.js | commerceAdmin.delete | `/reviews/:id` |
+| src/routes/commerceRoutes.js | commerceAdmin.delete | `/coupons/:id` |
+| src/routes/commerceRoutes.js | commerceAdmin.delete | `/orders/:id` |
 | src/routes/commerceRoutes.js | commerceAdmin.get | `/coupons` |
 | src/routes/commerceRoutes.js | commerceAdmin.get | `/coupons/:id` |
 | src/routes/commerceRoutes.js | commerceAdmin.post | `/coupons` |
@@ -660,6 +685,11 @@ orderSchema.index({ user: 1, createdAt: -1, _id: -1 });
 
 orderSchema.index({ createdAt: -1, _id: -1 });
 orderSchema.index({ status: 1, createdAt: -1, _id: -1 });
+orderSchema.index({ trackingNumber: 1 }, {
+  name: 'trackingNumber_unique', unique: true,
+  partialFilterExpression: { trackingNumber: { $type: 'string', $gt: '' } },
+  collation: { locale: 'en', strength: 2 },
+});
 
 orderSchema.pre('save',async function(){if(this.isNew&&!this.$locals.orderIdAssigned){this.orderId=await nextOrderId(this.$session());this.$locals.orderIdAssigned=true;}});
 orderSchema.pre('save', function () {

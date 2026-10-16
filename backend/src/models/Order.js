@@ -40,6 +40,11 @@ orderSchema.index({ user: 1, createdAt: -1, _id: -1 });
 
 orderSchema.index({ createdAt: -1, _id: -1 });
 orderSchema.index({ status: 1, createdAt: -1, _id: -1 });
+orderSchema.index({ trackingNumber: 1 }, {
+  name: 'trackingNumber_unique', unique: true,
+  partialFilterExpression: { trackingNumber: { $type: 'string', $gt: '' } },
+  collation: { locale: 'en', strength: 2 },
+});
 
 orderSchema.pre('save',async function(){if(this.isNew&&!this.$locals.orderIdAssigned){this.orderId=await nextOrderId(this.$session());this.$locals.orderIdAssigned=true;}});
 orderSchema.pre('save', function () {

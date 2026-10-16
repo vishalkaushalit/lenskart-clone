@@ -337,10 +337,14 @@ Order History and the tracker display the saved carrier and waybill/tracking num
 
 Reviews are combined by product across all sizes and colors. Switching variants keeps the same review list, count and average rating. Customer submissions reference the purchased product, with one review per product per order even if multiple variants were purchased.
 
+Profile tabs follow the `tab` URL parameter, including account-menu navigation while Profile is already mounted. Login/logout flags synchronize through storage events across same-origin tabs, and returning focus validates saved sessions without calling auth/me for guests. Admin logout clears its session flag.
+
+Order History defers requests until its tab is active. Review item deduplication uses a Set and saved reviews use a product-indexed Map, avoiding repeated scans per item. Both apps share `shared/useOrderTracking.js` for polling, cancellation, refresh and terminal-order handling; terminal orders clear the polling timer.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `093091e01f36650c030767c82b03c79c1bc2970298f344ca09c3838595b88e5e`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `b8a7d5bd9a54383c5e2ba408ea575d6c30994dcc01dc9b208736a7e06496d9d9`.
 
 ### Actual npm commands
 
