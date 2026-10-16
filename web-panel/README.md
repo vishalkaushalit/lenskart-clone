@@ -251,7 +251,7 @@ Try-on images are shared across sizes of the same color: upload and save an imag
 
 ## Customer review approvals
 
-Open **Reviews & Approvals** (`/reviews`) from the sidebar to moderate reviews submitted by customers for delivered orders. The queue defaults to All and supports Pending/Approved/Rejected filters and 20-row pagination. Each row shows the product, customer display name, order link, delivery date, rating, full review and submission date. Approve publishes the review under the product; Reject keeps it private. Approved reviews have an Unapprove action that returns them to Pending and hides them from public product pages until approved again. Rejected reviews remain final; concurrent/repeated decisions return a conflict. Existing reviews entered in the product editor remain separately managed.
+Open **Reviews & Approvals** (`/reviews`) from the sidebar to moderate reviews submitted by customers for delivered orders. The queue defaults to All and supports Pending/Approved/Rejected filters and 20-row pagination. Each row shows the product, customer display name, order link, delivery date, rating, full review and submission date. Approve publishes the review under the product; Reject keeps it private. Approve actions and Approved statuses use green badges; Unapprove actions use red badges. Empty results display a centered “No reviews found” message. Approved reviews have an Unapprove action that returns them to Pending and hides them from public product pages until approved again. Rejected reviews remain final; concurrent/repeated decisions return a conflict. Existing reviews entered in the product editor remain separately managed.
 
 Marking an order Delivered records the server delivery time and customer review submission in Order History unlocks 48 hours later. Older delivered orders use their last-update date as the delivery-date fallback. Submission eligibility and admin permissions are enforced by the API.
 
@@ -270,7 +270,7 @@ Tracking is accessed through the truck icon in Orders; there is no separate Trac
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `0593a66cb9be9f65f780097c1c9da3c135c143165dd124e01ff9a1be456c112a`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `ab767c439358f91fb321f3e565bc517d9ff08f9092c912df7148359508dddd30`.
 
 ### Actual npm commands
 

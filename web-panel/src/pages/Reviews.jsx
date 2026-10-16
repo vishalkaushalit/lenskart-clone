@@ -8,6 +8,10 @@ import Loader from '../components/Loader';
 import { apiRequest } from '../api';
 import { creationDate } from '../date';
 
+const reviewBadge = 'inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
+const greenBadge = `${reviewBadge} bg-emerald-100 text-emerald-700`;
+const redBadge = `${reviewBadge} bg-red-100 text-red-700`;
+
 export default function Reviews() {
   const [status, setStatus] = useState('all');
   const [page, setPage] = useState(1);
@@ -43,11 +47,11 @@ export default function Reviews() {
     {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
     <DataTable label="Customer reviews" footer={!loading && <Pagination page={page} total={data.total} onPageChange={setPage} disabled={busy} label="reviews" />}>
       <thead><tr>{['Sr. No.', 'Product', 'Customer', 'Order / Delivery', 'Rating', 'Review', 'Submitted', 'Actions'].map(label => <th key={label}>{label}</th>)}</tr></thead>
-      <tbody>{loading ? <tr><td colSpan={8}><Loader /></td></tr> : !data.reviews.length ? <tr><td colSpan={8}>No {status === 'all' ? '' : `${status} `}reviews.</td></tr> : data.reviews.map((review, index) => <tr key={review._id}>
+      <tbody>{loading ? <tr><td colSpan={8}><Loader /></td></tr> : !data.reviews.length ? <tr><td colSpan={8} className="h-40 text-center align-middle text-sm text-slate-500">No reviews found</td></tr> : data.reviews.map((review, index) => <tr key={review._id}>
         <td>{(page - 1) * 20 + index + 1}</td><td>{review.product ? <Link className="text-blue-600" to={`/product/${review.product._id}`}>{review.product.name}</Link> : 'Deleted product'}</td><td>{review.name}</td>
         <td>{review.order ? <><Link className="text-blue-600" to={`/orders/${review.order._id}`}>#{review.order.orderId ?? '—'}</Link><p>{creationDate(review.order.deliveredAt || review.order.updatedAt)}</p></> : 'Deleted order'}</td>
         <td>{review.rating} ★</td><td><p className="min-w-48 max-w-md whitespace-pre-wrap break-words">{review.text}</p></td><td>{creationDate(review.createdAt)}</td>
-        <td>{review.status === 'pending' ? <div className="flex gap-2"><button disabled={busy} onClick={() => moderate(review._id, 'approved')} className="admin-button-primary">Approve</button><button disabled={busy} onClick={() => moderate(review._id, 'rejected')} className="admin-button-secondary">Reject</button></div> : <div className="flex items-center gap-2"><span className="capitalize">{review.status}</span>{review.status === 'approved' && <button disabled={busy} onClick={() => moderate(review._id, 'pending')} className="admin-button-secondary">Unapprove</button>}</div>}</td>
+        <td>{review.status === 'pending' ? <div className="flex gap-2"><button disabled={busy} onClick={() => moderate(review._id, 'approved')} className={`${greenBadge} hover:bg-emerald-200 focus-visible:outline-emerald-600`}>Approve</button><button disabled={busy} onClick={() => moderate(review._id, 'rejected')} className="admin-button-secondary">Reject</button></div> : <div className="flex items-center gap-2"><span className={review.status === 'approved' ? greenBadge : redBadge}>{review.status === 'approved' ? 'Approved' : 'Rejected'}</span>{review.status === 'approved' && <button disabled={busy} onClick={() => moderate(review._id, 'pending')} className={`${redBadge} hover:bg-red-200 focus-visible:outline-red-600`}>Unapprove</button>}</div>}</td>
       </tr>)}</tbody>
     </DataTable>
   </main></DashboardLayout>;
