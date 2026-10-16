@@ -1,0 +1,50 @@
+[
+  {
+    "source": "https://www.lenskart.com/vincent-chase-vc-e16002-c1-eyeglasses.html",
+    "sourceId": "210628",
+    "color": "Black / Gold",
+    "size": "XL",
+    "price": 1500,
+    "originalPrice": 2000,
+    "images": [
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/black-gold-full-rim-square-vincent-chase-sleek-steel-vc-e16002-c1-eyeglasses_g_3200_09_21_23.jpg",
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/black-gold-full-rim-square-vincent-chase-sleek-steel-vc-e16002-c1-eyeglasses_g_3199_09_21_23.jpg",
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/black-gold-full-rim-square-vincent-chase-sleek-steel-vc-e16002-c1-eyeglasses_g_3202_09_21_23.jpg",
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/black-gold-full-rim-square-vincent-chase-sleek-steel-vc-e16002-c1-eyeglasses_g_3203_09_21_23.jpg",
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/black-gold-full-rim-square-vincent-chase-sleek-steel-vc-e16002-c1-eyeglasses_g_3205_09_21_23.jpg"
+    ],
+    "stock": 0
+  },
+  {
+    "source": "https://www.lenskart.com/vincent-chase-vc-e16002-c2-eyeglasses.html",
+    "sourceId": "210629",
+    "color": "Blue / Silver",
+    "size": "XL",
+    "price": 1500,
+    "originalPrice": 2000,
+    "images": [
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/blue-silver-full-rim-square-vincent-chase-sleek-steel-vc-e16002-c2-eyeglasses_g_3150_09_21_23.jpg",
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/blue-silver-full-rim-square-vincent-chase-sleek-steel-vc-e16002-c2-eyeglasses_g_3149_09_21_23.jpg",
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/blue-silver-full-rim-square-vincent-chase-sleek-steel-vc-e16002-c2-eyeglasses_g_3151_09_21_23.jpg",
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/blue-silver-full-rim-square-vincent-chase-sleek-steel-vc-e16002-c2-eyeglasses_g_3152_09_21_23.jpg",
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/blue-silver-full-rim-square-vincent-chase-sleek-steel-vc-e16002-c2-eyeglasses_g_3154_09_21_23.jpg"
+    ],
+    "stock": 0
+  },
+  {
+    "source": "https://www.lenskart.com/vincent-chase-vc-e16002-black-eyeglasses.html",
+    "sourceId": "238840",
+    "color": "Black Gold / Gold",
+    "size": "XL",
+    "price": 1500,
+    "originalPrice": 2000,
+    "images": [
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/blue-silver-full-rim-square-vincent-chase-metal-vc-e16002-eyeglasses_dsc9350_9_10_2025.jpg",
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/blue-silver-full-rim-square-vincent-chase-metal-vc-e16002-eyeglasses_dsc9348_9_10_2025.jpg",
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/blue-silver-full-rim-square-vincent-chase-metal-vc-e16002-eyeglasses_dsc9351_9_10_2025.jpg",
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/blue-silver-full-rim-square-vincent-chase-metal-vc-e16002-eyeglasses_dsc9353_9_10_2025.jpg",
+      "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1080x1080/9df78eab33525d08d6e5fb8d27136e95//v/i/blue-silver-full-rim-square-vincent-chase-metal-vc-e16002-eyeglasses_dsc9355_9_10_2025.jpg"
+    ],
+    "stock": 0
+  }
+]

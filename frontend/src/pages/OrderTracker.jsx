@@ -1,3 +1,4 @@
+import FrameSizeBadge from '../components/FrameSizeBadge';
 import { useOrderTracking } from '../../../shared/useOrderTracking.js';
 import { Link, useParams } from 'react-router-dom';
 import { Check, Clock3, Package, Truck } from 'lucide-react';
@@ -29,7 +30,7 @@ export default function OrderTracker() {
           </li>)}</ol>
           <p className="mt-6 text-xs text-gray-500">Last checked {date(result.checkedAt)} IST.{!['delivered', 'cancelled'].includes(order.status) && ' Updates every 30 seconds while this page is visible.'}</p>
         </section>
-        <section className="rounded-2xl border border-gray-200 bg-white p-6" aria-labelledby="tracked-items"><h2 id="tracked-items" className="flex items-center gap-2 text-lg font-bold"><Package size={20} aria-hidden="true" />Your items</h2><ul className="mt-5 space-y-4">{order.items.map((item, index) => <li key={item._id || index}><p className="font-semibold">{item.name}</p><p className="mt-1 text-sm text-gray-500">{[item.options?.color, item.options?.size, `Quantity: ${item.quantity}`].filter(Boolean).join(' · ')}</p></li>)}</ul>
+        <section className="rounded-2xl border border-gray-200 bg-white p-6" aria-labelledby="tracked-items"><h2 id="tracked-items" className="flex items-center gap-2 text-lg font-bold"><Package size={20} aria-hidden="true" />Your items</h2><ul className="mt-5 space-y-4">{order.items.map((item, index) => <li key={item._id || index}><p className="font-semibold">{item.name}</p><p className="mt-1 text-sm text-gray-500">{item.options?.color} {item.options?.color && ' · '}<FrameSizeBadge size={item.options?.size}/> · Quantity: {item.quantity}</p></li>)}</ul>
           {order.shipping && <div className="mt-6 border-t border-gray-200 pt-5"><h3 className="font-semibold">Delivering to</h3><p className="mt-2 text-sm text-gray-500">{order.shipping.name}<br />{order.shipping.address}<br />{order.shipping.city}, {order.shipping.state} {order.shipping.pincode}</p></div>}
           {order.status === 'delivered' && <Link to={`/profile?tab=orders#order-${order._id}`} className="mt-6 inline-block text-sm font-semibold underline">Review your purchase</Link>}
         </section>

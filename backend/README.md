@@ -389,7 +389,7 @@ Product detail endpoints fetch variants and approved reviews concurrently after 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `f8693692611dcd19e4a2cce69d3cac23fc2dd86925747fb8332364518c2452d6`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `01b88232537f0dea684e5997b1bab1abb3b603e2dce6108350b87b920793ae39`.
 
 ### Actual npm commands
 
@@ -422,6 +422,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [scripts/add-sample-reviews.js](scripts/add-sample-reviews.js) | Internal module / styles |
 | [scripts/add-sample-variants.js](scripts/add-sample-variants.js) | Internal module / styles |
 | [scripts/add-verified-sample-reviews.js](scripts/add-verified-sample-reviews.js) | Internal module / styles |
+| [scripts/add-vincent-chase-glb.js](scripts/add-vincent-chase-glb.js) | Internal module / styles |
 | [scripts/backfill-category-slugs.js](scripts/backfill-category-slugs.js) | Internal module / styles |
 | [scripts/backfill-demo-order-history.js](scripts/backfill-demo-order-history.js) | Internal module / styles |
 | [scripts/backfill-order-ids.js](scripts/backfill-order-ids.js) | Internal module / styles |
@@ -430,6 +431,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [scripts/backfill-user-ids.js](scripts/backfill-user-ids.js) | Internal module / styles |
 | [scripts/ensure-unique-waybills.js](scripts/ensure-unique-waybills.js) | Internal module / styles |
 | [scripts/fill-product-details.js](scripts/fill-product-details.js) | Internal module / styles |
+| [scripts/import-vincent-chase.js](scripts/import-vincent-chase.js) | Internal module / styles |
 | [scripts/migrate-images-to-blob.js](scripts/migrate-images-to-blob.js) | Internal module / styles |
 | [scripts/seed-categories.js](scripts/seed-categories.js) | Internal module / styles |
 | [scripts/seed-home-categories.js](scripts/seed-home-categories.js) | Internal module / styles |
@@ -482,13 +484,14 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/services/orderIds.test.js](src/services/orderIds.test.js) | Internal module / styles |
 | [src/services/orderTracking.js](src/services/orderTracking.js) | recordOrderStatus |
 | [src/services/orderTracking.test.js](src/services/orderTracking.test.js) | Internal module / styles |
-| [src/services/productImages.js](src/services/productImages.js) | blobStorageConfigured, createImageUploadHandler, imageExtension, uploadFilename, uploadProductImage |
+| [src/services/productImages.js](src/services/productImages.js) | blobStorageConfigured, createImageUploadHandler, imageExtension, uploadFilename, uploadProductImage, uploadTryOnAsset |
 | [src/services/productImages.test.js](src/services/productImages.test.js) | Internal module / styles |
 | [src/services/search.js](src/services/search.js) | searchTerms, textSearch |
 | [src/services/search.test.js](src/services/search.test.js) | Internal module / styles |
 | [src/services/shipments.js](src/services/shipments.js) | updateShipment |
 | [src/services/shipments.test.js](src/services/shipments.test.js) | Internal module / styles |
 | [src/services/tryOn.test.js](src/services/tryOn.test.js) | Internal module / styles |
+| [src/services/tryOnAsset.test.js](src/services/tryOnAsset.test.js) | Internal module / styles |
 | [src/services/userIds.js](src/services/userIds.js) | initializeUserIds, nextUserId |
 | [src/services/userIds.test.js](src/services/userIds.test.js) | Internal module / styles |
 | [src/services/variants.js](src/services/variants.js) | attachVariants, publicVariant |
@@ -537,6 +540,7 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/routes/productRoutes.js | publicProducts.get | `/:id` |
 | src/routes/productRoutes.js | managedProducts.use | `/:id/variants` |
 | src/routes/productRoutes.js | managedProducts.post | `/images` |
+| src/routes/productRoutes.js | managedProducts.post | `/try-on` |
 | src/routes/productRoutes.js | managedProducts.get | `/` |
 | src/routes/productRoutes.js | managedProducts.get | `/:id` |
 | src/routes/productRoutes.js | managedProducts.post | `/` |
@@ -742,7 +746,7 @@ const schema = new mongoose.Schema({
   price: { type: Number, required: true, min: 0, max: 1000000 },
   originalPrice: { type: Number, required: true, min: 0, max: 1000000 },
   color: { type: String, required: true, maxlength: 50 },
-  size: { type: String, enum: ['S', 'M', 'L'], default: 'M' },
+  size: { type: String, enum: ['XS', 'S', 'M', 'M/L', 'L', 'XL'], default: 'M' },
   gender: { type: String, enum: ['Men', 'Women', 'Unisex'], default: 'Unisex' },
   stock: { type: Number, min: 0, default: 0, validate: Number.isSafeInteger },
   sales: { type: Number, min: 0, default: 0, validate: Number.isSafeInteger },
@@ -879,3 +883,13 @@ Uploads use content hashes and readable filenames, and retries reuse existing bl
 The migrated catalog’s local image copies were removed after verifying the public Blob URLs. Existing product, variant and category records load images from Blob. `public/products/` retains source manifests; setup/download scripts may regenerate local files and references, which must be migrated before hosted use. The migration report retains the previous URLs for reference, but restoring those local URLs requires restoring their image files too. Keep Blob credentials configured locally and on Vercel so new uploads continue using Blob.
 
 All web-panel image uploads (product galleries, variants, categories, highlights, library selections and virtual try-on images) use the shared Blob-only endpoint. Blob credentials are required locally and on Vercel. Missing credentials or storage failures return HTTP 503; images are never saved to local disk as a fallback. Save the form after uploading to persist the returned Blob URL in MongoDB.
+
+### Vincent Chase VC E16002 import
+
+`node scripts/import-vincent-chase.js` downloads the five product photos for each linked Black / Gold, Blue / Silver, and Black Gold / Gold option from the URLs recorded in `scripts/vincent-chase-e16002.json`. The source offers XL only. `node scripts/import-vincent-chase.js --apply` creates the product and missing variants in a transaction, preserving existing inventory and prices on repeat runs. New stock starts at zero for the store owner to set; source retailer inventory is not copied. The Black / Gold variant uses `public/products/vincent-chase-e16002-try-on.png`, a transparent front-view cutout prepared from that gallery, with folded arms removed. Other colors retain their own gallery and do not inherit an incorrect color overlay. The product slug is `vincent-chase-metal-edition-vc-e16002`. This is a static import, not a live catalog or inventory integration.
+
+### Try-on asset formats
+
+The admin-only `POST /api/admin/products/try-on` accepts transparent PNG/WebP images or self-contained GLB 2.0 models, up to 4 MB, and stores the selected asset in public Blob storage with its proper MIME type. GLB headers/chunk boundaries, embedded resources and required extensions are validated; external resources and unsupported compression are rejected. Gallery uploads continue to accept images only. Both product and variant editors store one selected asset in `tryOnImage`; replacing it can switch formats without changing color-sharing behavior.
+
+`node scripts/add-vincent-chase-glb.js` downloads and validates Lenskart's self-contained GLB for SKU 210628 (VC E16002 C1 Black / Gold), keeps a local copy, uploads it to the configured public Blob store, and assigns it to the imported product and all Black / Gold sizes transactionally. Other colors retain their existing assets. The source and chosen asset URL are recorded in `scripts/vincent-chase-e16002-try-on.json`; subsequent product imports preserve that selection. This direct source import handles the original model (about 5.6 MB); the interactive upload remains limited to 4 MB.

@@ -941,3 +941,7 @@ body:has(.collection-page) header {
 .reference-product-card .collection-gallery-prev, .reference-product-card .collection-gallery-next { opacity:0; transition:opacity .15s; }
 .reference-product-card:hover .collection-gallery-prev, .reference-product-card:hover .collection-gallery-next, .reference-product-card:focus-within .collection-gallery-prev, .reference-product-card:focus-within .collection-gallery-next { opacity:1; }
 @media(max-width:600px) { .reference-product-card .collection-product-info h2 { font-size:16px; } .reference-product-card .collection-image-tools { padding-inline:10px; } .reference-product-card .collection-swatches { gap:8px; } }
+
+.collection-product-info h2, .collection-product-info h2 a, .collection-product-info h2 a:hover { color: #000042; }
+
+.collection-product-info h2 a:hover { text-decoration: none; }

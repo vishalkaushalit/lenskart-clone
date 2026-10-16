@@ -1464,7 +1464,7 @@ body:has(.store-product-page) header {
   border: 0;
 }
 .detail-purchase .store-product-stock {
-  margin: 0 0 12px;
+  margin: 12px 0 0;
   line-height: 1.5;
 }
 /* Horizontal thumbnails below the main image on mobile. */
@@ -1649,7 +1649,7 @@ body:has(.store-product-page) header {
   .store-product-main,
   .store-product-info {
     position: sticky;
-    top: var(--product-column-sticky-top, 16px);
+    top: var(--column-sticky-top, 16px);
     align-self: start;
   }
 }
@@ -1676,3 +1676,12 @@ body:has(.store-product-page) header {
 .detail-try-on-button svg { flex-shrink: 0; }
 .detail-try-on-button:hover { background: #202060; border-color: #202060; }
 .detail-try-on-button:focus-visible { outline: 3px solid #008f72; outline-offset: 3px; }
+.detail-size-option { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 120px; text-align: center; }
+.detail-size-option small { font-size: 11px; font-weight: 400; line-height: 1.4; }
+.detail-size-row .size-fit-match { color: #047857; }
+.detail-size-row .size-fit-mismatch { color: #b91c1c; }
+.detail-size-reference { margin-top: 12px; font-size: 12px; line-height: 1.6; color: #596470; }
+
+.detail-similar-content h3, .detail-similar-content h3 a, .detail-similar-content h3 a:hover { color: #000042; }
+
+.detail-similar-content h3 a:hover { text-decoration: none; }

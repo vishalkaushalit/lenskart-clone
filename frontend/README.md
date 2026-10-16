@@ -299,7 +299,7 @@ Top Categories image tiles use white backgrounds, including the Eyeglasses tile,
 
 The homepage Our Brands section displays six image tiles: Vincent Chase, Hustlr, John Jacobs, Aqualens, Lenskart Air and Hooper. Each tile links directly to `/collection?brand=...`, including before navigation data loads. Collection filtering shows matching catalog products or its existing empty state when that brand has no products. Tiles appear in three columns on desktop and two on mobile, without a duplicate text-link row.
 
-`WishlistCard.jsx` uses a rounded white card with a large image, an X to remove the saved product, a View Similar link filtering the collection by frame shape, product name, current price, and an outlined View button linking to product details. No red tag appears. Variant products use their first active variant for the displayed image and price. The grid retains the previous card widths: four columns on desktop, three at 1100px and below, two at 767px and below, and one below 360px. Gaps are 20px on desktop and 12px on mobile; unavailable saved products retain a removal control.
+`WishlistCard.jsx` displays a rounded white card with a large image, fixed 32px circular remove button with a 16px cross, product name, first active variant color/size, price, navy View frame action and a View similar popup action. The desktop layout uses three compact card columns beside a fourth-column fit-help panel, retaining the earlier card widths and compact typography/buttons. The panel moves below at 1100px; cards use two columns below 768px and one below 360px. Unavailable saved products retain a removal control.
 
 `ProductCardImage.jsx` and its stylesheet provide the shared image area for collection, similar-product and wishlist cards. The area scales with card width at a 1.6 aspect ratio; the image fills it with centered `object-fit: cover` and no padding. Collection cards also omit the former top image padding. Image cropping is consistent across these cards; gallery thumbnails and the product detail gallery retain their own sizing.
 
@@ -341,12 +341,22 @@ Profile tabs follow the `tab` URL parameter, including account-menu navigation w
 
 Order History defers requests and renders nothing until its tab is active, preventing a hidden full-page loading overlay from blocking Profile. Review item deduplication uses a Set and saved reviews use a product-indexed Map, avoiding repeated scans per item. Both apps share `shared/useOrderTracking.js` for polling, cancellation, refresh and terminal-order handling; terminal orders clear the polling timer.
 
-Wishlist uses the shared Cart heading typography and displays `Wishlist (N Items)` when populated, or `Wishlist` when empty.
+Wishlist follows the supplied reference: Your Wishlist heading, saved-count badge, subtitle; compact product cards beside a lavender fit-help panel on desktop. Cards show the first active variant’s color/size/price, removal, View frame and View similar actions. The help panel stacks below cards on smaller screens; cards use two columns on mobile and one below 360px. The bottom comparison CTA always displays, with its two-frame illustration also visible on mobile: a large navy frame behind a smaller lavender frame with rounded-square lenses, horizontal overlap, complete closed navy lens rims and side accent strokes, following the supplied reference. Compare frames opens a shared-size dialog for the first two available frames; with fewer than two, it is disabled and explains how to enable it. The fit panel uses a dedicated SVG based on the supplied illustration: thin navy rims, open arms, visible nose pads, lavender background shapes and two accent strokes. Empty, unavailable and error states remain supported.
+
+Wishlist typography uses compact sizing throughout: 26px page heading (22px on mobile), 20px help/comparison headings, 12–14px supporting text and controls, 16px product names, and 18px prices.
+
+The wishlist fit-help illustration uses an 8px top margin and no growing image area or fixed minimum panel height, keeping it close to the supporting text. The help panel aligns to the top with natural height, independent of the product-card column, and does not stretch to fill the grid row.
+
+The bottom Wishlist comparison CTA uses compact padding: 16px vertically / 20px horizontally on desktop and 14px / 16px on smaller screens.
+
+Wishlist and product details share `useStickyColumns`: the shorter desktop column stays visible while the longer column scrolls, with an offset calculated from header, viewport and column heights. Both release at their shared container bottom. Wishlist enables sticky columns above 1100px; stacked layouts use normal page scrolling. ResizeObserver recalculates offsets after image/content/header changes.
+
+Collection category tabs and empty-result indicators use a rectangular eyeglasses SVG with defined rims, bridge, open arms and subtle lens highlights, inheriting the surrounding icon color.
 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `5195f88712296b98ec7fe9832ee2e6734f9813abfafa669cbdff3f299db9d0db`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `ebfa8ca4e5db7b0535a9d838ae1f5318bf764347d42c8b34aa1799e7e4983d3a`.
 
 ### Actual npm commands
 
@@ -384,6 +394,9 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/DashboardHeader.jsx](src/components/DashboardHeader.jsx) | default export |
 | [src/components/Exclusive.jsx](src/components/Exclusive.jsx) | default export |
 | [src/components/Eyeglasses.jsx](src/components/Eyeglasses.jsx) | Eyeglasses |
+| [src/components/EyeglassesIcon.jsx](src/components/EyeglassesIcon.jsx) | EyeglassesIcon |
+| [src/components/FrameSizeBadge.css](src/components/FrameSizeBadge.css) | Internal module / styles |
+| [src/components/FrameSizeBadge.jsx](src/components/FrameSizeBadge.jsx) | FrameSizeBadge |
 | [src/components/FreeCheckup.css](src/components/FreeCheckup.css) | Internal module / styles |
 | [src/components/FreeCheckup.jsx](src/components/FreeCheckup.jsx) | default export |
 | [src/components/GlassesModel.jsx](src/components/GlassesModel.jsx) | GlassesModel |
@@ -415,6 +428,8 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/SimilarProductCard.jsx](src/components/SimilarProductCard.jsx) | SimilarProductCard |
 | [src/components/SimilarProductsPopup.css](src/components/SimilarProductsPopup.css) | Internal module / styles |
 | [src/components/SimilarProductsPopup.jsx](src/components/SimilarProductsPopup.jsx) | SimilarProductsPopup |
+| [src/components/SoldOutBadge.css](src/components/SoldOutBadge.css) | Internal module / styles |
+| [src/components/SoldOutBadge.jsx](src/components/SoldOutBadge.jsx) | SoldOutBadge |
 | [src/components/StatDashboard.jsx](src/components/StatDashboard.jsx) | default export |
 | [src/components/StoreIcon.jsx](src/components/StoreIcon.jsx) | StoreIcon |
 | [src/components/Sunglasses.jsx](src/components/Sunglasses.jsx) | Sunglasses |
@@ -423,6 +438,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/VirtualTryOn.jsx](src/components/VirtualTryOn.jsx) | VirtualTryOn |
 | [src/components/WishlistCard.css](src/components/WishlistCard.css) | Internal module / styles |
 | [src/components/WishlistCard.jsx](src/components/WishlistCard.jsx) | WishlistCard |
+| [src/components/WishlistComparison.jsx](src/components/WishlistComparison.jsx) | WishlistComparison |
 | [src/context/AuthContext.jsx](src/context/AuthContext.jsx) | AuthProvider |
 | [src/context/AuthState.js](src/context/AuthState.js) | AuthContext, useAuth |
 | [src/context/CategoryContext.js](src/context/CategoryContext.js) | CategoryContext, useCategories |
@@ -435,6 +451,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/footer/Footer.jsx](src/footer/Footer.jsx) | default export |
 | [src/header/Header.jsx](src/header/Header.jsx) | default export |
 | [src/hooks/useSavedProducts.js](src/hooks/useSavedProducts.js) | useSavedProducts |
+| [src/hooks/useStickyColumns.js](src/hooks/useStickyColumns.js) | useStickyColumns |
 | [src/index.css](src/index.css) | Internal module / styles |
 | [src/main.jsx](src/main.jsx) | Internal module / styles |
 | [src/pages/Cart.jsx](src/pages/Cart.jsx) | Cart |
@@ -465,9 +482,15 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/state/productVariants.test.js](src/state/productVariants.test.js) | Internal module / styles |
 | [src/state/shopping.js](src/state/shopping.js) | cartKey, cartQuantity, normalizeStore |
 | [src/state/shopping.test.js](src/state/shopping.test.js) | Internal module / styles |
+| [src/utils/frameSizing.js](src/utils/frameSizing.js) | Internal module / styles |
 | [src/utils/orderTimeline.js](src/utils/orderTimeline.js) | Internal module / styles |
+| [src/utils/savedTryOn.js](src/utils/savedTryOn.js) | readSavedTryOn, saveTryOn, savedTryOnKey |
 | [src/utils/shipment.js](src/utils/shipment.js) | Internal module / styles |
+| [src/utils/stickyColumns.js](src/utils/stickyColumns.js) | stickyColumnTop |
+| [src/utils/tryOnFrame.js](src/utils/tryOnFrame.js) | loadTryOnFrame |
 | [src/utils/tryOnPlacement.js](src/utils/tryOnPlacement.js) | tryOnPlacement |
+| [src/utils/tryOnPose.js](src/utils/tryOnPose.js) | tryOnPose |
+| [src/utils/tryOnRuler.js](src/utils/tryOnRuler.js) | drawTryOnRuler |
 
 ### Route declarations
 
@@ -593,3 +616,49 @@ Internal collection links in the homepage Notes section use React Router `Link` 
 Shape collection cards use the category image URL returned by `/api/categories`, falling back to the parent category image when no shape image is saved. Upload a replacement through the admin category editor and save the category; the homepage uses that saved URL on its next load. Relative `/assets/products/` paths resolve against the API host, and hosted Blob URLs are used directly.
 
 Eyeglasses and sunglasses shape collection sections retain the page background. Only the circular image backgrounds are white; a small CSS brightness adjustment lifts images’ pale gray backdrop to white while retaining the carousel layout, spacing and labels.
+
+### GLB virtual try-on
+
+Virtual try-on accepts the saved PNG/WebP overlay or a self-contained GLB model. GLB models load lazily using Three.js, render transparently over the camera, and follow face position, roll and estimated yaw. Models must be authored upright (+Y), facing the camera (+Z), with embedded PNG/JPEG textures and without Draco/Meshopt compression. Renderer, textures and geometry are released when the camera stops or the dialog closes. PNG/WebP keeps the existing overlay behavior. Camera alignment and model appearance still require a browser/camera check for each uploaded model.
+
+GLB temple alignment uses eye/forehead/chin landmark depth for yaw and pitch, rotates around the model's front plane, and compensates for eye-span foreshortening. A depth-only head occluder hides arms behind the face; a front-plane clip hides rear temples in frontal views and gradually reveals side geometry on turns. The mask approximates head shape rather than measuring ears, so camera verification is still needed for individual faces/models.
+
+GLB sizing now uses the full tracked 3D eye span (including landmark depth) rather than a capped turn-angle correction. The selected size multiplier remains consistent during head turns; moving closer or farther still scales the preview naturally. The size slider displays the user's percentage. This is relative visual sizing and does not measure physical frame dimensions.
+
+Virtual try-on frame-size adjustment ranges from 75% to 100% of the default fit. The default and reset value are 100%; users can reduce the preview size but cannot enlarge it beyond its base fit. This cap is relative to the preview fit, not a physical measurement of the product size.
+
+Try-on proportions use the selected variant's Total Frame Front Width chart: S 120–129 mm, M 130–137 mm, L 138–145 mm, XL 146 mm and above. Closed ranges use their midpoints (124.5, 133.5, 141.5 mm); XL uses the 146 mm lower bound. These proportions multiply the face-relative baseline before the user's 75–100% fit adjustment. The chart range appears next to the slider. Unspecified XS/M/L widths retain the baseline rather than inventing chart values. These are relative visual proportions, not calibrated physical measurements.
+
+Virtual try-on exposes only the frame-size adjustment. Vertical placement follows eye tracking automatically; there is no manual Frame height control. Reset fit restores size to 100%.
+
+Automatic frame width follows the tracked face sides (landmarks 234/454), including depth for GLB models, with a small fitting margin. Product front-width proportions and the selected slider multiplier still apply. Missing or implausible face outlines fall back to the tracked eye span. Width responds to face shape and camera distance without adding a manual height control.
+
+The try-on width readout displays estimated millimetres from the selected front-width chart value multiplied by the user adjustment (for example, XL 146 mm at 90% shows 131.4 mm). It replaces the camera-pixel readout. Physical product dimensions do not change with camera distance; the overlay still auto-tracks the face. XS and M/L have no supplied chart width and show Not specified. This is chart-based, not a camera measurement.
+
+The live camera preview includes a frame-aligned measurement ruler with 10 mm ticks and an estimated total-width label. Its length follows the overlay and its mm label follows the selected chart size and user adjustment. Labels remain readable in the mirrored preview. It is only shown with a tracked frame and known chart width and is not a calibrated real-world measuring tool.
+
+Capture & save fit stores one explicit camera snapshot and its product name, size, adjustment, estimated width and date in localStorage on the current device. Later product try-on dialogs display the saved reference, preview-width difference, download and delete controls. New captures replace the reference; private/blocked/full storage reports an error. Saving requires a tracked face and a known chart size. Snapshots are not uploaded or automatically captured, and chart-based comparisons do not guarantee physical fit. Image assets use anonymous CORS loading so allowed sources can be captured safely.
+
+Product size buttons show Total Frame Front Width ranges below their size labels. When a fit reference has been explicitly saved, each known size compares its range with the saved estimated width and shows Estimated fit or Not fit (wider/narrower than the reference). Half-mm rounding boundaries avoid chart gaps. The reference refreshes when try-on closes; missing chart sizes are not judged. These labels compare chart values, not measured face dimensions or guaranteed comfort.
+
+The camera ruler is positioned above the tracked forehead, with its label above the scale. It follows the frame tilt and keeps top spacing in the preview.
+
+Camera start/stop and Capture & save fit share one action row below the preview, wrapping on narrow screens.
+
+On product details, Currently out of stock appears once at the bottom of the purchase section, below the disabled purchase button.
+
+Collection product-card size badges include the Total Frame Front Width range in mm next to the size letter, using the same size chart as product details and try-on. Sizes without a supplied range retain the Size label.
+
+Frame-size labels use the shared Total Frame Front Width chart across catalog badges, product specifications, wishlist/comparison, similar frames, cart, checkout, tracking and receipts. Displayed ranges do not change stored size codes or variant selection. XS/M/L have no provided chart range and retain their size codes.
+
+Storefront pages other than product details display frame sizes using a shared two-part badge: a purple size cell and an outlined white mm-range cell. Catalog/filter, wishlist, comparison, similar frames, cart, checkout, order tracking and receipt views share this presentation. Product details retains its existing size buttons with ranges below them.
+
+Catalog, wishlist, related-frame cards and similar-item popups display a Sold out badge when product stock is zero. Variant products use total active-variant inventory so an unavailable size does not incorrectly mark an otherwise available product as sold out.
+
+Product-card titles and their links use dark navy (#000042), including catalog, wishlist, related-frame and similar-item cards.
+
+Product-card title links retain their navy color without an underline on hover.
+
+Sold out badges overlay product photos in catalog, wishlist, related-frame and similar-item cards, positioned away from wishlist buttons and catalog image controls.
+
+Sold out badges sit at the top-left of product photos; catalog rating badges shift below them when both appear.

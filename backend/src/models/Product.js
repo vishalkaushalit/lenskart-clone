@@ -38,7 +38,7 @@ const schema = new mongoose.Schema({
   price: { type: Number, required: true, min: 0, max: 1000000 },
   originalPrice: { type: Number, required: true, min: 0, max: 1000000 },
   color: { type: String, required: true, maxlength: 50 },
-  size: { type: String, enum: ['S', 'M', 'L'], default: 'M' },
+  size: { type: String, enum: ['XS', 'S', 'M', 'M/L', 'L', 'XL'], default: 'M' },
   gender: { type: String, enum: ['Men', 'Women', 'Unisex'], default: 'Unisex' },
   stock: { type: Number, min: 0, default: 0, validate: Number.isSafeInteger },
   sales: { type: Number, min: 0, default: 0, validate: Number.isSafeInteger },

@@ -1,3 +1,4 @@
+import FrameSizeBadge from '../components/FrameSizeBadge';
 import CouponApplied from "../components/CouponApplied";
 import CouponDiscount from "../components/CouponDiscount";
 import CouponField from "../components/CouponField";
@@ -353,7 +354,7 @@ export default function Checkout() {
                         <p>
                           Color: {entry.options?.color || product.color}
                           <br />
-                          Size: {entry.options?.size || product.size}
+                          Size: <FrameSizeBadge size={entry.options?.size || product.size}/>
                           {entry.options?.type && (
                             <>
                               <br />

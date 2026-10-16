@@ -288,7 +288,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `7b8cfc632738acd5e995bb2614cb7b53b7128dc3d124caba01543e144b09fe0c`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `8fb8cbeef7ae24f5707bcbdc198a281e89d97343339140ce83da615a7504f823`.
 
 ### Actual npm commands
 
@@ -481,3 +481,9 @@ Homepage shape card images come from each shape category’s saved image URL. In
 An unavailable saved image shows recovery guidance in the upload field. Re-upload the original and save the category/product. A database URL alone does not copy a local file to Vercel; hosted uploads require a public Blob store.
 
 All web-panel image uploads (product galleries, variants, categories, highlights, library selections and virtual try-on images) use the shared Blob-only endpoint. Blob credentials are required locally and on Vercel. Missing credentials or storage failures return HTTP 503; images are never saved to local disk as a fallback. Save the form after uploading to persist the returned Blob URL in MongoDB.
+
+### Try-on uploads
+
+Product and variant try-on fields accept one transparent front-view PNG/WebP or one self-contained GLB 2.0 model, up to 4 MB. GLB selection is validated before upload and displays a saved-model indicator rather than an image preview. Use upright (+Y), front-facing (+Z) models with embedded textures, without unsupported compression. Save the form to apply the selected asset; sizes sharing a color reuse it as before. Normal galleries remain JPG/PNG/WebP only.
+
+Product/variant detail tables and size selectors show the shared Total Frame Front Width ranges beside size codes. Selector values remain the original size codes for storage and matching; unknown chart sizes do not acquire invented widths.

@@ -1,3 +1,4 @@
+import SoldOutBadge from './SoldOutBadge';
 import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import ProductCardImage from './ProductCardImage';
@@ -12,6 +13,7 @@ export default function SimilarProductCard({ product: base, assetUrl, favorite, 
   const discount=product.originalPrice>product.price?Math.round((1-product.price/product.originalPrice)*100):0;
   return <article className="detail-similar-card">
     <div className="detail-similar-photo">
+      <SoldOutBadge product={base} overlay/>
       <Link to={target}><ProductCardImage src={assetUrl(product.image)} alt={base.name}/></Link>
       <button type="button" aria-label={`${favorite?'Remove':'Add'} ${base.name} ${favorite?'from':'to'} wishlist`} aria-pressed={favorite} onClick={onFavorite}><Heart size={22} fill={favorite?'currentColor':'none'}/></button>
     </div>

@@ -1,3 +1,4 @@
+import FrameSizeBadge from '../components/FrameSizeBadge';
 import { useEffect, useState } from 'react';
 import { Link, useOutletContext, useParams } from 'react-router-dom';
 import { Check } from 'lucide-react';
@@ -31,7 +32,7 @@ export default function ThankYou(){
     <p className="order-success-note">Thank you for shopping with us.</p>
     <section className="order-success-summary" aria-label="Order summary">
       <h2>Order summary <span>#{order.orderId??'—'}</span></h2>
-      <ul>{order.items.map((item,index)=><li key={item._id||index}><div><strong>{item.name}</strong><p>{[item.options?.color&&`Color: ${item.options.color}`,item.options?.size&&`Size: ${item.options.size}`,`Quantity: ${item.quantity}`].filter(Boolean).join(' · ')}</p></div><span>{money(item.unitPrice*item.quantity)}</span></li>)}</ul>
+      <ul>{order.items.map((item,index)=><li key={item._id||index}><div><strong>{item.name}</strong><p>{item.options?.color && `Color: ${item.options.color} · `}<FrameSizeBadge size={item.options?.size}/> · Quantity: {item.quantity}</p></div><span>{money(item.unitPrice*item.quantity)}</span></li>)}</ul>
       <dl><div><dt>Payment</dt><dd>{order.paymentMethod==='online'?'Pay Online':'Cash on Delivery'}</dd></div>{order.discount>0&&<CouponDiscount coupon={{code:order.couponCode,discount:order.discount}} definitionList/>}<div className="order-success-total"><dt>Total</dt><dd>{money(order.totalAmount)}</dd></div></dl>
     </section>
     <div className="order-success-actions"><Link className="saved-button" to={`/profile?tab=orders#order-${order._id}`}>View my order</Link><Link className="saved-button" to={`/orders/${order._id}/track`}>Track order</Link><Link className="order-success-home" to="/">Back to home</Link></div>

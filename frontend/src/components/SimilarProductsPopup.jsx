@@ -1,7 +1,9 @@
+import SoldOutBadge from './SoldOutBadge';
+import FrameSizeBadge from './FrameSizeBadge';
 import './ProductPopup.css';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Heart, Ruler, X } from 'lucide-react';
+import { Heart, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { apiRequest } from '../api/api';
 import { useStore } from '../context/StoreContext';
@@ -17,10 +19,11 @@ function SimilarPopupCard({product:base,favorite,onFavorite}){
   const discount=product.originalPrice>product.price?Math.round((1-product.price/product.originalPrice)*100):0;
   const money=value=>`₹${value.toLocaleString('en-IN')}`;
   return <article className="similar-popup-card">
-    <Link className="similar-popup-photo" to={target} aria-label={`View ${base.name}`}><ProductCardImage src={assetUrl(product.image)} alt={base.name}/></Link>
+    <Link className="similar-popup-photo" to={target} aria-label={`View ${base.name}`}><ProductCardImage src={assetUrl(product.image)} alt={base.name}/><SoldOutBadge product={base} overlay/></Link>
     <div className="similar-popup-details">
       <h3><Link to={target}>{base.name}</Link></h3>
-      {product.size&&<span className="similar-popup-size"><Ruler size={18} aria-hidden="true"/>{product.size}</span>}
+      
+      {product.size&&<FrameSizeBadge size={product.size}/>}
       <p className="similar-popup-price"><strong>{money(product.price)}</strong> {lensText}</p>
       {discount>0&&<p className="similar-popup-discount"><del>{money(product.originalPrice)}</del> <span>({discount}% OFF)</span></p>}
       <div className="similar-popup-buy-row"><Link to={target} className="similar-popup-buy">Buy</Link></div>

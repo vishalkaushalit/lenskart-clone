@@ -31,3 +31,7 @@
 
 
 @media(max-width:480px){.similar-popup-photo .product-card-media{height:110px}}
+
+.similar-popup-details h3, .similar-popup-details h3 a, .similar-popup-details h3 a:hover { color: #000042; }
+
+.similar-popup-details h3 a:hover { text-decoration: none; }

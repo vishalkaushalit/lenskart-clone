@@ -1,3 +1,5 @@
+import SoldOutBadge from './SoldOutBadge';
+import FrameSizeBadge from './FrameSizeBadge';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Star, PanelsTopLeft, BadgePercent } from 'lucide-react';
@@ -16,12 +18,13 @@ export default function ProductCard({ product: base, assetUrl, favorite, onFavor
   const discount = product.originalPrice>product.price ? Math.round((1-product.price/product.originalPrice)*100) : 0;
   return <article className="collection-card reference-product-card">
     <div className="collection-product-image">
+      <SoldOutBadge product={base} overlay/>
       {base.rating>0&&<span className="collection-rating"><Star size={13} fill="currentColor"/>{base.rating}</span>}
       <button className="collection-heart" aria-label={`${favorite?'Remove':'Add'} ${base.name} ${favorite?'from':'to'} wishlist`} aria-pressed={favorite} onClick={onFavorite}><Heart size={24} fill={favorite?'currentColor':'none'}/></button>
       <ProductGallery key={color} product={product} assetUrl={assetUrl} linkTo={target} dots/>
       <div className="collection-image-tools">{onSimilar&&<button type="button" className="collection-similar" onClick={onSimilar}><PanelsTopLeft size={16}/>View Similar</button>}<div className="collection-swatches">{colors.slice(0,2).map(value=><button key={value} title={value} aria-label={`Select ${value} for ${base.name}`} aria-pressed={value===color} className={value===color?'chosen':''} style={{'--swatch':swatches[value.toLowerCase()]||'#73739d'}} onClick={()=>setSelectedColor(value)}/>)}{colors.length>2&&<Link to={target} title="View all colors">+{colors.length-2}</Link>}</div></div>
     </div>
-    <div className="collection-product-info"><h2><Link to={target}>{product.name}</Link></h2><span className="collection-size"><b>{product.size}</b>Size</span><p className="collection-price"><strong>₹{money.format(product.price)}</strong> with Free BLU lenses</p>{discount>0&&<p className="collection-discount"><del>₹{money.format(product.originalPrice)}</del> <span>({discount}% OFF)</span></p>}</div>
+    <div className="collection-product-info"><h2><Link to={target}>{product.name}</Link></h2><FrameSizeBadge size={product.size}/><p className="collection-price"><strong>₹{money.format(product.price)}</strong> with Free BLU lenses</p>{discount>0&&<p className="collection-discount"><del>₹{money.format(product.originalPrice)}</del> <span>({discount}% OFF)</span></p>}</div>
     <div className="collection-offer"><BadgePercent size={17} fill="currentColor"/>Use code SINGLE for this price</div>
   </article>;
 }

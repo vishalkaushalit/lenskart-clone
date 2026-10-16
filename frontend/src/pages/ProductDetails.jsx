@@ -1,3 +1,6 @@
+import { frameSizing, compareFrameFit, formatFrameSize } from '../utils/frameSizing';
+import { readSavedTryOn } from '../utils/savedTryOn';
+import useStickyColumns from '../hooks/useStickyColumns';
 import VirtualTryOn from "../components/VirtualTryOn";
 import SimilarProductCard from "../components/SimilarProductCard";
 import { resolveVariant } from "../state/productVariants";
@@ -80,26 +83,7 @@ const guides = [
 function Details({ product: baseProduct, products }) {
   const mainRef = useRef(null);
   const infoRef = useRef(null);
-  useEffect(() => {
-    const columns = [mainRef.current, infoRef.current];
-    const header = document.querySelector('header');
-    function updateStickyOffset() {
-      const headerHeight = header?.getBoundingClientRect().height || 0;
-      for (const column of columns) {
-        const offset = Math.min(headerHeight + 16, window.innerHeight - column.getBoundingClientRect().height - 16);
-        column.style.setProperty('--product-column-sticky-top', `${offset}px`);
-      }
-    }
-    updateStickyOffset();
-    const observer = new ResizeObserver(updateStickyOffset);
-    columns.forEach(column => observer.observe(column));
-    if (header) observer.observe(header);
-    window.addEventListener('resize', updateStickyOffset);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('resize', updateStickyOffset);
-    };
-  }, []);
+  useStickyColumns(mainRef, infoRef);
   const variants = baseProduct.variants || [];
   const [selected, setSelected] = useState(0);
   const [tryOn, setTryOn] = useState(false);
@@ -116,6 +100,9 @@ function Details({ product: baseProduct, products }) {
   const [color, setColor] = useState(
     baseProduct.hasVariants ? variants[0]?.color : baseProduct.color,
   );
+  const [savedFitReference, setSavedFitReference] = useState(() => {
+    try { return readSavedTryOn(window.localStorage); } catch { return null; }
+  });
   const [size, setSize] = useState(
     baseProduct.hasVariants ? variants[0]?.size : baseProduct.size,
   );
@@ -185,7 +172,7 @@ function Details({ product: baseProduct, products }) {
   const specs = {
     Brand: product.brand,
     Shape: product.shape,
-    Size: product.size,
+    Size: formatFrameSize(product.size),
     Color: product.color,
     Gender: product.gender,
     SKU: product.sku,
@@ -430,19 +417,16 @@ function Details({ product: baseProduct, products }) {
             </div>
             <h3>Frame Size:</h3>
             <div className="detail-size-row">
-              {sizes.map((value) => (
-                <button
-                  key={value}
-                  aria-pressed={size === value}
-                  onClick={() => {
-                    setSize(value);
-                    setSelected(0);
-                  }}
-                >
-                  {value}
-                </button>
-              ))}
+              {sizes.map((value) => {
+                const fit = savedFitReference && compareFrameFit(value, savedFitReference.widthMm);
+                return <div className="detail-size-option" key={value}>
+                  <button aria-pressed={size === value} onClick={() => { setSize(value); setSelected(0); }}>{value}</button>
+                  <small>{frameSizing(value).label || 'Width not specified'}</small>
+                  {fit && <small className={fit === 'Estimated fit' ? 'size-fit-match' : 'size-fit-mismatch'}>{fit}</small>}
+                </div>;
+              })}
             </div>
+            <p className="detail-size-reference">{savedFitReference ? `Compared with your saved reference: ${savedFitReference.widthMm.toFixed(1)} mm (${savedFitReference.name}). Fit labels are chart-based estimates, not a guarantee of physical fit.` : 'Capture and save a fit in Virtual Try-On to compare sizes with your reference.'}</p>
           </section>
           {product.deliveryInformation && (
             <section className="detail-section">
@@ -587,9 +571,6 @@ function Details({ product: baseProduct, products }) {
             </details>
           </section>
           <div className="detail-purchase">
-            {product.stock < 1 && (
-              <p className="store-product-stock out">Currently out of stock</p>
-            )}
             <button
               className="store-product-add-cart"
               disabled={product.stock < 1}
@@ -597,10 +578,16 @@ function Details({ product: baseProduct, products }) {
             >
               {product.stock > 0 ? "Add to cart" : "Out of stock"}
             </button>
+            {product.stock < 1 && (
+              <p className="store-product-stock out">Currently out of stock</p>
+            )}
           </div>
         </aside>
       </div>
-      {tryOn && <VirtualTryOn key={`${product.id}-${product.variantId || "base"}`} name={product.name} image={product.tryOnImage ? assetUrl(product.tryOnImage) : ""} onClose={() => setTryOn(false)} />}
+      {tryOn && <VirtualTryOn key={`${product.id}-${product.variantId || "base"}`} name={product.name} size={product.size} image={product.tryOnImage ? assetUrl(product.tryOnImage) : ""} onClose={() => {
+        setTryOn(false);
+        try { setSavedFitReference(readSavedTryOn(window.localStorage)); } catch { setSavedFitReference(null); }
+      }} />}
       {imagePopup && (
         <ProductImagePopup
           images={images}

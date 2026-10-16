@@ -1,3 +1,5 @@
+import FrameSizeBadge from '../components/FrameSizeBadge';
+import EyeglassesIcon from '../components/EyeglassesIcon';
 import {useCategories} from '../context/CategoryContext';
 import { matchesSearch } from "../state/productSearch";
 import Loader from '../components/Loader';
@@ -6,7 +8,6 @@ import { Link, useSearchParams } from "react-router-dom";
 import {
   ChevronDown,
   Filter,
-  Glasses,
   Grid2X2,
   Sparkles,
   X,
@@ -153,7 +154,7 @@ function CollectionResults() {
                   checked={(draft[group] || []).includes(value)}
                   onChange={() => toggle(group, value)}
                 />
-                {value}
+                {group === 'Frame Size' ? <FrameSizeBadge size={value}/> : value}
               </label>
             ))}
           </div>
@@ -209,7 +210,7 @@ function CollectionResults() {
                 ) : label === "Premium" ? (
                   <Sparkles size={21} />
                 ) : (
-                  <Glasses size={25} />
+                  <EyeglassesIcon size={25} />
                 )}
                 {label}
               </button>
@@ -257,7 +258,7 @@ function CollectionResults() {
         )}
         {!loading && !error && !products.length && (
           <div className="collection-empty">
-            <Glasses size={40} />
+            <EyeglassesIcon size={40} />
             <h2>No frames found</h2>
             <p>{query ? `No products match “${query}”. Try a brand, color, or frame shape.` : "Try another collection or clear your filters."}</p>
             <button

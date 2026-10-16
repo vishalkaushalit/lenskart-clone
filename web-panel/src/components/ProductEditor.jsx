@@ -1,3 +1,4 @@
+import { formatFrameSize } from '../../../shared/frameSizing.js';
 import ImageUploadField from './ImageUploadField';
 import ProductImageGallery from './ProductImageGallery';
 import ProductImageLibrary from './ProductImageLibrary';
@@ -80,7 +81,7 @@ export default function ProductEditor({ product = null }) {
   }
   const input='product-field';
   function text(name,label,placeholder,required=true) {return <label className="product-label">{label}{required&&<span className="text-red-500"> *</span>}<input name={name} defaultValue={product?.[name]||''} placeholder={placeholder} required={required} maxLength={name==='name'?150:name==='shape'||name==='color'?50:100} className={input}/></label>;}
-  function select(name,label,values) {return <label className="product-label">{label.replace(/\s*\*$/, '')}{label.endsWith('*')&&<span className="text-red-500"> *</span>}<select name={name} defaultValue={product?.[name]||values[0]} className={input}>{values.map((value)=><option key={value}>{value}</option>)}</select></label>;}
+  function select(name,label,values) {return <label className="product-label">{label.replace(/\s*\*$/, '')}{label.endsWith('*')&&<span className="text-red-500"> *</span>}<select name={name} defaultValue={product?.[name]||values[0]} className={input}>{values.map((value)=><option key={value} value={value}>{name==='size'?formatFrameSize(value):value}</option>)}</select></label>;}
   const imagePanel=<div><ProductImageGallery images={images} setImages={setImages} choose={choose} busy={busy}/><ProductImageLibrary choose={choose} busy={busy} count={images.length}/></div>;
   return <><form onSubmit={submit}><fieldset disabled={busy||notification?.type==='success'} className={`product-editor-grid ${editing?'is-editing':''}`}>
     {imagePanel}
@@ -90,7 +91,7 @@ export default function ProductEditor({ product = null }) {
       {text('sku','SKU','Enter SKU')}
     </div>{product?.hasVariants&&<div className="mt-5 rounded-lg border border-slate-200 p-3 text-sm text-slate-600"><p>Total stock: {product.stock} (from active variants)</p><Link to={`/product/${product.slug||product.id}/variants`} className="mt-2 inline-block text-blue-600">Manage variant colors, sizes and stock</Link></div>}<div className="mt-6"><p className="product-label">Status</p><div className="mt-3 flex gap-5">{['active','inactive'].map((status)=><label key={status} className="flex items-center gap-2 text-sm capitalize text-slate-500"><input type="radio" name="status" value={status} defaultChecked={(product?.status||'active')===status} className="accent-blue-600"/>{status}</label>)}</div></div>
 </section>
-    <div className="product-panel"><ImageUploadField name="tryOnImage" label="Virtual try-on image (optional)" initialValue={product?.tryOnImage||''} transparentOnly onUploading={setTryOnUploading}/><p className="mt-3 text-xs text-slate-500">Upload a tightly cropped, straight-on frame with transparent background and clear lens interiors. Keep the bridge centered. Gallery photos are not used for live try-on. Save the product after uploading. Same-color variants can use this image; upload a matching image on variants with other colors.</p></div>
+    <div className="product-panel"><ImageUploadField name="tryOnImage" label="Virtual try-on image (optional)" initialValue={product?.tryOnImage||''} transparentOnly onUploading={setTryOnUploading}/><p className="mt-3 text-xs text-slate-500">Upload a transparent PNG/WebP front view with clear lens interiors, or a self-contained GLB glasses model (front facing +Z, upright +Y). Keep the bridge centered. Gallery photos are not used for live try-on. Save the product after uploading. Same-color variants can use this image; upload a matching image on variants with other colors.</p></div>
     </div>
     <section className="product-panel product-basic-panel md:col-span-2"><h2 className="product-panel-title"><Package size={16}/>Basic Information</h2><div className="product-basic-fields">
       {text('name','Product Name','Enter product name')}{text('slug','URL Slug','Generated automatically when empty',false)}{text('subtitle','Subtitle','Dark Night Full Rim Square',false)}

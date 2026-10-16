@@ -1,5 +1,6 @@
 import { put, BlobError } from '@vercel/blob';
 import { randomUUID } from 'node:crypto';
+import { inspectGlb } from '../../../shared/tryOnAsset.js';
 export function imageExtension(buffer) {
   if (!Buffer.isBuffer(buffer)) return null;
   if (buffer.length >= 8 && buffer.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10]))) return 'png';
@@ -16,16 +17,21 @@ export function blobStorageConfigured(env = process.env) {
   return Boolean(env.BLOB_READ_WRITE_TOKEN || (env.BLOB_STORE_ID && env.VERCEL_OIDC_TOKEN));
 }
 // All web-panel image fields share this Blob-only upload handler.
-export function createImageUploadHandler({ upload = put, env = process.env } = {}) {
+export function createImageUploadHandler({ upload = put, env = process.env, tryOn = false } = {}) {
   return async function uploadProductImage(req, res) {
-    const extension = imageExtension(req.body);
+    let extension = imageExtension(req.body);
+    if (tryOn && !extension) {
+      try { inspectGlb(req.body); extension = 'glb'; }
+      catch (error) { return res.status(400).json({ message: error.message }); }
+    }
+    if (tryOn && extension === 'jpg') return res.status(400).json({ message: 'Use a transparent PNG/WebP or a GLB model for try-on.' });
     if (!extension) return res.status(400).json({ message: 'Upload a JPEG, PNG, or WebP image.' });
     if (!blobStorageConfigured(env)) {
       return res.status(503).json({ message: 'Image storage is not configured. Configure a public Vercel Blob store for this backend. On Vercel, connect it to the deployment environment and redeploy.' });
     }
     const name = `${uploadFilename(req.headers?.['x-file-name'])}-${randomUUID()}.${extension}`;
     try {
-      const blob = await upload(`products/${name}`, req.body, { access: 'public', contentType: `image/${extension === 'jpg' ? 'jpeg' : extension}` });
+      const blob = await upload(`products/${name}`, req.body, { access: 'public', contentType: extension === 'glb' ? 'model/gltf-binary' : `image/${extension === 'jpg' ? 'jpeg' : extension}` });
       return res.status(201).json({ success: true, image: blob.url });
     } catch (error) {
       console.error('Image storage upload failed:', error.name);
@@ -37,3 +43,4 @@ export function createImageUploadHandler({ upload = put, env = process.env } = {
   };
 }
 export const uploadProductImage = createImageUploadHandler();
+export const uploadTryOnAsset = createImageUploadHandler({ tryOn: true });

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="698" height="270" viewBox="0 0 698 270" fill="none">
+  <!-- Rear navy frame with a broad brow, short bridge and rounded-square lenses. -->
+  <path d="M185 88c27-14 72-15 101-3 14 6 22 12 34 12s22-6 36-12c29-12 72-11 98 3v18l-13 4-4-14c-24-14-57-12-82 0-13 6-20 13-23 25l-7-10c-5-3-10-3-15 0l-7 10c-3-12-10-19-23-25-25-12-58-14-82 0l-2 14-11-4V88Z" fill="#42427C"/>
+  <!-- Closed stroked rims avoid a cut-out intersecting the left frame edge. -->
+  <path d="M211 90c24-8 58-6 79 5 19 10 20 24 15 47-7 35-19 49-50 49-28 0-43-10-51-40-7-26-14-50 7-61Z" stroke="#42427C" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M354 95c21-11 54-13 77-5 20 8 14 31 8 57-7 32-20 44-49 44-31 0-44-14-51-46-5-23-4-40 15-50Z" stroke="#42427C" stroke-width="6" stroke-linejoin="round"/>
+  <!-- Foreground lavender frame sits across the lower half of the rear frame. -->
+  <path d="M335 138c21-11 57-13 84-6 14 3 23 8 32 8s18-5 33-8c28-7 64-5 87 6v16c-7 1-9 5-10 15-3 18-7 32-14 39-8 8-19 11-36 11-28 0-38-11-44-39l-3-17c-1-7-5-11-11-11s-10 4-11 11l-3 17c-6 28-16 39-44 39-17 0-28-3-36-11-7-7-11-21-14-39-1-10-3-14-10-15v-16Z" fill="#ADA7D2"/>
+  <path d="M359 139c18-5 42-4 58 3 16 7 20 15 17 33-5 29-15 39-39 39-23 0-34-8-40-32-4-18-9-36 4-43Z" fill="#F0EDFF"/>
+  <path d="M484 142c16-7 40-8 58-3 14 5 10 23 6 40-5 25-15 35-39 35s-34-10-39-36c-4-19-1-28 14-36Z" fill="#F0EDFF"/>
+  <g stroke="#ADA7D2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m52 162 39-15m-14 41 22-25m491-67 30-31m-16 47 37-13"/>
+    <path d="m111 122-29-19c-6-4-11 5-7 9l36 10Z" stroke-width="3.5"/>
+  </g>
+</svg>
