@@ -165,7 +165,7 @@ function Details({ product: baseProduct, products }) {
     );
     return () => clearInterval(timer);
   }, [highlightKeys, highlight]);
-  const reviews = product.reviews || [];
+  const reviews = baseProduct.reviews || [];
   const average = reviews.length
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
     : product.rating;
@@ -538,7 +538,7 @@ function Details({ product: baseProduct, products }) {
                 })}
               </div>
             </div>
-            <h3>User Reviews</h3>
+            <h3>Customer Reviews</h3>
             {reviews.length ? reviews.slice(0, 5).map((review, index) => (
               <ReviewCard key={review._id || index} review={review} />
             )) : <p className="detail-muted">No customer reviews available yet.</p>}
@@ -621,8 +621,11 @@ export default function ProductDetails() {
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    async function load() {
-      setResult({ loading: true });
+    let inFlight = false;
+    async function load(background = false) {
+      if (inFlight) return;
+      inFlight = true;
+      if (!background) setResult({ loading: true });
       try {
         const data = await apiRequest(`/products/${id}`, { signal: controller.signal });
         if (!controller.signal.aborted)
@@ -631,16 +634,23 @@ export default function ProductDetails() {
             loading: false,
           });
       } catch (error) {
-        if (!controller.signal.aborted)
+        if (!controller.signal.aborted && !background)
           setResult({
             loading: false,
             error: error.message,
             status: error.status,
           });
-      }
+      } finally { inFlight = false; }
     }
     load();
-    return () => controller.abort();
+    function refresh() { if (!document.hidden) load(true); }
+    window.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    return () => {
+      controller.abort();
+      window.removeEventListener('focus', refresh);
+      document.removeEventListener('visibilitychange', refresh);
+    };
   }, [id, attempt]);
   useEffect(() => {
     const controller = new AbortController();

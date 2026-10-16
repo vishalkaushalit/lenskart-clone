@@ -325,7 +325,7 @@ Try-on images are shared across sizes of the same color: upload and save an imag
 
 ## Reviewing a delivered purchase
 
-**My profile → Order History** shows the delivery date and a review form for each distinct product in delivered orders. Reviews unlock 48 hours after the recorded delivery time; until then, Order History shows the exact unlock date/time in IST and automatically refreshes eligibility when that time arrives. Customers select 1–5 stars and enter up to 2000 characters. Submission shows Awaiting admin approval; later visits show approved or rejected status. One review is allowed per product per order, including when multiple sizes of the same product were purchased. Pending and rejected reviews remain private. Approved reviews appear under the purchased product with a Verified purchase label and contribute to its detail-page review average. Reload the product page after approval to see the review. Historical delivered orders use the saved last-update date when no delivery timestamp exists.
+**My profile → Order History** shows the delivery date and a review form for each distinct product in delivered orders. Reviews unlock 48 hours after the recorded delivery time; until then, Order History shows the exact unlock date/time in IST and automatically refreshes eligibility when that time arrives. Customers select 1–5 stars and enter up to 2000 characters. Submission shows Awaiting admin approval; later visits show approved or rejected status. One review is allowed per product per order, including when multiple sizes of the same product were purchased. Pending and rejected reviews remain private. Approved reviews appear under the purchased product with a Verified purchase label and contribute to its detail-page review average. Product details and All reviews refresh when the browser tab becomes visible or focused, so returning after admin moderation fetches the latest approved reviews without resetting the selected frame. A full page reload also fetches the latest reviews. Historical delivered orders use the saved last-update date when no delivery timestamp exists.
 
 Product pages show the five newest reviews. **View all reviews** links to `/products/:id/reviews`, a separate public page displaying all reviews for that product newest first. Approved customer reviews show a **Verified purchase** badge beside the reviewer’s name on both pages; existing manually entered reviews do not receive this badge.
 
@@ -335,10 +335,12 @@ The protected `/orders/:id/track` page fetches the existing customer-scoped `/ap
 
 Order History and the tracker display the saved carrier and waybill/tracking number. Waybill-only shipments show **Your shipment has been booked** until carrier collection is recorded, even for legacy records marked shipped without collection. The timeline includes booking/collection timestamps when available. Delivered/cancelled wording takes precedence. No email or SMS notification is sent by this in-app display.
 
+Reviews are combined by product across all sizes and colors. Switching variants keeps the same review list, count and average rating. Customer submissions reference the purchased product, with one review per product per order even if multiple variants were purchased.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `eb46f9ed78ce41d6133bbde0427c8c56fd1598b5580b69852cc0d57be579a658`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `093091e01f36650c030767c82b03c79c1bc2970298f344ca09c3838595b88e5e`.
 
 ### Actual npm commands
 

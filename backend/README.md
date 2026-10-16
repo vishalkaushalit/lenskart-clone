@@ -368,10 +368,14 @@ The admin order PATCH accepts `carrier` and `trackingNumber` (trimmed strings up
 
 Admin-only `DELETE /api/admin/reviews/:id` permanently deletes a customer review. The unapproved list groups pending and rejected states. Deleted reviews no longer appear publicly; deleting frees the order/product review slot for a new eligible submission.
 
+Admin product detail responses include approved customer submissions as a separate read-only `customerReviews` array. The editable `reviews` array remains unchanged to avoid copying customer submissions into product-editor reviews.
+
+Reviews are combined by product across all sizes and colors. Switching variants keeps the same review list, count and average rating. Customer submissions reference the purchased product, with one review per product per order even if multiple variants were purchased.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `62fa4123763827dc5c9618fbb67e032e2023e63738304cfa722ca4212330856d`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `d0cc186b7656cbbb17b42b7020fc65a22683afa446137e44550d28ec4d0e0dcb`.
 
 ### Actual npm commands
 

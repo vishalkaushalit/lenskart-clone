@@ -50,3 +50,16 @@ test('one color image is reused across sizes without leaking into other colors',
   product.variants[1].tryOnImage = 'custom.png';
   assert.equal(resolveVariant(product, { size: 'M', color: 'Black' }).tryOnImage, 'custom.png');
 });
+test('all sizes and colors retain one combined product review list', () => {
+  const reviews = [{ name: 'Buyer', rating: 5, text: 'Good frame', verifiedPurchase: true }];
+  const product = { hasVariants: true, reviews, variants: [
+    { id: 'black-s', color: 'Black', size: 'S', status: 'active', images: [] },
+    { id: 'black-l', color: 'Black', size: 'L', status: 'active', images: [] },
+    { id: 'blue-m', color: 'Blue', size: 'M', status: 'active', images: [] },
+  ] };
+  for (const variant of product.variants) {
+    const selected = resolveVariant(product, { color: variant.color, size: variant.size });
+    assert.equal(selected.reviews, reviews);
+    assert.equal(selected.reviews[0].verifiedPurchase, true);
+  }
+});

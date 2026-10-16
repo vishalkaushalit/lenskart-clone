@@ -267,10 +267,14 @@ In Orders → Edit, enter Carrier and Waybill / tracking number and save while l
 
 Tracking is accessed through the truck icon in Orders; there is no separate Track Orders sidebar link. The `/track-orders` route remains available as a searchable 20-row order list with carrier and waybill columns. Select the truck icon (**Track order**) to open `/orders/:id/track`, showing shipment details, customer/address and the complete fulfillment timeline in IST. Order Details also links to tracking. Both tracking routes are protected by AdminRoute and use the existing admin-only order endpoints. Active shipments refresh every 30 seconds while visible, with manual refresh available. The shared timeline and shipment wording match the customer tracker, including booked-before-collection wording and unknown historical timestamps. Use Update shipment to edit fulfillment details.
 
+The Product Details Reviews tab combines the product-editor review array with approved customer submissions, sorted newest first. Approved purchase reviews display Verified purchase beside the author name; guest reviews do not. The product editor continues to edit only its original review array. Pending/unapproved customer reviews are managed separately in Reviews & Approvals.
+
+Reviews are combined by product across all sizes and colors. Switching variants keeps the same review list, count and average rating. Customer submissions reference the purchased product, with one review per product per order even if multiple variants were purchased.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `6ea1c7b89711a26bc3aa3c51b465c374e9c7bf2d5bdf27d2011f0509e6bd5509`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `3ef014910b68bc6ea406c9d59bb60752cc4ed25369147309ce0d9705ef38885a`.
 
 ### Actual npm commands
 

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import Product from '../models/Product.js';
+import CustomerReview from '../models/CustomerReview.js';
 import { listProducts, saveProduct, productFields, publicProduct, productDetails, storefrontProductDetails } from './productController.js';
 import { managedProducts } from '../routes/productRoutes.js';
 import { requireAuth } from '../middleware/auth.js';
@@ -37,6 +38,7 @@ test('product schema rejects invalid price, stock, category and image schemes', 
 
 
 test('product details returns the gallery, description, and features', async (t) => {
+  t.mock.method(CustomerReview, 'find', () => ({select(){return this;},sort(){return this;},lean:async()=>[]}));
   const id = '123456789012345678901234';
   t.mock.method(Product, 'findById', (actual) => {
     assert.equal(actual, id);
@@ -104,3 +106,18 @@ test('subcategory membership requires its parent to be selected',async(t)=>{
  const res=response();await saveProduct({params:{},body:{categoryIds:[root],subcategoryIds:[child]}},res,assert.ifError);assert.equal(res.statusCode,400);
 });
 test('batch product lookup validates IDs and includes active products of all types',async(t)=>{const id='123456789012345678901234';t.mock.method(Product,'find',filter=>{assert.deepEqual(filter,{status:'active',_id:{$in:[id]}});return {sort(){return this;},lean:async()=>[{_id:id}]};});const res=response();await listProducts({query:{ids:id}},res,assert.ifError);assert.equal(res.body.products[0].id,id);const invalid=response();await listProducts({query:{ids:'bad'}},invalid,assert.ifError);assert.equal(invalid.statusCode,400);});
+
+ test('admin product details includes approved customer reviews separately from editable product reviews', async t => {
+  const id = '123456789012345678901234';
+  const legacy = [{ name: 'Guest', rating: 4, text: 'Existing review', date: new Date('2026-01-01') }];
+  t.mock.method(Product, 'findById', () => ({ lean: async () => ({ _id: id, reviews: legacy }) }));
+  t.mock.method(CustomerReview, 'find', filter => {
+    assert.deepEqual(filter, { product: id, status: 'approved' });
+    return { select(){return this;},sort(){return this;},lean:async()=>[{ name: 'Buyer', rating: 5, text: 'Approved review', createdAt: new Date('2026-02-01') }] };
+  });
+  const res = response(); await productDetails({ params: { id } }, res, assert.ifError);
+  assert.deepEqual(res.body.product.reviews, legacy);
+  assert.equal(res.body.product.customerReviews[0].verifiedPurchase, true);
+  assert.equal(res.body.product.customerReviews[0].name, 'Buyer');
+  assert.deepEqual(productFields({ customerReviews: res.body.product.customerReviews }), {});
+});

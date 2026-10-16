@@ -118,6 +118,8 @@ Customers can track their own orders at `/orders/:id/track`, reached from Order 
 
 Admins can save the carrier and waybill/tracking number in the order editor. Customers see these in Order History and the tracker. A generated waybill without carrier collection displays **Your shipment has been booked**; dispatch wording appears after collection.
 
+Reviews are combined by product across all sizes and colors. Switching variants keeps the same review list, count and average rating. Customer submissions reference the purchased product, with one review per product per order even if multiple variants were purchased.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated application summary
 

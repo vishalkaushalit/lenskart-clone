@@ -86,7 +86,9 @@ export async function productDetails(req, res, next) {
   try {
     const product = await Product.findById(req.params.id).lean();
     if (!product) return res.status(404).json({ message: 'Product not found.' });
-    res.json({ success: true, product: publicProduct((await attachVariants([product], true))[0]) });
+    const result = publicProduct((await attachVariants([product], true))[0]);
+    result.customerReviews = await approvedReviews(product._id);
+    res.json({ success: true, product: result });
   } catch (error) { next(error); }
 }
 

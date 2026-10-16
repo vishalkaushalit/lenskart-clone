@@ -10,16 +10,27 @@ export default function ProductReviews() {
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    async function load() {
-      setResult({ loading: true });
+    let inFlight = false;
+    async function load(background = false) {
+      if (inFlight) return;
+      inFlight = true;
+      if (!background) setResult({ loading: true });
       try {
         const data = await apiRequest(`/products/${encodeURIComponent(id)}`, { signal: controller.signal });
         if (!controller.signal.aborted) setResult({ product: data.product, loading: false });
       } catch (error) {
-        if (!controller.signal.aborted) setResult({ loading: false, error: error.message });
-      }
+        if (!controller.signal.aborted && !background) setResult({ loading: false, error: error.message });
+      } finally { inFlight = false; }
     }
-    load(); return () => controller.abort();
+    load();
+    function refresh() { if (!document.hidden) load(true); }
+    window.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    return () => {
+      controller.abort();
+      window.removeEventListener('focus', refresh);
+      document.removeEventListener('visibilitychange', refresh);
+    };
   }, [id, attempt]);
   return <section className="store-container py-10 sm:py-14">
     <Link to={`/products/${id}`} className="text-sm font-semibold underline">Back to product</Link>
