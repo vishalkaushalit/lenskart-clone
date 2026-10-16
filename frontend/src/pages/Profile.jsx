@@ -80,6 +80,8 @@ function OrderHistory({ active }) {
     return () => controller.abort();
   }, [page, attempt, active]);
 
+  if (!active) return null;
+
   return (
     <section className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8" aria-labelledby="order-history-heading">
       <h2 id="order-history-heading" className="flex items-center gap-2 text-xl font-bold"><Package size={22} />Order history</h2>

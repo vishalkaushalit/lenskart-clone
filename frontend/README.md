@@ -339,12 +339,12 @@ Reviews are combined by product across all sizes and colors. Switching variants 
 
 Profile tabs follow the `tab` URL parameter, including account-menu navigation while Profile is already mounted. Login/logout flags synchronize through storage events across same-origin tabs, and returning focus validates saved sessions without calling auth/me for guests. Admin logout clears its session flag.
 
-Order History defers requests until its tab is active. Review item deduplication uses a Set and saved reviews use a product-indexed Map, avoiding repeated scans per item. Both apps share `shared/useOrderTracking.js` for polling, cancellation, refresh and terminal-order handling; terminal orders clear the polling timer.
+Order History defers requests and renders nothing until its tab is active, preventing a hidden full-page loading overlay from blocking Profile. Review item deduplication uses a Set and saved reviews use a product-indexed Map, avoiding repeated scans per item. Both apps share `shared/useOrderTracking.js` for polling, cancellation, refresh and terminal-order handling; terminal orders clear the polling timer.
 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `b8a7d5bd9a54383c5e2ba408ea575d6c30994dcc01dc9b208736a7e06496d9d9`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `3fc3a546734bc6c88b6be24c5abac3bfc5cbe1614431a195a3ab4e1b80e35cb6`.
 
 ### Actual npm commands
 
