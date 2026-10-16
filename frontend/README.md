@@ -341,10 +341,12 @@ Profile tabs follow the `tab` URL parameter, including account-menu navigation w
 
 Order History defers requests and renders nothing until its tab is active, preventing a hidden full-page loading overlay from blocking Profile. Review item deduplication uses a Set and saved reviews use a product-indexed Map, avoiding repeated scans per item. Both apps share `shared/useOrderTracking.js` for polling, cancellation, refresh and terminal-order handling; terminal orders clear the polling timer.
 
+Wishlist uses the shared Cart heading typography and displays `Wishlist (N Items)` when populated, or `Wishlist` when empty.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `3fc3a546734bc6c88b6be24c5abac3bfc5cbe1614431a195a3ab4e1b80e35cb6`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `5195f88712296b98ec7fe9832ee2e6734f9813abfafa669cbdff3f299db9d0db`.
 
 ### Actual npm commands
 
