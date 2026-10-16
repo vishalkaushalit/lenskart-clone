@@ -61,3 +61,5 @@
 .cart-page .saved-cart-items { min-width: 0; }
 
 .cart-empty-shop { min-height: 48px; padding: 12px 28px; font-size: 16px; }
+
+@media (min-width: 768px) { .cart-page .saved-cart-items, .cart-page .cart-billing { position: sticky; top: var(--column-sticky-top, 16px); align-self: start; } }

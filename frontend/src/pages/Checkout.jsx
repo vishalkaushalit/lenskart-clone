@@ -1,3 +1,4 @@
+import useStickyColumns from '../hooks/useStickyColumns';
 import FrameSizeBadge from '../components/FrameSizeBadge';
 import CouponApplied from "../components/CouponApplied";
 import CouponDiscount from "../components/CouponDiscount";
@@ -103,6 +104,9 @@ export default function Checkout() {
   const { loading, items, error, retry } = useSavedProducts(
     cart.map((item) => item.id),
   );
+  const addressColumn = useRef(null);
+  const summaryColumn = useRef(null);
+  useStickyColumns(addressColumn, summaryColumn, !loading && !error && cart.length > 0 && !completedOrderId);
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [sameBilling, setSameBilling] = useState(true);
   const [review, setReview] = useState(null);
@@ -204,7 +208,7 @@ export default function Checkout() {
         </div>
       ) : (
         <div className="checkout-layout">
-          <form onSubmit={submit} onChange={() => setReview(null)}>
+          <form ref={addressColumn} onSubmit={submit} onChange={() => setReview(null)}>
             <section className="checkout-panel">
               <h2>
                 <MapPin size={19} />
@@ -331,7 +335,7 @@ export default function Checkout() {
                   : "Review order"}
             </button>
           </form>
-          <aside className="checkout-panel checkout-summary">
+          <aside ref={summaryColumn} className="checkout-panel checkout-summary">
             <h2>Order summary</h2>
             <div className="checkout-items">
               {rows.map(({ id, key, product, entry }) => (

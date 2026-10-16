@@ -619,3 +619,5 @@ body:has(.checkout-page) header {
     display: none;
   }
 }
+
+@media (min-width: 768px) { .checkout-layout > form, .checkout-layout > .checkout-summary { position: sticky; top: var(--column-sticky-top, 16px); align-self: start; } }

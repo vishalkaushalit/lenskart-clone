@@ -356,7 +356,7 @@ Collection category tabs and empty-result indicators use a rectangular eyeglasse
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `ebfa8ca4e5db7b0535a9d838ae1f5318bf764347d42c8b34aa1799e7e4983d3a`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `630b96a2e12d807973fbbb3228fbbef434c8e59cc151219f976048045448da6f`.
 
 ### Actual npm commands
 
@@ -662,3 +662,5 @@ Product-card title links retain their navy color without an underline on hover.
 Sold out badges overlay product photos in catalog, wishlist, related-frame and similar-item cards, positioned away from wishlist buttons and catalog image controls.
 
 Sold out badges sit at the top-left of product photos; catalog rating badges shift below them when both appear.
+
+Cart and checkout reuse the product-page sticky-column hook for their two-column desktop layouts. Each column uses its measured height and header offset: short columns stay below the header, while tall columns scroll until their bottom is visible. ResizeObserver updates offsets after items, coupons, address sections or billing details change. Single-column mobile layouts keep normal document scrolling.
