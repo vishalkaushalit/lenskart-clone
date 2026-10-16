@@ -179,3 +179,20 @@ test('admin queue defaults to all statuses and retains explicit status filtering
     assert.deepEqual(counted, expected); assert.equal(res.body.total, 3);
   }
 });
+
+test('unapprove atomically returns only approved reviews to the pending queue', async t => {
+  t.mock.method(CustomerReview, 'findOneAndUpdate', async (filter, update) => {
+    assert.deepEqual(filter, { _id: reviewId, status: 'approved' });
+    assert.equal(update.$set.status, 'pending');
+    assert.equal(update.$set.moderatedBy, userId);
+    assert.ok(update.$set.moderatedAt instanceof Date);
+    return { status: 'pending' };
+  });
+  const res = response(); await moderateReview({ ...request(), params: { id: reviewId }, body: { status: 'pending' } }, res, assert.ifError);
+  assert.equal(res.body.review.status, 'pending');
+});
+test('unapprove rejects missing or already unapproved reviews', async t => {
+  t.mock.method(CustomerReview, 'findOneAndUpdate', async () => null);
+  const res = response(); await moderateReview({ ...request(), params: { id: reviewId }, body: { status: 'pending' } }, res, assert.ifError);
+  assert.equal(res.statusCode, 409);
+});
