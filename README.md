@@ -125,7 +125,7 @@ Admins can save the carrier and waybill/tracking number in the order editor. Cus
 | --- | --- | --- |
 | backend | 72 | [README](backend/README.md) |
 | frontend | 101 | [README](frontend/README.md) |
-| web-panel | 54 | [README](web-panel/README.md) |
+| web-panel | 55 | [README](web-panel/README.md) |
 
 Update references with `npm run docs:sync`; verify with `npm run docs:check`. Run `npm run docs:hooks` once per clone to enable commit-time synchronization. Review written field explanations whenever behavior changes.
 <!-- AUTO-GENERATED:END -->

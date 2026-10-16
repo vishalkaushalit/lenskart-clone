@@ -346,7 +346,7 @@ Dashboard recent orders accept `recentPage` (1–10,000, default 1). The databas
 
 Order fulfillment writes `deliveredAt` using server time when transitioning to delivered. Repeating that status preserves the original timestamp. Older delivered orders without `deliveredAt` use their saved `updatedAt` as the delivery-time fallback.
 
-Admins use `GET /api/admin/reviews?status=all&page=1` (20 rows, all/pending/approved/rejected filters) and `PATCH /api/admin/reviews/:id` with approved/rejected status to moderate pending reviews, or pending status to unapprove an approved review. Both require an admin session. Moderation atomically changes pending reviews to approved/rejected, or approved reviews back to pending, and records the admin and time. Unapproved reviews disappear from public product responses until approved again. Product detail responses merge only approved customer reviews with legacy admin-managed reviews, using a public projection without customer/order identifiers. Pending and rejected submissions never appear in public product responses. Product-card ratings retain their existing stored rating; detail-page averages include the displayed approved reviews. Customer review images and editing/resubmitting a submitted review are not part of this flow.
+Admins use `GET /api/admin/reviews?status=all&page=1` (20 rows, all/approved/unapproved filters (legacy pending/rejected filters remain supported)) and `PATCH /api/admin/reviews/:id` with approved/rejected status to moderate pending reviews; approved can also restore rejected reviews, or pending status to unapprove an approved review. Both require an admin session. Moderation atomically changes pending/rejected reviews to approved, pending reviews to rejected, or approved reviews back to pending, and records the admin and time. Unapproved reviews disappear from public product responses until approved again. Product detail responses merge only approved customer reviews with legacy admin-managed reviews, using a public projection without customer/order identifiers. Pending and rejected submissions never appear in public product responses. Product-card ratings retain their existing stored rating; detail-page averages include the displayed approved reviews. Customer review images and editing/resubmitting a submitted review are not part of this flow.
 
 Product pages show the five newest reviews. **View all reviews** links to `/products/:id/reviews`, a separate public page displaying all reviews for that product newest first. Approved customer reviews show a **Verified purchase** badge beside the reviewer’s name on both pages; existing manually entered reviews do not receive this badge.
 
@@ -366,10 +366,12 @@ Orders store `statusHistory` entries containing `status` and server-assigned `at
 
 The admin order PATCH accepts `carrier` and `trackingNumber` (trimmed strings up to 100 characters) and a boolean `collected`. A first waybill records server-assigned `shipmentBookedAt`; confirming collection records immutable `carrierCollectedAt`. Client-supplied timestamps are ignored. Same-status updates can save shipment details; completed/cancelled orders remain locked. Shipment details cannot be changed after collection. For orders with a waybill, Shipped/Delivered requires recorded collection. Legacy orders without waybills retain their existing fulfillment behavior. Account order-history responses include the shipment fields; the customer-scoped receipt endpoint supplies them to the tracker.
 
+Admin-only `DELETE /api/admin/reviews/:id` permanently deletes a customer review. The unapproved list groups pending and rejected states. Deleted reviews no longer appear publicly; deleting frees the order/product review slot for a new eligible submission.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `fb2e3596111cc9f8f77b51968d3833a0be9361a614e119e2d95f656b7074e62a`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `62fa4123763827dc5c9618fbb67e032e2023e63738304cfa722ca4212330856d`.
 
 ### Actual npm commands
 
@@ -419,7 +421,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/controllers/dashboardController.test.js](src/controllers/dashboardController.test.js) | Internal module / styles |
 | [src/controllers/productController.js](src/controllers/productController.js) | adminProducts, deleteProduct, listProducts, productDetails, productFields, productNavigation, publicProduct, saveProduct, storefrontProductDetails |
 | [src/controllers/productController.test.js](src/controllers/productController.test.js) | Internal module / styles |
-| [src/controllers/reviewController.js](src/controllers/reviewController.js) | approvedReviews, canReview, listReviews, moderateReview, orderReviews, reviewAvailableAt, submitReview |
+| [src/controllers/reviewController.js](src/controllers/reviewController.js) | approvedReviews, canReview, deleteReview, listReviews, moderateReview, orderReviews, reviewAvailableAt, submitReview |
 | [src/controllers/reviewController.test.js](src/controllers/reviewController.test.js) | Internal module / styles |
 | [src/controllers/userActions.test.js](src/controllers/userActions.test.js) | Internal module / styles |
 | [src/controllers/userController.js](src/controllers/userController.js) | createUser, deleteUser, editUser, listUsers, userDetails |
@@ -489,6 +491,7 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/routes/categoryRoutes.js | adminCategories.patch | `/:id` |
 | src/routes/commerceRoutes.js | commerceAdmin.get | `/reviews` |
 | src/routes/commerceRoutes.js | commerceAdmin.patch | `/reviews/:id` |
+| src/routes/commerceRoutes.js | commerceAdmin.delete | `/reviews/:id` |
 | src/routes/commerceRoutes.js | commerceAdmin.get | `/coupons` |
 | src/routes/commerceRoutes.js | commerceAdmin.get | `/coupons/:id` |
 | src/routes/commerceRoutes.js | commerceAdmin.post | `/coupons` |

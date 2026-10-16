@@ -251,7 +251,7 @@ Try-on images are shared across sizes of the same color: upload and save an imag
 
 ## Customer review approvals
 
-Open **Reviews & Approvals** (`/reviews`) from the sidebar to moderate reviews submitted by customers for delivered orders. The queue defaults to All and supports Pending/Approved/Rejected filters and 20-row pagination. Each row shows the product, customer display name, order link, delivery date, rating, full review and submission date. Approve publishes the review under the product; Reject keeps it private. Approve actions and Approved statuses use green badges; Unapprove actions use red badges. Empty results display a centered “No reviews found” message. Approved reviews have an Unapprove action that returns them to Pending and hides them from public product pages until approved again. Rejected reviews remain final; concurrent/repeated decisions return a conflict. Existing reviews entered in the product editor remain separately managed.
+Open **Reviews & Approvals** (`/reviews`) from the sidebar to moderate reviews submitted by customers for delivered orders. The queue defaults to All and supports Approved/Unapproved filters and 20-row pagination. Each row shows the product, customer display name, order link, delivery date, rating, full review and submission date. Approve publishes the review under the product; Reject keeps it private. A separate Status column shows Approved in green or Unapproved in red. Actions offer Approve for unapproved reviews, Unapprove for approved reviews, and a delete icon for either state. Deletion requires confirmation in the shared-size popup and permanently removes the review. Empty results display a centered “No reviews found” message. Approved reviews have an Unapprove action that returns them to Pending and hides them from public product pages until approved again. Pending and legacy rejected reviews both display as Unapproved and can be approved. Concurrent/repeated decisions return a conflict. Existing reviews entered in the product editor remain separately managed.
 
 Marking an order Delivered records the server delivery time and customer review submission in Order History unlocks 48 hours later. Older delivered orders use their last-update date as the delivery-date fallback. Submission eligibility and admin permissions are enforced by the API.
 
@@ -270,7 +270,7 @@ Tracking is accessed through the truck icon in Orders; there is no separate Trac
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `ab767c439358f91fb321f3e565bc517d9ff08f9092c912df7148359508dddd30`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `6ea1c7b89711a26bc3aa3c51b465c374e9c7bf2d5bdf27d2011f0509e6bd5509`.
 
 ### Actual npm commands
 
@@ -312,6 +312,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/ProductImageLibrary.jsx](src/components/ProductImageLibrary.jsx) | ProductImageLibrary |
 | [src/components/ProductVariants.jsx](src/components/ProductVariants.jsx) | ProductVariants |
 | [src/components/RecentOrders.jsx](src/components/RecentOrders.jsx) | RecentOrders |
+| [src/components/ReviewDeleteButton.jsx](src/components/ReviewDeleteButton.jsx) | ReviewDeleteButton |
 | [src/components/StatDashboard.jsx](src/components/StatDashboard.jsx) | StatDashboard |
 | [src/components/StatusBadge.jsx](src/components/StatusBadge.jsx) | StatusBadge |
 | [src/components/UserActionDialog.jsx](src/components/UserActionDialog.jsx) | UserActionDialog |

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import CustomerReview from '../models/CustomerReview.js';
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
-import { canReview, submitReview, orderReviews, moderateReview, approvedReviews, listReviews } from './reviewController.js';
+import { canReview, submitReview, orderReviews, moderateReview, approvedReviews, listReviews, deleteReview } from './reviewController.js';
 import { storefrontProductDetails } from './productController.js';
 import { commerceAdmin } from '../routes/commerceRoutes.js';
 import accountRoutes from '../routes/accountRoutes.js';
@@ -70,7 +70,7 @@ test('customer can only retrieve reviews belonging to their own order', async t 
 
 test('moderation atomically accepts only pending reviews and records the admin', async t => {
   t.mock.method(CustomerReview, 'findOneAndUpdate', async (filter, update, options) => {
-    assert.deepEqual(filter, { _id: reviewId, status: 'pending' });
+    assert.deepEqual(filter, { _id: reviewId, status: { $in: ['pending', 'rejected'] } });
     assert.equal(update.$set.status, 'approved'); assert.equal(update.$set.moderatedBy, userId);
     assert.ok(update.$set.moderatedAt instanceof Date); assert.equal(options.runValidators, true);
     return { status: 'approved' };
@@ -174,7 +174,7 @@ test('admin queue defaults to all statuses and retains explicit status filtering
   let counted;
   t.mock.method(CustomerReview, 'countDocuments', async filter => { counted = filter; return 3; });
   t.mock.method(CustomerReview, 'find', filter => { assert.deepEqual(filter, counted); return query([{ status: 'pending' }, { status: 'approved' }, { status: 'rejected' }]); });
-  for (const [params, expected] of [[{}, {}], [{ status: 'all' }, {}], [{ status: 'pending' }, { status: 'pending' }], [{ status: 'approved' }, { status: 'approved' }], [{ status: 'rejected' }, { status: 'rejected' }]]) {
+  for (const [params, expected] of [[{}, {}], [{ status: 'all' }, {}], [{ status: 'unapproved' }, { status: { $in: ['pending', 'rejected'] } }], [{ status: 'pending' }, { status: 'pending' }], [{ status: 'approved' }, { status: 'approved' }], [{ status: 'rejected' }, { status: 'rejected' }]]) {
     const res = response(); await listReviews({ query: params }, res, assert.ifError);
     assert.deepEqual(counted, expected); assert.equal(res.body.total, 3);
   }
@@ -195,4 +195,16 @@ test('unapprove rejects missing or already unapproved reviews', async t => {
   t.mock.method(CustomerReview, 'findOneAndUpdate', async () => null);
   const res = response(); await moderateReview({ ...request(), params: { id: reviewId }, body: { status: 'pending' } }, res, assert.ifError);
   assert.equal(res.statusCode, 409);
+});
+
+test('admins can delete a review and missing or invalid IDs return useful errors', async t => {
+  const remove = t.mock.method(CustomerReview, 'findByIdAndDelete', async id => { assert.equal(id, reviewId); return { _id: id }; });
+  const res = response(); await deleteReview({ params: { id: reviewId } }, res, assert.ifError);
+  assert.equal(res.body.success, true);
+  const invalid = response(); await deleteReview({ params: { id: 'bad' } }, invalid, assert.ifError);
+  assert.equal(invalid.statusCode, 400); assert.equal(remove.mock.callCount(), 1);
+  t.mock.method(CustomerReview, 'findByIdAndDelete', async () => null);
+  const missing = response(); await deleteReview({ params: { id: reviewId } }, missing, assert.ifError);
+  assert.equal(missing.statusCode, 404);
+  assert.ok(commerceAdmin.stack.some(layer => layer.route?.path === '/reviews/:id' && layer.route.methods.delete));
 });

@@ -7,12 +7,13 @@ import Coupon from '../models/Coupon.js';
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
 import { updateShipment } from '../services/shipments.js';
-import { listReviews, moderateReview } from '../controllers/reviewController.js';
+import { listReviews, moderateReview, deleteReview } from '../controllers/reviewController.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 export const commerceAdmin=express.Router();
 commerceAdmin.use(requireAuth,requireRole('admin'));
 commerceAdmin.get('/reviews', listReviews);
 commerceAdmin.patch('/reviews/:id', moderateReview);
+commerceAdmin.delete('/reviews/:id', deleteReview);
 const wrap=fn=>(req,res,next)=>Promise.resolve(fn(req,res)).catch(error=>{
   if(error.code===11000)return res.status(409).json({message:'This coupon code already exists.'});
   if(['ValidationError','CastError'].includes(error.name))return res.status(400).json({message:'Check the supplied fields.'});

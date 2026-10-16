@@ -46,9 +46,9 @@ export async function submitReview(req, res, next) {
 export async function listReviews(req, res, next) {
   const page = Number(req.query.page || 1);
   const status = req.query.status || 'all';
-  if (!Number.isSafeInteger(page) || page < 1 || page > 10000 || !['all', 'pending', 'approved', 'rejected'].includes(status)) return res.status(400).json({ message: 'Invalid review page or status.' });
+  if (!Number.isSafeInteger(page) || page < 1 || page > 10000 || !['all', 'unapproved', 'pending', 'approved', 'rejected'].includes(status)) return res.status(400).json({ message: 'Invalid review page or status.' });
   try {
-    const filter = status === 'all' ? {} : { status };
+    const filter = status === 'all' ? {} : { status: status === 'unapproved' ? { $in: ['pending', 'rejected'] } : status };
     const [total, reviews] = await Promise.all([
       CustomerReview.countDocuments(filter),
       CustomerReview.find(filter).populate('product', 'name').populate('order', 'orderId deliveredAt updatedAt').sort({ createdAt: -1, _id: -1 }).skip((page - 1) * 20).limit(20).lean(),
@@ -59,7 +59,8 @@ export async function listReviews(req, res, next) {
 export async function moderateReview(req, res, next) {
   if (!validId(req.params.id) || !['pending', 'approved', 'rejected'].includes(req.body?.status)) return res.status(400).json({ message: 'Choose approve, reject or unapprove.' });
   try {
-    const review = await CustomerReview.findOneAndUpdate({ _id: req.params.id, status: req.body.status === 'pending' ? 'approved' : 'pending' }, { $set: { status: req.body.status, moderatedBy: req.user._id, moderatedAt: new Date() } }, { new: true, runValidators: true });
+    const sourceStatus = req.body.status === 'approved' ? { $in: ['pending', 'rejected'] } : req.body.status === 'pending' ? 'approved' : 'pending';
+    const review = await CustomerReview.findOneAndUpdate({ _id: req.params.id, status: sourceStatus }, { $set: { status: req.body.status, moderatedBy: req.user._id, moderatedAt: new Date() } }, { new: true, runValidators: true });
     if (!review) return res.status(409).json({ message: 'Review not found or already moderated. Refresh the list.' });
     res.json({ review });
   } catch (error) { next(error); }
@@ -67,4 +68,13 @@ export async function moderateReview(req, res, next) {
 export async function approvedReviews(productId) {
   const rows = await CustomerReview.find({ product: productId, status: 'approved' }).select('name rating text createdAt').sort({ createdAt: -1, _id: -1 }).lean();
   return rows.map(row => ({ name: row.name, rating: row.rating, text: row.text, date: row.createdAt, verifiedPurchase: true }));
+}
+
+export async function deleteReview(req, res, next) {
+  if (!validId(req.params.id)) return res.status(400).json({ message: 'Invalid review ID.' });
+  try {
+    const review = await CustomerReview.findByIdAndDelete(req.params.id);
+    if (!review) return res.status(404).json({ message: 'Review not found.' });
+    res.json({ success: true });
+  } catch (error) { next(error); }
 }
