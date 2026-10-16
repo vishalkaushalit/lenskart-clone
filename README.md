@@ -108,14 +108,24 @@ Products support multiple size/color combinations with their own images, invento
 
 Try-on images are shared across sizes of the same color: upload and save an image on one variant, then leave the other sizes’ try-on uploads empty. A variant’s own image takes priority, followed by another variant of the same color, then the matching base product color. Colors are matched ignoring case and surrounding spaces. The variant editor previews the reused image.
 
+## Reviews after delivery
+
+Customers can write a 1–5 star review from **My profile → Order History** once 48 hours have elapsed since delivery of their purchased product. Submissions remain private until an admin approves them in **Reviews & Approvals** in the web-panel. Approved reviews appear under the matching product with a Verified purchase label; rejected reviews stay hidden. One review is allowed per product per order.
+
+Product pages show the five newest reviews. **View all reviews** links to `/products/:id/reviews`, a separate public page displaying all reviews for that product newest first. Approved customer reviews show a **Verified purchase** badge beside the reviewer’s name on both pages; existing manually entered reviews do not receive this badge.
+
+Customers can track their own orders at `/orders/:id/track`, reached from Order History, the account menu, or checkout confirmation. The tracker shows a fulfillment timeline, real recorded stage times in IST, cancellation, purchased items and delivery address. Visible active orders refresh every 30 seconds; delivered/cancelled orders stop polling.
+
+Admins can save the carrier and waybill/tracking number in the order editor. Customers see these in Order History and the tracker. A generated waybill without carrier collection displays **Your shipment has been booked**; dispatch wording appears after collection.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated application summary
 
 | Application | Source files | Guide |
 | --- | --- | --- |
-| backend | 63 | [README](backend/README.md) |
-| frontend | 93 | [README](frontend/README.md) |
-| web-panel | 52 | [README](web-panel/README.md) |
+| backend | 72 | [README](backend/README.md) |
+| frontend | 101 | [README](frontend/README.md) |
+| web-panel | 54 | [README](web-panel/README.md) |
 
 Update references with `npm run docs:sync`; verify with `npm run docs:check`. Run `npm run docs:hooks` once per clone to enable commit-time synchronization. Review written field explanations whenever behavior changes.
 <!-- AUTO-GENERATED:END -->

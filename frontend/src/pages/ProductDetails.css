@@ -703,6 +703,8 @@ body:has(.store-product-page) header {
   white-space: pre-wrap;
 }
 .detail-read-reviews {
+  display: block;
+  text-align: center;
   width: 100%;
   padding: 10px;
   border: 1px solid #000042;

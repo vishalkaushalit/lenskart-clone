@@ -1,7 +1,9 @@
 import Loader from '../components/Loader';
+import OrderReviews from '../components/OrderReviews';
+import ShipmentDetails from '../components/ShipmentDetails';
 import PopupMessage from "../components/PopupMessage";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { UserRound, Package } from "lucide-react";
 import { useAuth } from "../context/AuthState";
 import { apiRequest } from "../api/api";
@@ -100,6 +102,7 @@ function OrderHistory() {
                 <div>
                   <p className="break-all text-sm font-semibold">Order #{order.orderId??'—'}</p>
                   <p className="mt-1 text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString("en-IN")}</p>
+                  {order.status === 'delivered' && (order.deliveredAt || order.updatedAt) && <p className="mt-1 text-xs text-gray-500">Delivered on {new Date(order.deliveredAt || order.updatedAt).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}</p>}
                 </div>
                 <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold capitalize">{order.status}</span>
               </div>
@@ -107,6 +110,9 @@ function OrderHistory() {
                 {order.items.map((item, index) => <li key={item._id || index}>{item.name} <span className="text-gray-500">× {item.quantity}</span></li>)}
               </ul>
               <p className="mt-4 text-right text-sm font-bold">{new Intl.NumberFormat("en-IN", { style: "currency", currency: order.currency || "INR" }).format(order.totalAmount)}</p>
+              <Link to={`/orders/${order._id}/track`} className="mt-3 inline-block rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white">Track order</Link>
+              <ShipmentDetails order={order} />
+              {order.status === 'delivered' && <OrderReviews order={order} />}
             </li>
           ))}
         </ul>

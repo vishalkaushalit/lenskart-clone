@@ -12,7 +12,9 @@
     "products:dummy-images": "node scripts/add-dummy-product-images.js",
     "products:sample-variants": "node scripts/add-sample-variants.js",
     "products:variant-images": "node scripts/add-color-variant-images.js",
-    "images:migrate-blob": "node scripts/migrate-images-to-blob.js"
+    "images:migrate-blob": "node scripts/migrate-images-to-blob.js",
+    "reviews:sample": "node scripts/add-sample-reviews.js",
+    "reviews:sample-verified": "node scripts/add-verified-sample-reviews.js"
   },
   "keywords": [],
   "author": "",

@@ -82,6 +82,7 @@ export default function AccountMenu({ mobile = false, onNavigate }) {
       {open && (
         <div id={panelId} className={`${mobile ? "mt-2 w-full" : "absolute right-0 top-full mt-3 w-64"} z-50 rounded-xl border border-black/10 bg-white p-4 text-ink shadow-xl`}>
           <Link to="/profile" onClick={() => { setOpen(false); onNavigate?.(); }} className="block rounded-lg px-3 py-2 text-sm font-semibold hover:bg-gray-100">Profile</Link>
+          <Link to="/profile?tab=orders" onClick={() => { setOpen(false); onNavigate?.(); }} className="block rounded-lg px-3 py-2 text-sm font-semibold hover:bg-gray-100">Track orders</Link>
           {user.role === "admin" && (
             adminUrl ? (
               <a href={`${adminUrl.replace(/\/$/, "")}/dashboard`} onClick={() => { setOpen(false); onNavigate?.(); }} className="mt-3 block rounded-lg px-3 py-2 text-sm font-semibold hover:bg-gray-100">Dashboard</a>

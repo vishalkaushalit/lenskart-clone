@@ -10,10 +10,12 @@ const Cart=lazy(()=>import("./pages/Cart"));
 const ThankYou=lazy(()=>import("./pages/ThankYou"));
 const Checkout=lazy(()=>import("./pages/Checkout"));
 const ProductDetails=lazy(()=>import("./pages/ProductDetails"));
+const ProductReviews=lazy(()=>import("./pages/ProductReviews"));
 const Collection=lazy(()=>import("./pages/Collection"));
 const Home=lazy(()=>import("./pages/Home"));
 const Login=lazy(()=>import("./pages/Login"));
 const Profile=lazy(()=>import("./pages/Profile"));
+const OrderTracker=lazy(()=>import("./pages/OrderTracker"));
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
@@ -23,6 +25,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/collection" element={<Collection />} />
         <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/products/:id/reviews" element={<ProductReviews />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/eyeglasses" element={<Collection />} />
@@ -30,6 +33,7 @@ const App = () => {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/thank-you/:id" element={<ThankYou />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/orders/:id/track" element={<OrderTracker />} />
         </Route>
         <Route path="*" element={<h1>Page not found</h1>} />
       </Route>

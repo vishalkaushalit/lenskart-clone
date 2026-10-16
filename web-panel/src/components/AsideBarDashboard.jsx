@@ -59,7 +59,10 @@ const AsideBarDashboard = ({ isOpen, isDesktop, onClose }) => {
       >
         {/* Logo */}
         <div className="flex shrink-0 items-center justify-between gap-3 px-6 py-6 text-white">
-          <span className="text-lg font-bold tracking-wide">ShopAdmin</span>
+          <div className="min-w-0">
+            <a href={frontendUrl} target="_blank" rel="noopener noreferrer" className="text-lg font-bold tracking-wide">Lenskart</a>
+            <a href={frontendUrl} target="_blank" rel="noopener noreferrer" className="mt-1 block text-xs text-slate-300 hover:text-white hover:underline">Visit website ↗</a>
+          </div>
           <button ref={closeButtonRef} type="button" onClick={onClose} aria-label="Close sidebar" className="rounded-md p-1 hover:bg-white/10 lg:hidden"><X size={22} /></button>
         </div>
 
@@ -89,7 +92,8 @@ const AsideBarDashboard = ({ isOpen, isDesktop, onClose }) => {
           <NavLink to="/categories" onClick={onClose} className={navigationClass}>Categories</NavLink>
           <NavLink to="/coupons" onClick={onClose} className={navigationClass}>Coupons</NavLink>
           <NavLink to="/orders" onClick={onClose} className={navigationClass}>Orders</NavLink>
-          <NavLink to="/orders" onClick={onClose} className={navigationClass}>
+          <NavLink to="/reviews" onClick={onClose} className={navigationClass}>Reviews &amp; Approvals</NavLink>
+          <NavLink to="/track-orders" onClick={onClose} className={navigationClass}>
             Track Orders
           </NavLink>
 

@@ -34,6 +34,6 @@ export default function ThankYou(){
       <ul>{order.items.map((item,index)=><li key={item._id||index}><div><strong>{item.name}</strong><p>{[item.options?.color&&`Color: ${item.options.color}`,item.options?.size&&`Size: ${item.options.size}`,`Quantity: ${item.quantity}`].filter(Boolean).join(' · ')}</p></div><span>{money(item.unitPrice*item.quantity)}</span></li>)}</ul>
       <dl><div><dt>Payment</dt><dd>{order.paymentMethod==='online'?'Pay Online':'Cash on Delivery'}</dd></div>{order.discount>0&&<CouponDiscount coupon={{code:order.couponCode,discount:order.discount}} definitionList/>}<div className="order-success-total"><dt>Total</dt><dd>{money(order.totalAmount)}</dd></div></dl>
     </section>
-    <div className="order-success-actions"><Link className="saved-button" to={`/profile?tab=orders#order-${order._id}`}>View my order</Link><Link className="order-success-home" to="/">Back to home</Link></div>
+    <div className="order-success-actions"><Link className="saved-button" to={`/profile?tab=orders#order-${order._id}`}>View my order</Link><Link className="saved-button" to={`/orders/${order._id}/track`}>Track order</Link><Link className="order-success-home" to="/">Back to home</Link></div>
   </div></section>;
 }

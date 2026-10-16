@@ -2,6 +2,7 @@ import { attachVariants } from '../services/variants.js';
 import {availableSlug,validSlug} from '../utils/slugs.js';
 import Category from '../models/Category.js';
 import Product from '../models/Product.js';
+import { approvedReviews } from './reviewController.js';
 const editable = ['slug', 'categoryIds', 'subcategoryIds', 'categoryId', 'subcategoryId', 'faqs', 'reviews', 'highlightImages', 'tryOnImage', 'subtitle', 'lensTypes', 'offerTitle', 'offerText', 'deliveryInformation', 'assurances', 'material', 'hinge', 'temple', 'nosepad', 'description', 'features', 'sku', 'name', 'image', 'images', 'category', 'productType', 'shape', 'brand', 'price', 'originalPrice', 'color', 'size', 'gender', 'stock', 'status', 'powered'];
 export function publicProduct(product) {
   const result = { id: String(product._id) };
@@ -94,6 +95,8 @@ export async function storefrontProductDetails(req, res, next) {
   try {
     const product = await Product.findOne({ ...(/^[a-f\d]{24}$/i.test(req.params.id)?{_id:req.params.id}:{slug:req.params.id}), status: 'active' }).lean();
     if (!product) return res.status(404).json({ message: 'This product is no longer available.' });
+    product.reviews = [...await approvedReviews(product._id), ...(product.reviews || [])]
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     res.json({ success: true, product: publicProduct((await attachVariants([product]))[0]) });
   } catch (error) { next(error); }
 }

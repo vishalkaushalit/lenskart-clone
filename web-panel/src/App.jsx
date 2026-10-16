@@ -13,11 +13,13 @@ const ProductDetails=lazy(()=>import("./pages/ProductDetails"));
 const ProductVariants=lazy(()=>import("./pages/ProductVariants"));
 const AddProduct=lazy(()=>import("./pages/AddProduct"));
 const OrderDetails=lazy(()=>import("./pages/OrderDetails"));
+const OrderTracking=lazy(()=>import("./pages/OrderTracking"));
 const Commerce=lazy(()=>import("./pages/Commerce"));
 const Categories=lazy(()=>import("./pages/Categories"));
 const ResourceDetails=lazy(()=>import("./pages/ResourceDetails"));
 const ResourceEdit=lazy(()=>import("./pages/ResourceEdit"));
 const Users=lazy(()=>import("./pages/Users"));
+const Reviews=lazy(()=>import("./pages/Reviews"));
 
 export default function App() {
   return (
@@ -44,7 +46,10 @@ export default function App() {
         <Route path="/users/:id/edit" element={<ResourceEdit key="users" kind="users"/>}/>
         <Route path="/orders/:id/edit" element={<ResourceEdit key="orders" kind="orders"/>}/>
         <Route path="/orders/:id" element={<OrderDetails/>}/>
+        <Route path="/orders/:id/track" element={<OrderTracking/>}/>
+        <Route path="/track-orders" element={<Commerce key="tracking" kind="orders" tracking/>}/>
         <Route path="/orders" element={<Commerce key="orders" kind="orders"/>}/>
+        <Route path="/reviews" element={<Reviews/>}/>
         <Route path="/coupons" element={<Commerce key="coupons" kind="coupons"/>}/>
         <Route path="/categories" element={<Categories/>}/>
         <Route path="/users" element={<Users />} />

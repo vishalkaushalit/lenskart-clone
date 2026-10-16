@@ -6,9 +6,13 @@ import mongoose from 'mongoose';
 import Coupon from '../models/Coupon.js';
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
+import { updateShipment } from '../services/shipments.js';
+import { listReviews, moderateReview } from '../controllers/reviewController.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 export const commerceAdmin=express.Router();
 commerceAdmin.use(requireAuth,requireRole('admin'));
+commerceAdmin.get('/reviews', listReviews);
+commerceAdmin.patch('/reviews/:id', moderateReview);
 const wrap=fn=>(req,res,next)=>Promise.resolve(fn(req,res)).catch(error=>{
   if(error.code===11000)return res.status(409).json({message:'This coupon code already exists.'});
   if(['ValidationError','CastError'].includes(error.name))return res.status(400).json({message:'Check the supplied fields.'});
@@ -42,11 +46,14 @@ commerceAdmin.patch('/orders/:id',wrap(async(req,res)=>{
   const orderId=id(req.params.id);const session=await mongoose.startSession();let order;
   try{await session.withTransaction(async()=>{
     order=await Order.findById(orderId).session(session);if(!order)fail('Order not found.',404);
-    if(order.status===req.body.status)return;
+    const shipmentFields=['trackingNumber','carrier','collected'].some(key=>Object.hasOwn(req.body,key));
+    if(order.status===req.body.status&&!shipmentFields)return;
     if(order.status==='cancelled'||order.status==='delivered')fail('Completed or cancelled orders cannot be changed.');
+    const shipmentChanged=updateShipment(order,req.body);
+    if(order.status===req.body.status&&!shipmentChanged)return;
     const sequence=['pending','confirmed','shipped','delivered'];if(req.body.status!=='cancelled'&&sequence.indexOf(req.body.status)<sequence.indexOf(order.status))fail('An order cannot move to an earlier status.');
     if(req.body.status==='cancelled')for(const item of order.items)if(item.product){if(item.variant){await ProductVariant.updateOne({_id:item.variant,productId:item.product},{$inc:{stock:item.quantity}},{session});await Product.updateOne({_id:item.product},{$inc:{sales:-item.quantity}},{session});}else await Product.updateOne({_id:item.product},{$inc:{stock:item.quantity,sales:-item.quantity}},{session});}
-    order.status=req.body.status;await order.save({session});
+    order.status=req.body.status;if(order.status==='delivered'&&!order.deliveredAt)order.deliveredAt=new Date();await order.save({session});
   });}finally{await session.endSession();}res.json({order});
 }));
 

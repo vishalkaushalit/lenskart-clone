@@ -323,10 +323,22 @@ Variant **Price** is the selling price; **Compare Price** (`originalPrice`) cont
 
 Try-on images are shared across sizes of the same color: upload and save an image on one variant, then leave the other sizes’ try-on uploads empty. A variant’s own image takes priority, followed by another variant of the same color, then the matching base product color. Colors are matched ignoring case and surrounding spaces. The variant editor previews the reused image.
 
+## Reviewing a delivered purchase
+
+**My profile → Order History** shows the delivery date and a review form for each distinct product in delivered orders. Reviews unlock 48 hours after the recorded delivery time; until then, Order History shows the exact unlock date/time in IST and automatically refreshes eligibility when that time arrives. Customers select 1–5 stars and enter up to 2000 characters. Submission shows Awaiting admin approval; later visits show approved or rejected status. One review is allowed per product per order, including when multiple sizes of the same product were purchased. Pending and rejected reviews remain private. Approved reviews appear under the purchased product with a Verified purchase label and contribute to its detail-page review average. Reload the product page after approval to see the review. Historical delivered orders use the saved last-update date when no delivery timestamp exists.
+
+Product pages show the five newest reviews. **View all reviews** links to `/products/:id/reviews`, a separate public page displaying all reviews for that product newest first. Approved customer reviews show a **Verified purchase** badge beside the reviewer’s name on both pages; existing manually entered reviews do not receive this badge.
+
+## Customer order tracking
+
+The protected `/orders/:id/track` page fetches the existing customer-scoped `/api/orders/:id` endpoint. **Track order** appears on Order History and checkout confirmation; **Track orders** in the account menu opens Order History. The timeline shows Order placed, Confirmed, Shipped and Delivered with recorded times in IST. Cancelled orders show cancellation without future fulfillment stages. Missing historical timestamps display Time not recorded. Visible active orders refresh every 30 seconds with a manual refresh button; delivered/cancelled orders stop polling. Errors retain the last known status when available. The page also shows purchased items and the customer’s shipping address. Live vehicle location and estimated delivery dates are not supplied by this order-status tracker.
+
+Order History and the tracker display the saved carrier and waybill/tracking number. Waybill-only shipments show **Your shipment has been booked** until carrier collection is recorded, even for legacy records marked shipped without collection. The timeline includes booking/collection timestamps when available. Delivered/cancelled wording takes precedence. No email or SMS notification is sent by this in-app display.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `b5766d6482d8b6376e1a793f66358ca659e931ae3fec604e3e78e5f3eaefa0b0`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `eb46f9ed78ce41d6133bbde0427c8c56fd1598b5580b69852cc0d57be579a658`.
 
 ### Actual npm commands
 
@@ -375,6 +387,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/NearbyStores.jsx](src/components/NearbyStores.jsx) | default export |
 | [src/components/Notes.jsx](src/components/Notes.jsx) | default export |
 | [src/components/NotificationPopup.jsx](src/components/NotificationPopup.jsx) | NotificationPopup |
+| [src/components/OrderReviews.jsx](src/components/OrderReviews.jsx) | OrderReviews |
 | [src/components/PopupMessage.jsx](src/components/PopupMessage.jsx) | PopupMessage |
 | [src/components/PremiumEyewear.jsx](src/components/PremiumEyewear.jsx) | default export |
 | [src/components/ProductCard.jsx](src/components/ProductCard.jsx) | ProductCard |
@@ -386,8 +399,11 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/ProductSearch.jsx](src/components/ProductSearch.jsx) | ProductSearch |
 | [src/components/ProtectedRoute.jsx](src/components/ProtectedRoute.jsx) | ProtectedRoute |
 | [src/components/RecentOrders.jsx](src/components/RecentOrders.jsx) | default export |
+| [src/components/ReviewCard.css](src/components/ReviewCard.css) | Internal module / styles |
+| [src/components/ReviewCard.jsx](src/components/ReviewCard.jsx) | ReviewCard |
 | [src/components/ScrollToTop.jsx](src/components/ScrollToTop.jsx) | ScrollToTop |
 | [src/components/ShapeCollections.jsx](src/components/ShapeCollections.jsx) | ShapeCollections |
+| [src/components/ShipmentDetails.jsx](src/components/ShipmentDetails.jsx) | ShipmentDetails |
 | [src/components/SimilarProductCard.jsx](src/components/SimilarProductCard.jsx) | SimilarProductCard |
 | [src/components/SimilarProductsPopup.css](src/components/SimilarProductsPopup.css) | Internal module / styles |
 | [src/components/SimilarProductsPopup.jsx](src/components/SimilarProductsPopup.jsx) | SimilarProductsPopup |
@@ -420,8 +436,10 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/pages/Collection.jsx](src/pages/Collection.jsx) | Collection |
 | [src/pages/Home.jsx](src/pages/Home.jsx) | default export |
 | [src/pages/Login.jsx](src/pages/Login.jsx) | default export |
+| [src/pages/OrderTracker.jsx](src/pages/OrderTracker.jsx) | OrderTracker |
 | [src/pages/ProductDetails.css](src/pages/ProductDetails.css) | Internal module / styles |
 | [src/pages/ProductDetails.jsx](src/pages/ProductDetails.jsx) | ProductDetails |
+| [src/pages/ProductReviews.jsx](src/pages/ProductReviews.jsx) | ProductReviews |
 | [src/pages/Profile.jsx](src/pages/Profile.jsx) | Profile |
 | [src/pages/Register.jsx](src/pages/Register.jsx) | Register |
 | [src/pages/SavedProducts.css](src/pages/SavedProducts.css) | Internal module / styles |
@@ -439,6 +457,8 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/state/productVariants.test.js](src/state/productVariants.test.js) | Internal module / styles |
 | [src/state/shopping.js](src/state/shopping.js) | cartKey, cartQuantity, normalizeStore |
 | [src/state/shopping.test.js](src/state/shopping.test.js) | Internal module / styles |
+| [src/utils/orderTimeline.js](src/utils/orderTimeline.js) | Internal module / styles |
+| [src/utils/shipment.js](src/utils/shipment.js) | Internal module / styles |
 | [src/utils/tryOnPlacement.js](src/utils/tryOnPlacement.js) | tryOnPlacement |
 
 ### Route declarations
@@ -450,17 +470,21 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/App.jsx | React Route | `/` |
 | src/App.jsx | React Route | `/collection` |
 | src/App.jsx | React Route | `/products/:id` |
+| src/App.jsx | React Route | `/products/:id/reviews` |
 | src/App.jsx | React Route | `/wishlist` |
 | src/App.jsx | React Route | `/cart` |
 | src/App.jsx | React Route | `/eyeglasses` |
 | src/App.jsx | React Route | `/checkout` |
 | src/App.jsx | React Route | `/thank-you/:id` |
 | src/App.jsx | React Route | `/profile` |
+| src/App.jsx | React Route | `/orders/:id/track` |
 | src/App.jsx | React Route | `*` |
 | src/App.jsx | React Route | `/login` |
 | src/App.jsx | React Route | `/register` |
 | src/App.jsx | React Route | `/forgot-password` |
 | src/App.jsx | React Route | `/reset-password` |
+| src/components/OrderReviews.jsx | fields.get | `rating` |
+| src/components/OrderReviews.jsx | fields.get | `text` |
 | src/components/ProductSearch.jsx | params.get | `search` |
 | src/dashboard/ProductDashboard.jsx | params.get | `search` |
 | src/pages/Collection.jsx | params.get | `search` |

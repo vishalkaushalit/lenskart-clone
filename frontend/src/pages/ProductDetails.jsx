@@ -2,8 +2,9 @@ import VirtualTryOn from "../components/VirtualTryOn";
 import SimilarProductCard from "../components/SimilarProductCard";
 import { resolveVariant } from "../state/productVariants";
 import Loader from "../components/Loader";
+import ReviewCard from "../components/ReviewCard";
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   ScanFace,
   ChevronLeft,
@@ -14,7 +15,6 @@ import {
   ShieldCheck,
   Package,
   RefreshCw,
-  UserRound,
   ChevronDown,
 } from "lucide-react";
 import { apiRequest } from "../api/api";
@@ -130,7 +130,6 @@ function Details({ product: baseProduct, products }) {
     ? variants.filter((row) => row.color === color).map((row) => row.size)
     : [...new Set([product.size, ...(product.availableSizes || [])])];
   const [policy, setPolicy] = useState(null);
-  const [allReviews, setAllReviews] = useState(false);
   const { favorites, toggleFavorite, addToCart, notify } = useStore();
   const images = product.images?.length ? product.images : [product.image];
   const highlightContent = {
@@ -540,41 +539,13 @@ function Details({ product: baseProduct, products }) {
               </div>
             </div>
             <h3>User Reviews</h3>
-            {reviews.length ? (
-              (allReviews ? reviews : reviews.slice(0, 5)).map(
-                (review, index) => (
-                  <article
-                    key={review._id || index}
-                    className="detail-user-review"
-                  >
-                    <div>
-                      <UserRound size={22} />
-                      <span>
-                        {review.name}
-                        <small>
-                          {new Date(review.date).toLocaleDateString("en-GB", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </small>
-                      </span>
-                      <b>{review.rating} ★</b>
-                    </div>
-                    <p>{review.text}</p>
-                  </article>
-                ),
-              )
-            ) : (
-              <p className="detail-muted">No customer reviews available yet.</p>
-            )}
-            {reviews.length > 5 && (
-              <button
-                className="detail-read-reviews"
-                onClick={() => setAllReviews((value) => !value)}
-              >
-                {allReviews ? "Show Fewer Reviews" : "Read All Reviews"}
-              </button>
+            {reviews.length ? reviews.slice(0, 5).map((review, index) => (
+              <ReviewCard key={review._id || index} review={review} />
+            )) : <p className="detail-muted">No customer reviews available yet.</p>}
+            {reviews.length > 0 && (
+              <Link className="detail-read-reviews" to={`/products/${product.slug || product.id}/reviews`}>
+                View all reviews
+              </Link>
             )}
           </section>
           <section className="detail-accordions">

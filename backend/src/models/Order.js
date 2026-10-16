@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import {nextOrderId} from '../services/orderIds.js';
+import { recordOrderStatus } from '../services/orderTracking.js';
 
 const orderSchema = new mongoose.Schema({
   orderId:{type:Number,immutable:true,unique:true,sparse:true,min:1,validate:Number.isSafeInteger},
@@ -18,6 +19,15 @@ const orderSchema = new mongoose.Schema({
   }],
   totalAmount: { type: Number, required: true, min: 0 },
   currency: { type: String, default: 'INR' },
+  deliveredAt: { type: Date, default: null },
+  trackingNumber: { type: String, trim: true, maxlength: 100, default: '' },
+  carrier: { type: String, trim: true, maxlength: 100, default: '' },
+  shipmentBookedAt: { type: Date, default: null },
+  carrierCollectedAt: { type: Date, default: null },
+  statusHistory: { type: [{
+    status: { type: String, enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'], required: true },
+    at: { type: Date, required: true },
+  }], default: [] },
   status: {
     type: String,
     enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'],
@@ -32,4 +42,7 @@ orderSchema.index({ createdAt: -1, _id: -1 });
 orderSchema.index({ status: 1, createdAt: -1, _id: -1 });
 
 orderSchema.pre('save',async function(){if(this.isNew&&!this.$locals.orderIdAssigned){this.orderId=await nextOrderId(this.$session());this.$locals.orderIdAssigned=true;}});
+orderSchema.pre('save', function () {
+  recordOrderStatus(this);
+});
 export default mongoose.model('Order', orderSchema);

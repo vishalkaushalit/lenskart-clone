@@ -249,10 +249,28 @@ Every web-panel table includes pagination and **Sr. No.** numbering that continu
 
 Try-on images are shared across sizes of the same color: upload and save an image on one variant, then leave the other sizes’ try-on uploads empty. A variant’s own image takes priority, followed by another variant of the same color, then the matching base product color. Colors are matched ignoring case and surrounding spaces. The variant editor previews the reused image.
 
+## Customer review approvals
+
+Open **Reviews & Approvals** (`/reviews`) from the sidebar to moderate reviews submitted by customers for delivered orders. The queue defaults to Pending and supports Approved/Rejected filters and 20-row pagination. Each row shows the product, customer display name, order link, delivery date, rating, full review and submission date. Approve publishes the review under the product; Reject keeps it private. Decisions are final in this flow, and concurrent/repeated decisions return a conflict. Existing reviews entered in the product editor remain separately managed.
+
+Marking an order Delivered records the server delivery time and customer review submission in Order History unlocks 48 hours later. Older delivered orders use their last-update date as the delivery-date fallback. Submission eligibility and admin permissions are enforced by the API.
+
+Product pages show the five newest reviews. **View all reviews** links to `/products/:id/reviews`, a separate public page displaying all reviews for that product newest first. Approved customer reviews show a **Verified purchase** badge beside the reviewer’s name on both pages; existing manually entered reviews do not receive this badge.
+
+The sidebar displays Lenskart branding with a **Visit website** link. Both open the configured storefront (`VITE_FRONTEND_URL`, with the existing local/production fallback) in a new tab.
+
+## Shipment booking details
+
+In Orders → Edit, enter Carrier and Waybill / tracking number and save while leaving Package collected by carrier unchecked if pickup has not happened. Customers will see **Your shipment has been booked** and their waybill in Order History and tracking. Once pickup occurs, check Package collected by carrier and select Shipped. Collection timestamps are assigned by the server; recorded collection cannot be undone and shipment details become read-only after pickup. Delivered and cancelled orders remain locked.
+
+## Admin order tracking
+
+**Track Orders** opens `/track-orders`, a searchable 20-row order list with carrier and waybill columns. Select **Track** to open `/orders/:id/track`, showing shipment details, customer/address and the complete fulfillment timeline in IST. Order Details also links to tracking. Both tracking routes are protected by AdminRoute and use the existing admin-only order endpoints. Active shipments refresh every 30 seconds while visible, with manual refresh available. The shared timeline and shipment wording match the customer tracker, including booked-before-collection wording and unknown historical timestamps. Use Update shipment to edit fulfillment details.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e311afa5927a4df760f2aff6ebfd2bee095444a34b3901c79c1549b931b831f0`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `8e66f4dec70e387ac603bd37d416782ae1afdf4c4acfd685a4441fc6fde87b6b`.
 
 ### Actual npm commands
 
@@ -312,12 +330,14 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/pages/EditProduct.jsx](src/pages/EditProduct.jsx) | EditProduct |
 | [src/pages/Logout.jsx](src/pages/Logout.jsx) | Logout |
 | [src/pages/OrderDetails.jsx](src/pages/OrderDetails.jsx) | OrderDetails |
+| [src/pages/OrderTracking.jsx](src/pages/OrderTracking.jsx) | OrderTracking |
 | [src/pages/ProductDetails.jsx](src/pages/ProductDetails.jsx) | ProductDetails |
 | [src/pages/ProductVariants.jsx](src/pages/ProductVariants.jsx) | ProductVariantsPage |
 | [src/pages/Profile.jsx](src/pages/Profile.jsx) | Profile |
 | [src/pages/ProfileDetails.jsx](src/pages/ProfileDetails.jsx) | ProfileDetails |
 | [src/pages/ResourceDetails.jsx](src/pages/ResourceDetails.jsx) | ResourceDetails |
 | [src/pages/ResourceEdit.jsx](src/pages/ResourceEdit.jsx) | ResourceEdit |
+| [src/pages/Reviews.jsx](src/pages/Reviews.jsx) | Reviews |
 | [src/pages/Users.jsx](src/pages/Users.jsx) | Users |
 | [src/search.js](src/search.js) | matchesSearch, searchDestination |
 | [src/search.test.js](src/search.test.js) | Internal module / styles |
@@ -350,7 +370,10 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/App.jsx | React Route | `/users/:id/edit` |
 | src/App.jsx | React Route | `/orders/:id/edit` |
 | src/App.jsx | React Route | `/orders/:id` |
+| src/App.jsx | React Route | `/orders/:id/track` |
+| src/App.jsx | React Route | `/track-orders` |
 | src/App.jsx | React Route | `/orders` |
+| src/App.jsx | React Route | `/reviews` |
 | src/App.jsx | React Route | `/coupons` |
 | src/App.jsx | React Route | `/categories` |
 | src/App.jsx | React Route | `/users` |

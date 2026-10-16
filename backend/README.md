@@ -340,10 +340,36 @@ Variants can be deleted using the trash action in the product details or variant
 
 Dashboard recent orders accept `recentPage` (1–10,000, default 1). The database applies skip/limit for 5-row pages and the response includes `recentPagination: { page, pageSize, total }`, where total is the full selected-range order count. Statistics and charts remain for the full date range.
 
+## Delivered-purchase customer reviews
+
+`CustomerReview` stores customer submissions separately from the existing admin-managed product review array. `POST /api/account/orders/:id/reviews` accepts `productId`, integer `rating` (1–5), and trimmed `text` (1–2000 characters). The session user must own the order, its status must be delivered, at least 48 hours must have elapsed since delivery, and the product must be in its items and still exist. Author, submission time and pending status are assigned by the server. A unique order/product index prevents duplicate submissions, including concurrent requests. `GET /api/account/orders/:id/reviews` returns only that customer's reviews for their own order.
+
+Order fulfillment writes `deliveredAt` using server time when transitioning to delivered. Repeating that status preserves the original timestamp. Older delivered orders without `deliveredAt` use their saved `updatedAt` as the delivery-time fallback.
+
+Admins use `GET /api/admin/reviews?status=pending&page=1` (20 rows, pending/approved/rejected filters) and `PATCH /api/admin/reviews/:id` with approved or rejected status. Both require an admin session. Moderation atomically changes only pending reviews and records the admin and time. Product detail responses merge only approved customer reviews with legacy admin-managed reviews, using a public projection without customer/order identifiers. Pending and rejected submissions never appear in public product responses. Product-card ratings retain their existing stored rating; detail-page averages include the displayed approved reviews. Customer review images and editing/resubmitting a submitted review are not part of this flow.
+
+Product pages show the five newest reviews. **View all reviews** links to `/products/:id/reviews`, a separate public page displaying all reviews for that product newest first. Approved customer reviews show a **Verified purchase** badge beside the reviewer’s name on both pages; existing manually entered reviews do not receive this badge.
+
+## Sample guest reviews
+
+Run `npm run reviews:sample` from backend for a dry run, or add `-- --write` to append eight guest sample reviews to each active product. Existing reviews are preserved; deterministic IDs make repeat runs safe. Guest sample names display without bracketed labels, and review text has no sample prefix. Repeat writes remove old bracketed name labels and the original sample text prefix from seeded reviews without changing customer reviews or edited feedback. Samples remain editable in the product editor, respect its 100-review limit, and never receive Verified purchase badges. This seed does not change the 48-hour delivery waiting period or customer approval workflow.
+
+## Demo verified reviews
+
+`npm run reviews:sample-verified` checks eligibility without writing. Add `-- --write` to seed up to 12 approved demo reviews using active registered customers with real delivered order items at least 48 hours old. It requires an active admin for moderation attribution, only targets active products, and skips any order/product that already has a customer review, preserving pending, rejected and approved submissions. These are generated demo comments, not customer-authored feedback; the Verified purchase badge reflects the linked eligible purchase. No orders or delivery dates are created or changed.
+
+## Order tracking history
+
+Orders store `statusHistory` entries containing `status` and server-assigned `at`. The Order save hook records the initial status and subsequent changed statuses; unrelated saves do not append events. Delivered events use the recorded `deliveredAt` timestamp. Existing customer receipt lookup (`GET /api/orders/:id`) supplies this history to the tracker and remains scoped to the authenticated order owner. Older orders retain their known creation/delivery timestamps; missing intermediate timestamps are not backfilled with invented dates.
+
+## Shipment booking and waybills
+
+The admin order PATCH accepts `carrier` and `trackingNumber` (trimmed strings up to 100 characters) and a boolean `collected`. A first waybill records server-assigned `shipmentBookedAt`; confirming collection records immutable `carrierCollectedAt`. Client-supplied timestamps are ignored. Same-status updates can save shipment details; completed/cancelled orders remain locked. Shipment details cannot be changed after collection. For orders with a waybill, Shipped/Delivered requires recorded collection. Legacy orders without waybills retain their existing fulfillment behavior. Account order-history responses include the shipment fields; the customer-scoped receipt endpoint supplies them to the tracker.
+
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `9335bd91623b43252544b4d266b68000369764c51c9aeb2f9e137a11450ed884`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `86e871d275d14713ac5bc5b8283d7e3a1101bfd6e853b55cf9ee84fcd70a6369`.
 
 ### Actual npm commands
 
@@ -358,6 +384,8 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | products:sample-variants | `node scripts/add-sample-variants.js` |
 | products:variant-images | `node scripts/add-color-variant-images.js` |
 | images:migrate-blob | `node scripts/migrate-images-to-blob.js` |
+| reviews:sample | `node scripts/add-sample-reviews.js` |
+| reviews:sample-verified | `node scripts/add-verified-sample-reviews.js` |
 
 ### Environment keys used in source
 
@@ -369,7 +397,9 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | --- | --- |
 | [scripts/add-color-variant-images.js](scripts/add-color-variant-images.js) | Internal module / styles |
 | [scripts/add-dummy-product-images.js](scripts/add-dummy-product-images.js) | Internal module / styles |
+| [scripts/add-sample-reviews.js](scripts/add-sample-reviews.js) | Internal module / styles |
 | [scripts/add-sample-variants.js](scripts/add-sample-variants.js) | Internal module / styles |
+| [scripts/add-verified-sample-reviews.js](scripts/add-verified-sample-reviews.js) | Internal module / styles |
 | [scripts/backfill-category-slugs.js](scripts/backfill-category-slugs.js) | Internal module / styles |
 | [scripts/backfill-order-ids.js](scripts/backfill-order-ids.js) | Internal module / styles |
 | [scripts/backfill-product-details.js](scripts/backfill-product-details.js) | Internal module / styles |
@@ -389,6 +419,8 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/controllers/dashboardController.test.js](src/controllers/dashboardController.test.js) | Internal module / styles |
 | [src/controllers/productController.js](src/controllers/productController.js) | adminProducts, deleteProduct, listProducts, productDetails, productFields, productNavigation, publicProduct, saveProduct, storefrontProductDetails |
 | [src/controllers/productController.test.js](src/controllers/productController.test.js) | Internal module / styles |
+| [src/controllers/reviewController.js](src/controllers/reviewController.js) | approvedReviews, canReview, listReviews, moderateReview, orderReviews, reviewAvailableAt, submitReview |
+| [src/controllers/reviewController.test.js](src/controllers/reviewController.test.js) | Internal module / styles |
 | [src/controllers/userActions.test.js](src/controllers/userActions.test.js) | Internal module / styles |
 | [src/controllers/userController.js](src/controllers/userController.js) | createUser, deleteUser, editUser, listUsers, userDetails |
 | [src/controllers/userController.test.js](src/controllers/userController.test.js) | Internal module / styles |
@@ -397,6 +429,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/models/Category.js](src/models/Category.js) | categorySlug |
 | [src/models/Counter.js](src/models/Counter.js) | default export |
 | [src/models/Coupon.js](src/models/Coupon.js) | default export |
+| [src/models/CustomerReview.js](src/models/CustomerReview.js) | default export |
 | [src/models/Order.js](src/models/Order.js) | default export |
 | [src/models/Product.js](src/models/Product.js) | default export |
 | [src/models/ProductVariant.js](src/models/ProductVariant.js) | default export |
@@ -419,10 +452,14 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/services/loginStatus.test.js](src/services/loginStatus.test.js) | Internal module / styles |
 | [src/services/orderIds.js](src/services/orderIds.js) | initializeOrderIds, nextOrderId |
 | [src/services/orderIds.test.js](src/services/orderIds.test.js) | Internal module / styles |
+| [src/services/orderTracking.js](src/services/orderTracking.js) | recordOrderStatus |
+| [src/services/orderTracking.test.js](src/services/orderTracking.test.js) | Internal module / styles |
 | [src/services/productImages.js](src/services/productImages.js) | blobStorageConfigured, createImageUploadHandler, imageExtension, uploadFilename, uploadProductImage |
 | [src/services/productImages.test.js](src/services/productImages.test.js) | Internal module / styles |
 | [src/services/search.js](src/services/search.js) | searchTerms, textSearch |
 | [src/services/search.test.js](src/services/search.test.js) | Internal module / styles |
+| [src/services/shipments.js](src/services/shipments.js) | updateShipment |
+| [src/services/shipments.test.js](src/services/shipments.test.js) | Internal module / styles |
 | [src/services/tryOn.test.js](src/services/tryOn.test.js) | Internal module / styles |
 | [src/services/userIds.js](src/services/userIds.js) | initializeUserIds, nextUserId |
 | [src/services/userIds.test.js](src/services/userIds.test.js) | Internal module / styles |
@@ -439,6 +476,8 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | --- | --- | --- |
 | src/routes/accountRoutes.js | router.patch | `/profile` |
 | src/routes/accountRoutes.js | router.get | `/orders` |
+| src/routes/accountRoutes.js | router.get | `/orders/:id/reviews` |
+| src/routes/accountRoutes.js | router.post | `/orders/:id/reviews` |
 | src/routes/authRoutes.js | router.post | `/register` |
 | src/routes/authRoutes.js | router.post | `/login` |
 | src/routes/authRoutes.js | router.get | `/me` |
@@ -448,6 +487,8 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/routes/categoryRoutes.js | adminCategories.get | `/` |
 | src/routes/categoryRoutes.js | adminCategories.post | `/` |
 | src/routes/categoryRoutes.js | adminCategories.patch | `/:id` |
+| src/routes/commerceRoutes.js | commerceAdmin.get | `/reviews` |
+| src/routes/commerceRoutes.js | commerceAdmin.patch | `/reviews/:id` |
 | src/routes/commerceRoutes.js | commerceAdmin.get | `/coupons` |
 | src/routes/commerceRoutes.js | commerceAdmin.get | `/coupons/:id` |
 | src/routes/commerceRoutes.js | commerceAdmin.post | `/coupons` |
@@ -543,12 +584,36 @@ schema.pre('validate',function(){if(this.type==='percentage'&&this.value>100)thi
 export default mongoose.model('Coupon',schema);
 ```
 
+#### CustomerReview.js
+
+```js
+// Generated directly from backend/src/models/CustomerReview.js; edit the source model, not this excerpt.
+import mongoose from 'mongoose';
+
+const schema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  order: { type: mongoose.Schema.Types.ObjectId, ref: 'Order', required: true },
+  product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+  name: { type: String, required: true, trim: true, maxlength: 100 },
+  rating: { type: Number, required: true, min: 1, max: 5, validate: Number.isInteger },
+  text: { type: String, required: true, trim: true, maxlength: 2000 },
+  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+  moderatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  moderatedAt: { type: Date, default: null },
+}, { timestamps: true });
+schema.index({ order: 1, product: 1 }, { unique: true });
+schema.index({ product: 1, status: 1, createdAt: -1 });
+schema.index({ status: 1, createdAt: -1, _id: -1 });
+export default mongoose.model('CustomerReview', schema);
+```
+
 #### Order.js
 
 ```js
 // Generated directly from backend/src/models/Order.js; edit the source model, not this excerpt.
 import mongoose from 'mongoose';
 import {nextOrderId} from '../services/orderIds.js';
+import { recordOrderStatus } from '../services/orderTracking.js';
 
 const orderSchema = new mongoose.Schema({
   orderId:{type:Number,immutable:true,unique:true,sparse:true,min:1,validate:Number.isSafeInteger},
@@ -567,6 +632,15 @@ const orderSchema = new mongoose.Schema({
   }],
   totalAmount: { type: Number, required: true, min: 0 },
   currency: { type: String, default: 'INR' },
+  deliveredAt: { type: Date, default: null },
+  trackingNumber: { type: String, trim: true, maxlength: 100, default: '' },
+  carrier: { type: String, trim: true, maxlength: 100, default: '' },
+  shipmentBookedAt: { type: Date, default: null },
+  carrierCollectedAt: { type: Date, default: null },
+  statusHistory: { type: [{
+    status: { type: String, enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'], required: true },
+    at: { type: Date, required: true },
+  }], default: [] },
   status: {
     type: String,
     enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'],
@@ -581,6 +655,9 @@ orderSchema.index({ createdAt: -1, _id: -1 });
 orderSchema.index({ status: 1, createdAt: -1, _id: -1 });
 
 orderSchema.pre('save',async function(){if(this.isNew&&!this.$locals.orderIdAssigned){this.orderId=await nextOrderId(this.$session());this.$locals.orderIdAssigned=true;}});
+orderSchema.pre('save', function () {
+  recordOrderStatus(this);
+});
 export default mongoose.model('Order', orderSchema);
 ```
 

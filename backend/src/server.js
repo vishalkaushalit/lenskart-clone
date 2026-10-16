@@ -19,6 +19,7 @@ import userRoutes from './routes/userRoutes.js';
 import { initializeUserIds } from './services/userIds.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import ProductVariant from './models/ProductVariant.js';
+import CustomerReview from './models/CustomerReview.js';
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -104,7 +105,7 @@ export function initializeApp() {
       },
     }));
 
-    await Promise.all([User.init(),Order.init(),Coupon.init(),ProductVariant.init()]);
+    await Promise.all([User.init(),Order.init(),Coupon.init(),ProductVariant.init(),CustomerReview.init()]);
     app.use('/api/categories',publicCategories);
     app.use('/api/admin/categories',adminCategories);
     app.use('/api/admin', commerceAdmin);
