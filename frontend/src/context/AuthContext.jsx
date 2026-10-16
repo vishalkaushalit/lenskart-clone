@@ -7,6 +7,18 @@ import { apiRequest } from '../api/api';
 
 import {AuthContext} from './AuthState';
 
+const sessionHintKey = 'store-session-present';
+function hasSessionHint() {
+  try { return localStorage.getItem(sessionHintKey) === '1'; }
+  catch { return true; }
+}
+function rememberSession(present) {
+  try {
+    if (present) localStorage.setItem(sessionHintKey, '1');
+    else localStorage.removeItem(sessionHintKey);
+  } catch { /* Cookie sessions still work when browser storage is unavailable. */ }
+}
+
 export function AuthProvider({ children }) {
   const { notify } = useStore();
   const [user, setUser] = useState(null);
@@ -17,10 +29,15 @@ export function AuthProvider({ children }) {
     let active = true;
 
     async function checkSession() {
+      if (!hasSessionHint()) {
+        if (active) setLoading(false);
+        return;
+      }
       try {
         const data = await apiRequest('/auth/me');
         if (active) setUser(data.user);
       } catch (error) {
+        if (error.status === 401) rememberSession(false);
         if (active && error.status !== 401) {
           setError('Unable to check your login. Please reload the page.');
         }
@@ -42,6 +59,7 @@ export function AuthProvider({ children }) {
       body: JSON.stringify({ email, password }),
     });
 
+    rememberSession(true);
     setUser(data.user);
     notify('Logged in successfully.');
     setError('');
@@ -53,6 +71,7 @@ export function AuthProvider({ children }) {
       method: 'POST',
     });
 
+    rememberSession(false);
     setUser(null);
     notify('Logged out successfully.');
   }

@@ -128,7 +128,7 @@ Storage keys:
 - localStorage `collection-favorites`: product IDs for wishlist.
 - localStorage `store-cart`: cart item array.
 - sessionStorage `store-coupon-code`: entered code only.
-- Authentication resides in the HTTP-only backend session cookie, not localStorage.
+- Authentication resides in the HTTP-only backend session cookie. A non-sensitive localStorage flag (`store-session-present`) is set after login and removed after logout or a failed session check. Guest visits skip `/auth/me`; returning users with the flag still require server validation. If storage is unavailable, session lookup falls back to the server. Sessions created before this flag was introduced require signing in once again.
 
 The provider validates stored arrays, handles malformed storage, and listens for cross-tab storage updates. Product details are fetched afresh by saved IDs, so removed/unavailable products get a recoverable empty/error state.
 
@@ -326,7 +326,7 @@ Try-on images are shared across sizes of the same color: upload and save an imag
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `d65bf65f8c9e2e68554138f8245effbe873fc2e60ef1fe15788d12e211fdba33`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `b5766d6482d8b6376e1a793f66358ca659e931ae3fec604e3e78e5f3eaefa0b0`.
 
 ### Actual npm commands
 
