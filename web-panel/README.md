@@ -251,7 +251,7 @@ Try-on images are shared across sizes of the same color: upload and save an imag
 
 ## Customer review approvals
 
-Open **Reviews & Approvals** (`/reviews`) from the sidebar to moderate reviews submitted by customers for delivered orders. The queue defaults to Pending and supports Approved/Rejected filters and 20-row pagination. Each row shows the product, customer display name, order link, delivery date, rating, full review and submission date. Approve publishes the review under the product; Reject keeps it private. Decisions are final in this flow, and concurrent/repeated decisions return a conflict. Existing reviews entered in the product editor remain separately managed.
+Open **Reviews & Approvals** (`/reviews`) from the sidebar to moderate reviews submitted by customers for delivered orders. The queue defaults to All and supports Pending/Approved/Rejected filters and 20-row pagination. Each row shows the product, customer display name, order link, delivery date, rating, full review and submission date. Approve publishes the review under the product; Reject keeps it private. Decisions are final in this flow, and concurrent/repeated decisions return a conflict. Existing reviews entered in the product editor remain separately managed.
 
 Marking an order Delivered records the server delivery time and customer review submission in Order History unlocks 48 hours later. Older delivered orders use their last-update date as the delivery-date fallback. Submission eligibility and admin permissions are enforced by the API.
 
@@ -265,12 +265,12 @@ In Orders → Edit, enter Carrier and Waybill / tracking number and save while l
 
 ## Admin order tracking
 
-**Track Orders** opens `/track-orders`, a searchable 20-row order list with carrier and waybill columns. Select **Track** to open `/orders/:id/track`, showing shipment details, customer/address and the complete fulfillment timeline in IST. Order Details also links to tracking. Both tracking routes are protected by AdminRoute and use the existing admin-only order endpoints. Active shipments refresh every 30 seconds while visible, with manual refresh available. The shared timeline and shipment wording match the customer tracker, including booked-before-collection wording and unknown historical timestamps. Use Update shipment to edit fulfillment details.
+Tracking is accessed through the truck icon in Orders; there is no separate Track Orders sidebar link. The `/track-orders` route remains available as a searchable 20-row order list with carrier and waybill columns. Select the truck icon (**Track order**) to open `/orders/:id/track`, showing shipment details, customer/address and the complete fulfillment timeline in IST. Order Details also links to tracking. Both tracking routes are protected by AdminRoute and use the existing admin-only order endpoints. Active shipments refresh every 30 seconds while visible, with manual refresh available. The shared timeline and shipment wording match the customer tracker, including booked-before-collection wording and unknown historical timestamps. Use Update shipment to edit fulfillment details.
 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `8e66f4dec70e387ac603bd37d416782ae1afdf4c4acfd685a4441fc6fde87b6b`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `f1af244279f72b6dadc50475811dd340378a2ba84dd09c9b67b16c5ff241ae55`.
 
 ### Actual npm commands
 

@@ -45,10 +45,10 @@ export async function submitReview(req, res, next) {
 }
 export async function listReviews(req, res, next) {
   const page = Number(req.query.page || 1);
-  const status = req.query.status || 'pending';
-  if (!Number.isSafeInteger(page) || page < 1 || page > 10000 || !['pending', 'approved', 'rejected'].includes(status)) return res.status(400).json({ message: 'Invalid review page or status.' });
+  const status = req.query.status || 'all';
+  if (!Number.isSafeInteger(page) || page < 1 || page > 10000 || !['all', 'pending', 'approved', 'rejected'].includes(status)) return res.status(400).json({ message: 'Invalid review page or status.' });
   try {
-    const filter = { status };
+    const filter = status === 'all' ? {} : { status };
     const [total, reviews] = await Promise.all([
       CustomerReview.countDocuments(filter),
       CustomerReview.find(filter).populate('product', 'name').populate('order', 'orderId deliveredAt updatedAt').sort({ createdAt: -1, _id: -1 }).skip((page - 1) * 20).limit(20).lean(),

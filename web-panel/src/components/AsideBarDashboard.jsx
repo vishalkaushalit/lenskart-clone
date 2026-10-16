@@ -93,9 +93,6 @@ const AsideBarDashboard = ({ isOpen, isDesktop, onClose }) => {
           <NavLink to="/coupons" onClick={onClose} className={navigationClass}>Coupons</NavLink>
           <NavLink to="/orders" onClick={onClose} className={navigationClass}>Orders</NavLink>
           <NavLink to="/reviews" onClick={onClose} className={navigationClass}>Reviews &amp; Approvals</NavLink>
-          <NavLink to="/track-orders" onClick={onClose} className={navigationClass}>
-            Track Orders
-          </NavLink>
 
           <div className="my-6 border-t border-white/10" />
 

@@ -169,3 +169,13 @@ test('product reviews are sorted newest first across approved purchases and exis
   assert.equal(res.body.product.reviews[1].verifiedPurchase, true);
   assert.equal(res.body.product.reviews[0].verifiedPurchase, undefined);
 });
+
+test('admin queue defaults to all statuses and retains explicit status filtering', async t => {
+  let counted;
+  t.mock.method(CustomerReview, 'countDocuments', async filter => { counted = filter; return 3; });
+  t.mock.method(CustomerReview, 'find', filter => { assert.deepEqual(filter, counted); return query([{ status: 'pending' }, { status: 'approved' }, { status: 'rejected' }]); });
+  for (const [params, expected] of [[{}, {}], [{ status: 'all' }, {}], [{ status: 'pending' }, { status: 'pending' }], [{ status: 'approved' }, { status: 'approved' }], [{ status: 'rejected' }, { status: 'rejected' }]]) {
+    const res = response(); await listReviews({ query: params }, res, assert.ifError);
+    assert.deepEqual(counted, expected); assert.equal(res.body.total, 3);
+  }
+});

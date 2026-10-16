@@ -346,7 +346,7 @@ Dashboard recent orders accept `recentPage` (1–10,000, default 1). The databas
 
 Order fulfillment writes `deliveredAt` using server time when transitioning to delivered. Repeating that status preserves the original timestamp. Older delivered orders without `deliveredAt` use their saved `updatedAt` as the delivery-time fallback.
 
-Admins use `GET /api/admin/reviews?status=pending&page=1` (20 rows, pending/approved/rejected filters) and `PATCH /api/admin/reviews/:id` with approved or rejected status. Both require an admin session. Moderation atomically changes only pending reviews and records the admin and time. Product detail responses merge only approved customer reviews with legacy admin-managed reviews, using a public projection without customer/order identifiers. Pending and rejected submissions never appear in public product responses. Product-card ratings retain their existing stored rating; detail-page averages include the displayed approved reviews. Customer review images and editing/resubmitting a submitted review are not part of this flow.
+Admins use `GET /api/admin/reviews?status=all&page=1` (20 rows, all/pending/approved/rejected filters) and `PATCH /api/admin/reviews/:id` with approved or rejected status. Both require an admin session. Moderation atomically changes only pending reviews and records the admin and time. Product detail responses merge only approved customer reviews with legacy admin-managed reviews, using a public projection without customer/order identifiers. Pending and rejected submissions never appear in public product responses. Product-card ratings retain their existing stored rating; detail-page averages include the displayed approved reviews. Customer review images and editing/resubmitting a submitted review are not part of this flow.
 
 Product pages show the five newest reviews. **View all reviews** links to `/products/:id/reviews`, a separate public page displaying all reviews for that product newest first. Approved customer reviews show a **Verified purchase** badge beside the reviewer’s name on both pages; existing manually entered reviews do not receive this badge.
 
@@ -369,7 +369,7 @@ The admin order PATCH accepts `carrier` and `trackingNumber` (trimmed strings up
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `86e871d275d14713ac5bc5b8283d7e3a1101bfd6e853b55cf9ee84fcd70a6369`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `9ccf3e3899d83a20b57c79901b7c8394ce922af2134a254de517421050cf1186`.
 
 ### Actual npm commands
 
