@@ -358,7 +358,7 @@ Collection category tabs and empty-result indicators use a rectangular eyeglasse
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `11111ff93d135774a1b3acdc4fe01a078c17f8b32533b4f7e1a3cba3720e79bd`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e3e80c0ceb70da90b6ff7d89c78834925a0d5ad5f145bcf3b942e09c1ee4b54b`.
 
 ### Actual npm commands
 

@@ -389,7 +389,7 @@ Product detail endpoints fetch variants and approved reviews concurrently after 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `5155c15a809057dedab2b3ec22fb1f319bca342d469d2ad52fc055177ebd8309`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `2df9e3bf3c7b482ed234a9c0c59edec97bb11ac9ac4d0ed51066f8fc447a0520`.
 
 ### Actual npm commands
 
@@ -847,6 +847,7 @@ export default mongoose.model('ProductVariant', schema);
 // Generated directly from backend/src/models/SiteSeo.js; edit the source model, not this excerpt.
 import mongoose from 'mongoose';
 const schema = new mongoose.Schema({
+  redirects: { type: [{ _id: false, from: String, to: String }], default: [] },
   productPrefix: { type: String, default: '/products' },
   collectionPrefix: { type: String, default: '/collection' },
   productPrefixHistory: { type: [String], default: [] },

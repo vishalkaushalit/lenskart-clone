@@ -227,7 +227,7 @@ All supported administration actions use dedicated pages, with data fetched from
 | Orders | `/orders/:id` | Customer checkout | `/orders/:id/edit` |
 | Current profile | `/profile` | Registration | `/profile/edit` |
 
-`ResourceDetails.jsx` displays category, coupon and user fields. `ResourceEdit.jsx` preserves the existing fields and validators for category/coupon/user creation and editing, and order status editing. User creation requires a password; user editing does not change passwords. Self role/access controls remain locked. Categories retain their image-upload control and immutable parent when editing. Coupon expiry is saved at the end of the selected day in India. Orders retain forward-only status transitions and terminal-state restrictions; their details page is read-only. Successful saves show a notification and return to the list; failures retain the entered values. Variants keep the compact image gallery on separate add/edit pages, while the variant list shows View/Edit actions.
+`ResourceDetails.jsx` displays category, coupon and user fields; category detail headers use the saved category name. `ResourceEdit.jsx` preserves the existing fields and validators for category/coupon/user creation and editing, and order status editing. User creation requires a password; user editing does not change passwords. Self role/access controls remain locked. Categories retain their image-upload control and immutable parent when editing. Coupon expiry is saved at the end of the selected day in India. Orders retain forward-only status transitions and terminal-state restrictions; their details page is read-only. Successful saves show a notification and return to the list; failures retain the entered values. Variants keep the compact image gallery on separate add/edit pages, while the variant list shows View/Edit actions.
 
 ## Managing size/color variants
 
@@ -290,7 +290,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `477a191b048900cbfdeb42443984e65500d162e03482a7a1b3f4fd7a785487d9`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `b0476bef5575b88f139e395b316026ccf1005de19ce02b2d31e6c136fe410077`.
 
 ### Actual npm commands
 
@@ -323,7 +323,6 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/DataTable.jsx](src/components/DataTable.jsx) | DataTable |
 | [src/components/DeleteRecordButton.jsx](src/components/DeleteRecordButton.jsx) | DeleteRecordButton |
 | [src/components/ImageUploadField.jsx](src/components/ImageUploadField.jsx) | ImageUploadField |
-| [src/components/LegacyCollectionRedirect.jsx](src/components/LegacyCollectionRedirect.jsx) | LegacyCollectionRedirect |
 | [src/components/Loader.jsx](src/components/Loader.jsx) | Internal module / styles |
 | [src/components/NotificationPopup.jsx](src/components/NotificationPopup.jsx) | NotificationPopup |
 | [src/components/PageHeader.jsx](src/components/PageHeader.jsx) | PageHeader |
@@ -335,6 +334,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/ProductImageLibrary.jsx](src/components/ProductImageLibrary.jsx) | ProductImageLibrary |
 | [src/components/ProductVariants.jsx](src/components/ProductVariants.jsx) | ProductVariants |
 | [src/components/RecentOrders.jsx](src/components/RecentOrders.jsx) | RecentOrders |
+| [src/components/RedirectSettings.jsx](src/components/RedirectSettings.jsx) | RedirectSettings |
 | [src/components/ReviewDeleteButton.jsx](src/components/ReviewDeleteButton.jsx) | ReviewDeleteButton |
 | [src/components/SearchEngineListing.jsx](src/components/SearchEngineListing.jsx) | SearchEngineListing |
 | [src/components/StatDashboard.jsx](src/components/StatDashboard.jsx) | StatDashboard |
@@ -408,7 +408,6 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/App.jsx | React Route | `/orders` |
 | src/App.jsx | React Route | `/reviews` |
 | src/App.jsx | React Route | `/coupons` |
-| src/App.jsx | React Route | `/categories/*` |
 | src/App.jsx | React Route | `/collections` |
 | src/App.jsx | React Route | `/users` |
 | src/App.jsx | React Route | `/profile` |
@@ -430,6 +429,7 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/pages/Categories.jsx | params.get | `page` |
 | src/pages/Commerce.jsx | params.get | `search` |
 | src/pages/Commerce.jsx | params.get | `page` |
+| src/pages/SiteSeoSettings.jsx | params.get | `tab` |
 | src/pages/Users.jsx | searchParams.get | `page` |
 | src/pages/Users.jsx | searchParams.get | `search` |
 | src/pages/Users.jsx | next.delete | `search` |
