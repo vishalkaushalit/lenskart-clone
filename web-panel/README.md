@@ -290,7 +290,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `8b4977b70aa87664a571666bfb2659d31fdf90595d8bef1e1682f7bf33d7aa22`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `12e24a3dca8ee67c51e74788494a3cfc9819f439b7caef402dda58b30a9f9b4a`.
 
 ### Actual npm commands
 
@@ -575,6 +575,6 @@ Page URL is an editable path (e.g. `/favorites`), with its full address shown un
 
 ### Store URL settings
 
-The sidebar **Settings** link opens `/seo/settings`. Store URL prefixes control the product route (default `/products`) and collection listing route (default `/collection`). Use a single lowercase path segment, such as `/frames` or `/collections`. Saving retains prior prefixes as permanent redirects; product slugs, review suffixes and collection query filters remain intact. Reserved and conflicting prefixes are rejected. Reload the storefront after saving. Uploaded custom sitemaps must be updated manually.
+The sidebar **Settings** link opens `/seo/settings`. Store URL prefixes control the product route (default `/products`) and collection listing route (default `/collection`). Use a single lowercase path segment, such as `/frames` or `/collections`. Saving retains prior prefixes as permanent redirects; product slugs, review suffixes and collection query filters remain intact. Delete an automatic redirect from the table to remove its saved page redirect or prefix history; deleting a product-prefix redirect removes both its product and review prefix redirects. Reserved and conflicting prefixes are rejected. Reload the storefront after saving URL settings or deleting an automatic redirect. Uploaded custom sitemaps must be updated manually.
 
 Admin collection management uses `/collections`, `/collections/add`, `/collections/:id`, and `/collections/:id/edit`. Legacy admin `/categories` routes are removed and show Page not found. Database categories and admin API endpoints remain compatible.

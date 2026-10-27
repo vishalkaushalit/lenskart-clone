@@ -14,6 +14,33 @@ export const publicSiteSeo = express.Router();
 adminSiteSeo.use(requireAuth,requireRole('admin'));
 const settings = async () => await SiteSeo.findOne({key:'site'}).lean() || {};
 adminSiteSeo.get('/', async (req,res) => res.json({settings:await settings()}));
+adminSiteSeo.delete('/redirects', async (req,res) => {
+  const from=req.query.from;
+  if(typeof from!=='string'||from.length>300||!/^\/(?:[a-zA-Z0-9_%.-]+|:[a-zA-Z][a-zA-Z0-9]*)(?:\/(?:[a-zA-Z0-9_%.-]+|:[a-zA-Z][a-zA-Z0-9]*))*$/.test(from)||from.split('/').some(part=>part==='.'||part==='..')||/^\/(api|admin|assets)(?:\/|$)/.test(from))return res.status(400).json({message:'Choose a valid automatic redirect.'});
+  const site=await settings();
+  const productPrefix=(site.productPrefixHistory||[]).find(prefix=>from===`${prefix}/:id`||from===`${prefix}/:id/reviews`);
+  const collectionPrefix=(site.collectionPrefixHistory||[]).find(prefix=>from===prefix);
+  if(productPrefix||collectionPrefix) {
+    const field=productPrefix?'productPrefixHistory':'collectionPrefixHistory';
+    const prefix=productPrefix||collectionPrefix;
+    const updated=await SiteSeo.findOneAndUpdate({key:'site'},{$pull:{[field]:prefix}},{new:true});
+    if(!updated)return res.status(404).json({message:'Automatic redirect not found.'});
+    return res.json({removed:from});
+  }
+  const pageRedirect=await PageSeo.findOne({redirects:from}).lean();
+  if(pageRedirect) {
+    const updated=await PageSeo.findOneAndUpdate({path:pageRedirect.path},{$pull:{redirects:from}},{new:true});
+    if(!updated)return res.status(404).json({message:'Automatic redirect not found.'});
+    return res.json({removed:from});
+  }
+  const page=await PageSeo.findOne({path:from}).lean();
+  if(page?.redirectOld&&(page.urlPath||page.path)!==from) {
+    const updated=await PageSeo.findOneAndUpdate({path:page.path},{$set:{redirectOld:false}},{new:true});
+    if(!updated)return res.status(404).json({message:'Automatic redirect not found.'});
+    return res.json({removed:from});
+  }
+  return res.status(404).json({message:'Automatic redirect not found.'});
+});
 adminSiteSeo.put('/', async (req,res) => {
   let fields;
   try { fields=siteSeoFields(req.body || {}); } catch(error) { return res.status(400).json({message:error.message}); }

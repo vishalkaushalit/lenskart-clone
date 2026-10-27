@@ -389,7 +389,7 @@ Product detail endpoints fetch variants and approved reviews concurrently after 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `2df9e3bf3c7b482ed234a9c0c59edec97bb11ac9ac4d0ed51066f8fc447a0520`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `c3eec34f03516976ce44f22e657b2e0148882cbc7f7280e046256fc4346b7e09`.
 
 ### Actual npm commands
 
@@ -559,6 +559,7 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/routes/seoRoutes.js | adminSeo.get | `/` |
 | src/routes/seoRoutes.js | adminSeo.put | `/` |
 | src/routes/siteSeoRoutes.js | adminSiteSeo.get | `/` |
+| src/routes/siteSeoRoutes.js | adminSiteSeo.delete | `/redirects` |
 | src/routes/siteSeoRoutes.js | adminSiteSeo.put | `/` |
 | src/routes/siteSeoRoutes.js | publicSiteSeo.get | `/settings` |
 | src/routes/siteSeoRoutes.js | req.get | `host` |

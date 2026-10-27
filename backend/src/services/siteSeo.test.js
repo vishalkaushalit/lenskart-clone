@@ -93,7 +93,35 @@ test('old page addresses return a permanent redirect retaining query parameters'
     assert.deepEqual(result,{code:301,url:'/favorites?source=menu'});
   }
 });
-
+test('automatic redirects can be deleted from saved prefix history',async t=>{
+  t.mock.method(SiteSeo,'findOne',()=>({async lean(){return {collectionPrefixHistory:['/collections']};}}));
+  t.mock.method(SiteSeo,'findOneAndUpdate',(filter,update)=>{
+    assert.deepEqual(filter,{key:'site'});
+    assert.deepEqual(update,{$pull:{collectionPrefixHistory:'/collections'}});
+    return Promise.resolve({});
+  });
+  const handler=adminSiteSeo.stack.find(layer=>layer.route?.path==='/redirects'&&layer.route.methods.delete).route.stack[0].handle;
+  const res={status(code){this.code=code;return this;},json(body){this.body=body;return this;}};
+  await handler({query:{from:'/collections'}},res);
+  assert.equal(res.body.removed,'/collections');
+});
+test('automatic page redirects can be deleted and invalid redirect paths are rejected',async t=>{
+  t.mock.method(SiteSeo,'findOne',()=>({async lean(){return {} ;}}));
+  t.mock.method(PageSeo,'findOne',query=>({async lean(){return query.redirects==='/saved-frames'?{path:'/wishlist'}:null;}}));
+  t.mock.method(PageSeo,'findOneAndUpdate',(filter,update)=>{
+    assert.deepEqual(filter,{path:'/wishlist'});
+    assert.deepEqual(update,{$pull:{redirects:'/saved-frames'}});
+    return Promise.resolve({});
+  });
+  const handler=adminSiteSeo.stack.find(layer=>layer.route?.path==='/redirects'&&layer.route.methods.delete).route.stack[0].handle;
+  const response=()=>({status(code){this.code=code;return this;},json(body){this.body=body;return this;}});
+  const removed=response();
+  await handler({query:{from:'/saved-frames'}},removed);
+  assert.equal(removed.body.removed,'/saved-frames');
+  const invalid=response();
+  await handler({query:{from:'/api/admin'}},invalid);
+  assert.equal(invalid.code,400);
+});
 test('URL prefixes reject reserved and malformed values',()=>{
  for(const productPrefix of ['/admin','/cart','/frames/nested','/Frames','//frames','/frames?x=1']) assert.throws(()=>siteSeoFields({...empty,productPrefix}));
  assert.equal(siteSeoFields({...empty,productPrefix:'/frames',collectionPrefix:'/collections'}).productPrefix,'/frames');
