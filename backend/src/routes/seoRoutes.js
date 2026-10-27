@@ -50,7 +50,7 @@ adminSeo.put('/', async (req, res) => {
     if(typeof req.body.redirectOld!=='boolean')return res.status(400).json({message:'Choose whether to redirect the old URL.'});
     if(requested!==path && (editableStorePages.some(page=>page.path===requested)||/^\/(api|admin|assets|products|orders|thank-you)(?:\/|$)/.test(requested)||['/robots.txt','/sitemap.xml','/index.html','/favicon.ico','/favicon.svg'].includes(requested)))return res.status(400).json({message:'This URL is reserved or belongs to another page.'});
     const site=await SiteSeo.findOne({key:'site'}).lean() || {};
-    const reservedPrefixes=[site.productPrefix || '/products',...(site.productPrefixHistory || []),site.collectionPrefix || '/collection',...(site.collectionPrefixHistory || [])];
+    const reservedPrefixes=[site.productPrefix || '/products',...(site.productPrefixHistory || []),site.collectionPrefix || '/collections',...(site.collectionPrefixHistory || [])];
     if(path!=='/collection'&&reservedPrefixes.some(prefix=>requested===prefix||requested.startsWith(prefix+'/')))return res.status(409).json({message:'This URL is reserved for products or collections.'});
     if(path==='/collection'&&site.collectionPrefix&&requested!==site.collectionPrefix&&requested!==path)return res.status(400).json({message:'Manage the collection URL prefix in Settings.'});
     const conflict=await PageSeo.findOne({path:{$ne:path},$or:[{urlPath:requested},{redirects:requested}]}).lean();

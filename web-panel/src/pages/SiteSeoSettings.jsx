@@ -7,7 +7,7 @@ import PageHeader from '../components/PageHeader';
 import Loader from '../components/Loader';
 import NotificationPopup from '../components/NotificationPopup';
 import { apiRequest, frontendUrl } from '../api';
-const defaults={redirects:[],productPrefix:'/products',collectionPrefix:'/collection',websiteUrl:'',googleVerification:'',metaVerification:'',trackingMode:'off',gtmId:'',ga4Id:'',googleAdsId:'',sitemap:'',robots:''};
+const defaults={redirects:[],productPrefix:'/products',collectionPrefix:'/collections',websiteUrl:'',googleVerification:'',metaVerification:'',trackingMode:'off',gtmId:'',ga4Id:'',googleAdsId:'',sitemap:'',robots:''};
 export default function SiteSeoSettings(){
   const [params,setParams]=useSearchParams();
   const tab=params.get('tab')==='redirects'?'redirects':'general';
@@ -34,7 +34,7 @@ export default function SiteSeoSettings(){
     {error&&<div role="alert">{error}<button type="button" className="admin-button-secondary ml-3" onClick={()=>{setError('');setAttempt(value=>value+1);}}>Retry</button></div>}
     {form&&<form onSubmit={save} className="space-y-5"><fieldset disabled={busy} className="space-y-5"><div id={`settings-${tab}`} role="tabpanel" className="space-y-5">{tab==='general'?<>
       <section className="product-panel seo-editor space-y-5"><h2 className="product-panel-title">Store URL prefixes</h2>
-        <div className="grid gap-5 md:grid-cols-2">{[['productPrefix','Products','/products'],['collectionPrefix','Collections','/collection']].map(([key,label,placeholder])=><label key={key} className="product-label block">{label}<input required className="product-field" value={form[key]} placeholder={placeholder} maxLength={61} pattern="/[a-z][a-z0-9-]{0,59}" onChange={event=>field(key,event.target.value)}/><span className="mt-2 block text-xs font-normal text-slate-500">{(form.websiteUrl || frontendUrl)+form[key]}{key==='productPrefix'?'/product-slug':'?category=collection-slug'}</span></label>)}</div>
+        <div className="grid gap-5 md:grid-cols-2">{[['productPrefix','Products','/products'],['collectionPrefix','Collections','/collections']].map(([key,label,placeholder])=><label key={key} className="product-label block">{label}<input required className="product-field" value={form[key]} placeholder={placeholder} maxLength={61} pattern="/[a-z][a-z0-9-]{0,59}" onChange={event=>field(key,event.target.value)}/><span className="mt-2 block text-xs font-normal text-slate-500">{(form.websiteUrl || frontendUrl)+form[key]}{key==='productPrefix'?'/product-slug':<span className="mt-1 block">Category URLs use {frontendUrl}/collections/collection-slug</span>}</span></label>)}</div>
         <p className="text-sm text-slate-500">Changes apply across the store. Old prefixes permanently redirect (301), keeping product slugs and collection filters. The automatic sitemap updates after saving. Reload the storefront to load new routes.</p>
       </section>
       <section className="product-panel seo-editor space-y-5"><h2 className="product-panel-title">Google &amp; Meta verification</h2>

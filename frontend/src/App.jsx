@@ -30,6 +30,7 @@ export default function App() {
     <Route element={<StoreLayout />}>
       {settings.filter(row=>row.redirectOnly).map(row=><Route key={row.path} path={row.path} element={<RedirectPage to={row.urlPath}/>}/>)}
       {storePages.filter(page => page.layout === 'store' && !page.protected).map(page=>pageRoute(page,settings))}
+      {settings.filter(row=>row.path==='/collection/:category'&&!row.redirectOnly).flatMap(row=>[...new Set([row.path,row.urlPath,...(row.redirects||[])])].filter(Boolean).map(path=><Route key={path} path={path} element={path!==row.urlPath&&(row.redirectOld||row.redirects?.includes(path))?<RedirectPage to={row.urlPath}/>:<components.Collection/>}/>))}
       <Route element={<ProtectedRoute />}>
         {storePages.filter(page => page.layout === 'store' && page.protected).map(page=>pageRoute(page,settings))}
       </Route>

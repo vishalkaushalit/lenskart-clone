@@ -13,7 +13,7 @@ export default function RedirectSettings({settings,onChange,notify}) {
  const [removed,setRemoved]=useState([]);
  useEffect(()=>{const controller=new AbortController();apiRequest('/admin/seo/all',{signal:controller.signal}).then(data=>setPages(data.pages || [])).catch(err=>{if(!controller.signal.aborted)setError(err.message);});return()=>controller.abort();},[attempt]);
  const custom=settings.redirects || [];
- const automatic=[...prefixRoutes(settings,pages).map(row=>({...row,editHref:'/seo/settings'})),...pages.filter(row=>row.path!=='/collection').map(row=>({...row,editHref:`/seo/${seoPageKey(row.path)}/edit`}))].flatMap(row=>[...new Set([...(row.redirectOld?[row.path]:[]),...(row.redirects || [])])].filter(path=>path!==(row.urlPath || row.path)).map(path=>({from:path,to:row.urlPath || row.path,automatic:true,editHref:row.editHref}))).filter(row=>!removed.includes(row.from));
+ const automatic=[...prefixRoutes(settings,pages).filter(row=>row.path!=='/collection/:category').map(row=>({...row,editHref:'/seo/settings'})),...pages.filter(row=>row.path!=='/collection').map(row=>({...row,editHref:`/seo/${seoPageKey(row.path)}/edit`}))].flatMap(row=>[...new Set([...(row.redirectOld?[row.path]:[]),...(row.redirects || [])])].filter(path=>path!==(row.urlPath || row.path)).map(path=>({from:path,to:row.urlPath || row.path,automatic:true,editHref:row.editHref}))).filter(row=>!removed.includes(row.from));
  const rows=[...custom,...automatic.filter(row=>!custom.some(item=>item.from===row.from))];
  const current=Math.min(page,Math.max(1,Math.ceil(rows.length/10)));
  function add(){

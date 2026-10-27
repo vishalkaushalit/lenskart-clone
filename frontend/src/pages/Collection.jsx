@@ -4,7 +4,7 @@ import {useCategories} from '../context/CategoryContext';
 import { matchesSearch } from "../state/productSearch";
 import Loader from '../components/Loader';
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useSearchParams } from "../storeRouter";
+import { Link, useParams, useSearchParams } from "../storeRouter";
 import {
   ChevronDown,
   Filter,
@@ -28,8 +28,9 @@ export default function Collection() {
 
 function CollectionResults() {
   const [params,setParams] = useSearchParams();
+  const {category:categorySlug}=useParams();
   const {categories}=useCategories();
-  const categoryValue=params.get('category')||'';
+  const categoryValue=categorySlug||params.get('category')||'';
   const subcategoryValue=params.get('subcategory')||'';
   const categoryId=categories.find(row=>!row.parent&&(row.slug===categoryValue||row._id===categoryValue))?._id||'';
   const subcategoryId=categories.find(row=>row.parent===categoryId&&(row.slug===subcategoryValue||row._id===subcategoryValue))?._id||'';
@@ -181,7 +182,7 @@ function CollectionResults() {
             <Link to="/">Eyewear</Link>
             <span>/</span>
             {currentSubcategory && currentCategory ? <>
-              <Link to={`/collection?category=${currentCategory.slug}`}>{currentCategory.name}</Link>
+              <Link to={`/collection/${currentCategory.slug}`}>{currentCategory.name}</Link>
               <span aria-hidden="true">/</span>
               <strong aria-current="page">{currentSubcategory.name}</strong>
             </> : <strong aria-current="page">{params.get('brand') || currentCategory?.name || 'All Products'}</strong>}

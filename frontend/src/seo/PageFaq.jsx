@@ -2,6 +2,7 @@ import { PageRoutesContext } from './PageRoutesContext';
 import { useEffect, useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { editableStorePages } from '../../../shared/storePages.js';
+import { resolveStorePath } from '../../../shared/urlPrefixes.js';
 import { apiRequest } from '../api/api';
 import FaqSchema from './FaqSchema';
 
@@ -25,6 +26,7 @@ export default function PageFaq() {
   const routes=useContext(PageRoutesContext);
   const { pathname } = useLocation();
   const actualPath=pathname.replace(/\/+$/, '') || '/';
-  const path=routes.find(row=>row.path===actualPath||row.urlPath===actualPath||row.redirects?.includes(actualPath))?.path || actualPath;
-  return editableStorePages.some(page => page.path === path) ? <Content key={path} path={path} /> : null;
+  const path=routes.find(row=>row.path===actualPath||row.urlPath===actualPath||row.redirects?.includes(actualPath))?.path || resolveStorePath(actualPath,routes).path;
+  const pagePath=path.startsWith('/collection/')?'/collection':path;
+  return editableStorePages.some(page => page.path === pagePath) ? <Content key={pagePath} path={pagePath} /> : null;
 }

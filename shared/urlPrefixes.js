@@ -1,9 +1,13 @@
 export function prefixRoutes(settings = {}, pages = []) {
   const collection=pages.find(row=>row.path==='/collection');
+  const collectionPrefix=settings.collectionPrefix || collection?.urlPath || '/collections';
+  const collectionPrefixes=[...(settings.collectionPrefixHistory || []),...(collection?.redirects || []),...(collection?.urlPath?[collection.urlPath]:[])];
+  const categoryPrefix='/collections';
   return [
     { path: '/products/:id', urlPath: `${settings.productPrefix || '/products'}/:id`, redirects: (settings.productPrefixHistory || []).map(prefix => `${prefix}/:id`), redirectOld: true },
     { path: '/products/:id/reviews', urlPath: `${settings.productPrefix || '/products'}/:id/reviews`, redirects: (settings.productPrefixHistory || []).map(prefix => `${prefix}/:id/reviews`), redirectOld: true },
-    { path: '/collection', urlPath: settings.collectionPrefix || collection?.urlPath || '/collection', redirects: [...(settings.collectionPrefixHistory || []),...(collection?.redirects || []),...(collection?.urlPath?[collection.urlPath]:[])], redirectOld: true },
+    { path: '/collection', urlPath: collectionPrefix, redirects: collectionPrefixes, redirectOld: true },
+    { path: '/collection/:category', urlPath: `${categoryPrefix}/:category`, redirects: [...new Set([collectionPrefix,...collectionPrefixes])].filter(prefix=>prefix!==categoryPrefix).map(prefix=>`${prefix}/:category`), redirectOld: true },
   ];
 }
 export function resolveStorePath(path, routes) {

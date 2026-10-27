@@ -183,7 +183,7 @@ const Header = () => {
     const normalized=(value)=>value.toLowerCase().replace(/eyeglasses|sunglasses|frames|glasses|lenses/g,'').trim();
     const child=categories.find(row=>row.parent===root._id&&(row.name.toLowerCase()===item?.toLowerCase()||normalized(row.name)===normalized(item||'')));
     if(item&&item!==root.name&&item!==label&&!child)return '#';
-    return `/collection?category=${root.slug}${child?`&subcategory=${child.slug}`:''}`;
+    return `/collection/${root.slug}${child?`?subcategory=${child.slug}`:''}`;
   }
 
   const { user } = useAuth();

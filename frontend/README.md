@@ -70,8 +70,8 @@ These values are embedded in browser bundles. Restart Vite after editing `.env`.
 // Examples of customer-facing URLs; URLSearchParams encodes spaces safely.
 const search = new URLSearchParams({ search: 'black square' });
 // /collection?search=black+square → matches separate color and shape fields.
-const taxonomy = new URLSearchParams({ category: 'eyeglasses', subcategory: 'square' });
-// /collection?category=eyeglasses&subcategory=square → selected taxonomy membership.
+const taxonomy = new URLSearchParams({ subcategory: 'square' });
+// /collections/eyeglasses?subcategory=square → selected taxonomy membership.
 ```
 
 ## Product fields and visual responsibilities
@@ -358,7 +358,7 @@ Collection category tabs and empty-result indicators use a rectangular eyeglasse
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e3e80c0ceb70da90b6ff7d89c78834925a0d5ad5f145bcf3b942e09c1ee4b54b`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `0b309554f84dd9afd0b2cc5a0dc71c71315647f9610b22273fd8a2f9e29b4914`.
 
 ### Actual npm commands
 

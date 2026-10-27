@@ -51,7 +51,7 @@ export default function PageMetadata() {
   useEffect(() => {
     const actualPath = pathname.replace(/\/+$/, '') || '/';
     const resolved=resolveStorePath(actualPath,routeSettings);
-    const path=resolved.path;
+    const path=resolved.path.startsWith('/collection/')?'/collection':resolved.path;
     const productMatch = path.match(/^\/products\/([^/]+)(\/reviews)?$/);
     let [title, description, noindex] = pages[path] || ['Page Not Found', 'The page you requested could not be found.', true];
     if (/^\/thank-you\/[^/]+$/.test(path)) [title, description, noindex] = ['Order Confirmation', 'View your order confirmation and receipt.', true];
