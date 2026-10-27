@@ -389,7 +389,7 @@ Product detail endpoints fetch variants and approved reviews concurrently after 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `1a513aecb60b85bc9970fed643005b3b060378f27ee1e1677d847b03a9be63be`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `aebd10d49b1759f84d2f87d5cd5971f6e4a281eabd21aafd53bdd746c53a01d5`.
 
 ### Actual npm commands
 
@@ -462,6 +462,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/models/PageSeo.js](src/models/PageSeo.js) | default export |
 | [src/models/Product.js](src/models/Product.js) | default export |
 | [src/models/ProductVariant.js](src/models/ProductVariant.js) | default export |
+| [src/models/SiteSeo.js](src/models/SiteSeo.js) | default export |
 | [src/models/User.js](src/models/User.js) | default export |
 | [src/routes/accountRoutes.js](src/routes/accountRoutes.js) | default export |
 | [src/routes/authRoutes.js](src/routes/authRoutes.js) | default export |
@@ -475,6 +476,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/routes/productRoutes.js](src/routes/productRoutes.js) | managedProducts, publicProducts |
 | [src/routes/seoRoutes.js](src/routes/seoRoutes.js) | adminSeo, publicSeo |
 | [src/routes/seoRoutes.test.js](src/routes/seoRoutes.test.js) | Internal module / styles |
+| [src/routes/siteSeoRoutes.js](src/routes/siteSeoRoutes.js) | adminSiteSeo, publicSiteSeo |
 | [src/routes/userRoutes.js](src/routes/userRoutes.js) | default export |
 | [src/routes/variantRoutes.js](src/routes/variantRoutes.js) | default export |
 | [src/routes/variantRoutes.test.js](src/routes/variantRoutes.test.js) | Internal module / styles |
@@ -493,6 +495,8 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/services/search.test.js](src/services/search.test.js) | Internal module / styles |
 | [src/services/shipments.js](src/services/shipments.js) | updateShipment |
 | [src/services/shipments.test.js](src/services/shipments.test.js) | Internal module / styles |
+| [src/services/siteSeo.js](src/services/siteSeo.js) | escapeXml, siteSeoFields, verificationHtml, verificationToken |
+| [src/services/siteSeo.test.js](src/services/siteSeo.test.js) | Internal module / styles |
 | [src/services/tryOn.test.js](src/services/tryOn.test.js) | Internal module / styles |
 | [src/services/tryOnAsset.test.js](src/services/tryOnAsset.test.js) | Internal module / styles |
 | [src/services/userIds.js](src/services/userIds.js) | initializeUserIds, nextUserId |
@@ -552,6 +556,13 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/routes/seoRoutes.js | publicSeo.get | `/` |
 | src/routes/seoRoutes.js | adminSeo.get | `/` |
 | src/routes/seoRoutes.js | adminSeo.put | `/` |
+| src/routes/siteSeoRoutes.js | adminSiteSeo.get | `/` |
+| src/routes/siteSeoRoutes.js | adminSiteSeo.put | `/` |
+| src/routes/siteSeoRoutes.js | publicSiteSeo.get | `/settings` |
+| src/routes/siteSeoRoutes.js | req.get | `host` |
+| src/routes/siteSeoRoutes.js | publicSiteSeo.get | `/robots.txt` |
+| src/routes/siteSeoRoutes.js | publicSiteSeo.get | `/sitemap.xml` |
+| src/routes/siteSeoRoutes.js | publicSiteSeo.get | `/home` |
 | src/routes/userRoutes.js | router.get | `/` |
 | src/routes/userRoutes.js | router.get | `/:id` |
 | src/routes/userRoutes.js | router.post | `/` |
@@ -563,6 +574,11 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/routes/variantRoutes.js | router.delete | `/:variantId` |
 | src/server.js | req.get | `Origin` |
 | src/server.js | req.get | `Sec-Fetch-Site` |
+| src/server.js | app.use | `/api/site-seo` |
+| src/server.js | app.use | `/api/admin/site-seo` |
+| src/server.js | app.get | `/` |
+| src/server.js | app.get | `/robots.txt` |
+| src/server.js | app.get | `/sitemap.xml` |
 | src/server.js | app.use | `/api/seo` |
 | src/server.js | app.use | `/api/admin/seo` |
 | src/server.js | app.use | `/api/categories` |
@@ -815,6 +831,22 @@ schema.index({ productId: 1, size: 1, color: 1 }, { unique: true, collation: { l
 export default mongoose.model('ProductVariant', schema);
 ```
 
+#### SiteSeo.js
+
+```js
+// Generated directly from backend/src/models/SiteSeo.js; edit the source model, not this excerpt.
+import mongoose from 'mongoose';
+const schema = new mongoose.Schema({
+  key: { type: String, unique: true, default: 'site' },
+  websiteUrl: { type: String, default: '', maxlength: 2000 },
+  googleVerification: { type: String, default: '', maxlength: 500 },
+  metaVerification: { type: String, default: '', maxlength: 500 },
+  sitemap: { type: String, default: '', maxlength: 200000 },
+  robots: { type: String, default: '', maxlength: 100000 },
+}, { timestamps: true });
+export default mongoose.model('SiteSeo', schema);
+```
+
 #### User.js
 
 ```js
@@ -940,3 +972,7 @@ PageSeo supports `keywords` (string, 1000 characters) and `faqs` (up to 20 requi
 Dashboard accepts `days=all`, deriving the daily range from the earliest saved order through today in India time. All-time comparison percentages are null; recent orders remain paginated at 10 per page. Empty databases use today’s range.
 
 Dashboard accepts independent `salesDays`, `statusDays`, `recentDays` (same supported ranges as `days`) and `recentStatus` (all or a valid order status). Omitted section ranges inherit `days`. Facets use separate date boundaries; recent-order pagination counts only matching records, while summary cards retain their own range.
+
+## Site verification and crawler files
+
+Site SEO settings use the singleton SiteSeo model. Admin-only GET/PUT `/api/admin/site-seo` manage website origin, Google/Meta verification tokens, custom sitemap XML (200 KB) and robots text (100 KB). Public `/api/site-seo/settings` returns verification tokens. Root robots.txt and sitemap.xml routes serve overrides or generated defaults; active products and indexable registered pages populate the sitemap (up to 49,900 products). Verification tags are escaped into built homepage HTML by `/api/site-seo/home` and the root backend handler. Build the storefront first. Vercel bundles dist/index.html and routes homepage/robots/sitemap requests to the backend. Settings changes publish on save; generated files may cache for 60 seconds. Uploaded sitemap content is screened for a supported root and unsafe entities, not full XML schema validity.

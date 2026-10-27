@@ -1,3 +1,4 @@
+import SiteVerification from './seo/SiteVerification';
 import PageFaq from './seo/PageFaq';
 import { LoaderProvider } from '../../shared/LoadingOverlay.jsx';
 import { storePages } from '../../shared/storePages.js';
@@ -16,7 +17,7 @@ function pageRoute(page) {
   return <Route key={page.path} path={page.path} element={Component ? <Component /> : <p>{page.message}</p>} />;
 }
 export default function App() {
-  return <LoaderProvider className="store"><PageMetadata /><Suspense fallback={<Loader label="Loading page" />}><Routes>
+  return <LoaderProvider className="store"><SiteVerification /><PageMetadata /><Suspense fallback={<Loader label="Loading page" />}><Routes>
     <Route element={<StoreLayout />}>
       {storePages.filter(page => page.layout === 'store' && !page.protected).map(pageRoute)}
       <Route element={<ProtectedRoute />}>

@@ -9,7 +9,7 @@ import { seoPages, seoPageKey } from '../seoPages';
 export default function PageSeo() {
   const pagination = useTablePagination(seoPages);
   return <DashboardLayout><main className="admin-page space-y-6">
-    <PageHeader title="Search engine listings" description="Manage search appearance for your storefront pages." />
+    <PageHeader title="Search engine listings" description="Manage search appearance for your storefront pages."><Link to="/seo/settings" className="admin-button-primary">Site SEO settings</Link></PageHeader>
     <p className="text-sm text-slate-600">Product search listings are edited on each <Link to="/product" className="text-blue-700 underline">product's editing page</Link>.</p>
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
         <div className="overflow-x-auto">

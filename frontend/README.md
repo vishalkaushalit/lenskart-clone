@@ -358,7 +358,7 @@ Collection category tabs and empty-result indicators use a rectangular eyeglasse
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `7fc8daccb91879f78196ffb41d73658cc8aa37af096b1392ad071a6b60fe3b23`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `be384b1ad5c9654e092ef64f5f8ee2792e50aefbeb66db261adb711daacc11dc`.
 
 ### Actual npm commands
 
@@ -477,6 +477,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/seo/FaqSchema.jsx](src/seo/FaqSchema.jsx) | FaqSchema |
 | [src/seo/PageFaq.jsx](src/seo/PageFaq.jsx) | PageFaq |
 | [src/seo/PageMetadata.jsx](src/seo/PageMetadata.jsx) | PageMetadata |
+| [src/seo/SiteVerification.jsx](src/seo/SiteVerification.jsx) | SiteVerification |
 | [src/state/checkout.js](src/state/checkout.js) | checkoutRows |
 | [src/state/checkout.test.js](src/state/checkout.test.js) | Internal module / styles |
 | [src/state/collectionLinks.js](src/state/collectionLinks.js) | collectionLink |
@@ -669,3 +670,7 @@ Static page overrides can be edited under **Page SEO** in the admin panel. Produ
 Page SEO keywords produce a `meta name="keywords"` tag; empty values remove the tag on navigation. Static-page FAQs render below page content (including auth layouts), with matching FAQPage JSON-LD in the body. Product FAQs retain the existing visible accordion and automatically emit matching JSON-LD. Empty lists emit no schema; navigation removes old page FAQ content. JSON-LD escapes `<` characters to prevent script breakout. This is client-rendered metadata, without guaranteed search enhancements.
 
 SEO editors place a sticky search preview on the left and fields on the right at wide desktop widths, stacking on smaller screens. Home, Collection and Eyeglasses include starter keywords and frame-selection FAQs from the shared page registry. Saved values take precedence, including explicitly empty keyword/FAQ settings.
+
+## Site verification and crawler files
+
+Site SEO verification tags are read into the document head at runtime, including local development. The production homepage is served from the built HTML with saved Google/Meta verification tags already in its source. Root sitemap.xml and robots.txt are backend-served via Vercel routing; standalone frontend Vite requires a reverse proxy to backend for these root files. Google/Meta verification must be completed in the provider after saving. Site settings are global, independent of per-page metadata.

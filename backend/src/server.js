@@ -1,3 +1,4 @@
+import { adminSiteSeo, publicSiteSeo } from './routes/siteSeoRoutes.js';
 import { publicSeo, adminSeo } from './routes/seoRoutes.js';
 import 'dotenv/config';
 import { pathToFileURL, fileURLToPath } from 'node:url';
@@ -107,6 +108,11 @@ export function initializeApp() {
     }));
 
     await Promise.all([User.init(),Order.init(),Coupon.init(),ProductVariant.init(),CustomerReview.init()]);
+    app.use('/api/site-seo', publicSiteSeo);
+    app.use('/api/admin/site-seo', adminSiteSeo);
+    app.get('/', (req,res,next) => { req.url='/home';publicSiteSeo(req,res,next); });
+    app.get('/robots.txt', (req,res,next) => { req.url='/robots.txt';publicSiteSeo(req,res,next); });
+    app.get('/sitemap.xml', (req,res,next) => { req.url='/sitemap.xml';publicSiteSeo(req,res,next); });
     app.use('/api/seo', publicSeo);
     app.use('/api/admin/seo', adminSeo);
     app.use('/api/categories',publicCategories);

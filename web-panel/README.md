@@ -288,7 +288,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `7566670ff64d4e6a2e31a4aeae40d1fe9b88a0dfa32839d5f973d5efd2aa60ff`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `4768112b130f3e94d06625dea421dee69fca73fed275d6ed4819903d7a0d833e`.
 
 ### Actual npm commands
 
@@ -362,6 +362,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/pages/ResourceDetails.jsx](src/pages/ResourceDetails.jsx) | ResourceDetails |
 | [src/pages/ResourceEdit.jsx](src/pages/ResourceEdit.jsx) | ResourceEdit |
 | [src/pages/Reviews.jsx](src/pages/Reviews.jsx) | Reviews |
+| [src/pages/SiteSeoSettings.jsx](src/pages/SiteSeoSettings.jsx) | SiteSeoSettings |
 | [src/pages/Users.jsx](src/pages/Users.jsx) | Users |
 | [src/search.js](src/search.js) | matchesSearch, searchDestination |
 | [src/search.test.js](src/search.test.js) | Internal module / styles |
@@ -376,6 +377,7 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | Source | Declaration | Path |
 | --- | --- | --- |
 | src/App.jsx | React Route | `/dashboard` |
+| src/App.jsx | React Route | `/seo/settings` |
 | src/App.jsx | React Route | `/seo` |
 | src/App.jsx | React Route | `/seo/:pageKey/edit` |
 | src/App.jsx | React Route | `/product` |
@@ -549,3 +551,7 @@ Dashboard Sales Overview, Order Status and Recent Orders have independent date f
 The dashboard header shows Refresh without a date filter. Summary cards show all-time totals; each chart/table keeps its individual filters.
 
 Recent Orders uses the shared bordered admin button style for View All, consistent with the dashboard controls.
+
+## Site verification and crawler files
+
+Page SEO → Site SEO settings (`/seo/settings`) manages Google Search Console and Meta/Facebook domain verification. Paste tokens/meta tags or upload TXT/HTML containing a tag (2 KB). Upload/edit sitemap.xml (200 KB) and robots.txt (100 KB), preview contents, view live root files, or restore automatic defaults. Save changes publishes the settings. Configure Website URL to the public origin for generated sitemap links. These are verification tags, not Analytics/GTM/Pixel tracking scripts.

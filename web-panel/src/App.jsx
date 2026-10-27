@@ -1,3 +1,4 @@
+import SiteSeoSettings from './pages/SiteSeoSettings';
 import PageSeoEdit from './pages/PageSeoEdit';
 import PageSeo from './pages/PageSeo';
 import { LoaderProvider } from '../../shared/LoadingOverlay.jsx';
@@ -29,6 +30,7 @@ export default function App() {
       <Route element={<AdminRoute />}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/seo/settings" element={<SiteSeoSettings />} />
         <Route path="/seo" element={<PageSeo />} />
         <Route path="/seo/:pageKey/edit" element={<PageSeoEdit />} />
         <Route path="/product" element={<ProductDashboard />} />
