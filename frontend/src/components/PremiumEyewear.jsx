@@ -8,15 +8,31 @@ import premium_LPL from '../assets/images/premium/premium_LPL.webp';
 import premium_Fossil from '../assets/images/premium/premium_Fossil.webp';
 
 const premiumBrands = [
-  { name: 'Premium Meller', image: premium_Meller, premiumUrl: '/collection?brand=Meller' },
-  { name: 'Premium John Jocobs', image: premium_JJ, premiumUrl: '/collection?brand=John%20Jocobs' },
-  { name: 'Premium Own Days', image: premium_OD, premiumUrl: '/collection?brand=Own%20Days' },
+  {
+    name: 'Premium Meller',
+    image: premium_Meller,
+    premiumUrl: '/collection?brand=Meller',
+  },
+  {
+    name: 'Premium John Jocobs',
+    image: premium_JJ,
+    premiumUrl: '/collection?brand=John%20Jocobs',
+  },
+  {
+    name: 'Premium Own Days',
+    image: premium_OD,
+    premiumUrl: '/collection?brand=Own%20Days',
+  },
   {
     name: 'Premium Le Petit Lenetier',
     image: premium_LPL,
     premiumUrl: '/collection?brand=Le%20Petit%20Lenetier',
   },
-  { name: 'Premium Fossil', image: premium_Fossil, premiumUrl: '/collection?brand=Fossil' },
+  {
+    name: 'Premium Fossil',
+    image: premium_Fossil,
+    premiumUrl: '/collection?brand=Fossil',
+  },
 ];
 
 const PremiumEyewear = () => {
@@ -53,6 +69,8 @@ const PremiumEyewear = () => {
                       className="h-auto w-full"
                       src={image}
                       alt={name}
+                      width={402}
+                      height={302}
                     />
                   </div>
                 </Link>

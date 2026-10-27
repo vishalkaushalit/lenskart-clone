@@ -39,6 +39,8 @@ const Exclusive = () => {
                   className="h-auto w-full"
                   src={image}
                   alt={name}
+                  width={976}
+                  height={651}
                 />
               </Link>
             ))}

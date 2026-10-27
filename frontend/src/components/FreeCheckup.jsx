@@ -52,7 +52,14 @@ const FreeCheckup = () => {
                   className="checkup-card block overflow-hidden transition-transform hover:scale-[1.02]"
                 >
                   <div className="checkup-card-photo">
-                    <img loading="lazy" decoding="async" src={image} alt="" />
+                    <img
+                      loading="lazy"
+                      decoding="async"
+                      src={image}
+                      alt=""
+                      width={656}
+                      height={787}
+                    />
                   </div>
                   <div className="checkup-card-caption">
                     <div>

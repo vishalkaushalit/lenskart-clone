@@ -37,7 +37,9 @@ export default function Categories({ categories = [] }) {
                       decoding="async"
                       src={categoryImage(root.image)}
                       alt={root.name}
-                      className="mb-2.5 w-full rounded-2xl bg-white p-4 object-contain"
+                      width={240}
+                      height={240}
+                      className="mb-2.5 aspect-square w-full rounded-2xl bg-white p-4 object-contain"
                     />
                   )}
                   <h3 className="text-sm font-semibold text-ink/60 sm:text-base">{root.name}</h3>
@@ -59,6 +61,8 @@ export default function Categories({ categories = [] }) {
                                 decoding="async"
                                 src={categoryImage(child.image || root.image)}
                                 alt=""
+                                width={64}
+                                height={48}
                                 className="w-16 h-12 object-contain"
                               />
                             )}

@@ -203,7 +203,7 @@ function Details({ product: baseProduct, products }) {
                     });
                   }}
                 >
-                  <img src={assetUrl(image)} alt="" loading="lazy" />
+                  <img src={assetUrl(image)} alt="" loading="lazy" width={84} height={84} />
                 </button>
               ))}
             </div>
@@ -266,6 +266,8 @@ function Details({ product: baseProduct, products }) {
                     }
                     alt=""
                     loading="lazy"
+                    width={480}
+                    height={640}
                   />
                   <span className="detail-guide-overlay" />
                   <strong>{title}</strong>
@@ -284,11 +286,15 @@ function Details({ product: baseProduct, products }) {
                 src={stylingMan}
                 alt="Style inspiration with bold black eyeglasses"
                 loading="lazy"
+                width={480}
+                height={480}
               />
               <img
                 src={stylingWoman}
                 alt="Style inspiration with transparent pink eyeglasses"
                 loading="lazy"
+                width={480}
+                height={480}
               />
             </div>
           </section>
@@ -621,7 +627,9 @@ export default function ProductDetails() {
       inFlight = true;
       if (!background) setResult({ loading: true });
       try {
-        const data = await apiRequest(`/products/${id}`, { signal: controller.signal });
+        const data = await apiRequest(`/products/${id}`, {
+          signal: controller.signal,
+        });
         if (!controller.signal.aborted)
           setResult({
             product: data.product,

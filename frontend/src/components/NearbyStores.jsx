@@ -31,6 +31,8 @@ const NearbyStores = () => {
                   className="h-auto w-full"
                   src={image}
                   alt={name}
+                  width={708}
+                  height={944}
                 />
               </a>
             ))}

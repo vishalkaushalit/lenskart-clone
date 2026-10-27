@@ -7,11 +7,27 @@ import lenskart_air from '../assets/images/brands/lenskart_air.webp';
 import hooper from '../assets/images/brands/hooper.webp';
 
 const brands = [
-  { name: 'Vincent Chase', image: vincent_chase, brandUrl: '/collection?brand=Vincent%20Chase' },
+  {
+    name: 'Vincent Chase',
+    image: vincent_chase,
+    brandUrl: '/collection?brand=Vincent%20Chase',
+  },
   { name: 'Hustlr', image: hustlr, brandUrl: '/collection?brand=Hustlr' },
-  { name: 'John Jacobs', image: john_jacobs, brandUrl: '/collection?brand=John%20Jacobs' },
-  { name: 'Aqualens', image: aqua_lens, brandUrl: '/collection?brand=Aqualens' },
-  { name: 'Lenskart Air', image: lenskart_air, brandUrl: '/collection?brand=Lenskart%20Air' },
+  {
+    name: 'John Jacobs',
+    image: john_jacobs,
+    brandUrl: '/collection?brand=John%20Jacobs',
+  },
+  {
+    name: 'Aqualens',
+    image: aqua_lens,
+    brandUrl: '/collection?brand=Aqualens',
+  },
+  {
+    name: 'Lenskart Air',
+    image: lenskart_air,
+    brandUrl: '/collection?brand=Lenskart%20Air',
+  },
   { name: 'Hooper', image: hooper, brandUrl: '/collection?brand=Hooper' },
 ];
 
@@ -38,6 +54,8 @@ const Brands = () => {
                   className="h-auto w-full"
                   src={image}
                   alt={name}
+                  width={976}
+                  height={676}
                 />
               </Link>
             ))}

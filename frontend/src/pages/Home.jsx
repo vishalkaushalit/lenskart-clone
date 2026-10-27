@@ -23,12 +23,24 @@ import FreeCheckup from '../components/FreeCheckup';
 import Notes from '../components/Notes';
 
 const promotionalBanners = [
-  { image: free_lens_replacement, alt: 'Free Lens Replacement' },
-  { image: meller_banner, alt: 'Meller' },
-  { image: buy_one_get_second_later, alt: 'Buy One Get Second Later' },
+  {
+    image: free_lens_replacement,
+    alt: 'Free Lens Replacement',
+    width: 2560,
+    height: 852,
+  },
+  { image: meller_banner, alt: 'Meller', width: 2560, height: 1088 },
+  {
+    image: buy_one_get_second_later,
+    alt: 'Buy One Get Second Later',
+    width: 2560,
+    height: 640,
+  },
   {
     image: do_more_be_more,
     alt: 'Do More Be More',
+    width: 2560,
+    height: 427,
     className: 'py-12 sm:py-16',
   },
 ];
@@ -67,6 +79,8 @@ const Home = () => {
             className="h-auto w-full"
             src={promotionalBanners[0].image}
             alt={promotionalBanners[0].alt}
+            width={promotionalBanners[0].width}
+            height={promotionalBanners[0].height}
           />
         </div>
       </Link>
@@ -83,16 +97,26 @@ const Home = () => {
             className="h-auto w-full"
             src={promotionalBanners[1].image}
             alt={promotionalBanners[1].alt}
+            width={promotionalBanners[1].width}
+            height={promotionalBanners[1].height}
           />
         </div>
       </Link>
       <Brands />
       <PremiumEyewear />
       <FreeCheckup />
-      {promotionalBanners.slice(2).map(({ image, alt, className }) => (
+      {promotionalBanners.slice(2).map(({ image, alt, className, width, height }) => (
         <Link to={collectionLink(productOptions)} className="block" key={alt}>
           <div className={className}>
-            <img loading="lazy" decoding="async" className="h-auto w-full" src={image} alt={alt} />
+            <img
+              loading="lazy"
+              decoding="async"
+              className="h-auto w-full"
+              src={image}
+              alt={alt}
+              width={width}
+              height={height}
+            />
           </div>
         </Link>
       ))}

@@ -30,7 +30,9 @@ export default function ProductGallery({ product, assetUrl, linkTo, dots = false
                 aria-pressed={current === index}
                 onClick={() => setSelected(index)}
               >
-                {!dots && <img src={assetUrl(image)} alt="" loading="lazy" />}
+                {!dots && (
+                  <img src={assetUrl(image)} alt="" loading="lazy" width={32} height={28} />
+                )}
               </button>
             ))}
           </div>

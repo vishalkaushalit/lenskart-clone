@@ -17,7 +17,11 @@ export default function ProductImageLibrary({ choose, busy, count }) {
       const response = await fetch(url);
       if (!response.ok) throw new Error('Unable to load this image. Please try again.');
       const blob = await response.blob();
-      choose([new File([blob], `${group}-${path.split('/').pop()}`, { type: 'image/webp' })]);
+      choose([
+        new File([blob], `${group}-${path.split('/').pop()}`, {
+          type: 'image/webp',
+        }),
+      ]);
     } catch (failure) {
       setError(failure.message);
     } finally {
@@ -56,7 +60,7 @@ export default function ProductImageLibrary({ choose, busy, count }) {
                 onClick={() => select(path, url)}
                 aria-label={`Add ${group} ${name} image`}
               >
-                <img src={url} alt={`${group} ${name}`} loading="lazy" />
+                <img src={url} alt={`${group} ${name}`} loading="lazy" width={160} height={160} />
                 <span className="text-xs capitalize">{name}</span>
               </button>
             );

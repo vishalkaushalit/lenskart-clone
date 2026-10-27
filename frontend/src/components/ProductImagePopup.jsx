@@ -19,7 +19,10 @@ export default function ProductImagePopup({ images, selected, name, assetUrl, on
     };
   }, []);
   useEffect(() => {
-    railRef.current?.children[selected]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    railRef.current?.children[selected]?.scrollIntoView({
+      block: 'nearest',
+      inline: 'nearest',
+    });
   }, [selected]);
   function move(direction) {
     onSelect((selected + direction + images.length) % images.length);
@@ -69,7 +72,7 @@ export default function ProductImagePopup({ images, selected, name, assetUrl, on
               aria-pressed={selected === index}
               onClick={() => onSelect(index)}
             >
-              <img src={assetUrl(image)} alt="" loading="lazy" />
+              <img src={assetUrl(image)} alt="" loading="lazy" width={60} height={60} />
             </button>
           ))}
         </div>
