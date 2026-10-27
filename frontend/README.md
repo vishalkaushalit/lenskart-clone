@@ -358,7 +358,7 @@ Collection category tabs and empty-result indicators use a rectangular eyeglasse
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `7ca180ece90866fa1ca91ebaaa3549c2e6477befa81df4a7f410f94f201476fd`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e00e7fa2b9e8c06e0026ad7820d3c81a2a16a4b5b39294268e13ea537465b767`.
 
 ### Actual npm commands
 
@@ -658,7 +658,7 @@ Static page overrides can be edited under **Page SEO** in the admin panel. Produ
 
 ## Keywords and FAQ schema
 
-Page SEO keywords produce a `meta name="keywords"` tag; empty values remove the tag on navigation. Static-page FAQs render below page content (including auth layouts), with matching FAQPage JSON-LD in the body. Product FAQs retain the existing visible accordion and automatically emit matching JSON-LD. Empty lists emit no schema; navigation removes old page FAQ content. JSON-LD escapes `<` characters to prevent script breakout. This is client-rendered metadata, without guaranteed search enhancements.
+Page SEO keywords produce a `meta name="keywords"` tag; empty values remove the tag on navigation. FAQs and FAQPage JSON-LD are displayed only on product detail pages. Home, collection, category collection, authentication, account, shopping, and other pages do not render a page FAQ block or its schema. Saved Page SEO FAQs are retained for future use but are not displayed. Product FAQs retain the existing visible accordion and automatically emit matching JSON-LD. Empty lists emit no schema; navigation removes old page FAQ content. JSON-LD escapes `<` characters to prevent script breakout. This is client-rendered metadata, without guaranteed search enhancements.
 
 SEO editors place a sticky search preview on the left and fields on the right at wide desktop widths, stacking on smaller screens. Home, Collection and Eyeglasses include starter keywords and frame-selection FAQs from the shared page registry. Saved values take precedence, including explicitly empty keyword/FAQ settings.
 

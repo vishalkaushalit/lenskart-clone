@@ -1,7 +1,6 @@
 import { PageRoutesContext } from './seo/PageRoutesContext';
 import { apiRequest } from './api/api';
 import SiteVerification from './seo/SiteVerification';
-import PageFaq from './seo/PageFaq';
 import { LoaderProvider } from '../../shared/LoadingOverlay.jsx';
 import { storePages } from '../../shared/storePages.js';
 import { lazy, Suspense, useEffect, useState } from 'react';
@@ -35,7 +34,7 @@ export default function App() {
       </Route>
       <Route path="*" element={<h1>Page not found</h1>} />
     </Route>
-    <Route element={<main className="store-page-surface store-auth-layout"><Outlet /><PageFaq /></main>}>
+    <Route element={<main className="store-page-surface store-auth-layout"><Outlet /></main>}>
       {storePages.filter(page => page.layout === 'auth').map(page=>pageRoute(page,settings))}
     </Route>
   </Routes></Suspense></PageRoutesContext.Provider>}</LoaderProvider>;

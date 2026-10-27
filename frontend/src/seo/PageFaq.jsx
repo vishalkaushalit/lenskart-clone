@@ -28,5 +28,6 @@ export default function PageFaq() {
   const actualPath=pathname.replace(/\/+$/, '') || '/';
   const path=routes.find(row=>row.path===actualPath||row.urlPath===actualPath||row.redirects?.includes(actualPath))?.path || resolveStorePath(actualPath,routes).path;
   const pagePath=path.startsWith('/collection/')?'/collection':path;
-  return editableStorePages.some(page => page.path === pagePath) ? <Content key={pagePath} path={pagePath} /> : null;
+  const showFaq = editableStorePages.some(page => page.path === pagePath && page.layout === 'store' && !page.protected && !page.noindex);
+  return showFaq ? <Content key={pagePath} path={pagePath} /> : null;
 }
