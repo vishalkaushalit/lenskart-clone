@@ -290,7 +290,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `4f70dd731d821a0cfef6bd382ff3acfcc06272df7f72835782b18c777ac12ded`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `d013aa24444ccb938440b617a03c3e1494b77e1d678260daf0262338be230c57`.
 
 ### Actual npm commands
 

@@ -1,7 +1,7 @@
 import { searchDestination } from "../search";
 
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { Menu, Bell, Search, X, ArrowLeft } from "lucide-react";
+import { Menu, Search, X, ArrowLeft } from "lucide-react";
 import AdminAccountMenu from "./AdminAccountMenu";
 
 const DashboardHeader = ({ sidebarButtonRef, sidebarOpen, onOpenSidebar }) => {
@@ -44,12 +44,6 @@ const DashboardHeader = ({ sidebarButtonRef, sidebarOpen, onOpenSidebar }) => {
 
         {/* Right side */}
         <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-4">
-          <button
-            className="relative rounded-full p-1.5 text-xl text-slate-600 hover:bg-slate-100 sm:p-0 sm:hover:bg-transparent"
-            aria-label="Notifications"
-          >
-            <Bell />
-          </button>
           <AdminAccountMenu />
         </div>
       </header>
