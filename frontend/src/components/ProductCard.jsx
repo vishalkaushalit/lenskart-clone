@@ -1,7 +1,7 @@
 import SoldOutBadge from './SoldOutBadge';
 import FrameSizeBadge from './FrameSizeBadge';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../storeRouter';
 import { Heart, Star, PanelsTopLeft, BadgePercent } from 'lucide-react';
 import ProductGallery from './ProductGallery';
 import { resolveVariant } from '../state/productVariants';

@@ -4,7 +4,7 @@ import CouponApplied from "../components/CouponApplied";
 import CouponDiscount from "../components/CouponDiscount";
 import CouponField from "../components/CouponField";
 import { useRef, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate } from "../storeRouter";
 import {
   ArrowLeft,
   MapPin,

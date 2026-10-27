@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from '../storeRouter';
 import { Search } from 'lucide-react';
 
 export default function ProductSearch({ className, placeholder, iconSize = 20 }) {

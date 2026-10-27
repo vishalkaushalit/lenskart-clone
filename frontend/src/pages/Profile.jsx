@@ -3,7 +3,7 @@ import OrderReviews from '../components/OrderReviews';
 import ShipmentDetails from '../components/ShipmentDetails';
 import PopupMessage from "../components/PopupMessage";
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "../storeRouter";
 import { UserRound, Package } from "lucide-react";
 import { useAuth } from "../context/AuthState";
 import { apiRequest } from "../api/api";

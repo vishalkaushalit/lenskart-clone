@@ -1,5 +1,9 @@
 import mongoose from 'mongoose';
 const schema = new mongoose.Schema({
+  productPrefix: { type: String, default: '/products' },
+  collectionPrefix: { type: String, default: '/collection' },
+  productPrefixHistory: { type: [String], default: [] },
+  collectionPrefixHistory: { type: [String], default: [] },
   key: { type: String, unique: true, default: 'site' },
   websiteUrl: { type: String, default: '', maxlength: 2000 },
   googleVerification: { type: String, default: '', maxlength: 500 },

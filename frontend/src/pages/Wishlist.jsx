@@ -3,7 +3,7 @@ import useStickyColumns from '../hooks/useStickyColumns';
 import SimilarProductsPopup from '../components/SimilarProductsPopup';
 import Loader from '../components/Loader';
 import WishlistCard from '../components/WishlistCard';
-import { Link } from 'react-router-dom';
+import { Link } from '../storeRouter';
 import { Heart, ArrowRight } from 'lucide-react';
 import WishlistComparison from '../components/WishlistComparison';
 import fitFrames from '../assets/images/wishlist/fit-frames.svg';

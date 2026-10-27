@@ -1,6 +1,6 @@
 import FrameSizeBadge from './FrameSizeBadge';
 import { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../storeRouter';
 import { X } from 'lucide-react';
 import { resolveVariant } from '../state/productVariants';
 export default function WishlistComparison({ products, onClose }) {

@@ -1,6 +1,6 @@
 import {useCategories} from '../context/CategoryContext';
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "../storeRouter";
 import ProductSearch from "../components/ProductSearch";
 import StoreIcon from "../components/StoreIcon";
 import AccountMenu from "../components/AccountMenu";

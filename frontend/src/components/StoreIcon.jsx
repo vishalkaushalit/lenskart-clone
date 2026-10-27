@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '../storeRouter';
 import { Heart, ShoppingBag } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 export default function StoreIcon({type}){

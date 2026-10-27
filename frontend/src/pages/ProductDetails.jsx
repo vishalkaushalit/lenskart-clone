@@ -8,7 +8,7 @@ import { resolveVariant } from "../state/productVariants";
 import Loader from "../components/Loader";
 import ReviewCard from "../components/ReviewCard";
 import { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "../storeRouter";
 import {
   ScanFace,
   ChevronLeft,

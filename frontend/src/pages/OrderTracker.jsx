@@ -1,6 +1,6 @@
 import FrameSizeBadge from '../components/FrameSizeBadge';
 import { useOrderTracking } from '../../../shared/useOrderTracking.js';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams } from '../storeRouter';
 import { Check, Clock3, Package, Truck } from 'lucide-react';
 import Loader from '../components/Loader';
 import ShipmentDetails from '../components/ShipmentDetails';

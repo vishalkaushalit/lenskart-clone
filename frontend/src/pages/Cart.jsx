@@ -6,7 +6,7 @@ import CouponApplied from "../components/CouponApplied";
 import CouponDiscount from "../components/CouponDiscount";
 import CouponField from '../components/CouponField';
 import Loader from '../components/Loader';
-import { Link } from 'react-router-dom';
+import { Link } from '../storeRouter';
 import { Minus, Plus, ShoppingBag, Trash2, ChevronDown } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import useSavedProducts from '../hooks/useSavedProducts';

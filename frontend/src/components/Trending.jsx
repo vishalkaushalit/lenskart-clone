@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom';
+import {Link} from '../storeRouter';
 import { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";

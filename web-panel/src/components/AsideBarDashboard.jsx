@@ -90,19 +90,20 @@ const AsideBarDashboard = ({ isOpen, isDesktop, onClose }) => {
           >
             Products
           </NavLink>
-          <NavLink to="/categories" onClick={onClose} className={navigationClass}>Categories</NavLink>
+          <NavLink to="/collections" onClick={onClose} className={navigationClass}>Collections</NavLink>
           <NavLink to="/coupons" onClick={onClose} className={navigationClass}>Coupons</NavLink>
           <NavLink to="/orders" onClick={onClose} className={navigationClass}>Orders</NavLink>
           <NavLink to="/reviews" onClick={onClose} className={navigationClass}>Reviews &amp; Approvals</NavLink>
 
           <div className="my-6 border-t border-white/10" />
 
-          <a
-            href="#"
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 hover:bg-white/5 hover:text-white"
+          <NavLink
+            to="/seo/settings"
+            onClick={onClose}
+            className={navigationClass}
           >
             Settings
-          </a>
+          </NavLink>
           <button type="button" disabled={signingOut} onClick={handleLogout} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 hover:bg-white/5 hover:text-white disabled:opacity-50">
             {signingOut ? "Logging out..." : "Logout"}
           </button>

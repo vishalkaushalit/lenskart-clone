@@ -4,7 +4,7 @@ import './ProductPopup.css';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Heart, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from '../storeRouter';
 import { apiRequest } from '../api/api';
 import { useStore } from '../context/StoreContext';
 import ProductCardImage from './ProductCardImage';

@@ -5,7 +5,7 @@ export function matchesSearch(values, query) {
 }
 
 export function searchDestination(pathname) {
-  for (const [path, label] of [['/product', 'products'], ['/users', 'users'], ['/categories', 'categories'], ['/orders', 'orders'], ['/coupons', 'coupons']]) {
+  for (const [path, label] of [['/product', 'products'], ['/users', 'users'], ['/collections', 'collections'], ['/orders', 'orders'], ['/coupons', 'coupons']]) {
     if (pathname === path || pathname.startsWith(`${path}/`)) return { path, label };
   }
   return { path: '/product', label: 'products' };

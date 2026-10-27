@@ -4,7 +4,7 @@ import {useCategories} from '../context/CategoryContext';
 import { matchesSearch } from "../state/productSearch";
 import Loader from '../components/Loader';
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "../storeRouter";
 import {
   ChevronDown,
   Filter,

@@ -1,5 +1,5 @@
 import SoldOutBadge from './SoldOutBadge';
-import { Link } from 'react-router-dom';
+import { Link } from '../storeRouter';
 import { Heart } from 'lucide-react';
 import ProductCardImage from './ProductCardImage';
 import { resolveVariant } from '../state/productVariants';

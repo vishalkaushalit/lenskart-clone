@@ -1,5 +1,5 @@
 import {collectionLink} from '../state/collectionLinks';
-import {Link} from 'react-router-dom';
+import {Link} from '../storeRouter';
 import {useEffect,useState} from 'react';
 import {apiRequest} from '../api/api';
 import {CategoryContext} from '../context/CategoryContext';

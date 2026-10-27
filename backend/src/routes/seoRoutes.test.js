@@ -1,10 +1,13 @@
+import SiteSeo from '../models/SiteSeo.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import PageSeo from '../models/PageSeo.js';
 import { adminSeo, publicSeo } from './seoRoutes.js';
 import { requireAuth } from '../middleware/auth.js';
 
-const handler = (router, method) => router.stack.find(layer => layer.route?.methods[method]).route.stack[0].handle;
+test.beforeEach(t=>{t.mock.method(SiteSeo,'findOne',()=>({async lean(){return {};}}));});
+
+const handler = (router, method) => router.stack.find(layer => layer.route?.path === '/' && layer.route?.methods[method]).route.stack[0].handle;
 function response() {
   return { code: 200, status(code) { this.code = code; return this; }, json(body) { this.body = body; return this; } };
 }
@@ -64,4 +67,36 @@ test('SEO saves trimmed FAQs and keywords and allows clearing them', async t => 
   await handler(adminSeo, 'put')({ body: { path: '/', keywords: '', faqs: [] } }, response());
   assert.equal(writes[1].keywords, '');
   assert.deepEqual(writes[1].faqs, []);
+});
+
+
+test('SEO indexing accepts booleans and preserves explicit false',async t=>{
+  t.mock.method(PageSeo,'findOneAndUpdate',async(_,update)=>update.$set);
+  for(const noindex of [true,false]) {
+    const res=response();await handler(adminSeo,'put')({body:{path:'/',noindex}},res);
+    assert.equal(res.body.seo.noindex,noindex);
+  }
+  const res=response();await handler(adminSeo,'put')({body:{path:'/',noindex:'false'}},res);
+  assert.equal(res.code,400);
+});
+
+test('page URL changes save the new path and optional redirect history',async t=>{
+  t.mock.method(PageSeo,'findOne',query=>({async lean(){return query.$or?null:{path:'/wishlist',urlPath:'/saved-frames',redirects:['/wishlist']};}}));
+  t.mock.method(PageSeo,'findOneAndUpdate',async(_,update)=>update.$set);
+  const res=response();
+  await handler(adminSeo,'put')({body:{path:'/wishlist',urlPath:'/favorites',redirectOld:true}},res);
+  assert.equal(res.body.seo.urlPath,'/favorites');
+  assert.deepEqual(res.body.seo.redirects,['/wishlist','/saved-frames']);
+  const noRedirect=response();
+  await handler(adminSeo,'put')({body:{path:'/wishlist',urlPath:'/favorites',redirectOld:false}},noRedirect);
+  assert.deepEqual(noRedirect.body.seo.redirects,[]);
+});
+test('page URL changes reject reserved routes and occupied paths',async t=>{
+  for(const urlPath of ['/api/seo','/admin/settings','/products/new','/cart','/../bad']) {
+    const res=response();await handler(adminSeo,'put')({body:{path:'/wishlist',urlPath,redirectOld:true}},res);
+    assert.equal(res.code,400);
+  }
+  t.mock.method(PageSeo,'findOne',()=>({async lean(){return {path:'/collection'};}}));
+  const res=response();await handler(adminSeo,'put')({body:{path:'/wishlist',urlPath:'/taken',redirectOld:true}},res);
+  assert.equal(res.code,409);
 });

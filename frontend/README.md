@@ -358,7 +358,7 @@ Collection category tabs and empty-result indicators use a rectangular eyeglasse
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e8962288c1ac22ee842b3b2c763941373e5b45d2bc9ab117b0e625933c3fb5f9`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `11111ff93d135774a1b3acdc4fe01a078c17f8b32533b4f7e1a3cba3720e79bd`.
 
 ### Actual npm commands
 
@@ -478,6 +478,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/seo/FaqSchema.jsx](src/seo/FaqSchema.jsx) | FaqSchema |
 | [src/seo/PageFaq.jsx](src/seo/PageFaq.jsx) | PageFaq |
 | [src/seo/PageMetadata.jsx](src/seo/PageMetadata.jsx) | PageMetadata |
+| [src/seo/PageRoutesContext.js](src/seo/PageRoutesContext.js) | PageRoutesContext |
 | [src/seo/SiteVerification.jsx](src/seo/SiteVerification.jsx) | SiteVerification |
 | [src/state/checkout.js](src/state/checkout.js) | checkoutRows |
 | [src/state/checkout.test.js](src/state/checkout.test.js) | Internal module / styles |
@@ -489,6 +490,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/state/productVariants.test.js](src/state/productVariants.test.js) | Internal module / styles |
 | [src/state/shopping.js](src/state/shopping.js) | cartKey, cartQuantity, normalizeStore |
 | [src/state/shopping.test.js](src/state/shopping.test.js) | Internal module / styles |
+| [src/storeRouter.jsx](src/storeRouter.jsx) | Link, NavLink, useNavigate |
 | [src/utils/frameSizing.js](src/utils/frameSizing.js) | Internal module / styles |
 | [src/utils/orderTimeline.js](src/utils/orderTimeline.js) | Internal module / styles |
 | [src/utils/savedTryOn.js](src/utils/savedTryOn.js) | readSavedTryOn, saveTryOn, savedTryOnKey |
@@ -679,3 +681,15 @@ Site SEO verification tags are read into the document head at runtime, including
 Google tracking is configured in Site SEO settings. The storefront loads either GTM or direct GA4/Ads once per document, and tracks SPA route changes without duplicate immediate events. Query parameters are excluded from manual page-view payloads. Configure matching GTM custom-event triggers or disable GA4 enhanced-measurement history events when using direct page views. No purchase conversions are sent automatically.
 
 On the combined production deployment, `/` is served by the backend homepage handler with storefront HTML and non-JavaScript fallback navigation. `/api/health` is the backend health endpoint. The public `/sitemap.xml` is generated directly from the page registry and active products, so a third-party JavaScript crawler is not required.
+
+## Indexing controls
+
+Page and product SEO editors include Hide this page from search engines (noindex). Saved booleans override registry defaults; noindex emits `noindex, follow`. Filtered collection URLs and unknown/unavailable pages remain noindex. Product `seoNoindex` overrides its path-level setting. The homepage includes the saved preference in source HTML and X-Robots-Tag; other SPA routes update tags client-side. Search engines must recrawl to reflect changes.
+
+## Editable page URLs and redirects
+
+Static page addresses can be edited in Page SEO. Startup loads `/api/seo/routes` to mount saved aliases using the original component/layout/authentication guard. Metadata and FAQs resolve back to the stable registry path. Optional redirects preserve query strings and hash fragments during SPA navigation. Production public routes pass through the backend for initial HTML, indexing tags and true 301 redirects; deploy the updated Vercel configuration. Changing a page URL does not rewrite promotional links, but enabled redirects handle old links.
+
+### Configurable store URL prefixes
+
+`shared/urlPrefixes.js` resolves current and historical product/collection prefixes from admin settings. Route discovery includes these mappings. `src/storeRouter.jsx` adapts storefront links and navigation to the configured addresses, keeping queries and fragments. Product details/reviews use the same product identifiers; collection filters remain query parameters. Metadata resolves renamed paths to their original content keys. Reload the storefront after changing settings.

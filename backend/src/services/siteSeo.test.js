@@ -1,3 +1,5 @@
+import SiteSeo from '../models/SiteSeo.js';
+import PageSeo from '../models/PageSeo.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { verificationToken, siteSeoFields, verificationHtml } from './siteSeo.js';
@@ -26,6 +28,7 @@ test('crawler files and origins are validated and can be cleared',()=>{
 });
 
 test('generated robots and sitemap use the saved origin and active product slugs', async t => {
+  t.mock.method(PageSeo,'find',()=>({select(){return this;},async lean(){return [{path:'/collection',noindex:true}];}}));
   const { default: SiteSeo }=await import('../models/SiteSeo.js');
   const { default: Product }=await import('../models/Product.js');
   const { publicSiteSeo }=await import('../routes/siteSeoRoutes.js');
@@ -43,6 +46,7 @@ test('generated robots and sitemap use the saved origin and active product slugs
   assert.equal(sitemap.contentType,'application/xml');
   assert.ok(sitemap.body.includes('https://shop.example.com/products/test-frame'));
   assert.ok(!sitemap.body.includes('/checkout'));
+  assert.ok(!sitemap.body.includes('/collection'));
 });
 test('custom crawler files are served without querying the product catalog', async t=>{
   const { default: SiteSeo }=await import('../models/SiteSeo.js');
@@ -77,4 +81,30 @@ test('homepage HTML keeps the app and includes escaped crawlable fallback links'
   assert.ok(html.includes('<noscript>'));
   assert.ok(html.includes('<div id="root"></div>'));
   assert.ok(html.includes('<script src="/assets/app.js"></script>'));
+});
+
+test('old page addresses return a permanent redirect retaining query parameters',async t=>{
+  const {renderStorefront}=await import('../routes/siteSeoRoutes.js');
+  t.mock.method(SiteSeo,'findOne',()=>({async lean(){return {};}}));
+  t.mock.method(PageSeo,'find',()=>({select(){return this;},async lean(){return [{path:'/wishlist',urlPath:'/favorites',redirectOld:true,redirects:['/saved-frames']}];}}));
+  for(const storefrontPath of ['/wishlist','/saved-frames']) {
+    let result;
+    await renderStorefront({storefrontPath,originalUrl:storefrontPath+'?source=menu'}, {redirect(code,url){result={code,url};}});
+    assert.deepEqual(result,{code:301,url:'/favorites?source=menu'});
+  }
+});
+
+test('URL prefixes reject reserved and malformed values',()=>{
+ for(const productPrefix of ['/admin','/cart','/frames/nested','/Frames','//frames','/frames?x=1']) assert.throws(()=>siteSeoFields({...empty,productPrefix}));
+ assert.equal(siteSeoFields({...empty,productPrefix:'/frames',collectionPrefix:'/collections'}).productPrefix,'/frames');
+});
+test('old product and collection prefixes redirect permanently with queries',async t=>{
+ const {renderStorefront}=await import('../routes/siteSeoRoutes.js');
+ t.mock.method(SiteSeo,'findOne',()=>({async lean(){return {productPrefix:'/frames',collectionPrefix:'/collections',productPrefixHistory:['/eyewear']};}}));
+ t.mock.method(PageSeo,'find',()=>({select(){return this;},async lean(){return [];}}));
+ for(const [path,target] of [['/products/blue/reviews','/frames/blue/reviews'],['/eyewear/blue','/frames/blue'],['/collection','/collections']]) {
+  let result;
+  await renderStorefront({storefrontPath:path,originalUrl:path+'?category=round'}, {redirect(code,url){result={code,url};}});
+  assert.deepEqual(result,{code:301,url:target+'?category=round'});
+ }
 });

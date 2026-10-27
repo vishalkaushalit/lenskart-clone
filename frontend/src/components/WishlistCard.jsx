@@ -1,6 +1,6 @@
 import SoldOutBadge from './SoldOutBadge';
 import FrameSizeBadge from './FrameSizeBadge';
-import { Link } from 'react-router-dom';
+import { Link } from '../storeRouter';
 import { ArrowRight, X } from 'lucide-react';
 import ProductCardImage from './ProductCardImage';
 import { resolveVariant } from '../state/productVariants';

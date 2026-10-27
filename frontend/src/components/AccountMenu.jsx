@@ -1,6 +1,6 @@
 import PopupMessage from "./PopupMessage";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "../storeRouter";
 import { ChevronDown, UserRound } from "lucide-react";
 import { useAuth } from "../context/AuthState";
 

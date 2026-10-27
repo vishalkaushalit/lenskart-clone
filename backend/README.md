@@ -389,7 +389,7 @@ Product detail endpoints fetch variants and approved reviews concurrently after 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `6f4359a239edf785f81cce5afd27c2f739e62adb450882a4bbdfc3907818219f`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `5155c15a809057dedab2b3ec22fb1f319bca342d469d2ad52fc055177ebd8309`.
 
 ### Actual npm commands
 
@@ -476,7 +476,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/routes/productRoutes.js](src/routes/productRoutes.js) | managedProducts, publicProducts |
 | [src/routes/seoRoutes.js](src/routes/seoRoutes.js) | adminSeo, publicSeo |
 | [src/routes/seoRoutes.test.js](src/routes/seoRoutes.test.js) | Internal module / styles |
-| [src/routes/siteSeoRoutes.js](src/routes/siteSeoRoutes.js) | adminSiteSeo, publicSiteSeo |
+| [src/routes/siteSeoRoutes.js](src/routes/siteSeoRoutes.js) | adminSiteSeo, publicSiteSeo, renderStorefront |
 | [src/routes/userRoutes.js](src/routes/userRoutes.js) | default export |
 | [src/routes/variantRoutes.js](src/routes/variantRoutes.js) | default export |
 | [src/routes/variantRoutes.test.js](src/routes/variantRoutes.test.js) | Internal module / styles |
@@ -553,6 +553,8 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/routes/productRoutes.js | managedProducts.post | `/` |
 | src/routes/productRoutes.js | managedProducts.patch | `/:id` |
 | src/routes/productRoutes.js | managedProducts.delete | `/:id` |
+| src/routes/seoRoutes.js | adminSeo.get | `/all` |
+| src/routes/seoRoutes.js | publicSeo.get | `/routes` |
 | src/routes/seoRoutes.js | publicSeo.get | `/` |
 | src/routes/seoRoutes.js | adminSeo.get | `/` |
 | src/routes/seoRoutes.js | adminSeo.put | `/` |
@@ -737,10 +739,16 @@ const schema = new mongoose.Schema({
   path: { type: String, required: true, unique: true, maxlength: 300 },
   title: { type: String, trim: true, maxlength: 120, default: '' },
   description: { type: String, trim: true, maxlength: 320, default: '' },
+  urlPath: { type: String, default: '', maxlength: 300 },
+  redirectOld: { type: Boolean, default: true },
+  redirects: { type: [String], default: [] },
+  noindex: { type: Boolean, default: null },
   keywords: { type: String, trim: true, maxlength: 1000, default: '' },
   faqs: { type: [{ question: { type: String, required: true, trim: true, maxlength: 200 }, answer: { type: String, required: true, trim: true, maxlength: 1000 } }], default: [], validate: rows => rows.length <= 20 },
   image: { type: String, trim: true, maxlength: 2000, default: '' },
 }, { timestamps: true });
+
+schema.index({urlPath:1},{unique:true,partialFilterExpression:{urlPath:{$gt:''}}});
 
 export default mongoose.model('PageSeo', schema);
 ```
@@ -754,6 +762,7 @@ import {slugify} from '../utils/slugs.js';
 const validImage = (value) => typeof value === 'string' && value.length <= 2000 && (/^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value));
 const textList = { type: [String], default: [], validate: (values) => values.length <= 12 && values.every((value) => value.length <= 300) };
 const schema = new mongoose.Schema({
+  seoNoindex: { type: Boolean, default: null },
   seoKeywords: { type: String, trim: true, maxlength: 1000, default: '' },
   seoTitle: { type: String, trim: true, maxlength: 120, default: '' },
   seoDescription: { type: String, trim: true, maxlength: 320, default: '' },
@@ -838,6 +847,10 @@ export default mongoose.model('ProductVariant', schema);
 // Generated directly from backend/src/models/SiteSeo.js; edit the source model, not this excerpt.
 import mongoose from 'mongoose';
 const schema = new mongoose.Schema({
+  productPrefix: { type: String, default: '/products' },
+  collectionPrefix: { type: String, default: '/collection' },
+  productPrefixHistory: { type: [String], default: [] },
+  collectionPrefixHistory: { type: [String], default: [] },
   key: { type: String, unique: true, default: 'site' },
   websiteUrl: { type: String, default: '', maxlength: 2000 },
   googleVerification: { type: String, default: '', maxlength: 500 },
@@ -985,3 +998,15 @@ Site SEO settings use the singleton SiteSeo model. Admin-only GET/PUT `/api/admi
 SiteSeo tracking fields: `trackingMode` (`off`, `gtm`, `direct`), `gtmId`, `ga4Id`, `googleAdsId`. Admin writes validate the selected method and ID format. Public site settings return these public tracking identifiers for storefront installation. Arbitrary script snippets are not accepted.
 
 The health check lives only at `/api/health`; `/` serves storefront HTML. Avoid registering a root health route before the storefront handler. Homepage source includes a noscript navigation fallback with public page links and up to 1000 active product links for non-JavaScript clients. The generated XML sitemap lists the larger catalog independently.
+
+## Indexing controls
+
+PageSeo.noindex and Product.seoNoindex are nullable booleans: null means use existing defaults. Admin GET `/api/admin/seo/all` supplies saved per-page indexing settings to the table. Generated sitemap excludes effective noindex static/product URLs; uploaded XML overrides are administrator-managed and are not rewritten. The homepage response includes the saved robots meta/header preference.
+
+## Editable page URLs and redirects
+
+PageSeo has `urlPath`, `redirectOld` and `redirects`; the stable `path` remains its registry key. Public GET `/api/seo/routes` returns route aliases. Admin writes validate registered pages, reserved paths, conflicting URLs and redirect history; nonempty URL paths are uniquely indexed. Public storefront GET/HEAD fallbacks serve built HTML with current robots/title/description and optional 301 redirects. Generated sitemap uses effective URLs and indexing preferences. Default robots allows public URLs to be crawled for robots-meta evaluation, blocking only /admin; custom robots overrides remain administrator-managed.
+
+### Store URL prefixes
+
+Admin site SEO settings accept `productPrefix` and `collectionPrefix` (single lowercase path segment). Saved prefix histories redirect previous product, review and collection addresses with HTTP 301 while preserving queries. Prefixes cannot overlap each other, historical prefixes, reserved routes or saved page aliases. Public route discovery, generated sitemap and fallback navigation use the configured paths. Custom uploaded sitemaps are not rewritten. Existing product slugs and collection filter identifiers are unchanged.

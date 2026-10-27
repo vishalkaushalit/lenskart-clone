@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom';
+import {Link} from '../storeRouter';
 import vincent_chase from "../assets/images/brands/vincent_chase.webp";
 import hustlr from "../assets/images/brands/hustlr.webp";
 import john_jacobs from "../assets/images/brands/john_jacobs.webp";

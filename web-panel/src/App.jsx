@@ -41,13 +41,13 @@ export default function App() {
         <Route path="/product/:id/variants" element={<ProductVariants />} />
         <Route path="/product/:id/edit" element={<EditProduct />} />
         <Route path="/product/:id" element={<ProductDetails />} />
-        <Route path="/categories/add" element={<ResourceEdit key="categories-add" mode="add" kind="categories"/>}/>
-        <Route path="/categories/:id" element={<ResourceDetails key="categories" kind="categories"/>}/>
+        <Route path="/collections/add" element={<ResourceEdit key="categories-add" mode="add" kind="categories"/>}/>
+        <Route path="/collections/:id" element={<ResourceDetails key="categories" kind="categories"/>}/>
         <Route path="/coupons/add" element={<ResourceEdit key="coupons-add" mode="add" kind="coupons"/>}/>
         <Route path="/coupons/:id" element={<ResourceDetails key="coupons" kind="coupons"/>}/>
         <Route path="/users/add" element={<ResourceEdit key="users-add" mode="add" kind="users"/>}/>
         <Route path="/users/:id" element={<ResourceDetails key="users" kind="users"/>}/>
-        <Route path="/categories/:id/edit" element={<ResourceEdit key="categories" kind="categories"/>}/>
+        <Route path="/collections/:id/edit" element={<ResourceEdit key="categories" kind="categories"/>}/>
         <Route path="/coupons/:id/edit" element={<ResourceEdit key="coupons" kind="coupons"/>}/>
         <Route path="/users/:id/edit" element={<ResourceEdit key="users" kind="users"/>}/>
         <Route path="/orders/:id/edit" element={<ResourceEdit key="orders" kind="orders"/>}/>
@@ -57,7 +57,7 @@ export default function App() {
         <Route path="/orders" element={<Commerce key="orders" kind="orders"/>}/>
         <Route path="/reviews" element={<Reviews/>}/>
         <Route path="/coupons" element={<Commerce key="coupons" kind="coupons"/>}/>
-        <Route path="/categories" element={<Categories/>}/>
+        <Route path="/collections" element={<Categories/>}/>
         <Route path="/users" element={<Users />} />
         <Route path="/profile" element={<ProfileDetails />} />
         <Route path="/profile/edit" element={<Profile />} />

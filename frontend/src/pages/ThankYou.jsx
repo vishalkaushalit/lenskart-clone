@@ -1,6 +1,6 @@
 import FrameSizeBadge from '../components/FrameSizeBadge';
 import { useEffect, useState } from 'react';
-import { Link, useOutletContext, useParams } from 'react-router-dom';
+import { Link, useOutletContext, useParams } from '../storeRouter';
 import { Check } from 'lucide-react';
 import CouponDiscount from '../components/CouponDiscount';
 import Loader from '../components/Loader';

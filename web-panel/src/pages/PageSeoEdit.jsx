@@ -19,7 +19,7 @@ function FaqToggle({ question, index, children }) {
 }
 
 function Editor({ page }) {
-  const [path, label, title, description, , keywords, faqs] = page;
+  const [path, label, title, description, defaultNoindex, keywords, faqs] = page;
   const [form, setForm] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -30,16 +30,16 @@ function Editor({ page }) {
   useEffect(() => {
     const controller = new AbortController();
     apiRequest(`/admin/seo?path=${encodeURIComponent(path)}`, { signal: controller.signal }).then(({ seo }) => {
-      if (!controller.signal.aborted) setForm({ keywords: seo?.keywords ?? keywords, faqs: seo?.faqs ?? faqs, title: seo?.title || title, description: seo?.description || description, image: seo?.image || '' });
+      if (!controller.signal.aborted) setForm({ urlPath: seo?.urlPath || path, redirectOld: seo?.redirectOld ?? true, noindex: seo?.noindex ?? defaultNoindex, keywords: seo?.keywords ?? keywords, faqs: seo?.faqs ?? faqs, title: seo?.title || title, description: seo?.description || description, image: seo?.image || '' });
     }).catch(err => { if (!controller.signal.aborted) setError(err.message); });
     return () => controller.abort();
-  }, [path, title, description, keywords, faqs, attempt]);
+  }, [path, title, description, defaultNoindex, keywords, faqs, attempt]);
   async function save(event) {
     event.preventDefault();
     if (saving || uploading) return;
     setSaving(true); setError(''); setNotice(null);
     try {
-      await apiRequest('/admin/seo', { method: 'PUT', body: JSON.stringify({ path, title: form.title, description: form.description, image: form.image, keywords: form.keywords, faqs: form.faqs }) });
+      await apiRequest('/admin/seo', { method: 'PUT', body: JSON.stringify({ path, title: form.title, description: form.description, image: form.image, keywords: form.keywords, faqs: form.faqs, noindex: form.noindex, urlPath: form.urlPath, redirectOld: form.redirectOld }) });
       notify('SEO settings saved successfully.');
     } catch (err) { notify(err.message, 'error'); }
     finally { setSaving(false); }
@@ -56,7 +56,7 @@ function Editor({ page }) {
           <button type="button" className="delete-button" aria-label={`Delete FAQ ${index + 1}`} title="Delete FAQ" onClick={() => { setForm({ ...form, faqs: form.faqs.filter((_, i) => i !== index) }); notify('FAQ removed. Save changes to apply.'); }}><Trash2 size={18} aria-hidden="true" /></button>
         </FaqToggle>)}<button type="button" className="admin-button-secondary" disabled={form.faqs.length >= 20} onClick={() => { setForm({ ...form, faqs: [...form.faqs, { question: '', answer: '' }] }); notify('FAQ added. Enter a question and answer, then save.'); }}>Add FAQ</button></fieldset>
       </section>
-      <p className="text-xs text-slate-500">Account and checkout pages remain excluded from search indexing.</p>
+      <p className="text-xs text-slate-500">The noindex checkbox controls this page’s search indexing preference. Search engines apply changes after recrawling.</p>
       <div className="product-editor-actions"><Link to="/seo" className="admin-button-secondary">Cancel</Link><button disabled={saving || uploading} className="admin-button-primary">{saving ? 'Saving…' : 'Save changes'}</button></div>
     </form>}
     {error && <div className="space-y-3"><PopupMessage message={error} />{!form && <button type="button" className="admin-button-secondary ml-3" onClick={() => { setError(''); setAttempt(attempt + 1); }}>Retry</button>}</div>}

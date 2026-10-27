@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams } from '../storeRouter';
 import { apiRequest } from '../api/api';
 import Loader from '../components/Loader';
 import ReviewCard from '../components/ReviewCard';

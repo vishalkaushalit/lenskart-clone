@@ -1,4 +1,4 @@
-import { adminSiteSeo, publicSiteSeo } from './routes/siteSeoRoutes.js';
+import { adminSiteSeo, publicSiteSeo, renderStorefront } from './routes/siteSeoRoutes.js';
 import { publicSeo, adminSeo } from './routes/seoRoutes.js';
 import 'dotenv/config';
 import { pathToFileURL, fileURLToPath } from 'node:url';
@@ -110,7 +110,7 @@ export function initializeApp() {
     await Promise.all([User.init(),Order.init(),Coupon.init(),ProductVariant.init(),CustomerReview.init()]);
     app.use('/api/site-seo', publicSiteSeo);
     app.use('/api/admin/site-seo', adminSiteSeo);
-    app.get('/', (req,res,next) => { req.url='/home';publicSiteSeo(req,res,next); });
+    app.get('/', (req,res) => { req.storefrontPath='/';return renderStorefront(req,res); });
     app.get('/robots.txt', (req,res,next) => { req.url='/robots.txt';publicSiteSeo(req,res,next); });
     app.get('/sitemap.xml', (req,res,next) => { req.url='/sitemap.xml';publicSiteSeo(req,res,next); });
     app.use('/api/seo', publicSeo);
@@ -126,6 +126,12 @@ export function initializeApp() {
     app.use('/api/products', publicProducts);
     app.use('/api/admin/products', managedProducts);
     app.use('/assets/products', express.static(fileURLToPath(new URL('../public/products/', import.meta.url)),{maxAge:'7d',etag:true}));
+
+    app.use((req,res,next)=>{
+      if(!['GET','HEAD'].includes(req.method)||/^\/(api|admin|assets)(?:\/|$)/.test(req.path))return next();
+      req.storefrontPath=req.path.replace(/\/+$/,'') || '/';
+      Promise.resolve(renderStorefront(req,res)).catch(next);
+    });
 
     app.use((req, res) => {
       res.status(404).json({

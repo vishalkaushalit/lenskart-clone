@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { matchesSearch, searchDestination } from './search.js';
 
 test('admin search stays in the selected resource and defaults to products', () => {
-  for (const path of ['/product', '/users', '/categories', '/orders', '/coupons']) assert.equal(searchDestination(path).path, path);
+  for (const path of ['/product', '/users', '/collections', '/orders', '/coupons']) assert.equal(searchDestination(path).path, path);
   assert.equal(searchDestination('/orders/123').path, '/orders');
   assert.equal(searchDestination('/dashboard').path, '/product');
 });

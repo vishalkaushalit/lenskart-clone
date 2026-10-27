@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom';
+import {Link} from '../storeRouter';
 import {Swiper,SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 const imageUrl=path=>path?.startsWith('/')?new URL(path,import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api')).href:path;

@@ -82,7 +82,9 @@ Gallery state retains local previews and uploaded/remote paths while editing. `c
 
 Server-managed fields such as `rating`, `sales`, and `addedAt` are not normal editable form inputs. Full model limits, field relationships, and legacy category compatibility are in the backend guide.
 
-### Categories (`/categories`)
+### Collections (`/collections`)
+
+The admin sidebar labels this section **Collections** and links to `/collections`.
 
 | Field | Purpose |
 | --- | --- |
@@ -288,7 +290,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `a832c434653a97708f6e4382d81b9c61f95ce9d6e2355a5bc41a000af82ea05d`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `477a191b048900cbfdeb42443984e65500d162e03482a7a1b3f4fd7a785487d9`.
 
 ### Actual npm commands
 
@@ -321,6 +323,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/DataTable.jsx](src/components/DataTable.jsx) | DataTable |
 | [src/components/DeleteRecordButton.jsx](src/components/DeleteRecordButton.jsx) | DeleteRecordButton |
 | [src/components/ImageUploadField.jsx](src/components/ImageUploadField.jsx) | ImageUploadField |
+| [src/components/LegacyCollectionRedirect.jsx](src/components/LegacyCollectionRedirect.jsx) | LegacyCollectionRedirect |
 | [src/components/Loader.jsx](src/components/Loader.jsx) | Internal module / styles |
 | [src/components/NotificationPopup.jsx](src/components/NotificationPopup.jsx) | NotificationPopup |
 | [src/components/PageHeader.jsx](src/components/PageHeader.jsx) | PageHeader |
@@ -389,13 +392,13 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/App.jsx | React Route | `/product/:id/variants` |
 | src/App.jsx | React Route | `/product/:id/edit` |
 | src/App.jsx | React Route | `/product/:id` |
-| src/App.jsx | React Route | `/categories/add` |
-| src/App.jsx | React Route | `/categories/:id` |
+| src/App.jsx | React Route | `/collections/add` |
+| src/App.jsx | React Route | `/collections/:id` |
 | src/App.jsx | React Route | `/coupons/add` |
 | src/App.jsx | React Route | `/coupons/:id` |
 | src/App.jsx | React Route | `/users/add` |
 | src/App.jsx | React Route | `/users/:id` |
-| src/App.jsx | React Route | `/categories/:id/edit` |
+| src/App.jsx | React Route | `/collections/:id/edit` |
 | src/App.jsx | React Route | `/coupons/:id/edit` |
 | src/App.jsx | React Route | `/users/:id/edit` |
 | src/App.jsx | React Route | `/orders/:id/edit` |
@@ -405,7 +408,8 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/App.jsx | React Route | `/orders` |
 | src/App.jsx | React Route | `/reviews` |
 | src/App.jsx | React Route | `/coupons` |
-| src/App.jsx | React Route | `/categories` |
+| src/App.jsx | React Route | `/categories/*` |
+| src/App.jsx | React Route | `/collections` |
 | src/App.jsx | React Route | `/users` |
 | src/App.jsx | React Route | `/profile` |
 | src/App.jsx | React Route | `/profile/edit` |
@@ -560,3 +564,17 @@ Page SEO → Site SEO settings (`/seo/settings`) manages Google Search Console a
 Upload areas size to their content with compact spacing and no fixed minimum height, including sitemap/robots and product/image upload controls.
 
 Google tracking supports Disabled, GTM (`GTM-…`), or direct GA4 (`G-…`) / Ads (`AW-…`) IDs. Saving validates IDs; scripts initialize on storefront reload, once per document. GTM receives `store_page_view` events for container triggers. Direct GA4 sends route page views; disable enhanced-measurement history page views to avoid duplicates. Ads installs the base tag; purchase conversion events need separate configuration. No tracking is loaded in Disabled mode.
+
+## Indexing controls
+
+Use the noindex checkbox in each page/product Search engine listing editor to manage indexing. Save changes; Page SEO table loads saved preferences, with registry defaults for untouched pages. Clearing the checkbox requests indexing; it does not guarantee a search engine will index the URL. Indexing preferences do not bypass authentication.
+
+## Editable page URLs and redirects
+
+Page URL is now an editable path (e.g. `/favorites`), with its full address shown underneath. Save with Redirect old URL enabled to create a permanent 301 from the old path, retaining earlier redirects across renames. Uncheck to disable these redirects while retaining the original registered route as an alias. Reserved/occupied paths are rejected. The table shows saved URLs. Product URL handles continue using the separate product slug editor.
+
+### Store URL settings
+
+The sidebar **Settings** link opens `/seo/settings`. Store URL prefixes control the product route (default `/products`) and collection listing route (default `/collection`). Use a single lowercase path segment, such as `/frames` or `/collections`. Saving retains prior prefixes as permanent redirects; product slugs, review suffixes and collection query filters remain intact. Reserved and conflicting prefixes are rejected. Reload the storefront after saving. Uploaded custom sitemaps must be updated manually.
+
+Admin collection management uses `/collections`, `/collections/add`, `/collections/:id`, and `/collections/:id/edit`. Legacy admin `/categories` routes are removed and show Page not found. Database categories and admin API endpoints remain compatible.

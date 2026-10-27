@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '../storeRouter';
 import { useState } from 'react';
 import ProductCardImage from './ProductCardImage';
 export default function ProductGallery({ product, assetUrl, linkTo, dots = false }) {

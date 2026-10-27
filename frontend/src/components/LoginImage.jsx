@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "../storeRouter";
 import Login_Image from "../assets/images/Login/login_image.webp";
 const LoginImage = () => {
   return (

@@ -1,6 +1,6 @@
 import {useCategories} from '../context/CategoryContext';
 import {collectionLink} from '../state/collectionLinks';
-import {Link} from 'react-router-dom';
+import {Link} from '../storeRouter';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { ChevronLeft, ChevronRight } from "lucide-react";

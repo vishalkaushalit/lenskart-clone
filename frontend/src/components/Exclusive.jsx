@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom';
+import {Link} from '../storeRouter';
 import {useCategories} from '../context/CategoryContext';
 import {collectionLink} from '../state/collectionLinks';
 import transparent_frames from "../assets/images/exclusive/transparent_frames.webp";

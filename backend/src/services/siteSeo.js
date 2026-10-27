@@ -13,6 +13,14 @@ export function verificationToken(value, name) {
 }
 export function siteSeoFields(body) {
   const fields = {};
+  for (const key of ['productPrefix', 'collectionPrefix']) {
+    if (Object.hasOwn(body, key)) {
+      const value = body[key];
+      if (typeof value !== 'string' || !/^\/[a-z][a-z0-9-]{0,59}$/.test(value)) throw new Error('Use a prefix such as /products with lowercase letters, numbers and hyphens.');
+      if (['/api','/admin','/assets','/orders','/thank-you','/eyeglasses','/wishlist','/cart','/checkout','/profile','/login','/register','/forgot-password','/reset-password'].includes(value)) throw new Error('This prefix is reserved for another page.');
+      fields[key] = value;
+    }
+  }
   let url = body.websiteUrl;
   if (typeof url !== 'string' || url.length > 2000) throw new Error('Enter your website URL.');
   if (url.trim()) {

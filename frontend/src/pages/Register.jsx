@@ -1,7 +1,7 @@
 import PasswordInput from '../../../shared/PasswordInput';
 import PopupMessage from "../components/PopupMessage";
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "../storeRouter";
 import { apiRequest } from "../api/api";
 import LoginImage from "../components/LoginImage";
 

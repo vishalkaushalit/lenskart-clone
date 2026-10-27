@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { PageRoutesContext } from './PageRoutesContext';
+import { useEffect, useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { editableStorePages } from '../../../shared/storePages.js';
 import { apiRequest } from '../api/api';
@@ -21,7 +22,9 @@ function Content({ path }) {
   </section>;
 }
 export default function PageFaq() {
+  const routes=useContext(PageRoutesContext);
   const { pathname } = useLocation();
-  const path = pathname.replace(/\/+$/, '') || '/';
+  const actualPath=pathname.replace(/\/+$/, '') || '/';
+  const path=routes.find(row=>row.path===actualPath||row.urlPath===actualPath||row.redirects?.includes(actualPath))?.path || actualPath;
   return editableStorePages.some(page => page.path === path) ? <Content key={path} path={path} /> : null;
 }
