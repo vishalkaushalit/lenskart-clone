@@ -1,4 +1,4 @@
-import './ProductCardImage.css';
+import "./ProductCardImage.css";
 
 // Shared image area for collection, similar-product and wishlist cards.
 export default function ProductCardImage({ src, alt }) {
@@ -10,6 +10,8 @@ export default function ProductCardImage({ src, alt }) {
         alt={alt}
         loading="lazy"
         decoding="async"
+        width={800}
+        height={500}
       />
     </div>
   );
