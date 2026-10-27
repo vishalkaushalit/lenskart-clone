@@ -45,7 +45,7 @@ These values are embedded in browser bundles. Restart Vite after editing `.env`.
 | `/forgot-password`, `/reset-password` | Placeholder messages; reset functionality is not implemented. |
 | Other URLs | Page-not-found fallback. |
 
-`ProtectedRoute` requires a valid login for protected routes. `CustomerRoute` is an additional role-aware component in the source, but is not the guard currently mounted in App.jsx. The live administration routes are in `web-panel`; the older `src/dashboard` files are not mounted here.
+`ProtectedRoute` requires a valid login for protected routes. Live administration routes and dashboard components are maintained in `web-panel`; obsolete storefront dashboard prototypes and unused route, loader, notification, and demo mesh components have been removed. Unused React Three Fiber, Drei, and Framer Motion dependencies have also been removed; `three` remains required by virtual try-on. The virtual try-on interface loads on demand when opened, with a local loading fallback so the product page remains mounted.
 
 ## Search, filtering, and navigation fields
 
@@ -358,7 +358,7 @@ Collection category tabs and empty-result indicators use a rectangular eyeglasse
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e2057b967f94210454afbf7c613622ead3e2afbc1a7275ee26f3234d15252348`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `7ca180ece90866fa1ca91ebaaa3549c2e6477befa81df4a7f410f94f201476fd`.
 
 ### Actual npm commands
 
@@ -384,17 +384,13 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/api/api.js](src/api/api.js) | apiRequest |
 | [src/api/requestClient.js](src/api/requestClient.js) | Internal module / styles |
 | [src/components/AccountMenu.jsx](src/components/AccountMenu.jsx) | AccountMenu |
-| [src/components/AsideBarDashboard.jsx](src/components/AsideBarDashboard.jsx) | default export |
 | [src/components/Brands.jsx](src/components/Brands.jsx) | default export |
 | [src/components/Categories.jsx](src/components/Categories.jsx) | Categories |
-| [src/components/ChartDashboard.jsx](src/components/ChartDashboard.jsx) | default export |
 | [src/components/CollectionSort.jsx](src/components/CollectionSort.jsx) | CollectionSort |
 | [src/components/CouponApplied.jsx](src/components/CouponApplied.jsx) | CouponApplied |
 | [src/components/CouponDiscount.jsx](src/components/CouponDiscount.jsx) | CouponDiscount |
 | [src/components/CouponField.css](src/components/CouponField.css) | Internal module / styles |
 | [src/components/CouponField.jsx](src/components/CouponField.jsx) | CouponField |
-| [src/components/CustomerRoute.jsx](src/components/CustomerRoute.jsx) | CustomerRoute |
-| [src/components/DashboardHeader.jsx](src/components/DashboardHeader.jsx) | default export |
 | [src/components/Exclusive.jsx](src/components/Exclusive.jsx) | default export |
 | [src/components/Eyeglasses.jsx](src/components/Eyeglasses.jsx) | Eyeglasses |
 | [src/components/EyeglassesIcon.jsx](src/components/EyeglassesIcon.jsx) | EyeglassesIcon |
@@ -402,15 +398,12 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/FrameSizeBadge.jsx](src/components/FrameSizeBadge.jsx) | FrameSizeBadge |
 | [src/components/FreeCheckup.css](src/components/FreeCheckup.css) | Internal module / styles |
 | [src/components/FreeCheckup.jsx](src/components/FreeCheckup.jsx) | default export |
-| [src/components/GlassesModel.jsx](src/components/GlassesModel.jsx) | GlassesModel |
 | [src/components/HomeSlider.jsx](src/components/HomeSlider.jsx) | default export |
 | [src/components/Loader.jsx](src/components/Loader.jsx) | Internal module / styles |
-| [src/components/LoadingScreen.jsx](src/components/LoadingScreen.jsx) | LoadingScreen |
 | [src/components/LoginForm.jsx](src/components/LoginForm.jsx) | default export |
 | [src/components/LoginImage.jsx](src/components/LoginImage.jsx) | default export |
 | [src/components/NearbyStores.jsx](src/components/NearbyStores.jsx) | default export |
 | [src/components/Notes.jsx](src/components/Notes.jsx) | default export |
-| [src/components/NotificationPopup.jsx](src/components/NotificationPopup.jsx) | NotificationPopup |
 | [src/components/OrderReviews.jsx](src/components/OrderReviews.jsx) | OrderReviews |
 | [src/components/PopupMessage.jsx](src/components/PopupMessage.jsx) | PopupMessage |
 | [src/components/PremiumEyewear.jsx](src/components/PremiumEyewear.jsx) | default export |
@@ -422,7 +415,6 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/ProductPopup.css](src/components/ProductPopup.css) | Internal module / styles |
 | [src/components/ProductSearch.jsx](src/components/ProductSearch.jsx) | ProductSearch |
 | [src/components/ProtectedRoute.jsx](src/components/ProtectedRoute.jsx) | ProtectedRoute |
-| [src/components/RecentOrders.jsx](src/components/RecentOrders.jsx) | default export |
 | [src/components/ReviewCard.css](src/components/ReviewCard.css) | Internal module / styles |
 | [src/components/ReviewCard.jsx](src/components/ReviewCard.jsx) | ReviewCard |
 | [src/components/ScrollToTop.jsx](src/components/ScrollToTop.jsx) | ScrollToTop |
@@ -433,7 +425,6 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/SimilarProductsPopup.jsx](src/components/SimilarProductsPopup.jsx) | SimilarProductsPopup |
 | [src/components/SoldOutBadge.css](src/components/SoldOutBadge.css) | Internal module / styles |
 | [src/components/SoldOutBadge.jsx](src/components/SoldOutBadge.jsx) | SoldOutBadge |
-| [src/components/StatDashboard.jsx](src/components/StatDashboard.jsx) | default export |
 | [src/components/StoreIcon.jsx](src/components/StoreIcon.jsx) | StoreIcon |
 | [src/components/Sunglasses.jsx](src/components/Sunglasses.jsx) | Sunglasses |
 | [src/components/Trending.jsx](src/components/Trending.jsx) | default export |
@@ -448,8 +439,6 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/context/CategoryProvider.jsx](src/context/CategoryProvider.jsx) | CategoryProvider |
 | [src/context/StoreContext.js](src/context/StoreContext.js) | StoreContext, useStore |
 | [src/context/StoreProvider.jsx](src/context/StoreProvider.jsx) | StoreProvider |
-| [src/dashboard/Dashboard.jsx](src/dashboard/Dashboard.jsx) | default export |
-| [src/dashboard/ProductDashboard.jsx](src/dashboard/ProductDashboard.jsx) | default export |
 | [src/data/collection.js](src/data/collection.js) | filterGroups, matchesFilters |
 | [src/footer/Footer.jsx](src/footer/Footer.jsx) | default export |
 | [src/header/Header.jsx](src/header/Header.jsx) | default export |
@@ -511,7 +500,6 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/components/OrderReviews.jsx | fields.get | `rating` |
 | src/components/OrderReviews.jsx | fields.get | `text` |
 | src/components/ProductSearch.jsx | params.get | `search` |
-| src/dashboard/ProductDashboard.jsx | params.get | `search` |
 | src/pages/Collection.jsx | params.get | `search` |
 | src/pages/Collection.jsx | params.get | `category` |
 | src/pages/Collection.jsx | params.get | `subcategory` |

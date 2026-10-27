@@ -2,12 +2,11 @@ import FaqSchema from '../seo/FaqSchema';
 import { frameSizing, compareFrameFit, formatFrameSize } from '../utils/frameSizing';
 import { readSavedTryOn } from '../utils/savedTryOn';
 import useStickyColumns from '../hooks/useStickyColumns';
-import VirtualTryOn from "../components/VirtualTryOn";
 import SimilarProductCard from "../components/SimilarProductCard";
 import { resolveVariant } from "../state/productVariants";
 import Loader from "../components/Loader";
 import ReviewCard from "../components/ReviewCard";
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "../storeRouter";
 import {
   ScanFace,
@@ -29,6 +28,7 @@ import "./ProductDetails.css";
 import stylingMan from "../assets/images/trending/trending_3.webp";
 import stylingWoman from "../assets/images/trending/trending_4.webp";
 import guideFrame from "../assets/images/Login/login_image.webp";
+const VirtualTryOn = lazy(() => import("../components/VirtualTryOn"));
 const money = (value) => `₹${Number(value).toLocaleString("en-IN")}`;
 const assetUrl = (path) =>
   path?.startsWith("/")
@@ -586,10 +586,10 @@ function Details({ product: baseProduct, products }) {
           </div>
         </aside>
       </div>
-      {tryOn && <VirtualTryOn key={`${product.id}-${product.variantId || "base"}`} name={product.name} size={product.size} image={product.tryOnImage ? assetUrl(product.tryOnImage) : ""} onClose={() => {
+      {tryOn && <Suspense fallback={<Loader label="Loading virtual try-on" />}><VirtualTryOn key={`${product.id}-${product.variantId || "base"}`} name={product.name} size={product.size} image={product.tryOnImage ? assetUrl(product.tryOnImage) : ""} onClose={() => {
         setTryOn(false);
         try { setSavedFitReference(readSavedTryOn(window.localStorage)); } catch { setSavedFitReference(null); }
-      }} />}
+      }} /></Suspense>}
       {imagePopup && (
         <ProductImagePopup
           images={images}

@@ -1,11 +1,11 @@
-import SiteSeoSettings from './pages/SiteSeoSettings';
-import PageSeoEdit from './pages/PageSeoEdit';
-import PageSeo from './pages/PageSeo';
 import { LoaderProvider } from '../../shared/LoadingOverlay.jsx';
 import {lazy,Suspense} from 'react';
 import Loader from './components/Loader';
 import { Link, Navigate, Route, Routes } from "react-router-dom";
 import AdminRoute from "./components/AdminRoute";
+const SiteSeoSettings=lazy(()=>import('./pages/SiteSeoSettings'));
+const PageSeoEdit=lazy(()=>import('./pages/PageSeoEdit'));
+const PageSeo=lazy(()=>import('./pages/PageSeo'));
 const Dashboard=lazy(()=>import("./dashboard/Dashboard"));
 const ProductDashboard=lazy(()=>import("./dashboard/ProductDashboard"));
 const ProfileDetails=lazy(()=>import("./pages/ProfileDetails"));

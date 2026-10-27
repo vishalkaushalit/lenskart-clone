@@ -2,6 +2,9 @@
 
 Separate React/Vite application for enabled administrator accounts. Uses the same cookie-session API as the storefront. [Project overview](../README.md) · [Backend reference](../backend/README.md) · [Frontend](../frontend/README.md)
 
+
+All route pages, including the SEO list, editor, and site settings, load on demand through the application Suspense fallback to reduce startup JavaScript.
+
 ## Setup
 
 Run from `web-panel`:
@@ -290,7 +293,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `d013aa24444ccb938440b617a03c3e1494b77e1d678260daf0262338be230c57`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `76c1ca0b92b9e0f743624afe6e3d9084a59969a3c039e621885209d6d1a4dd10`.
 
 ### Actual npm commands
 
@@ -309,7 +312,6 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 
 | File | Exports |
 | --- | --- |
-| [src/App.css](src/App.css) | Internal module / styles |
 | [src/App.jsx](src/App.jsx) | App |
 | [src/api.js](src/api.js) | apiRequest, frontendUrl, productImageUrl |
 | [src/components/ActionLink.jsx](src/components/ActionLink.jsx) | ActionLink |
