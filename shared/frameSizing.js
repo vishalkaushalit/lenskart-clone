@@ -8,7 +8,9 @@ const sizes = {
 };
 export function frameSizing(size) {
   const entry = sizes[size];
-  return entry ? { ...entry, factor: entry.width / sizes.M.width, size } : { factor: 1, label: '', size: size || '' };
+  return entry
+    ? { ...entry, factor: entry.width / sizes.M.width, size }
+    : { factor: 1, label: '', size: size || '' };
 }
 
 export function compareFrameFit(size, savedWidth) {

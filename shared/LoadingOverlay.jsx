@@ -25,13 +25,22 @@ export function LoaderProvider({ children, className }) {
       <div style={{ display: 'contents' }} inert={label !== null}>
         {children}
       </div>
-      {label !== null && createPortal(
-        <div className={`${className}-loader`} role="status" style={{ background: 'white' }}>
-          <video className={`${className}-loader-video`} src={loaderVideo} autoPlay loop muted playsInline aria-hidden="true" />
-          <span className="sr-only">{label}</span>
-        </div>,
-        document.body,
-      )}
+      {label !== null &&
+        createPortal(
+          <div className={`${className}-loader`} role="status" style={{ background: 'white' }}>
+            <video
+              className={`${className}-loader-video`}
+              src={loaderVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              aria-hidden="true"
+            />
+            <span className="sr-only">{label}</span>
+          </div>,
+          document.body,
+        )}
     </LoadingContext.Provider>
   );
 }

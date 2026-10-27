@@ -1,189 +1,189 @@
-import {useCategories} from '../context/CategoryContext';
-import { useEffect, useState } from "react";
-import { Link } from "../storeRouter";
-import ProductSearch from "../components/ProductSearch";
-import StoreIcon from "../components/StoreIcon";
-import AccountMenu from "../components/AccountMenu";
-import { useAuth } from "../context/AuthState";
+import { useCategories } from '../context/CategoryContext';
+import { useEffect, useState } from 'react';
+import { Link } from '../storeRouter';
+import ProductSearch from '../components/ProductSearch';
+import StoreIcon from '../components/StoreIcon';
+import AccountMenu from '../components/AccountMenu';
+import { useAuth } from '../context/AuthState';
 
-import {
-  ChevronDown,
-  UserRound,
-  Menu,
-  PhoneCall,
-  X,
-} from "lucide-react";
+import { ChevronDown, UserRound, Menu, PhoneCall, X } from 'lucide-react';
 
-import { FaUserAlt } from "react-icons/fa";
+import { FaUserAlt } from 'react-icons/fa';
 
-import logo from "../assets/images/logo.svg";
-import get_gold from "../assets/images/get_gold.webp";
+import logo from '../assets/images/logo.svg';
+import get_gold from '../assets/images/get_gold.webp';
 
 const topbarLinks = [
-  "Corporate",
-  "StoreLocator",
-  "Singapore",
-  "UAE",
-  "John Jacobs",
-  "Aqualens",
-  "Cobrowsing",
-  "Engineering Blog",
-  "Partner With Us",
+  'Corporate',
+  'StoreLocator',
+  'Singapore',
+  'UAE',
+  'John Jacobs',
+  'Aqualens',
+  'Cobrowsing',
+  'Engineering Blog',
+  'Partner With Us',
 ];
 
 const defaultNavigation = [
   {
-    label: "Eyeglasses",
+    label: 'Eyeglasses',
     groups: [
       {
-        title: "Men",
-        items: ["Classic Eyeglasses", "Computer Glasses", "Premium Eyeglasses"],
+        title: 'Men',
+        items: ['Classic Eyeglasses', 'Computer Glasses', 'Premium Eyeglasses'],
       },
       {
-        title: "Women",
-        items: ["Cat Eye", "Transparent Frames", "Lightweight Frames"],
+        title: 'Women',
+        items: ['Cat Eye', 'Transparent Frames', 'Lightweight Frames'],
       },
       {
-        title: "Kids",
-        items: ["Kids Eyeglasses", "Teen Collection", "Blue Cut Glasses"],
+        title: 'Kids',
+        items: ['Kids Eyeglasses', 'Teen Collection', 'Blue Cut Glasses'],
       },
     ],
   },
   {
-    label: "Sunglasses",
+    label: 'Sunglasses',
     groups: [
-      { title: "Shop For", items: ["Men", "Women", "Kids"] },
-      { title: "Styles", items: ["Aviator", "Wayfarer", "Round", "Cat Eye"] },
-      { title: "Collections", items: ["New Arrivals", "Polarized", "Premium"] },
+      { title: 'Shop For', items: ['Men', 'Women', 'Kids'] },
+      { title: 'Styles', items: ['Aviator', 'Wayfarer', 'Round', 'Cat Eye'] },
+      { title: 'Collections', items: ['New Arrivals', 'Polarized', 'Premium'] },
     ],
   },
   {
-    label: "Contacts",
+    label: 'Contacts',
     groups: [
       {
-        title: "Contact Lenses",
-        items: ["Daily Disposable", "Monthly Disposable", "Color Lenses"],
+        title: 'Contact Lenses',
+        items: ['Daily Disposable', 'Monthly Disposable', 'Color Lenses'],
       },
-      { title: "Brands", items: ["Aqualens", "Bausch & Lomb", "Acuvue"] },
+      { title: 'Brands', items: ['Aqualens', 'Bausch & Lomb', 'Acuvue'] },
       {
-        title: "Accessories",
-        items: ["Lens Solution", "Lens Cases", "Eye Drops"],
-      },
-    ],
-  },
-  {
-    label: "Special Power",
-    groups: [
-      { title: "Power Types", items: ["Bifocal", "Progressive", "Zero Power"] },
-      {
-        title: "Lens Features",
-        items: ["Blue Cut", "Anti-Glare", "Photochromic"],
-      },
-      {
-        title: "Need Help?",
-        items: ["Book Eye Test", "Power Guide", "Talk to an Expert"],
+        title: 'Accessories',
+        items: ['Lens Solution', 'Lens Cases', 'Eye Drops'],
       },
     ],
   },
   {
-    label: "Stores",
+    label: 'Special Power',
     groups: [
-      { title: "Find a Store", items: ["Near Me", "Top Cities", "All Stores"] },
+      { title: 'Power Types', items: ['Bifocal', 'Progressive', 'Zero Power'] },
       {
-        title: "In Store",
-        items: ["Free Eye Test", "Frame Styling", "Same Day Delivery"],
+        title: 'Lens Features',
+        items: ['Blue Cut', 'Anti-Glare', 'Photochromic'],
       },
       {
-        title: "Popular Cities",
-        items: ["Delhi", "Mumbai", "Bengaluru", "Pune"],
+        title: 'Need Help?',
+        items: ['Book Eye Test', 'Power Guide', 'Talk to an Expert'],
       },
     ],
   },
   {
-    label: "Try @ Home",
+    label: 'Stores',
+    groups: [
+      { title: 'Find a Store', items: ['Near Me', 'Top Cities', 'All Stores'] },
+      {
+        title: 'In Store',
+        items: ['Free Eye Test', 'Frame Styling', 'Same Day Delivery'],
+      },
+      {
+        title: 'Popular Cities',
+        items: ['Delhi', 'Mumbai', 'Bengaluru', 'Pune'],
+      },
+    ],
+  },
+  {
+    label: 'Try @ Home',
     groups: [
       {
-        title: "Home Trial",
-        items: ["How It Works", "Choose 5 Frames", "Book Appointment"],
+        title: 'Home Trial',
+        items: ['How It Works', 'Choose 5 Frames', 'Book Appointment'],
       },
       {
-        title: "Benefits",
-        items: ["Free Service", "Expert Assistance", "No Obligation"],
+        title: 'Benefits',
+        items: ['Free Service', 'Expert Assistance', 'No Obligation'],
       },
-      { title: "Support", items: ["Track Appointment", "FAQs", "Contact Us"] },
+      { title: 'Support', items: ['Track Appointment', 'FAQs', 'Contact Us'] },
     ],
   },
 ];
 
 const defaultMobileMenuItems = [
   {
-    label: "Eyeglasses",
+    label: 'Eyeglasses',
     items: [
-      "Eyeglasses",
-      "Lenskart BLU Lenses",
-      "Computer Glasses",
-      "Kids Glasses",
-      "Geometric Frames",
+      'Eyeglasses',
+      'Lenskart BLU Lenses',
+      'Computer Glasses',
+      'Kids Glasses',
+      'Geometric Frames',
     ],
   },
   {
-    label: "Sunglasses",
+    label: 'Sunglasses',
     items: [
-      "Sunglasses",
+      'Sunglasses',
       "Men's Sunglasses",
       "Women's Sunglasses",
       "Kids' Sunglasses",
-      "Polarized Sunglasses",
+      'Polarized Sunglasses',
     ],
   },
   {
-    label: "Contact Lens",
+    label: 'Contact Lens',
     items: [
-      "Contact Lenses",
-      "Daily Disposable",
-      "Monthly Disposable",
-      "Color Lenses",
-      "Lens Solution",
+      'Contact Lenses',
+      'Daily Disposable',
+      'Monthly Disposable',
+      'Color Lenses',
+      'Lens Solution',
     ],
   },
   {
-    label: "Special Power",
+    label: 'Special Power',
     items: [
-      "Progressive Glasses",
-      "Bifocal Glasses",
-      "Zero Power",
-      "Blue Cut Lenses",
-      "Power Guide",
+      'Progressive Glasses',
+      'Bifocal Glasses',
+      'Zero Power',
+      'Blue Cut Lenses',
+      'Power Guide',
     ],
   },
   {
-    label: "Stores",
-    items: ["Find a Store", "Book an Eye Test", "Top Cities", "All Stores"],
+    label: 'Stores',
+    items: ['Find a Store', 'Book an Eye Test', 'Top Cities', 'All Stores'],
   },
   {
-    label: "Try @ Home",
-    items: [
-      "How It Works",
-      "Choose 5 Frames",
-      "Book Appointment",
-      "Track Appointment",
-    ],
+    label: 'Try @ Home',
+    items: ['How It Works', 'Choose 5 Frames', 'Book Appointment', 'Track Appointment'],
   },
 ];
 
 const Header = () => {
-  const {categories}=useCategories();
-  const roots=categories.filter(row=>!row.parent);
-  const navigation=defaultNavigation;
-  const mobileMenuItems=defaultMobileMenuItems;
-  function collectionLink(label,item){
-    const aliases={'Contacts':'Contact Lenses','Contact Lens':'Contact Lenses'};
-    const root=roots.find(row=>row.name.toLowerCase()===(aliases[label]||label).toLowerCase());
-    if(!root)return '#';
-    const normalized=(value)=>value.toLowerCase().replace(/eyeglasses|sunglasses|frames|glasses|lenses/g,'').trim();
-    const child=categories.find(row=>row.parent===root._id&&(row.name.toLowerCase()===item?.toLowerCase()||normalized(row.name)===normalized(item||'')));
-    if(item&&item!==root.name&&item!==label&&!child)return '#';
-    return `/collection/${root.slug}${child?`?subcategory=${child.slug}`:''}`;
+  const { categories } = useCategories();
+  const roots = categories.filter((row) => !row.parent);
+  const navigation = defaultNavigation;
+  const mobileMenuItems = defaultMobileMenuItems;
+  function collectionLink(label, item) {
+    const aliases = { Contacts: 'Contact Lenses', 'Contact Lens': 'Contact Lenses' };
+    const root = roots.find(
+      (row) => row.name.toLowerCase() === (aliases[label] || label).toLowerCase(),
+    );
+    if (!root) return '#';
+    const normalized = (value) =>
+      value
+        .toLowerCase()
+        .replace(/eyeglasses|sunglasses|frames|glasses|lenses/g, '')
+        .trim();
+    const child = categories.find(
+      (row) =>
+        row.parent === root._id &&
+        (row.name.toLowerCase() === item?.toLowerCase() ||
+          normalized(row.name) === normalized(item || '')),
+    );
+    if (item && item !== root.name && item !== label && !child) return '#';
+    return `/collection/${root.slug}${child ? `?subcategory=${child.slug}` : ''}`;
   }
 
   const { user } = useAuth();
@@ -201,31 +201,30 @@ const Header = () => {
     };
 
     handleScroll();
-    window.addEventListener("scroll", handleScroll,{passive:true});
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? "hidden" : "";
+    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
 
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     };
   }, [isMenuOpen]);
 
   return (
     <>
       <header
-        className={`z-[100] w-full bg-white text-black ${isFixed ? "fixed top-0 left-0 shadow-sm" : "relative"}`}
+        className={`z-[100] w-full bg-white text-black ${isFixed ? 'fixed top-0 left-0 shadow-sm' : 'relative'}`}
       >
         <div className="lg:hidden">
           <div className="store-header-inset flex h-[40px] items-center justify-between bg-ink text-white">
             <p className="text-[12px] font-light">
-              4.5 <span className="text-yellow-400 text-[10px]">★</span> Rating
-              | 50M+ Downloads
+              4.5 <span className="text-yellow-400 text-[10px]">★</span> Rating | 50M+ Downloads
             </p>
             <a
               href="#"
@@ -236,11 +235,7 @@ const Header = () => {
           </div>
           <div className="store-container py-2">
             <div className="flex items-center justify-between gap-3">
-              <a
-                href="#"
-                className="flex min-w-0 items-center gap-2"
-                aria-label="Select location"
-              >
+              <a href="#" className="flex min-w-0 items-center gap-2" aria-label="Select location">
                 <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#f1f1fa] text-[#686795]">
                   <FaUserAlt size={20} />
                 </span>
@@ -249,9 +244,7 @@ const Header = () => {
                     Get faster delivery ⚡
                   </span>
                   <span className="flex items-center gap-1 text-[12px] font-bold text-ink">
-                    <span className="min-w-max overflow-hidden text-[10px]">
-                      Select Location
-                    </span>
+                    <span className="min-w-max overflow-hidden text-[10px]">Select Location</span>
                     <ChevronDown size={18} fill="currentColor" />
                   </span>
                 </span>
@@ -270,32 +263,33 @@ const Header = () => {
                 </button>
               </div>
             </div>
-            <ProductSearch className="mt-2 flex h-[40px] items-center gap-4 rounded-[10px] border-1 border-[#e6e6ef] px-3 text-[#73739d]" placeholder={'Search "metal eyeglasses"'} iconSize={16} />
+            <ProductSearch
+              className="mt-2 flex h-[40px] items-center gap-4 rounded-[10px] border-1 border-[#e6e6ef] px-3 text-[#73739d]"
+              placeholder={'Search "metal eyeglasses"'}
+              iconSize={16}
+            />
           </div>
         </div>
 
         <div
-          className={`fixed inset-0 z-[200] overflow-hidden lg:hidden ${isMenuOpen ? "pointer-events-auto" : "pointer-events-none"}`}
-          aria-hidden={!isMenuOpen} inert={!isMenuOpen}
+          className={`fixed inset-0 z-[200] overflow-hidden lg:hidden ${isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+          aria-hidden={!isMenuOpen}
+          inert={!isMenuOpen}
         >
           <button
             type="button"
             aria-label="Close menu"
             onClick={() => setIsMenuOpen(false)}
-            className={`absolute inset-0 bg-black/35 transition-opacity ${isMenuOpen ? "opacity-100" : "opacity-0"}`}
+            className={`absolute inset-0 bg-black/35 transition-opacity ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}
           />
           <aside
-            className={`relative ml-auto h-full w-3/4 overflow-y-auto bg-white text-ink transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
+            className={`relative ml-auto h-full w-3/4 overflow-y-auto bg-white text-ink transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
           >
             <div className="flex h-[60px] items-center justify-between border-b border-[#ededf5] px-4">
               <Link to="/" aria-label="Lenskart home" onClick={() => setIsMenuOpen(false)}>
                 <img src={logo} alt="Lenskart" className="h-auto w-[50px]" />
               </Link>
-              <button
-                type="button"
-                aria-label="Close menu"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <button type="button" aria-label="Close menu" onClick={() => setIsMenuOpen(false)}>
                 <X size={24} strokeWidth={2} />
               </button>
             </div>
@@ -306,10 +300,12 @@ const Header = () => {
                 </div>
                 <div>
                   <h2 className="text-[16px] font-bold leading-tight">
-                    {user ? `Hi ${user.name || "Specsy"}!` : "Hi Specsy!"}
+                    {user ? `Hi ${user.name || 'Specsy'}!` : 'Hi Specsy!'}
                   </h2>
                   <p className="mt-2 max-w-[150px] text-[12px] text-[#686795]">
-                    {user ? "View your account details below." : "Login or Signup to track your orders and get access to exclusive deals."}
+                    {user
+                      ? 'View your account details below.'
+                      : 'Login or Signup to track your orders and get access to exclusive deals.'}
                   </p>
                 </div>
               </div>
@@ -340,18 +336,18 @@ const Header = () => {
                         Shop {label}
                         <ChevronDown
                           size={16}
-                          className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                          className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
                         />
                       </button>
                       <div
                         id={`mobile-menu-${label}`}
-                        className={`grid transition-[grid-template-rows] duration-300 ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+                        className={`grid transition-[grid-template-rows] duration-300 ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
                       >
                         <div className="overflow-hidden">
                           <div className="pl-4">
                             {items.map((item) => (
                               <Link
-                                to={collectionLink(label,item)}
+                                to={collectionLink(label, item)}
                                 className="block border-b border-[#ededf5] py-3 text-[14px] leading-tight text-[#686795] last:border-0 first:pt-0"
                                 key={item}
                                 onClick={() => setIsMenuOpen(false)}
@@ -396,11 +392,7 @@ const Header = () => {
             </div>
           </div>
           <div className="store-container flex min-h-[70px] items-center gap-4">
-            <Link
-              className="grid shrink-0 place-items-center"
-              to="/"
-              aria-label="Lenskart home"
-            >
+            <Link className="grid shrink-0 place-items-center" to="/" aria-label="Lenskart home">
               <img src={logo} alt="Logo" />
             </Link>
 
@@ -419,17 +411,14 @@ const Header = () => {
                   <div className="invisible absolute inset-x-0 top-full z-50 border-t border-black/10 bg-white px-[3%] opacity-0 shadow-xl transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
                     <div className="mx-auto grid max-w-[1120px] grid-cols-3 gap-10 py-8 lg:pl-24 lg:gap-[70px]">
                       {navItem.groups.map((group) => (
-                        <div
-                          className="flex flex-col items-start gap-3"
-                          key={group.title}
-                        >
+                        <div className="flex flex-col items-start gap-3" key={group.title}>
                           <p className="mb-1 text-sm font-extrabold uppercase text-ink">
                             {group.title}
                           </p>
                           {group.items.map((item) => (
                             <Link
                               className="text-sm text-neutral-600 transition hover:translate-x-1 hover:text-ink"
-                              to={collectionLink(navItem.label,item)}
+                              to={collectionLink(navItem.label, item)}
                               key={item}
                             >
                               {item}
@@ -444,7 +433,11 @@ const Header = () => {
             </nav>
 
             <div className="ml-auto flex items-center gap-4 xl:gap-7">
-              <ProductSearch className="bg-gray-100 hidden h-11 w-[120px] items-center gap-3.5 rounded-lg px-4 lg:flex xl:w-[250px]" placeholder={'Search "airy light glasses"'} iconSize={20} />
+              <ProductSearch
+                className="bg-gray-100 hidden h-11 w-[120px] items-center gap-3.5 rounded-lg px-4 lg:flex xl:w-[250px]"
+                placeholder={'Search "airy light glasses"'}
+                iconSize={20}
+              />
               <StoreIcon type="wishlist" />
               <StoreIcon type="cart" />
               <AccountMenu />

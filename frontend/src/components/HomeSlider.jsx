@@ -1,29 +1,29 @@
-import {useCategories} from '../context/CategoryContext';
-import {collectionLink} from '../state/collectionLinks';
-import {Link} from '../storeRouter';
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useCategories } from '../context/CategoryContext';
+import { collectionLink } from '../state/collectionLinks';
+import { Link } from '../storeRouter';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
-import image_1 from "../assets/images/slider/image_1.webp";
-import image_2 from "../assets/images/slider/image_2.webp";
-import image_3 from "../assets/images/slider/image_3.webp";
-import image_4 from "../assets/images/slider/image_4.webp";
-import image_5 from "../assets/images/slider/image_5.webp";
-import image_6 from "../assets/images/slider/image_6.webp";
-import image_7 from "../assets/images/slider/image_7.webp";
-import image_8 from "../assets/images/slider/image_8.webp";
-import image_9 from "../assets/images/slider/image_9.webp";
-import image_10 from "../assets/images/slider/image_10.webp";
-import image_11 from "../assets/images/slider/image_11.webp";
-import image_12 from "../assets/images/slider/image_12.webp";
-import image_13 from "../assets/images/slider/hip-hop.jpeg";
-import image_14 from "../assets/images/slider/image_14.webp";
-import image_15 from "../assets/images/slider/image_15.webp";
+import image_1 from '../assets/images/slider/image_1.webp';
+import image_2 from '../assets/images/slider/image_2.webp';
+import image_3 from '../assets/images/slider/image_3.webp';
+import image_4 from '../assets/images/slider/image_4.webp';
+import image_5 from '../assets/images/slider/image_5.webp';
+import image_6 from '../assets/images/slider/image_6.webp';
+import image_7 from '../assets/images/slider/image_7.webp';
+import image_8 from '../assets/images/slider/image_8.webp';
+import image_9 from '../assets/images/slider/image_9.webp';
+import image_10 from '../assets/images/slider/image_10.webp';
+import image_11 from '../assets/images/slider/image_11.webp';
+import image_12 from '../assets/images/slider/image_12.webp';
+import image_13 from '../assets/images/slider/hip-hop.jpeg';
+import image_14 from '../assets/images/slider/image_14.webp';
+import image_15 from '../assets/images/slider/image_15.webp';
 
 const bannerImages = [
   image_1,
@@ -44,7 +44,7 @@ const bannerImages = [
 ];
 
 function HomeSlider() {
-  const {productOptions}=useCategories();
+  const { productOptions } = useCategories();
   return (
     <Swiper
       className="[--swiper-pagination-bottom:24px] [&_.swiper-pagination-bullet-active]:!opacity-100 [&_.swiper-pagination-bullet]:!bg-white [&_.swiper-pagination-bullet]:!opacity-55"
@@ -52,8 +52,8 @@ function HomeSlider() {
       slidesPerView={1}
       spaceBetween={0}
       navigation={{
-        prevEl: ".home-slider-prev",
-        nextEl: ".home-slider-next",
+        prevEl: '.home-slider-prev',
+        nextEl: '.home-slider-next',
       }}
       pagination={{
         clickable: true,
@@ -65,8 +65,17 @@ function HomeSlider() {
     >
       {bannerImages.map((image, index) => (
         <SwiperSlide key={`${image}-${index}`}>
-          <Link to={collectionLink(productOptions)} className="relative block after:pointer-events-none after:absolute after:inset-0 after:bg-gradient-to-b after:from-transparent after:via-transparent after:to-black/60">
-            <img className="block h-full w-full" src={image} alt={`Eyewear collection ${index+1}`} loading={index===0?'eager':'lazy'} fetchPriority={index===0?'high':'auto'} />
+          <Link
+            to={collectionLink(productOptions)}
+            className="relative block after:pointer-events-none after:absolute after:inset-0 after:bg-gradient-to-b after:from-transparent after:via-transparent after:to-black/60"
+          >
+            <img
+              className="block h-full w-full"
+              src={image}
+              alt={`Eyewear collection ${index + 1}`}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              fetchPriority={index === 0 ? 'high' : 'auto'}
+            />
           </Link>
         </SwiperSlide>
       ))}

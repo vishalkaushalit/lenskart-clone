@@ -13,16 +13,20 @@ test('front view has no rotation; eye depth drives turns in both directions', ()
   assert.deepEqual(tryOnPose(face()), { yaw: 0, pitch: 0 });
   assert.ok(tryOnPose(face(0.3)).yaw > 0.6);
   assert.equal(tryOnPose(face(0.3)).yaw, -tryOnPose(face(-0.3)).yaw);
-  const points = face(); points[1] = { x: 0.9, y: 0.5, z: -0.1 };
+  const points = face();
+  points[1] = { x: 0.9, y: 0.5, z: -0.1 };
   assert.equal(tryOnPose(points).yaw, 0); // Nose position no longer flips the arms.
 });
 test('pitch uses face depth and the video aspect, with bounded rotations', () => {
-  const points = face(100); points[152].z = 0.2;
+  const points = face(100);
+  points[152].z = 0.2;
   assert.equal(tryOnPose(points).yaw, 1.1);
   assert.ok(tryOnPose(points, 2).pitch > tryOnPose(points, 1).pitch);
-  points[152].z = 100; assert.equal(tryOnPose(points).pitch, 0.65);
+  points[152].z = 100;
+  assert.equal(tryOnPose(points).pitch, 0.65);
   assert.deepEqual(tryOnPose([]), { yaw: 0, pitch: 0 });
-  points[33].z = NaN; assert.equal(tryOnPose(points).yaw, 0);
+  points[33].z = NaN;
+  assert.equal(tryOnPose(points).yaw, 0);
 });
 
 test('GLB sizing preserves the selected scale across head turns and follows distance', async () => {
@@ -52,7 +56,8 @@ test('auto width follows face sides while retaining product/user scale on turns'
   points[234] = { x: 0.2, y: 0.5, z: 0 };
   points[454] = { x: 0.8, y: 0.5, z: 0 };
   const original = tryOnPlacement(points, 640, 480, 2, 1, 0, true);
-  points[234].x = 0.17; points[454].x = 0.83;
+  points[234].x = 0.17;
+  points[454].x = 0.83;
   const wider = tryOnPlacement(points, 640, 480, 2, 1, 0, true);
   assert.ok(Math.abs(wider.width / original.width - 1.1) < 1e-8);
   const adjusted = tryOnPlacement(points, 640, 480, 2, 0.85, 0, true);

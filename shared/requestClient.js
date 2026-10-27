@@ -3,7 +3,8 @@ export function createRequestClient(baseUrl, fetchRequest = (...args) => fetch(.
   const pending = new Map();
   return function request(path, options = {}) {
     const { signal, ...settings } = options;
-    if (signal?.aborted) return Promise.reject(signal.reason || new DOMException('Aborted', 'AbortError'));
+    if (signal?.aborted)
+      return Promise.reject(signal.reason || new DOMException('Aborted', 'AbortError'));
     const method = (settings.method || 'GET').toUpperCase();
     const headers = new Headers(settings.headers);
     const config = { ...settings, method, credentials: 'include', headers };
@@ -16,20 +17,25 @@ export function createRequestClient(baseUrl, fetchRequest = (...args) => fetch(.
       const controller = new AbortController();
       entry = { controller, subscribers: 0, settled: false };
       const current = entry;
-      current.promise = Promise.resolve().then(async () => {
-        if (controller.signal.aborted) throw controller.signal.reason;
-        const response = await fetchRequest(`${baseUrl}${path}`, { ...config, signal: controller.signal });
-        const data = await response.json();
-        if (!response.ok) {
-          const error = new Error(data.message || 'Request failed.');
-          error.status = response.status;
-          throw error;
-        }
-        return data;
-      }).finally(() => {
-        current.settled = true;
-        if (pending.get(key) === current) pending.delete(key);
-      });
+      current.promise = Promise.resolve()
+        .then(async () => {
+          if (controller.signal.aborted) throw controller.signal.reason;
+          const response = await fetchRequest(`${baseUrl}${path}`, {
+            ...config,
+            signal: controller.signal,
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            const error = new Error(data.message || 'Request failed.');
+            error.status = response.status;
+            throw error;
+          }
+          return data;
+        })
+        .finally(() => {
+          current.settled = true;
+          if (pending.get(key) === current) pending.delete(key);
+        });
       if (share) pending.set(key, current);
     }
     const current = entry;
@@ -55,8 +61,12 @@ export function createRequestClient(baseUrl, fetchRequest = (...args) => fetch(.
       }
       signal?.addEventListener('abort', abort, { once: true });
       current.promise.then(
-        data => { if (detach()) resolve(data); },
-        error => { if (detach()) reject(error); },
+        (data) => {
+          if (detach()) resolve(data);
+        },
+        (error) => {
+          if (detach()) reject(error);
+        },
       );
     });
   };

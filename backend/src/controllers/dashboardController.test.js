@@ -17,7 +17,9 @@ test('dashboard calendar ranges use India midnight and include today', () => {
   for (const value of ['0', '365', ['7'], 'bad']) assert.throws(() => dashboardRange(value));
 });
 test('charts include zero-sales days and changes avoid a zero baseline', () => {
-  const series = salesSeries(dashboardRange('7', new Date('2026-10-06T00:00:00Z')), [{ _id: '2026-10-01', revenue: 1500 }]);
+  const series = salesSeries(dashboardRange('7', new Date('2026-10-06T00:00:00Z')), [
+    { _id: '2026-10-01', revenue: 1500 },
+  ]);
   assert.equal(series.length, 7);
   assert.deepEqual(series[0], { date: '2026-09-30', revenue: 0 });
   assert.equal(series[1].revenue, 1500);
@@ -28,53 +30,165 @@ test('charts include zero-sales days and changes avoid a zero baseline', () => {
 test('dashboard is restricted to admins', () => {
   assert.equal(router.stack[0].handle, requireAuth);
   let code;
-  router.stack[1].handle({ user: { role: 'customer' } }, { status(value){code=value;return this;},json(){} }, () => assert.fail('customer accessed dashboard'));
+  router.stack[1].handle(
+    { user: { role: 'customer' } },
+    {
+      status(value) {
+        code = value;
+        return this;
+      },
+      json() {},
+    },
+    () => assert.fail('customer accessed dashboard'),
+  );
   assert.equal(code, 403);
 });
-test('dashboard aggregates live data and exposes only recent-order display fields', async t => {
-  t.mock.method(mongoose.connection, 'collection', () => ({ find: () => ({ async *[Symbol.asyncIterator]() {} }) }));
-  t.mock.method(User, 'countDocuments', async filter => filter._id ? 0 : 5);
+test('dashboard aggregates live data and exposes only recent-order display fields', async (t) => {
+  t.mock.method(mongoose.connection, 'collection', () => ({
+    find: () => ({ async *[Symbol.asyncIterator]() {} }),
+  }));
+  t.mock.method(User, 'countDocuments', async (filter) => (filter._id ? 0 : 5));
   t.mock.method(Product, 'countDocuments', async () => 9);
-  t.mock.method(Order, 'aggregate', async pipeline => {
+  t.mock.method(Order, 'aggregate', async (pipeline) => {
     assert.equal(pipeline[1].$facet.sales[0].$match.status, 'delivered');
     assert.equal(pipeline[1].$facet.sales[1].$group._id.$dateToString.timezone, 'Asia/Kolkata');
-    return [{ current: [{ orders: 3, pending: 1, completed: 1, revenue: 1500 }], previous: [{ orders: 2, revenue: 1000 }], statuses: [{ _id: 'delivered', count: 1 }, { _id: 'pending', count: 1 }, { _id: 'cancelled', count: 1 }], sales: [] }];
+    return [
+      {
+        current: [{ orders: 3, pending: 1, completed: 1, revenue: 1500 }],
+        previous: [{ orders: 2, revenue: 1000 }],
+        statuses: [
+          { _id: 'delivered', count: 1 },
+          { _id: 'pending', count: 1 },
+          { _id: 'cancelled', count: 1 },
+        ],
+        sales: [],
+      },
+    ];
   });
-  t.mock.method(Order, 'find', () => ({ select(){return this;},populate(){return this;},sort(){return this;},skip(value){assert.equal(value,10);return this;},limit(value){assert.equal(value,10);return this;},lean:async()=>[{_id:'order',orderId:12,shipping:{name:'Customer',phone:'private'},totalAmount:1500,status:'delivered',createdAt:new Date()}] }));
+  t.mock.method(Order, 'find', () => ({
+    select() {
+      return this;
+    },
+    populate() {
+      return this;
+    },
+    sort() {
+      return this;
+    },
+    skip(value) {
+      assert.equal(value, 10);
+      return this;
+    },
+    limit(value) {
+      assert.equal(value, 10);
+      return this;
+    },
+    lean: async () => [
+      {
+        _id: 'order',
+        orderId: 12,
+        shipping: { name: 'Customer', phone: 'private' },
+        totalAmount: 1500,
+        status: 'delivered',
+        createdAt: new Date(),
+      },
+    ],
+  }));
   let result;
-  await dashboardSummary({ query: { days: '7',recentPage:'2' } }, { json(value){result=value;} }, assert.ifError);
+  await dashboardSummary(
+    { query: { days: '7', recentPage: '2' } },
+    {
+      json(value) {
+        result = value;
+      },
+    },
+    assert.ifError,
+  );
   assert.equal(result.stats.users, 5);
   assert.equal(result.stats.inactiveUsers, 5);
   assert.equal(result.stats.products, 9);
   assert.equal(result.changes.revenue, 50);
-  assert.equal(result.statuses.find(row=>row.status==='cancelled').count, 1);
+  assert.equal(result.statuses.find((row) => row.status === 'cancelled').count, 1);
   assert.equal(result.recentOrders[0].customer, 'Customer');
-  assert.deepEqual(result.recentPagination,{page:2,pageSize:10,total:3});
+  assert.deepEqual(result.recentPagination, { page: 2, pageSize: 10, total: 3 });
   assert.equal(result.recentOrders[0].shipping, undefined);
 });
-test('empty dashboard returns zeroes and invalid ranges do not query the database', async t => {
-  t.mock.method(mongoose.connection, 'collection', () => ({ find: () => ({ async *[Symbol.asyncIterator]() {} }) }));
+test('empty dashboard returns zeroes and invalid ranges do not query the database', async (t) => {
+  t.mock.method(mongoose.connection, 'collection', () => ({
+    find: () => ({ async *[Symbol.asyncIterator]() {} }),
+  }));
   t.mock.method(User, 'countDocuments', async () => 0);
   t.mock.method(Product, 'countDocuments', async () => 0);
   t.mock.method(Order, 'aggregate', async () => []);
-  t.mock.method(Order, 'find', () => ({select(){return this;},populate(){return this;},sort(){return this;},skip(){return this;},limit(){return this;},lean:async()=>[]}));
+  t.mock.method(Order, 'find', () => ({
+    select() {
+      return this;
+    },
+    populate() {
+      return this;
+    },
+    sort() {
+      return this;
+    },
+    skip() {
+      return this;
+    },
+    limit() {
+      return this;
+    },
+    lean: async () => [],
+  }));
   let result;
-  await dashboardSummary({query:{}},{json(value){result=value;}},assert.ifError);
-  assert.equal(result.stats.revenue,0);
-  assert.equal(result.sales.length,7);
-  assert.deepEqual(result.recentOrders,[]);
+  await dashboardSummary(
+    { query: {} },
+    {
+      json(value) {
+        result = value;
+      },
+    },
+    assert.ifError,
+  );
+  assert.equal(result.stats.revenue, 0);
+  assert.equal(result.sales.length, 7);
+  assert.deepEqual(result.recentOrders, []);
   let status;
-  await dashboardSummary({query:{days:'oops'}},{status(value){status=value;return this;},json(){}},assert.ifError);
-  assert.equal(status,400);
+  await dashboardSummary(
+    { query: { days: 'oops' } },
+    {
+      status(value) {
+        status = value;
+        return this;
+      },
+      json() {},
+    },
+    assert.ifError,
+  );
+  assert.equal(status, 400);
 });
 
-test('invalid recent-order pagination is rejected before database reads',async t=>{
- t.mock.method(User,'countDocuments',()=>assert.fail('Invalid page queried database'));
- let status;await dashboardSummary({query:{recentPage:'0'}},{status(code){status=code;return this;},json(){}},assert.ifError);assert.equal(status,400);
+test('invalid recent-order pagination is rejected before database reads', async (t) => {
+  t.mock.method(User, 'countDocuments', () => assert.fail('Invalid page queried database'));
+  let status;
+  await dashboardSummary(
+    { query: { recentPage: '0' } },
+    {
+      status(code) {
+        status = code;
+        return this;
+      },
+      json() {},
+    },
+    assert.ifError,
+  );
+  assert.equal(status, 400);
 });
 
 test('all-time range includes orders older than the rolling filters', () => {
-  const range = dashboardRange('all', new Date('2026-10-27T10:00:00Z'), new Date('2026-10-05T10:49:56Z'));
+  const range = dashboardRange(
+    'all',
+    new Date('2026-10-27T10:00:00Z'),
+    new Date('2026-10-05T10:49:56Z'),
+  );
   assert.equal(range.start.toISOString(), '2026-10-04T18:30:00.000Z');
   assert.equal(range.end.toISOString(), '2026-10-27T18:30:00.000Z');
   assert.equal(range.days, 23);
@@ -89,31 +203,82 @@ test('all-time range handles a store with no orders', () => {
   assert.equal(salesSeries(range, [])[0].revenue, 0);
 });
 
-test('dashboard section filters use separate ranges and recent-order totals', async t => {
-  t.mock.method(mongoose.connection, 'collection', () => ({ find: () => ({ async *[Symbol.asyncIterator]() {} }) }));
+test('dashboard section filters use separate ranges and recent-order totals', async (t) => {
+  t.mock.method(mongoose.connection, 'collection', () => ({
+    find: () => ({ async *[Symbol.asyncIterator]() {} }),
+  }));
   t.mock.method(User, 'countDocuments', async () => 0);
   t.mock.method(Product, 'countDocuments', async () => 0);
-  t.mock.method(Order, 'aggregate', async pipeline => {
+  t.mock.method(Order, 'aggregate', async (pipeline) => {
     const facets = pipeline[1].$facet;
     assert.ok(facets.sales[0].$match.createdAt.$gte < facets.current[0].$match.createdAt.$gte);
     assert.ok(facets.statuses[0].$match.createdAt.$gte < facets.sales[0].$match.createdAt.$gte);
     assert.equal(facets.recentCount[0].$match.status, 'confirmed');
     return [{ current: [{ orders: 8 }], recentCount: [{ total: 2 }] }];
   });
-  t.mock.method(Order, 'find', filter => {
+  t.mock.method(Order, 'find', (filter) => {
     assert.equal(filter.status, 'confirmed');
-    return { select(){return this;},populate(){return this;},sort(){return this;},skip(){return this;},limit(size){assert.equal(size,10);return this;},async lean(){return [];} };
+    return {
+      select() {
+        return this;
+      },
+      populate() {
+        return this;
+      },
+      sort() {
+        return this;
+      },
+      skip() {
+        return this;
+      },
+      limit(size) {
+        assert.equal(size, 10);
+        return this;
+      },
+      async lean() {
+        return [];
+      },
+    };
   });
   let result;
-  await dashboardSummary({query:{days:'7',salesDays:'30',statusDays:'90',recentDays:'7',recentStatus:'confirmed'}}, {json(value){result=value;}}, assert.ifError);
-  assert.equal(result.sales.length,30);
-  assert.equal(result.stats.orders,8);
-  assert.equal(result.recentPagination.total,2);
+  await dashboardSummary(
+    {
+      query: {
+        days: '7',
+        salesDays: '30',
+        statusDays: '90',
+        recentDays: '7',
+        recentStatus: 'confirmed',
+      },
+    },
+    {
+      json(value) {
+        result = value;
+      },
+    },
+    assert.ifError,
+  );
+  assert.equal(result.sales.length, 30);
+  assert.equal(result.stats.orders, 8);
+  assert.equal(result.recentPagination.total, 2);
 });
 test('dashboard rejects invalid section filters', async () => {
-  for (const query of [{days:'7',salesDays:'invalid'}, {days:'7',recentStatus:'invalid'}]) {
+  for (const query of [
+    { days: '7', salesDays: 'invalid' },
+    { days: '7', recentStatus: 'invalid' },
+  ]) {
     let code;
-    await dashboardSummary({query},{status(value){code=value;return this;},json(){}},assert.ifError);
-    assert.equal(code,400);
+    await dashboardSummary(
+      { query },
+      {
+        status(value) {
+          code = value;
+          return this;
+        },
+        json() {},
+      },
+      assert.ifError,
+    );
+    assert.equal(code, 400);
   }
 });

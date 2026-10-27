@@ -9,7 +9,8 @@ import ReviewDeleteButton from '../components/ReviewDeleteButton';
 import { apiRequest } from '../api';
 import { creationDate } from '../date';
 
-const reviewBadge = 'inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
+const reviewBadge =
+  'inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
 const greenBadge = `${reviewBadge} bg-emerald-100 text-emerald-700`;
 const redBadge = `${reviewBadge} bg-red-100 text-red-700`;
 
@@ -24,37 +25,196 @@ export default function Reviews() {
   useEffect(() => {
     const controller = new AbortController();
     async function load() {
-      setLoading(true); setError('');
+      setLoading(true);
+      setError('');
       try {
-        const result = await apiRequest(`/admin/reviews?status=${status}&page=${page}`, { signal: controller.signal });
+        const result = await apiRequest(`/admin/reviews?status=${status}&page=${page}`, {
+          signal: controller.signal,
+        });
         if (!controller.signal.aborted) setData(result);
-      } catch (failure) { if (!controller.signal.aborted) setError(failure.message); }
-      finally { if (!controller.signal.aborted) setLoading(false); }
+      } catch (failure) {
+        if (!controller.signal.aborted) setError(failure.message);
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
     }
-    load(); return () => controller.abort();
+    load();
+    return () => controller.abort();
   }, [status, page, attempt]);
   async function moderate(id, decision) {
-    setBusy(true); setError('');
+    setBusy(true);
+    setError('');
     try {
-      await apiRequest(`/admin/reviews/${id}`, { method: 'PATCH', body: JSON.stringify({ status: decision }) });
-      if (status !== 'all' && data.reviews.length === 1 && page > 1) setPage(value => value - 1);
-      else setAttempt(value => value + 1);
-    } catch (failure) { setError(failure.message); }
-    finally { setBusy(false); }
+      await apiRequest(`/admin/reviews/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: decision }),
+      });
+      if (status !== 'all' && data.reviews.length === 1 && page > 1) setPage((value) => value - 1);
+      else setAttempt((value) => value + 1);
+    } catch (failure) {
+      setError(failure.message);
+    } finally {
+      setBusy(false);
+    }
   }
-  return <DashboardLayout><main className="admin-page">
-    <PageHeader title="Customer Reviews" description="Approve delivered-purchase reviews before they appear on product pages."><button className="admin-button-secondary" disabled={busy || loading} onClick={() => setAttempt(value => value + 1)}>Refresh</button></PageHeader>
-    <label className="product-label">Review status<select className="product-field max-w-xs" value={status} disabled={busy} onChange={event => { setStatus(event.target.value); setPage(1); }}>{['all', 'approved', 'unapproved'].map(value => <option key={value} value={value}>{value[0].toUpperCase() + value.slice(1)}</option>)}</select></label>
-    {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
-    <DataTable label="Customer reviews" footer={!loading && <Pagination page={page} total={data.total} onPageChange={setPage} disabled={busy} label="reviews" />}>
-      <thead><tr>{['Sr. No.', 'Product', 'Customer', 'Order / Delivery', 'Rating', 'Review', 'Submitted', 'Status', 'Actions'].map(label => <th key={label}>{label}</th>)}</tr></thead>
-      <tbody>{loading ? <tr><td colSpan={9}><Loader /></td></tr> : !data.reviews.length ? <tr><td colSpan={9} className="h-40 text-center align-middle text-sm text-slate-500">No reviews found</td></tr> : data.reviews.map((review, index) => <tr key={review._id}>
-        <td>{(page - 1) * 10 + index + 1}</td><td>{review.product ? <Link className="text-blue-600" to={`/product/${review.product.slug||review.product._id}`}>{review.product.name}</Link> : 'Deleted product'}</td><td>{review.name}</td>
-        <td>{review.order ? <><Link className="text-blue-600" to={`/orders/${review.order._id}`}>#{review.order.orderId ?? '—'}</Link><p>{creationDate(review.order.deliveredAt || review.order.updatedAt)}</p></> : 'Deleted order'}</td>
-        <td>{review.rating} ★</td><td><p className="min-w-48 max-w-md whitespace-pre-wrap break-words">{review.text}</p></td><td>{creationDate(review.createdAt)}</td>
-        <td><span className={review.status === 'approved' ? greenBadge : redBadge}>{review.status === 'approved' ? 'Approved' : 'Unapproved'}</span></td>
-        <td><div className="flex items-center gap-2">{review.status === 'approved' ? <button disabled={busy} onClick={() => moderate(review._id, 'pending')} className={`${redBadge} hover:bg-red-200 focus-visible:outline-red-600`}>Unapprove</button> : <button disabled={busy} onClick={() => moderate(review._id, 'approved')} className={`${greenBadge} hover:bg-emerald-200 focus-visible:outline-emerald-600`}>Approve</button>}<ReviewDeleteButton review={review} disabled={busy} onDeleted={() => { if (data.reviews.length === 1 && page > 1) setPage(value => value - 1); else setAttempt(value => value + 1); }}/></div></td>
-      </tr>)}</tbody>
-    </DataTable>
-  </main></DashboardLayout>;
+  return (
+    <DashboardLayout>
+      <main className="admin-page">
+        <PageHeader
+          title="Customer Reviews"
+          description="Approve delivered-purchase reviews before they appear on product pages."
+        >
+          <button
+            className="admin-button-secondary"
+            disabled={busy || loading}
+            onClick={() => setAttempt((value) => value + 1)}
+          >
+            Refresh
+          </button>
+        </PageHeader>
+        <label className="product-label">
+          Review status
+          <select
+            className="product-field max-w-xs"
+            value={status}
+            disabled={busy}
+            onChange={(event) => {
+              setStatus(event.target.value);
+              setPage(1);
+            }}
+          >
+            {['all', 'approved', 'unapproved'].map((value) => (
+              <option key={value} value={value}>
+                {value[0].toUpperCase() + value.slice(1)}
+              </option>
+            ))}
+          </select>
+        </label>
+        {error && (
+          <p role="alert" className="text-sm text-red-600">
+            {error}
+          </p>
+        )}
+        <DataTable
+          label="Customer reviews"
+          footer={
+            !loading && (
+              <Pagination
+                page={page}
+                total={data.total}
+                onPageChange={setPage}
+                disabled={busy}
+                label="reviews"
+              />
+            )
+          }
+        >
+          <thead>
+            <tr>
+              {[
+                'Sr. No.',
+                'Product',
+                'Customer',
+                'Order / Delivery',
+                'Rating',
+                'Review',
+                'Submitted',
+                'Status',
+                'Actions',
+              ].map((label) => (
+                <th key={label}>{label}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td colSpan={9}>
+                  <Loader />
+                </td>
+              </tr>
+            ) : !data.reviews.length ? (
+              <tr>
+                <td colSpan={9} className="h-40 text-center align-middle text-sm text-slate-500">
+                  No reviews found
+                </td>
+              </tr>
+            ) : (
+              data.reviews.map((review, index) => (
+                <tr key={review._id}>
+                  <td>{(page - 1) * 10 + index + 1}</td>
+                  <td>
+                    {review.product ? (
+                      <Link
+                        className="text-blue-600"
+                        to={`/product/${review.product.slug || review.product._id}`}
+                      >
+                        {review.product.name}
+                      </Link>
+                    ) : (
+                      'Deleted product'
+                    )}
+                  </td>
+                  <td>{review.name}</td>
+                  <td>
+                    {review.order ? (
+                      <>
+                        <Link className="text-blue-600" to={`/orders/${review.order._id}`}>
+                          #{review.order.orderId ?? '—'}
+                        </Link>
+                        <p>{creationDate(review.order.deliveredAt || review.order.updatedAt)}</p>
+                      </>
+                    ) : (
+                      'Deleted order'
+                    )}
+                  </td>
+                  <td>{review.rating} ★</td>
+                  <td>
+                    <p className="min-w-48 max-w-md whitespace-pre-wrap break-words">
+                      {review.text}
+                    </p>
+                  </td>
+                  <td>{creationDate(review.createdAt)}</td>
+                  <td>
+                    <span className={review.status === 'approved' ? greenBadge : redBadge}>
+                      {review.status === 'approved' ? 'Approved' : 'Unapproved'}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="flex items-center gap-2">
+                      {review.status === 'approved' ? (
+                        <button
+                          disabled={busy}
+                          onClick={() => moderate(review._id, 'pending')}
+                          className={`${redBadge} hover:bg-red-200 focus-visible:outline-red-600`}
+                        >
+                          Unapprove
+                        </button>
+                      ) : (
+                        <button
+                          disabled={busy}
+                          onClick={() => moderate(review._id, 'approved')}
+                          className={`${greenBadge} hover:bg-emerald-200 focus-visible:outline-emerald-600`}
+                        >
+                          Approve
+                        </button>
+                      )}
+                      <ReviewDeleteButton
+                        review={review}
+                        disabled={busy}
+                        onDeleted={() => {
+                          if (data.reviews.length === 1 && page > 1) setPage((value) => value - 1);
+                          else setAttempt((value) => value + 1);
+                        }}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </DataTable>
+      </main>
+    </DashboardLayout>
+  );
 }

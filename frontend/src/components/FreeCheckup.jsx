@@ -1,16 +1,31 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import store_eye_test from "../assets/images/store_eye_test.webp";
-import home_eye_test from "../assets/images/home_eye_test.webp";
-import online_eye_test from "../assets/images/online_eye_test.webp";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import store_eye_test from '../assets/images/store_eye_test.webp';
+import home_eye_test from '../assets/images/home_eye_test.webp';
+import online_eye_test from '../assets/images/online_eye_test.webp';
 
-import "swiper/css";
-import { ArrowRight } from "lucide-react";
-import "./FreeCheckup.css";
+import 'swiper/css';
+import { ArrowRight } from 'lucide-react';
+import './FreeCheckup.css';
 
 const checkupList = [
-  { name: "Visit Nearest Store", description: "Walk in for quick eye test", image: store_eye_test, checkupUrl: "#" },
-  { name: "Schedule at Home", description: "Try 1000+ frames", image: home_eye_test, checkupUrl: "#" },
-  { name: "Take an Online Eye Test", description: "Anytime, anywhere", image: online_eye_test, checkupUrl: "#" },
+  {
+    name: 'Visit Nearest Store',
+    description: 'Walk in for quick eye test',
+    image: store_eye_test,
+    checkupUrl: '#',
+  },
+  {
+    name: 'Schedule at Home',
+    description: 'Try 1000+ frames',
+    image: home_eye_test,
+    checkupUrl: '#',
+  },
+  {
+    name: 'Take an Online Eye Test',
+    description: 'Anytime, anywhere',
+    image: online_eye_test,
+    checkupUrl: '#',
+  },
 ];
 
 const FreeCheckup = () => {
@@ -40,8 +55,13 @@ const FreeCheckup = () => {
                     <img loading="lazy" decoding="async" src={image} alt="" />
                   </div>
                   <div className="checkup-card-caption">
-                    <div><h3>{name}</h3><p>{description}</p></div>
-                    <span className="checkup-card-arrow" aria-hidden="true"><ArrowRight /></span>
+                    <div>
+                      <h3>{name}</h3>
+                      <p>{description}</p>
+                    </div>
+                    <span className="checkup-card-arrow" aria-hidden="true">
+                      <ArrowRight />
+                    </span>
                   </div>
                 </a>
               </SwiperSlide>

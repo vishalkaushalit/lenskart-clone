@@ -2,12 +2,12 @@ import FaqSchema from '../seo/FaqSchema';
 import { frameSizing, compareFrameFit, formatFrameSize } from '../utils/frameSizing';
 import { readSavedTryOn } from '../utils/savedTryOn';
 import useStickyColumns from '../hooks/useStickyColumns';
-import SimilarProductCard from "../components/SimilarProductCard";
-import { resolveVariant } from "../state/productVariants";
-import Loader from "../components/Loader";
-import ReviewCard from "../components/ReviewCard";
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { Link, useParams } from "../storeRouter";
+import SimilarProductCard from '../components/SimilarProductCard';
+import { resolveVariant } from '../state/productVariants';
+import Loader from '../components/Loader';
+import ReviewCard from '../components/ReviewCard';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { Link, useParams } from '../storeRouter';
 import {
   ScanFace,
   ChevronLeft,
@@ -19,66 +19,66 @@ import {
   Package,
   RefreshCw,
   ChevronDown,
-} from "lucide-react";
-import { apiRequest } from "../api/api";
-import { useStore } from "../context/StoreContext";
-import PopupMessage from "../components/PopupMessage";
-import ProductImagePopup from "../components/ProductImagePopup";
-import "./ProductDetails.css";
-import stylingMan from "../assets/images/trending/trending_3.webp";
-import stylingWoman from "../assets/images/trending/trending_4.webp";
-import guideFrame from "../assets/images/Login/login_image.webp";
-const VirtualTryOn = lazy(() => import("../components/VirtualTryOn"));
-const money = (value) => `₹${Number(value).toLocaleString("en-IN")}`;
+} from 'lucide-react';
+import { apiRequest } from '../api/api';
+import { useStore } from '../context/StoreContext';
+import PopupMessage from '../components/PopupMessage';
+import ProductImagePopup from '../components/ProductImagePopup';
+import './ProductDetails.css';
+import stylingMan from '../assets/images/trending/trending_3.webp';
+import stylingWoman from '../assets/images/trending/trending_4.webp';
+import guideFrame from '../assets/images/Login/login_image.webp';
+const VirtualTryOn = lazy(() => import('../components/VirtualTryOn'));
+const money = (value) => `₹${Number(value).toLocaleString('en-IN')}`;
 const assetUrl = (path) =>
-  path?.startsWith("/")
-    ? new URL(path, import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api'))
-        .href
+  path?.startsWith('/')
+    ? new URL(
+        path,
+        import.meta.env.VITE_API_URL ||
+          (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api'),
+      ).href
     : path;
 const productTypes = [
-  ["Powered Eyeglass", "With Power"],
-  ["Zero Power", "Screen Glass"],
-  ["Reading Glasses", "+ Positive Power"],
-  ["Sunglass", "UV Protection"],
+  ['Powered Eyeglass', 'With Power'],
+  ['Zero Power', 'Screen Glass'],
+  ['Reading Glasses', '+ Positive Power'],
+  ['Sunglass', 'UV Protection'],
 ];
 const colorValues = {
-  black: "#292c2b",
-  grey: "#999999",
-  gray: "#999999",
-  white: "#dedede",
-  pink: "#e98196",
-  blue: "#718caf",
-  red: "#f24c54",
-  brown: "#725747",
-  gold: "#c5a46c",
-  green: "#93b5ad",
-  silver: "#c5cfd4",
-  transparent: "#dae4e6",
+  black: '#292c2b',
+  grey: '#999999',
+  gray: '#999999',
+  white: '#dedede',
+  pink: '#e98196',
+  blue: '#718caf',
+  red: '#f24c54',
+  brown: '#725747',
+  gold: '#c5a46c',
+  green: '#93b5ad',
+  silver: '#c5cfd4',
+  transparent: '#dae4e6',
 };
 const guides = [
+  ['Choose the right frame', 'Compare the frame shape and color with your everyday style.'],
   [
-    "Choose the right frame",
-    "Compare the frame shape and color with your everyday style.",
+    'Find your frame size',
+    'Check the size printed inside your current frame and compare it with this product.',
   ],
   [
-    "Find your frame size",
-    "Check the size printed inside your current frame and compare it with this product.",
+    'Lens & power coverage',
+    'Confirm the available lens type and your current prescription with the store before choosing prescription eyewear.',
   ],
   [
-    "Lens & power coverage",
-    "Confirm the available lens type and your current prescription with the store before choosing prescription eyewear.",
+    'Lenskart’s return policy',
+    'Contact the store to confirm return eligibility, timelines, and the return process before ordering.',
   ],
   [
-    "Lenskart’s return policy",
-    "Contact the store to confirm return eligibility, timelines, and the return process before ordering.",
+    'Lenskart Gold membership',
+    'Contact the store for the current membership price, benefits, and eligibility.',
   ],
   [
-    "Lenskart Gold membership",
-    "Contact the store for the current membership price, benefits, and eligibility.",
-  ],
-  [
-    "Care for your glasses",
-    "Clean lenses with a microfiber cloth and keep your glasses in a protective case.",
+    'Care for your glasses',
+    'Clean lenses with a microfiber cloth and keep your glasses in a protective case.',
   ],
 ];
 function Details({ product: baseProduct, products }) {
@@ -89,24 +89,26 @@ function Details({ product: baseProduct, products }) {
   const [selected, setSelected] = useState(0);
   const [tryOn, setTryOn] = useState(false);
   const [imagePopup, setImagePopup] = useState(false);
-  const [highlight, setHighlight] = useState("");
+  const [highlight, setHighlight] = useState('');
   const [guide, setGuide] = useState(null);
   const [type, setType] = useState(
     baseProduct.powered
-      ? "Powered Eyeglass"
-      : baseProduct.productType === "Sunglasses"
-        ? "Sunglass"
-        : "Zero Power",
+      ? 'Powered Eyeglass'
+      : baseProduct.productType === 'Sunglasses'
+        ? 'Sunglass'
+        : 'Zero Power',
   );
   const [color, setColor] = useState(
     baseProduct.hasVariants ? variants[0]?.color : baseProduct.color,
   );
   const [savedFitReference, setSavedFitReference] = useState(() => {
-    try { return readSavedTryOn(window.localStorage); } catch { return null; }
+    try {
+      return readSavedTryOn(window.localStorage);
+    } catch {
+      return null;
+    }
   });
-  const [size, setSize] = useState(
-    baseProduct.hasVariants ? variants[0]?.size : baseProduct.size,
-  );
+  const [size, setSize] = useState(baseProduct.hasVariants ? variants[0]?.size : baseProduct.size);
   const product = resolveVariant(baseProduct, { color, size }) || {
     ...baseProduct,
     stock: 0,
@@ -121,34 +123,24 @@ function Details({ product: baseProduct, products }) {
   const { favorites, toggleFavorite, addToCart, notify } = useStore();
   const images = product.images?.length ? product.images : [product.image];
   const highlightContent = {
-    material:
-      "Clean the frame with a soft cloth and follow the recommended care instructions.",
-    hinge: "Open and close the frame arms gently to protect the hinges.",
-    temple: "Choose a size that rests comfortably behind your ears.",
-    nosepad:
-      "Check that the bridge sits comfortably without slipping or pinching.",
+    material: 'Clean the frame with a soft cloth and follow the recommended care instructions.',
+    hinge: 'Open and close the frame arms gently to protect the hinges.',
+    temple: 'Choose a size that rests comfortably behind your ears.',
+    nosepad: 'Check that the bridge sits comfortably without slipping or pinching.',
     ...Object.fromEntries(
-      ["material", "hinge", "temple", "nosepad"]
+      ['material', 'hinge', 'temple', 'nosepad']
         .filter((key) => product[key])
         .map((key) => [key, product[key]]),
     ),
   };
-  const highlights = ["material", "hinge", "temple", "nosepad"];
+  const highlights = ['material', 'hinge', 'temple', 'nosepad'];
   const activeHighlight = highlight || highlights[0];
-  const highlightKeys = highlights.join(",");
+  const highlightKeys = highlights.join(',');
   useEffect(() => {
-    const keys = highlightKeys.split(",").filter(Boolean);
-    if (
-      keys.length < 2 ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    )
-      return;
+    const keys = highlightKeys.split(',').filter(Boolean);
+    if (keys.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const timer = setInterval(
-      () =>
-        setHighlight(
-          (current) =>
-            keys[(keys.indexOf(current || keys[0]) + 1) % keys.length],
-        ),
+      () => setHighlight((current) => keys[(keys.indexOf(current || keys[0]) + 1) % keys.length]),
       3000,
     );
     return () => clearInterval(timer);
@@ -158,17 +150,14 @@ function Details({ product: baseProduct, products }) {
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
     : product.rating;
   const badges = [
-    ["No Questions Asked Returns", Package],
-    ["Easy 14 day Exchange", RefreshCw],
-    ["365 days Warranty", ShieldCheck],
+    ['No Questions Asked Returns', Package],
+    ['Easy 14 day Exchange', RefreshCw],
+    ['365 days Warranty', ShieldCheck],
   ];
 
   const similar = products
     .filter((item) => item.id !== product.id)
-    .sort(
-      (a, b) =>
-        Number(b.brand === product.brand) - Number(a.brand === product.brand),
-    )
+    .sort((a, b) => Number(b.brand === product.brand) - Number(a.brand === product.brand))
     .slice(0, 6);
   const specs = {
     Brand: product.brand,
@@ -187,11 +176,10 @@ function Details({ product: baseProduct, products }) {
         });
       else {
         await navigator.clipboard.writeText(window.location.href);
-        notify("Product link copied.");
+        notify('Product link copied.');
       }
     } catch (error) {
-      if (error.name !== "AbortError")
-        notify("Unable to share this product.", "error");
+      if (error.name !== 'AbortError') notify('Unable to share this product.', 'error');
     }
   }
   return (
@@ -209,9 +197,9 @@ function Details({ product: baseProduct, products }) {
                   onClick={(event) => {
                     setSelected(index);
                     event.currentTarget.scrollIntoView({
-                      block: "nearest",
-                      inline: "nearest",
-                      behavior: "smooth",
+                      block: 'nearest',
+                      inline: 'nearest',
+                      behavior: 'smooth',
                     });
                   }}
                 >
@@ -226,9 +214,7 @@ function Details({ product: baseProduct, products }) {
                   aria-label={`${average.toFixed(1)} out of 5 stars, ${reviews.length} reviews`}
                 >
                   {average.toFixed(1)} <Star size={16} fill="currentColor" />
-                  {reviews.length > 0 && (
-                    <span>{reviews.length.toLocaleString("en-IN")}</span>
-                  )}
+                  {reviews.length > 0 && <span>{reviews.length.toLocaleString('en-IN')}</span>}
                 </span>
               )}
               <button
@@ -246,9 +232,7 @@ function Details({ product: baseProduct, products }) {
               <div className="detail-gallery-controls">
                 <button
                   aria-label="Previous image"
-                  onClick={() =>
-                    setSelected((selected + images.length - 1) % images.length)
-                  }
+                  onClick={() => setSelected((selected + images.length - 1) % images.length)}
                 >
                   <ChevronLeft size={18} />
                 </button>
@@ -261,7 +245,9 @@ function Details({ product: baseProduct, products }) {
               </div>
             )}
           </section>
-          <button className="detail-try-on-button" onClick={() => setTryOn(true)}><ScanFace size={20} aria-hidden="true" /> Virtual Try-On</button>
+          <button className="detail-try-on-button" onClick={() => setTryOn(true)}>
+            <ScanFace size={20} aria-hidden="true" /> Virtual Try-On
+          </button>
           <section className="detail-section">
             <h2>How to Buy Your Glasses</h2>
             <div className="detail-guide-row">
@@ -274,14 +260,9 @@ function Details({ product: baseProduct, products }) {
                 >
                   <img
                     src={
-                      [
-                        stylingWoman,
-                        guideFrame,
-                        stylingWoman,
-                        guideFrame,
-                        guideFrame,
-                        stylingMan,
-                      ][index]
+                      [stylingWoman, guideFrame, stylingWoman, guideFrame, guideFrame, stylingMan][
+                        index
+                      ]
                     }
                     alt=""
                     loading="lazy"
@@ -294,9 +275,7 @@ function Details({ product: baseProduct, products }) {
                 </button>
               ))}
             </div>
-            {guide !== null && (
-              <p className="detail-guide-content">{guides[guide][1]}</p>
-            )}
+            {guide !== null && <p className="detail-guide-content">{guides[guide][1]}</p>}
           </section>
           <section className="detail-section detail-styling">
             <h2>Styling Ideas</h2>
@@ -342,9 +321,7 @@ function Details({ product: baseProduct, products }) {
             </button>
             <button
               aria-label={
-                favorites.includes(product.id)
-                  ? "Remove from wishlist"
-                  : "Add to wishlist"
+                favorites.includes(product.id) ? 'Remove from wishlist' : 'Add to wishlist'
               }
               aria-pressed={favorites.includes(product.id)}
               onClick={() => toggleFavorite(product)}
@@ -352,7 +329,7 @@ function Details({ product: baseProduct, products }) {
               <Heart
                 size={24}
                 strokeWidth={1.8}
-                fill={favorites.includes(product.id) ? "currentColor" : "none"}
+                fill={favorites.includes(product.id) ? 'currentColor' : 'none'}
               />
             </button>
           </div>
@@ -363,13 +340,12 @@ function Details({ product: baseProduct, products }) {
           {product.originalPrice > product.price && (
             <p className="detail-discount">
               <del>{money(product.originalPrice)}</del> (
-              {Math.round((1 - product.price / product.originalPrice) * 100)}%
-              OFF)
+              {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF)
             </p>
           )}
           {(product.offerTitle || product.offerText) && (
             <section className="detail-offer">
-              <h2>{product.offerTitle || "Product offer"}</h2>
+              <h2>{product.offerTitle || 'Product offer'}</h2>
               <p>{product.offerText}</p>
             </section>
           )}
@@ -377,11 +353,7 @@ function Details({ product: baseProduct, products }) {
             <h2>Product Type</h2>
             <div className="detail-type-row">
               {productTypes.map(([label, caption]) => (
-                <button
-                  key={label}
-                  aria-pressed={type === label}
-                  onClick={() => setType(label)}
-                >
+                <button key={label} aria-pressed={type === label} onClick={() => setType(label)}>
                   <strong>{label}</strong>
                   <small>{caption}</small>
                 </button>
@@ -391,29 +363,27 @@ function Details({ product: baseProduct, products }) {
             <div className="detail-color-row">
               {colors.map((value) => (
                 <div key={value} className="detail-color-option">
-                <button
-                  title={value}
-                  aria-label={`Frame color: ${value}`}
-                  aria-pressed={color === value}
-                  onClick={() => {
-                    setColor(value);
-                    setSelected(0);
-                    if (baseProduct.hasVariants)
-                      setSize(
-                        variants.find(
-                          (row) => row.color === value && row.size === size,
-                        )?.size ||
-                          variants.find((row) => row.color === value)?.size,
-                      );
-                  }}
-                >
-                  <span
-                    style={{
-                      background: colorValues[value.toLowerCase()] || "#b0b7c0",
+                  <button
+                    title={value}
+                    aria-label={`Frame color: ${value}`}
+                    aria-pressed={color === value}
+                    onClick={() => {
+                      setColor(value);
+                      setSelected(0);
+                      if (baseProduct.hasVariants)
+                        setSize(
+                          variants.find((row) => row.color === value && row.size === size)?.size ||
+                            variants.find((row) => row.color === value)?.size,
+                        );
                     }}
-                  />
-                </button>
-                <p className="detail-selection-label">{value}</p>
+                  >
+                    <span
+                      style={{
+                        background: colorValues[value.toLowerCase()] || '#b0b7c0',
+                      }}
+                    />
+                  </button>
+                  <p className="detail-selection-label">{value}</p>
                 </div>
               ))}
             </div>
@@ -421,14 +391,34 @@ function Details({ product: baseProduct, products }) {
             <div className="detail-size-row">
               {sizes.map((value) => {
                 const fit = savedFitReference && compareFrameFit(value, savedFitReference.widthMm);
-                return <div className="detail-size-option" key={value}>
-                  <button aria-pressed={size === value} onClick={() => { setSize(value); setSelected(0); }}>{value}</button>
-                  <small>{frameSizing(value).label || 'Width not specified'}</small>
-                  {fit && <small className={fit === 'Estimated fit' ? 'size-fit-match' : 'size-fit-mismatch'}>{fit}</small>}
-                </div>;
+                return (
+                  <div className="detail-size-option" key={value}>
+                    <button
+                      aria-pressed={size === value}
+                      onClick={() => {
+                        setSize(value);
+                        setSelected(0);
+                      }}
+                    >
+                      {value}
+                    </button>
+                    <small>{frameSizing(value).label || 'Width not specified'}</small>
+                    {fit && (
+                      <small
+                        className={fit === 'Estimated fit' ? 'size-fit-match' : 'size-fit-mismatch'}
+                      >
+                        {fit}
+                      </small>
+                    )}
+                  </div>
+                );
               })}
             </div>
-            <p className="detail-size-reference">{savedFitReference ? `Compared with your saved reference: ${savedFitReference.widthMm.toFixed(1)} mm (${savedFitReference.name}). Fit labels are chart-based estimates, not a guarantee of physical fit.` : 'Capture and save a fit in Virtual Try-On to compare sizes with your reference.'}</p>
+            <p className="detail-size-reference">
+              {savedFitReference
+                ? `Compared with your saved reference: ${savedFitReference.widthMm.toFixed(1)} mm (${savedFitReference.name}). Fit labels are chart-based estimates, not a guarantee of physical fit.`
+                : 'Capture and save a fit in Virtual Try-On to compare sizes with your reference.'}
+            </p>
           </section>
           {product.deliveryInformation && (
             <section className="detail-section">
@@ -458,7 +448,7 @@ function Details({ product: baseProduct, products }) {
             {policy !== null && (
               <p className="detail-delivery">
                 {product.assurances?.[policy] ||
-                  "Contact the store for the eligibility, terms, and process for this service."}
+                  'Contact the store for the eligibility, terms, and process for this service.'}
               </p>
             )}
           </section>
@@ -475,17 +465,14 @@ function Details({ product: baseProduct, products }) {
                       aria-pressed={key === activeHighlight}
                       onClick={() => setHighlight(key)}
                     >
-                      {key === "nosepad" ? "Nosepad" : key}
+                      {key === 'nosepad' ? 'Nosepad' : key}
                     </button>
                   ))}
                 </div>
                 <div key={activeHighlight} className="detail-highlight-slide">
                   <p>{highlightContent[activeHighlight]}</p>
                   <img
-                    src={assetUrl(
-                      product.highlightImages?.[activeHighlight] ||
-                        product.image,
-                    )}
+                    src={assetUrl(product.highlightImages?.[activeHighlight] || product.image)}
                     alt={`${product.name}, ${activeHighlight} detail`}
                   />
                 </div>
@@ -497,7 +484,7 @@ function Details({ product: baseProduct, products }) {
             <div className="detail-review-summary">
               <div>
                 <p className="detail-review-score">
-                  {average > 0 ? average.toFixed(1) : "—"}
+                  {average > 0 ? average.toFixed(1) : '—'}
                   <Star size={22} fill="currentColor" />
                 </p>
                 <span>{reviews.length} Reviews</span>
@@ -506,8 +493,7 @@ function Details({ product: baseProduct, products }) {
                 {[5, 4, 3, 2, 1].map((stars) => {
                   const percentage = reviews.length
                     ? Math.round(
-                        (reviews.filter((review) => review.rating === stars)
-                          .length /
+                        (reviews.filter((review) => review.rating === stars).length /
                           reviews.length) *
                           100,
                       )
@@ -525,11 +511,18 @@ function Details({ product: baseProduct, products }) {
               </div>
             </div>
             <h3>Customer Reviews</h3>
-            {reviews.length ? reviews.slice(0, 5).map((review, index) => (
-              <ReviewCard key={review._id || index} review={review} />
-            )) : <p className="detail-muted">No customer reviews available yet.</p>}
+            {reviews.length ? (
+              reviews
+                .slice(0, 5)
+                .map((review, index) => <ReviewCard key={review._id || index} review={review} />)
+            ) : (
+              <p className="detail-muted">No customer reviews available yet.</p>
+            )}
             {reviews.length > 0 && (
-              <Link className="detail-read-reviews" to={`/products/${product.slug || product.id}/reviews`}>
+              <Link
+                className="detail-read-reviews"
+                to={`/products/${product.slug || product.id}/reviews`}
+              >
                 View all reviews
               </Link>
             )}
@@ -578,18 +571,30 @@ function Details({ product: baseProduct, products }) {
               disabled={product.stock < 1}
               onClick={() => addToCart(product, { type, color, size })}
             >
-              {product.stock > 0 ? "Add to cart" : "Out of stock"}
+              {product.stock > 0 ? 'Add to cart' : 'Out of stock'}
             </button>
-            {product.stock < 1 && (
-              <p className="store-product-stock out">Currently out of stock</p>
-            )}
+            {product.stock < 1 && <p className="store-product-stock out">Currently out of stock</p>}
           </div>
         </aside>
       </div>
-      {tryOn && <Suspense fallback={<Loader label="Loading virtual try-on" />}><VirtualTryOn key={`${product.id}-${product.variantId || "base"}`} name={product.name} size={product.size} image={product.tryOnImage ? assetUrl(product.tryOnImage) : ""} onClose={() => {
-        setTryOn(false);
-        try { setSavedFitReference(readSavedTryOn(window.localStorage)); } catch { setSavedFitReference(null); }
-      }} /></Suspense>}
+      {tryOn && (
+        <Suspense fallback={<Loader label="Loading virtual try-on" />}>
+          <VirtualTryOn
+            key={`${product.id}-${product.variantId || 'base'}`}
+            name={product.name}
+            size={product.size}
+            image={product.tryOnImage ? assetUrl(product.tryOnImage) : ''}
+            onClose={() => {
+              setTryOn(false);
+              try {
+                setSavedFitReference(readSavedTryOn(window.localStorage));
+              } catch {
+                setSavedFitReference(null);
+              }
+            }}
+          />
+        </Suspense>
+      )}
       {imagePopup && (
         <ProductImagePopup
           images={images}
@@ -629,10 +634,14 @@ export default function ProductDetails() {
             error: error.message,
             status: error.status,
           });
-      } finally { inFlight = false; }
+      } finally {
+        inFlight = false;
+      }
     }
     load();
-    function refresh() { if (!document.hidden) load(true); }
+    function refresh() {
+      if (!document.hidden) load(true);
+    }
     window.addEventListener('focus', refresh);
     document.addEventListener('visibilitychange', refresh);
     return () => {
@@ -643,9 +652,13 @@ export default function ProductDetails() {
   }, [id, attempt]);
   useEffect(() => {
     const controller = new AbortController();
-    apiRequest('/products', { signal: controller.signal }).then(data => {
-      if (!controller.signal.aborted) setRelatedProducts(data.products || []);
-    }).catch(() => { /* Recommendations must not block product details. */ });
+    apiRequest('/products', { signal: controller.signal })
+      .then((data) => {
+        if (!controller.signal.aborted) setRelatedProducts(data.products || []);
+      })
+      .catch(() => {
+        /* Recommendations must not block product details. */
+      });
     return () => controller.abort();
   }, []);
   return (
@@ -654,22 +667,12 @@ export default function ProductDetails() {
         <Loader label="Loading product" />
       ) : result.error ? (
         <div className="store-product-state">
-          <h1>
-            {result.status === 404
-              ? "Product unavailable"
-              : "Unable to load product"}
-          </h1>
+          <h1>{result.status === 404 ? 'Product unavailable' : 'Unable to load product'}</h1>
           <PopupMessage message={result.error} />
-          <button onClick={() => setAttempt((value) => value + 1)}>
-            Try again
-          </button>
+          <button onClick={() => setAttempt((value) => value + 1)}>Try again</button>
         </div>
       ) : (
-        <Details
-          key={result.product.id}
-          product={result.product}
-          products={relatedProducts}
-        />
+        <Details key={result.product.id} product={result.product} products={relatedProducts} />
       )}
     </section>
   );

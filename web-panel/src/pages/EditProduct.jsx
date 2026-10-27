@@ -5,7 +5,41 @@ import DashboardLayout from '../components/DashboardLayout';
 import ProductEditor from '../components/ProductEditor';
 import PopupMessage from '../components/PopupMessage';
 import useProduct from '../hooks/useProduct';
-export default function EditProduct(){
-  const navigate=useNavigate();const {id}=useParams();const {loading,product,error,retry}=useProduct(id);
-  return <DashboardLayout><main className="admin-page">{loading?<Loader label="Loading product"/>:error?<div className="space-y-4"><PopupMessage message={error}/><button className="admin-button-secondary" onClick={retry}>Try again</button><Link to="/product" className="admin-button-secondary">Back to products</Link></div>:<><div className="flex justify-end"><DeleteRecordButton path={`/admin/products/${product.id}`} label={product.name} onDeleted={()=>navigate('/product')}/></div><ProductEditor key={product.id} product={product}/><Link to={`/product/${id}/variants`} className="admin-button-secondary">Manage variants</Link></>}</main></DashboardLayout>;
+export default function EditProduct() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { loading, product, error, retry } = useProduct(id);
+  return (
+    <DashboardLayout>
+      <main className="admin-page">
+        {loading ? (
+          <Loader label="Loading product" />
+        ) : error ? (
+          <div className="space-y-4">
+            <PopupMessage message={error} />
+            <button className="admin-button-secondary" onClick={retry}>
+              Try again
+            </button>
+            <Link to="/product" className="admin-button-secondary">
+              Back to products
+            </Link>
+          </div>
+        ) : (
+          <>
+            <div className="flex justify-end">
+              <DeleteRecordButton
+                path={`/admin/products/${product.id}`}
+                label={product.name}
+                onDeleted={() => navigate('/product')}
+              />
+            </div>
+            <ProductEditor key={product.id} product={product} />
+            <Link to={`/product/${id}/variants`} className="admin-button-secondary">
+              Manage variants
+            </Link>
+          </>
+        )}
+      </main>
+    </DashboardLayout>
+  );
 }

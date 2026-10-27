@@ -8,7 +8,10 @@ const directory = new URL('../public/products/', import.meta.url);
 const sources = [
   ['frame-1', 'https://www.lenskart.com/vincent-chase-vc-e17100-c1-eyeglasses.html'],
   ['frame-2', 'https://www.lenskart.com/lenskart-lk-e18244-m-black-eyeglass.html'],
-  ['frame-3', 'https://www.lenskart.com/vincent-chase-vc-e13787-c2-eyeglasses.html?productId=146622'],
+  [
+    'frame-3',
+    'https://www.lenskart.com/vincent-chase-vc-e13787-c2-eyeglasses.html?productId=146622',
+  ],
   ['frame-4', 'https://www.lenskart.com/lenskart-lk-e15180-c1-eyeglasses.html'],
   ['frame-5', 'https://www.lenskart.com/john-jacobs-jj-e70142-c1-eyeglasses.html'],
   ['frame-6', 'https://www.lenskart.com/lenskart-air-la-e14101-c2-c2-eyeglasses.html'],
@@ -27,7 +30,13 @@ await mkdir(directory, { recursive: true });
 const manifest = [];
 for (const [sku, page] of sources) {
   const html = await (await request(page)).text();
-  const urls = [...new Set([...html.matchAll(/<img\b[^>]*alt="Product \d+"[^>]*>/g)].map(([tag]) => tag.match(/\bsrc="([^"]+)"/)?.[1]?.replaceAll('&amp;', '&')).filter(Boolean))].slice(0, 4);
+  const urls = [
+    ...new Set(
+      [...html.matchAll(/<img\b[^>]*alt="Product \d+"[^>]*>/g)]
+        .map(([tag]) => tag.match(/\bsrc="([^"]+)"/)?.[1]?.replaceAll('&amp;', '&'))
+        .filter(Boolean),
+    ),
+  ].slice(0, 4);
   if (urls.length < 3) throw new Error(`Not enough product photos on ${page}`);
   const images = [];
   for (const [index, url] of urls.entries()) {
@@ -41,26 +50,45 @@ for (const [sku, page] of sources) {
   manifest.push({ sku, page, images });
   console.log(`Downloaded ${sku}: ${images.length} photos`);
 }
-await writeFile(new URL('sample-image-sources.json', directory), JSON.stringify(manifest, null, 2) + '\n');
+await writeFile(
+  new URL('sample-image-sources.json', directory),
+  JSON.stringify(manifest, null, 2) + '\n',
+);
 try {
   await mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 10000 });
   let updated = 0;
   for (const { sku, images } of manifest) {
     const product = await Product.findOne({ sku });
     if (!product) continue;
-    const gallery = images.map(image => image.local);
+    const gallery = images.map((image) => image.local);
     // Replace only the seeded demo gallery, preserving any user-uploaded photos.
-    const uploads = product.images.filter(image => !/^\/assets\/products\/(?:sample-|dummy-)/.test(image) && image !== product.image);
+    const uploads = product.images.filter(
+      (image) => !/^\/assets\/products\/(?:sample-|dummy-)/.test(image) && image !== product.image,
+    );
     product.image = gallery[0];
     product.images = [...new Set([...gallery, ...uploads])].slice(0, 8);
-    const details = { material: gallery[0], hinge: gallery[1], temple: gallery[2], nosepad: gallery[3] || gallery[0] };
+    const details = {
+      material: gallery[0],
+      hinge: gallery[1],
+      temple: gallery[2],
+      nosepad: gallery[3] || gallery[0],
+    };
     for (const [key, value] of Object.entries(details)) {
-      if (!product.highlightImages[key] || /^\/assets\/products\/(?:sample-|dummy-|square\.webp)/.test(product.highlightImages[key])) product.highlightImages[key] = value;
+      if (
+        !product.highlightImages[key] ||
+        /^\/assets\/products\/(?:sample-|dummy-|square\.webp)/.test(product.highlightImages[key])
+      )
+        product.highlightImages[key] = value;
     }
     await product.save();
     updated++;
   }
-  console.log(JSON.stringify({ updatedProducts: updated, downloadedImages: manifest.reduce((count, entry) => count + entry.images.length, 0) }));
+  console.log(
+    JSON.stringify({
+      updatedProducts: updated,
+      downloadedImages: manifest.reduce((count, entry) => count + entry.images.length, 0),
+    }),
+  );
 } finally {
   await mongoose.disconnect();
 }

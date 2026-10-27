@@ -565,8 +565,7 @@ body:has(.checkout-page) header {
   background: var(--confetti-color);
   border-radius: 2px;
   opacity: 0;
-  animation: order-confetti-fall var(--confetti-duration) ease-in
-    var(--confetti-delay) both;
+  animation: order-confetti-fall var(--confetti-duration) ease-in var(--confetti-delay) both;
   will-change: transform, opacity;
 }
 .order-success-confetti span:nth-child(3n) {
@@ -620,4 +619,11 @@ body:has(.checkout-page) header {
   }
 }
 
-@media (min-width: 768px) { .checkout-layout > form, .checkout-layout > .checkout-summary { position: sticky; top: var(--column-sticky-top, 16px); align-self: start; } }
+@media (min-width: 768px) {
+  .checkout-layout > form,
+  .checkout-layout > .checkout-summary {
+    position: sticky;
+    top: var(--column-sticky-top, 16px);
+    align-self: start;
+  }
+}

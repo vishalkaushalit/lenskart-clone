@@ -6,7 +6,12 @@
     "docs:sync": "node scripts/sync-readmes.mjs --write",
     "docs:check": "node scripts/sync-readmes.mjs --check",
     "docs:hooks": "git config core.hooksPath .githooks",
+    "format": "prettier --write \"api/**/*.{js,jsx,mjs,cjs,css,html}\" \"backend/**/*.{js,jsx,mjs,cjs,css,html}\" \"frontend/**/*.{js,jsx,mjs,cjs,css,html}\" \"web-panel/**/*.{js,jsx,mjs,cjs,css,html}\" \"shared/**/*.{js,jsx,mjs,cjs,css,html}\" \"scripts/**/*.{js,jsx,mjs,cjs,css,html}\"",
+    "format:check": "prettier --check \"api/**/*.{js,jsx,mjs,cjs,css,html}\" \"backend/**/*.{js,jsx,mjs,cjs,css,html}\" \"frontend/**/*.{js,jsx,mjs,cjs,css,html}\" \"web-panel/**/*.{js,jsx,mjs,cjs,css,html}\" \"shared/**/*.{js,jsx,mjs,cjs,css,html}\" \"scripts/**/*.{js,jsx,mjs,cjs,css,html}\"",
     "build": "node scripts/build-vercel.mjs",
     "vercel:install": "npm ci && npm ci --include=dev --prefix frontend && npm ci --include=dev --prefix web-panel && npm ci --prefix backend"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2"
   }
 }

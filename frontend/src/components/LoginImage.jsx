@@ -1,5 +1,5 @@
-import { Link } from "../storeRouter";
-import Login_Image from "../assets/images/Login/login_image.webp";
+import { Link } from '../storeRouter';
+import Login_Image from '../assets/images/Login/login_image.webp';
 const LoginImage = () => {
   return (
     <>
@@ -29,9 +29,7 @@ const LoginImage = () => {
               <circle cx="19" cy="21" r="1" />
               <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
             </svg>
-            <h2 className="text-xl font-bold tracking-wide sm:text-2xl m-0">
-              ShopAdmin
-            </h2>
+            <h2 className="text-xl font-bold tracking-wide sm:text-2xl m-0">ShopAdmin</h2>
           </div>
           <p className="mt-1 text-sm text-slate-300">Manage. Grow. Succeed.</p>
         </div>
@@ -63,8 +61,7 @@ const LoginImage = () => {
             Welcome to ShopAdmin
           </h1>
           <p className="mt-3 max-w-md text-sm text-slate-300 sm:text-base">
-            Your one-stop solution to manage users, products, coupons, orders
-            and more.
+            Your one-stop solution to manage users, products, coupons, orders and more.
           </p>
         </div>
       </div>

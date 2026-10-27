@@ -1,6 +1,6 @@
 # Lenskart Clone
 
-An eyewear store with a customer-facing React app, a separate React administration panel, and an Express/MongoDB API. Each application directory is an independent npm project; the root npm scripts manage documentation only.
+An eyewear store with a customer-facing React app, a separate React administration panel, and an Express/MongoDB API. Each application directory is an independent npm project; the root npm scripts manage documentation and repository-wide source formatting.
 
 ## Project guides
 
@@ -80,6 +80,9 @@ A coupon such as `SAVE10` must exist as an active percentage coupon with `value:
 ## Verification
 
 ```sh
+# Format or check JavaScript, JSX, CSS, and HTML across the repository.
+npm run format
+npm run format:check
 # API unit and route-handler tests.
 npm test --prefix backend
 # Frontend state tests (run from frontend).
