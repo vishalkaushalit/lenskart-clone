@@ -27,6 +27,8 @@ These values are embedded in browser bundles. Restart Vite after editing `.env`.
 
 ## Entry points and pages
 
+`src/seo/PageMetadata.jsx` manages each storefront route's title, description, robots, canonical URL, Open Graph and Twitter tags. Product and review pages use API product names, descriptions and images; pending product GETs share the existing request client. Account, authentication, shopping, order, unknown and filtered collection URLs use `noindex`. Canonicals use the current origin/path without query parameters. Metadata resets on navigation, including stale product images. Edit the route copy in this component to customize it. Tags update client-side; social crawlers that do not execute JavaScript require a future SSR/prerender solution for per-page previews. The HTML includes a default description for initial loading.
+
 `index.html` supplies the root element. `src/main.jsx` mounts StrictMode, BrowserRouter, StoreProvider, and AuthProvider. `src/App.jsx` lazy-loads pages with a Suspense loading fallback. `src/routes.jsx` supplies the shared store header/footer, category provider, and outlet context.
 
 | URL | Page and purpose |
@@ -356,7 +358,7 @@ Collection category tabs and empty-result indicators use a rectangular eyeglasse
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `630b96a2e12d807973fbbb3228fbbef434c8e59cc151219f976048045448da6f`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `d9424e428157c1d96a53f892c54e200d7b573d8fcd66aa4a2b2e92d8aed27815`.
 
 ### Actual npm commands
 
@@ -472,6 +474,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/pages/Wishlist.css](src/pages/Wishlist.css) | Internal module / styles |
 | [src/pages/Wishlist.jsx](src/pages/Wishlist.jsx) | Wishlist |
 | [src/routes.jsx](src/routes.jsx) | default export |
+| [src/seo/PageMetadata.jsx](src/seo/PageMetadata.jsx) | PageMetadata |
 | [src/state/checkout.js](src/state/checkout.js) | checkoutRows |
 | [src/state/checkout.test.js](src/state/checkout.test.js) | Internal module / styles |
 | [src/state/collectionLinks.js](src/state/collectionLinks.js) | collectionLink |
@@ -664,3 +667,8 @@ Sold out badges overlay product photos in catalog, wishlist, related-frame and s
 Sold out badges sit at the top-left of product photos; catalog rating badges shift below them when both appear.
 
 Cart and checkout reuse the product-page sticky-column hook for their two-column desktop layouts. Each column uses its measured height and header offset: short columns stay below the header, while tall columns scroll until their bottom is visible. ResizeObserver updates offsets after items, coupons, address sections or billing details change. Single-column mobile layouts keep normal document scrolling.
+
+
+## Manual page SEO
+
+Manual overrides can be edited under **Page SEO** in the admin panel. The storefront reads `/api/seo?path=...` and uses nonempty saved title, description and image fields ahead of automatic metadata. Each exact path, including product review paths, has separate settings. Missing settings or failed settings requests retain automatic defaults; navigation aborts outdated reads. Reload after saving. Indexing rules and canonical URLs remain controlled by the storefront.

@@ -1,3 +1,4 @@
+import PageSeo from './pages/PageSeo';
 import { LoaderProvider } from '../../shared/LoadingOverlay.jsx';
 import {lazy,Suspense} from 'react';
 import Loader from './components/Loader';
@@ -27,6 +28,7 @@ export default function App() {
       <Route element={<AdminRoute />}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/seo" element={<PageSeo />} />
         <Route path="/product" element={<ProductDashboard />} />
         <Route path="/product/add" element={<AddProduct />} />
         <Route path="/product/:id/variants/add" element={<ProductVariants key="add" mode="add"/>}/>

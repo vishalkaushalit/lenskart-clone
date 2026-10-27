@@ -68,6 +68,7 @@ const AsideBarDashboard = ({ isOpen, isDesktop, onClose }) => {
 
         {/* Nav */}
         <nav aria-label="Admin navigation" className="min-h-0 flex-1 space-y-1 overflow-y-auto px-3 pb-6">
+          <NavLink to="/seo" onClick={onClose} className={navigationClass}>Page SEO</NavLink>
           <NavLink
             to="/dashboard"
             onClick={onClose}

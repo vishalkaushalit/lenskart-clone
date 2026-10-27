@@ -1,6 +1,7 @@
 import { LoaderProvider } from '../../shared/LoadingOverlay.jsx';
 import {lazy,Suspense} from 'react';
 import Loader from './components/Loader';
+import PageMetadata from './seo/PageMetadata';
 import { Routes, Route, Outlet } from "react-router-dom";
 
 import StoreLayout from "./routes";
@@ -20,7 +21,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   return (
-    <LoaderProvider className="store"><Suspense fallback={<Loader label="Loading page"/>}><Routes>
+    <LoaderProvider className="store"><PageMetadata /><Suspense fallback={<Loader label="Loading page"/>}><Routes>
       <Route element={<StoreLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/collection" element={<Collection />} />

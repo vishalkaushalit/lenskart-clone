@@ -389,7 +389,7 @@ Product detail endpoints fetch variants and approved reviews concurrently after 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `01b88232537f0dea684e5997b1bab1abb3b603e2dce6108350b87b920793ae39`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `c3f4bfa711b7ae5c2b3c3733871e11646d4dc8e5b8b4853263dc86f844c0b0b1`.
 
 ### Actual npm commands
 
@@ -459,6 +459,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/models/Coupon.js](src/models/Coupon.js) | default export |
 | [src/models/CustomerReview.js](src/models/CustomerReview.js) | default export |
 | [src/models/Order.js](src/models/Order.js) | default export |
+| [src/models/PageSeo.js](src/models/PageSeo.js) | default export |
 | [src/models/Product.js](src/models/Product.js) | default export |
 | [src/models/ProductVariant.js](src/models/ProductVariant.js) | default export |
 | [src/models/User.js](src/models/User.js) | default export |
@@ -472,6 +473,8 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/routes/dashboardRoutes.js](src/routes/dashboardRoutes.js) | default export |
 | [src/routes/listPerformance.test.js](src/routes/listPerformance.test.js) | Internal module / styles |
 | [src/routes/productRoutes.js](src/routes/productRoutes.js) | managedProducts, publicProducts |
+| [src/routes/seoRoutes.js](src/routes/seoRoutes.js) | adminSeo, publicSeo |
+| [src/routes/seoRoutes.test.js](src/routes/seoRoutes.test.js) | Internal module / styles |
 | [src/routes/userRoutes.js](src/routes/userRoutes.js) | default export |
 | [src/routes/variantRoutes.js](src/routes/variantRoutes.js) | default export |
 | [src/routes/variantRoutes.test.js](src/routes/variantRoutes.test.js) | Internal module / styles |
@@ -546,6 +549,9 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/routes/productRoutes.js | managedProducts.post | `/` |
 | src/routes/productRoutes.js | managedProducts.patch | `/:id` |
 | src/routes/productRoutes.js | managedProducts.delete | `/:id` |
+| src/routes/seoRoutes.js | publicSeo.get | `/` |
+| src/routes/seoRoutes.js | adminSeo.get | `/` |
+| src/routes/seoRoutes.js | adminSeo.put | `/` |
 | src/routes/userRoutes.js | router.get | `/` |
 | src/routes/userRoutes.js | router.get | `/:id` |
 | src/routes/userRoutes.js | router.post | `/` |
@@ -557,6 +563,8 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/routes/variantRoutes.js | router.delete | `/:variantId` |
 | src/server.js | req.get | `Origin` |
 | src/server.js | req.get | `Sec-Fetch-Site` |
+| src/server.js | app.use | `/api/seo` |
+| src/server.js | app.use | `/api/admin/seo` |
 | src/server.js | app.use | `/api/categories` |
 | src/server.js | app.use | `/api/admin/categories` |
 | src/server.js | app.use | `/api/admin` |
@@ -700,6 +708,22 @@ orderSchema.pre('save', function () {
   recordOrderStatus(this);
 });
 export default mongoose.model('Order', orderSchema);
+```
+
+#### PageSeo.js
+
+```js
+// Generated directly from backend/src/models/PageSeo.js; edit the source model, not this excerpt.
+import mongoose from 'mongoose';
+
+const schema = new mongoose.Schema({
+  path: { type: String, required: true, unique: true, maxlength: 300 },
+  title: { type: String, trim: true, maxlength: 120, default: '' },
+  description: { type: String, trim: true, maxlength: 320, default: '' },
+  image: { type: String, trim: true, maxlength: 2000, default: '' },
+}, { timestamps: true });
+
+export default mongoose.model('PageSeo', schema);
 ```
 
 #### Product.js
@@ -893,3 +917,8 @@ All web-panel image uploads (product galleries, variants, categories, highlights
 The admin-only `POST /api/admin/products/try-on` accepts transparent PNG/WebP images or self-contained GLB 2.0 models, up to 4 MB, and stores the selected asset in public Blob storage with its proper MIME type. GLB headers/chunk boundaries, embedded resources and required extensions are validated; external resources and unsupported compression are rejected. Gallery uploads continue to accept images only. Both product and variant editors store one selected asset in `tryOnImage`; replacing it can switch formats without changing color-sharing behavior.
 
 `node scripts/add-vincent-chase-glb.js` downloads and validates Lenskart's self-contained GLB for SKU 210628 (VC E16002 C1 Black / Gold), keeps a local copy, uploads it to the configured public Blob store, and assigns it to the imported product and all Black / Gold sizes transactionally. Other colors retain their existing assets. The source and chosen asset URL are recorded in `scripts/vincent-chase-e16002-try-on.json`; subsequent product imports preserve that selection. This direct source import handles the original model (about 5.6 MB); the interactive upload remains limited to 4 MB.
+
+
+## Manual page SEO
+
+Page SEO overrides are stored in the `PageSeo` model with unique `path`, `title` (120 characters), `description` (320) and `image` (2000, HTTP/HTTPS URL). Public `GET /api/seo?path=/` returns the override or null. Admin-only `GET /api/admin/seo?path=/` and `PUT /api/admin/seo` read/upsert settings; PUT accepts `{ path, title, description, image }`. Paths omit query parameters and trailing slashes, except `/`. Blank fields restore automatic storefront fallbacks.

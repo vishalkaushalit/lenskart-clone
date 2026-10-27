@@ -1,3 +1,4 @@
+import { publicSeo, adminSeo } from './routes/seoRoutes.js';
 import 'dotenv/config';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { publicProducts, managedProducts } from './routes/productRoutes.js';
@@ -106,6 +107,8 @@ export function initializeApp() {
     }));
 
     await Promise.all([User.init(),Order.init(),Coupon.init(),ProductVariant.init(),CustomerReview.init()]);
+    app.use('/api/seo', publicSeo);
+    app.use('/api/admin/seo', adminSeo);
     app.use('/api/categories',publicCategories);
     app.use('/api/admin/categories',adminCategories);
     app.use('/api/admin', commerceAdmin);
