@@ -389,7 +389,7 @@ Product detail endpoints fetch variants and approved reviews concurrently after 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `5c3c16b082873ea6da2f4fff6bc38e27e848166ef79d73e512660f923d16e7dc`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `6f4359a239edf785f81cce5afd27c2f739e62adb450882a4bbdfc3907818219f`.
 
 ### Actual npm commands
 
@@ -495,7 +495,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/services/search.test.js](src/services/search.test.js) | Internal module / styles |
 | [src/services/shipments.js](src/services/shipments.js) | updateShipment |
 | [src/services/shipments.test.js](src/services/shipments.test.js) | Internal module / styles |
-| [src/services/siteSeo.js](src/services/siteSeo.js) | escapeXml, siteSeoFields, verificationHtml, verificationToken |
+| [src/services/siteSeo.js](src/services/siteSeo.js) | escapeXml, siteSeoFields, storefrontHtml, verificationHtml, verificationToken |
 | [src/services/siteSeo.test.js](src/services/siteSeo.test.js) | Internal module / styles |
 | [src/services/tryOn.test.js](src/services/tryOn.test.js) | Internal module / styles |
 | [src/services/tryOnAsset.test.js](src/services/tryOnAsset.test.js) | Internal module / styles |
@@ -574,6 +574,7 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/routes/variantRoutes.js | router.delete | `/:variantId` |
 | src/server.js | req.get | `Origin` |
 | src/server.js | req.get | `Sec-Fetch-Site` |
+| src/server.js | app.get | `/api/health` |
 | src/server.js | app.use | `/api/site-seo` |
 | src/server.js | app.use | `/api/admin/site-seo` |
 | src/server.js | app.get | `/` |
@@ -982,3 +983,5 @@ Dashboard accepts independent `salesDays`, `statusDays`, `recentDays` (same supp
 Site SEO settings use the singleton SiteSeo model. Admin-only GET/PUT `/api/admin/site-seo` manage website origin, Google/Meta verification tokens, custom sitemap XML (200 KB) and robots text (100 KB). Public `/api/site-seo/settings` returns verification tokens. Root robots.txt and sitemap.xml routes serve overrides or generated defaults; active products and indexable registered pages populate the sitemap (up to 49,900 products). Verification tags are escaped into built homepage HTML by `/api/site-seo/home` and the root backend handler. Build the storefront first. Vercel bundles dist/index.html and routes homepage/robots/sitemap requests to the backend. Settings changes publish on save; generated files may cache for 60 seconds. Uploaded sitemap content is screened for a supported root and unsafe entities, not full XML schema validity.
 
 SiteSeo tracking fields: `trackingMode` (`off`, `gtm`, `direct`), `gtmId`, `ga4Id`, `googleAdsId`. Admin writes validate the selected method and ID format. Public site settings return these public tracking identifiers for storefront installation. Arbitrary script snippets are not accepted.
+
+The health check lives only at `/api/health`; `/` serves storefront HTML. Avoid registering a root health route before the storefront handler. Homepage source includes a noscript navigation fallback with public page links and up to 1000 active product links for non-JavaScript clients. The generated XML sitemap lists the larger catalog independently.

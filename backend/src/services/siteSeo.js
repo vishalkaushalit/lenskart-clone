@@ -45,3 +45,8 @@ export function siteSeoFields(body) {
 export function verificationHtml(settings) {
   return [['google-site-verification',settings.googleVerification],['facebook-domain-verification',settings.metaVerification]].filter(([,token]) => token).map(([name,token]) => `<meta name="${name}" content="${escapeXml(token)}" />`).join('\n');
 }
+
+export function storefrontHtml(html, settings, links) {
+  const fallback=`<noscript><nav aria-label="Store pages"><h1>Lenskart Clone</h1><p>Enable JavaScript for shopping, or browse these page links.</p><ul>${links.map(link=>`<li><a href="${escapeXml(link.path)}">${escapeXml(link.label)}</a></li>`).join('')}</ul><a href="/sitemap.xml">Sitemap</a></nav></noscript>`;
+  return html.replace('</head>',`${verificationHtml(settings)}\n</head>`).replace('</body>',`${fallback}\n</body>`);
+}

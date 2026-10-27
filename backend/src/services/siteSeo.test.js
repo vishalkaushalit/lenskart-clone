@@ -61,3 +61,20 @@ test('Google tracking validates installation method and public IDs',()=>{
   for(const fields of [{trackingMode:'script'},{trackingMode:'gtm'},{trackingMode:'direct'},{trackingMode:'gtm',gtmId:'<script>alert(1)</script>'},{trackingMode:'direct',ga4Id:'AW-123'}])assert.throws(()=>siteSeoFields({...empty,...fields}));
   assert.equal(siteSeoFields({...empty,trackingMode:'off'}).trackingMode,'off');
 });
+
+test('health endpoint does not intercept the storefront homepage',async()=>{
+  const {default:app}=await import('../server.js');
+  const routes=app.router.stack.filter(layer=>layer.route).map(layer=>layer.route.path);
+  assert.ok(routes.includes('/api/health'));
+  assert.ok(!routes.some(path=>path==='/'||Array.isArray(path)&&path.includes('/')));
+});
+test('homepage HTML keeps the app and includes escaped crawlable fallback links',async()=>{
+  const {storefrontHtml}=await import('./siteSeo.js');
+  const html=storefrontHtml('<html><head></head><body><div id="root"></div><script src="/assets/app.js"></script></body></html>',{googleVerification:'abc'},[{path:'/collection',label:'Collection'},{path:'/products/test-frame',label:'Frame <test>'}]);
+  assert.ok(html.includes('<meta name="google-site-verification" content="abc" />'));
+  assert.ok(html.includes('<a href="/collection">Collection</a>'));
+  assert.ok(html.includes('<a href="/products/test-frame">Frame &lt;test&gt;</a>'));
+  assert.ok(html.includes('<noscript>'));
+  assert.ok(html.includes('<div id="root"></div>'));
+  assert.ok(html.includes('<script src="/assets/app.js"></script>'));
+});

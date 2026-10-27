@@ -5,7 +5,7 @@ import SiteSeo from '../models/SiteSeo.js';
 import Product from '../models/Product.js';
 import { editableStorePages } from '../../../shared/storePages.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
-import { escapeXml, siteSeoFields, verificationHtml } from '../services/siteSeo.js';
+import { escapeXml, siteSeoFields, storefrontHtml } from '../services/siteSeo.js';
 export const adminSiteSeo = express.Router();
 export const publicSiteSeo = express.Router();
 adminSiteSeo.use(requireAuth,requireRole('admin'));
@@ -44,5 +44,8 @@ publicSiteSeo.get('/home', async (req,res) => {
     try { html=await readFile(resolve(process.cwd(),file),'utf8');break; } catch(error) { if(error.code!=='ENOENT') throw error; }
   }
   if(!html) return res.status(503).type('text/plain').send('Build the storefront before serving the homepage.');
-  res.type('html').set('Cache-Control','no-store').send(html.replace('</head>',`${verificationHtml(value)}\n</head>`));
+  const products=await Product.find({status:'active'}).select('slug name').limit(1000).lean();
+  const pages=editableStorePages.filter(page=>!page.noindex).map(page=>({path:page.path,label:page.label}));
+  const links=[...pages,...products.filter(product=>product.slug).map(product=>({path:`/products/${product.slug}`,label:product.name || product.slug}))];
+  res.type('html').set('Cache-Control','no-store').send(storefrontHtml(html,value,links));
 });

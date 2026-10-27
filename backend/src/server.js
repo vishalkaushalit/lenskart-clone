@@ -62,7 +62,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get(['/', '/api/health'], (req, res) => {
+app.get('/api/health', (req, res) => {
   const connected = mongoose.connection.readyState === 1;
 
   res.status(connected ? 200 : 503).json({
