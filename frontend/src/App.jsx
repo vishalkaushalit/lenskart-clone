@@ -18,7 +18,7 @@ function pageRoute(page, settings) {
   const Component = components[page.component];
   if (page.component && !Component) throw new Error(`Missing storefront component: ${page.component}`);
   const element=Component ? <Component /> : <p>{page.message}</p>;
-  const config=settings.find(row=>row.path===page.path);
+  const config=settings.find(row=>!row.redirectOnly&&row.path===page.path);
   const target=config?.urlPath || page.path;
   return [...new Set([page.path,target,...(config?.redirects || [])])].map(path=><Route key={path} path={path} element={path!==target&&(config?.redirectOld || config?.redirects?.includes(path))?<RedirectPage to={target}/>:element}/>);
 }
@@ -28,6 +28,7 @@ export default function App() {
   if(!settings)return <Loader label="Loading store"/>;
   return <PageRoutesContext.Provider value={settings}><LoaderProvider className="store"><SiteVerification /><PageMetadata /><Suspense fallback={<Loader label="Loading page" />}><Routes>
     <Route element={<StoreLayout />}>
+      {settings.filter(row=>row.redirectOnly).map(row=><Route key={row.path} path={row.path} element={<RedirectPage to={row.urlPath}/>}/>)}
       {storePages.filter(page => page.layout === 'store' && !page.protected).map(page=>pageRoute(page,settings))}
       <Route element={<ProtectedRoute />}>
         {storePages.filter(page => page.layout === 'store' && page.protected).map(page=>pageRoute(page,settings))}

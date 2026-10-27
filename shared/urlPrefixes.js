@@ -8,7 +8,7 @@ export function prefixRoutes(settings = {}, pages = []) {
 }
 export function resolveStorePath(path, routes) {
   for (const row of routes) {
-    for (const pattern of [row.path, row.urlPath, ...(row.redirects || [])].filter(Boolean)) {
+    for (const pattern of (row.redirectOnly?[row.path]:[row.path, row.urlPath, ...(row.redirects || [])]).filter(Boolean)) {
       const names = [];
       const expression = pattern.split('/').map(part => part.startsWith(':') ? (names.push(part), '([^/]+)') : part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('/');
       const match = path.match(new RegExp(`^${expression}$`));
@@ -19,4 +19,20 @@ export function resolveStorePath(path, routes) {
     }
   }
   return { path, destination: path };
+}
+
+export function customRedirectRoutes(settings = {}) {
+  return (settings.redirects || []).map(({from,to})=>({path:from,urlPath:to,redirectOld:true,redirectOnly:true}));
+}
+export function redirectTarget(path, routes) {
+  const seen=new Set();let target=path;
+  while(!seen.has(target)) {
+    seen.add(target);
+    const resolved=resolveStorePath(target,routes);
+    if(resolved.row&&!resolved.row.redirectOld&&!resolved.row.redirectOnly&&!resolved.row.redirects?.includes(target))return target;
+    const next=resolved.destination;
+    if(next===target)return target;
+    target=next;
+  }
+  throw new Error('Redirects cannot form a loop.');
 }

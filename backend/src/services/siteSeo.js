@@ -21,6 +21,23 @@ export function siteSeoFields(body) {
       fields[key] = value;
     }
   }
+  if (Object.hasOwn(body,'redirects')) {
+    if (!Array.isArray(body.redirects) || body.redirects.length>200) throw new Error('Add up to 200 redirects.');
+    const paths=new Set();
+    fields.redirects=body.redirects.map(row=>{
+      if (!row || ['from','to'].some(key=>typeof row[key]!=='string'||row[key].length>300||!/^\/(?:[a-zA-Z0-9_-]+(?:\/[a-zA-Z0-9_-]+)*)?$/.test(row[key])||/^\/(api|admin|assets)(?:\/|$)/.test(row[key]))) throw new Error('Redirects must use local page paths, without query parameters or file extensions.');
+      if(row.from==='/' || row.from===row.to || paths.has(row.from)) throw new Error('Use a unique old URL different from the destination; the homepage cannot be redirected.');
+      paths.add(row.from);
+      return {from:row.from,to:row.to};
+    });
+    for (const row of fields.redirects) {
+      const visited=new Set([row.from]); let target=row.to;
+      while (paths.has(target)) {
+        if(visited.has(target)) throw new Error('Redirects cannot form a loop.');
+        visited.add(target);target=fields.redirects.find(item=>item.from===target).to;
+      }
+    }
+  }
   let url = body.websiteUrl;
   if (typeof url !== 'string' || url.length > 2000) throw new Error('Enter your website URL.');
   if (url.trim()) {

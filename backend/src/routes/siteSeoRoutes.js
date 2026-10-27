@@ -1,4 +1,4 @@
-import { prefixRoutes, resolveStorePath } from '../../../shared/urlPrefixes.js';
+import { prefixRoutes, resolveStorePath, customRedirectRoutes, redirectTarget } from '../../../shared/urlPrefixes.js';
 import PageSeo from '../models/PageSeo.js';
 import { sitemapPages, pageNoindex } from '../../../shared/indexing.js';
 import express from 'express';
@@ -20,14 +20,18 @@ adminSiteSeo.put('/', async (req,res) => {
   const previous=await settings();
   const merged={...previous,...fields};
   const product=merged.productPrefix || '/products', collection=merged.collectionPrefix || '/collection';
-  const products=new Set(['/products',product,...(previous.productPrefixHistory || [])]);
-  const collections=new Set(['/collection',collection,...(previous.collectionPrefixHistory || [])]);
-  if ([...products].some(prefix=>collections.has(prefix))) return res.status(409).json({message:'Product and collection prefixes must be different, including previous prefixes.'});
+  const products=new Set(['/products',previous.productPrefix,product,...(previous.productPrefixHistory || [])]);
+  const collections=new Set(['/collection',previous.collectionPrefix,collection,...(previous.collectionPrefixHistory || [])]);
+  if ([...products].some(prefix=>prefix&&collections.has(prefix))) return res.status(409).json({message:'Product and collection prefixes must be different, including previous prefixes.'});
   const pages=await PageSeo.find({}).select('path urlPath redirects').lean();
   if (pages.some(row=>row.path!=='/collection'&&[row.urlPath,...(row.redirects || [])].filter(Boolean).some(path=>[product,collection].some(prefix=>path===prefix||path.startsWith(prefix+'/'))))) return res.status(409).json({message:'This prefix conflicts with a saved page URL.'});
   for (const [key,fallback] of [['productPrefix','/products'],['collectionPrefix','/collection']]) {
     if (fields[key] && fields[key] !== (previous[key] || fallback)) fields[key+'History']=[...new Set([...(previous[key+'History'] || []),previous[key] || fallback])].filter(value=>value!==fields[key]);
   }
+  try {
+    const routes=[...customRedirectRoutes(merged),...prefixRoutes({...merged,productPrefixHistory:fields.productPrefixHistory || merged.productPrefixHistory,collectionPrefixHistory:fields.collectionPrefixHistory || merged.collectionPrefixHistory},pages),...pages];
+    for (const row of routes) redirectTarget(row.path,routes);
+  } catch(error) { return res.status(400).json({message:error.message}); }
   const result=await SiteSeo.findOneAndUpdate({key:'site'},{$set:fields},{upsert:true,new:true,runValidators:true});
   res.json({settings:result});
 });
@@ -56,6 +60,11 @@ export async function renderStorefront(req,res) {
   const requested=req.storefrontPath || '/';
   const value=await settings();
   const overrides=await PageSeo.find({}).select('path noindex urlPath redirectOld redirects title description -_id').lean();
+  const customTarget=redirectTarget(requested,[...customRedirectRoutes(value),...prefixRoutes(value,overrides),...overrides]);
+  if(customTarget!==requested) {
+    const query=req.originalUrl?.includes('?')?'?'+req.originalUrl.split('?').slice(1).join('?'):'';
+    return res.redirect(301,customTarget+query);
+  }
   const prefixed=resolveStorePath(requested,prefixRoutes(value,overrides));
   if(prefixed.destination!==requested) {
     const query=req.originalUrl?.includes('?')?'?'+req.originalUrl.split('?').slice(1).join('?'):'';

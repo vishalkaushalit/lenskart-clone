@@ -1,13 +1,16 @@
+import RedirectSettings from '../components/RedirectSettings';
 import TextFileUpload from '../components/TextFileUpload';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import PageHeader from '../components/PageHeader';
 import Loader from '../components/Loader';
 import NotificationPopup from '../components/NotificationPopup';
 import { apiRequest, frontendUrl } from '../api';
-const defaults={productPrefix:'/products',collectionPrefix:'/collection',websiteUrl:'',googleVerification:'',metaVerification:'',trackingMode:'off',gtmId:'',ga4Id:'',googleAdsId:'',sitemap:'',robots:''};
+const defaults={redirects:[],productPrefix:'/products',collectionPrefix:'/collection',websiteUrl:'',googleVerification:'',metaVerification:'',trackingMode:'off',gtmId:'',ga4Id:'',googleAdsId:'',sitemap:'',robots:''};
 export default function SiteSeoSettings(){
+  const [params,setParams]=useSearchParams();
+  const tab=params.get('tab')==='redirects'?'redirects':'general';
   const [form,setForm]=useState(null);
   const [busy,setBusy]=useState(false);
   const [notice,setNotice]=useState(null);
@@ -26,9 +29,10 @@ export default function SiteSeoSettings(){
   async function save(event){event.preventDefault();setBusy(true);try{const {settings}=await apiRequest('/admin/site-seo',{method:'PUT',body:JSON.stringify(Object.fromEntries(Object.keys(defaults).map(key=>[key,form[key]])))});setForm({...defaults,...settings});notify('Site SEO settings saved.');}catch(err){notify(err.message,'error');}finally{setBusy(false);}}
   return <DashboardLayout><main className="admin-page">
     <PageHeader title="Site SEO settings" description="Website verification and search engine files"><Link to="/seo" className="admin-button-secondary">Back to listings</Link></PageHeader>
+    <div role="tablist" aria-label="Settings sections" className="mb-5 flex gap-3">{[['general','General'],['redirects','Redirections']].map(([key,label])=><button key={key} type="button" role="tab" aria-selected={tab===key} aria-controls={`settings-${key}`} className={tab===key?'admin-button-primary':'admin-button-secondary'} onClick={()=>setParams(key==='redirects'?{tab:'redirects'}:{})}>{label}</button>)}</div>
     {!form&&!error&&<Loader label="Loading settings"/>}
     {error&&<div role="alert">{error}<button type="button" className="admin-button-secondary ml-3" onClick={()=>{setError('');setAttempt(value=>value+1);}}>Retry</button></div>}
-    {form&&<form onSubmit={save} className="space-y-5"><fieldset disabled={busy} className="space-y-5">
+    {form&&<form onSubmit={save} className="space-y-5"><fieldset disabled={busy} className="space-y-5"><div id={`settings-${tab}`} role="tabpanel" className="space-y-5">{tab==='general'?<>
       <section className="product-panel seo-editor space-y-5"><h2 className="product-panel-title">Store URL prefixes</h2>
         <div className="grid gap-5 md:grid-cols-2">{[['productPrefix','Products','/products'],['collectionPrefix','Collections','/collection']].map(([key,label,placeholder])=><label key={key} className="product-label block">{label}<input required className="product-field" value={form[key]} placeholder={placeholder} maxLength={61} pattern="/[a-z][a-z0-9-]{0,59}" onChange={event=>field(key,event.target.value)}/><span className="mt-2 block text-xs font-normal text-slate-500">{(form.websiteUrl || frontendUrl)+form[key]}{key==='productPrefix'?'/product-slug':'?category=collection-slug'}</span></label>)}</div>
         <p className="text-sm text-slate-500">Changes apply across the store. Old prefixes permanently redirect (301), keeping product slugs and collection filters. The automatic sitemap updates after saving. Reload the storefront to load new routes.</p>
@@ -50,7 +54,7 @@ export default function SiteSeoSettings(){
         <label className="product-label block">File preview<textarea className="product-field font-mono text-xs" rows={10} maxLength={max} value={form[key]} placeholder="Automatic default is active" onChange={event=>field(key,event.target.value)}/></label>
         <div className="flex flex-wrap gap-3"><a href={`${frontendUrl}/${file}`} target="_blank" rel="noopener noreferrer" className="admin-button-secondary">View live {file}</a>{form[key]&&<button type="button" className="admin-button-secondary" onClick={()=>{field(key,'');notify('Override removed. Save changes to restore the default.');}}>Restore default</button>}</div>
       </section>)}</div>
-    </fieldset><div className="product-editor-actions"><Link to="/seo" className="admin-button-secondary">Cancel</Link><button disabled={busy} className="admin-button-primary">{busy?'Saving…':'Save changes'}</button></div></form>}
+    </>:<RedirectSettings settings={form} onChange={value=>field('redirects',value)} notify={notify}/>}</div></fieldset><div className="product-editor-actions"><Link to="/seo" className="admin-button-secondary">Cancel</Link><button disabled={busy} className="admin-button-primary">{busy?'Saving…':'Save changes'}</button></div></form>}
     {notice&&<NotificationPopup key={notice.id} notification={notice} duration={3000} onClose={()=>setNotice(null)}/>}
   </main></DashboardLayout>;
 }

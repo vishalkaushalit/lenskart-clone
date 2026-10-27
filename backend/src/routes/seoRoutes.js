@@ -1,5 +1,5 @@
 import SiteSeo from '../models/SiteSeo.js';
-import { prefixRoutes } from '../../../shared/urlPrefixes.js';
+import { prefixRoutes, customRedirectRoutes } from '../../../shared/urlPrefixes.js';
 import { editableStorePages } from '../../../shared/storePages.js';
 import express from 'express';
 import PageSeo from '../models/PageSeo.js';
@@ -20,7 +20,8 @@ async function read(req, res) {
 adminSeo.get('/all', async (req,res) => res.json({ pages: await PageSeo.find({}).select('path noindex urlPath redirectOld redirects -_id').lean() }));
 publicSeo.get('/routes', async(req,res)=>{
   const pages=await PageSeo.find({$or:[{urlPath:{$nin:['',null]}},{'redirects.0':{$exists:true}}]}).select('path urlPath redirectOld redirects -_id').lean();
-  res.json({pages:[...prefixRoutes(await SiteSeo.findOne({key:'site'}).lean() || {},pages),...pages.filter(row=>row.path!=='/collection')]});
+  const site=await SiteSeo.findOne({key:'site'}).lean() || {};
+  res.json({pages:[...customRedirectRoutes(site),...prefixRoutes(site,pages),...pages.filter(row=>row.path!=='/collection')]});
 });
 publicSeo.get('/', read);
 adminSeo.get('/', read);

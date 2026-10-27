@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 const schema = new mongoose.Schema({
+  redirects: { type: [{ _id: false, from: String, to: String }], default: [] },
   productPrefix: { type: String, default: '/products' },
   collectionPrefix: { type: String, default: '/collection' },
   productPrefixHistory: { type: [String], default: [] },
