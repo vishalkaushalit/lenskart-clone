@@ -290,7 +290,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `4f8d231fac21a3606c0c1c8cfdf4097eb3e3c60e5cb5e53ffef82291f741c266`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `5d0bd6699c9bb5428c47f8c3d9b32e511c45908cbe1fff8f0f9b3b44f2f85c86`.
 
 ### Actual npm commands
 
@@ -575,6 +575,6 @@ Page URL is an editable path (e.g. `/favorites`), with its full address shown un
 
 ### Store URL settings
 
-The sidebar **Settings** link opens `/seo/settings`. Store URL prefixes control the product route (default `/products`) and collection listing route (default `/collection`). Use a single lowercase path segment, such as `/frames` or `/collections`. Saving retains prior prefixes as permanent redirects; product slugs, review suffixes and collection query filters remain intact. Delete an automatic redirect from the table to remove its saved page redirect or prefix history; deleting a product-prefix redirect removes both its product and review prefix redirects. Reserved and conflicting prefixes are rejected. Reload the storefront after saving URL settings or deleting an automatic redirect. Uploaded custom sitemaps must be updated manually.
+The sidebar **Settings** link opens `/seo/settings`. Store URL prefixes control the product route (default `/products`) and collection listing route (default `/collection`). Use a single lowercase path segment, such as `/frames` or `/collections`. Saving retains prior prefixes as permanent redirects; product slugs, review suffixes and collection query filters remain intact. Edit an automatic redirect from the table to open its source page URL settings or store-prefix settings; all redirects for that page or prefix follow the saved URL. Delete an automatic redirect from the table to remove its saved page redirect or prefix history; deleting a product-prefix redirect removes both its product and review prefix redirects. Reserved and conflicting prefixes are rejected. Reload the storefront after saving URL settings or deleting an automatic redirect. Uploaded custom sitemaps must be updated manually.
 
 Admin collection management uses `/collections`, `/collections/add`, `/collections/:id`, and `/collections/:id/edit`. Legacy admin `/categories` routes are removed and show Page not found. Database categories and admin API endpoints remain compatible.
