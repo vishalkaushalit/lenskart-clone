@@ -1,9 +1,9 @@
 import ImageUploadField from './ImageUploadField';
 import { useId, useState } from 'react';
-import { Globe, Pencil, X } from 'lucide-react';
+import { ArrowRight, Globe, Pencil, X } from 'lucide-react';
 import { frontendUrl, productImageUrl } from '../api';
 
-export default function SearchEngineListing({ value, onChange, defaultImage = '', defaultTitle = '', defaultDescription = '', path = '/', handle, onHandleChange, disabled = false, editorMode = false, onUploading }) {
+export default function SearchEngineListing({ value, onChange, defaultImage = '', defaultTitle = '', defaultDescription = '', path = '/', currentUrlPath = path, handle, onHandleChange, disabled = false, editorMode = false, onUploading }) {
   const [uploading, setUploading] = useState(false);
   const locked = disabled || uploading;
   const [expanded, setExpanded] = useState(editorMode);
@@ -11,6 +11,10 @@ export default function SearchEngineListing({ value, onChange, defaultImage = ''
   const description = defaultDescription.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
   const title = value.title || defaultTitle || 'Page title';
   const url = `${frontendUrl}${value.urlPath || path}`;
+  const nextUrlPath = value.urlPath ?? path;
+  const urlChanged = !onHandleChange && nextUrlPath !== currentUrlPath;
+  const oldUrl = `${frontendUrl}${currentUrlPath}`;
+  const newUrl = `${frontendUrl}${nextUrlPath}`;
   const previewImage = value.image || defaultImage;
   const [faviconFailed, setFaviconFailed] = useState(false);
   const [failedImage, setFailedImage] = useState('');
@@ -49,7 +53,14 @@ export default function SearchEngineListing({ value, onChange, defaultImage = ''
       <label className="product-label block min-w-0">Page title<input className="product-field" value={value.title} maxLength={120} disabled={locked} onChange={event => field('title', event.target.value)} /><span className="mt-1 block text-xs font-normal text-slate-500">{value.title.length} characters · About 70 recommended, including the store name</span></label>
       {onHandleChange ? <label className="product-label block min-w-0">URL handle<div className="mt-2 text-xs font-normal text-slate-500">{frontendUrl}/products/</div><input name="slug" className="product-field" value={handle} maxLength={120} pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="Generated from product name" disabled={locked} onChange={event => onHandleChange(event.target.value)} /><span className="mt-1 block text-xs font-normal text-slate-500">Changing the handle changes the product URL. Existing links are not redirected automatically.</span></label> : <label className="product-label block min-w-0">Page URL<input className="product-field" value={value.urlPath ?? path} maxLength={300} disabled={locked} onChange={event=>field('urlPath',event.target.value)} /><span className="mt-1 block break-all text-xs font-normal text-slate-500">{url}</span></label>}
       </div>
-      {!onHandleChange && <label className="flex items-center gap-3 text-sm text-black"><input type="checkbox" checked={value.redirectOld ?? true} disabled={locked} onChange={event=>field('redirectOld',event.target.checked)}/>Redirect the old URL to the new URL (301)</label>}
+      {urlChanged && <section aria-label="URL redirect preview" className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <div className="grid items-center gap-3 text-sm sm:grid-cols-[1fr_auto_1fr]">
+          <div className="min-w-0"><span className="mb-1 block text-xs font-medium text-slate-500">Old URL</span><p className="break-all font-mono text-slate-800">{oldUrl}</p></div>
+          <ArrowRight size={18} className="text-slate-500" aria-hidden="true" />
+          <div className="min-w-0"><span className="mb-1 block text-xs font-medium text-slate-500">New URL</span><p className="break-all font-mono text-slate-800">{newUrl}</p></div>
+        </div>
+        <label className="flex items-center gap-3 text-sm font-medium text-black"><input type="checkbox" checked={value.redirectOld ?? true} disabled={locked} onChange={event=>field('redirectOld',event.target.checked)}/>Redirect the old URL to the new URL (301)</label>
+      </section>}
       <label className="product-label block">Meta description<textarea className="product-field" rows={4} value={value.description} maxLength={320} disabled={locked} onChange={event => field('description', event.target.value)} /><span className="mt-1 block text-xs font-normal text-slate-500">{value.description.length} of 320 characters used</span></label>
       <label className="product-label block">Meta keywords<input className="product-field" value={value.keywords || ''} maxLength={1000} disabled={locked} placeholder="eyeglasses, square frames, metal frames" onChange={event => field('keywords', event.target.value)} /><span className="mt-1 block text-xs font-normal text-slate-500">Separate keywords with commas.</span></label>
       <label className="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4"><input type="checkbox" className="mt-1 accent-blue-600" checked={Boolean(value.noindex)} disabled={locked} onChange={event=>field('noindex',event.target.checked)}/><span><span className="block text-sm font-semibold text-black">Hide this page from search engines (noindex)</span><span className="mt-1 block text-xs text-slate-500">When enabled, adds noindex and excludes this page from the automatic sitemap. Save changes to apply.</span></span></label>

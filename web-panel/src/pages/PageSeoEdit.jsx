@@ -21,6 +21,7 @@ function FaqToggle({ question, index, children }) {
 function Editor({ page }) {
   const [path, label, title, description, defaultNoindex, keywords, faqs] = page;
   const [form, setForm] = useState(null);
+  const [savedUrlPath, setSavedUrlPath] = useState(path);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -30,7 +31,10 @@ function Editor({ page }) {
   useEffect(() => {
     const controller = new AbortController();
     apiRequest(`/admin/seo?path=${encodeURIComponent(path)}`, { signal: controller.signal }).then(({ seo }) => {
-      if (!controller.signal.aborted) setForm({ urlPath: seo?.urlPath || path, redirectOld: seo?.redirectOld ?? true, noindex: seo?.noindex ?? defaultNoindex, keywords: seo?.keywords ?? keywords, faqs: seo?.faqs ?? faqs, title: seo?.title || title, description: seo?.description || description, image: seo?.image || '' });
+      if (!controller.signal.aborted) {
+        setSavedUrlPath(seo?.urlPath || path);
+        setForm({ urlPath: seo?.urlPath || path, redirectOld: seo?.redirectOld ?? true, noindex: seo?.noindex ?? defaultNoindex, keywords: seo?.keywords ?? keywords, faqs: seo?.faqs ?? faqs, title: seo?.title || title, description: seo?.description || description, image: seo?.image || '' });
+      }
     }).catch(err => { if (!controller.signal.aborted) setError(err.message); });
     return () => controller.abort();
   }, [path, title, description, defaultNoindex, keywords, faqs, attempt]);
@@ -40,6 +44,7 @@ function Editor({ page }) {
     setSaving(true); setError(''); setNotice(null);
     try {
       await apiRequest('/admin/seo', { method: 'PUT', body: JSON.stringify({ path, title: form.title, description: form.description, image: form.image, keywords: form.keywords, faqs: form.faqs, noindex: form.noindex, urlPath: form.urlPath, redirectOld: form.redirectOld }) });
+      setSavedUrlPath(form.urlPath || path);
       notify('SEO settings saved successfully.');
     } catch (err) { notify(err.message, 'error'); }
     finally { setSaving(false); }
@@ -48,7 +53,7 @@ function Editor({ page }) {
     <PageHeader title={`Edit SEO: ${label}`} description={`Update the search engine listing for ${path}`}><Link to="/seo" className="admin-button-secondary">Back to listings</Link></PageHeader>
     {!form && !error && <Loader label="Loading editor" />}
     {form && <form onSubmit={save} onInvalidCapture={() => notify('Please complete the required fields before saving.', 'error')} className="space-y-4">
-      <SearchEngineListing onUploading={setUploading} editorMode value={form} onChange={setForm} defaultTitle={title} defaultDescription={description} path={path} disabled={saving || uploading} />
+      <SearchEngineListing onUploading={setUploading} editorMode value={form} onChange={setForm} defaultTitle={title} defaultDescription={description} path={path} currentUrlPath={savedUrlPath} disabled={saving || uploading} />
       <section className="product-panel seo-editor space-y-4"><h2 className="product-panel-title">Frequently asked questions</h2><p className="text-sm text-slate-500">Questions and answers appear on this page. FAQ schema is generated automatically from this content.</p>
         <fieldset disabled={saving || uploading} className="space-y-4">{form.faqs.map((faq, index) => <FaqToggle key={index} question={faq.question} index={index}>
           <label className="product-label block">Question {index + 1}<input className="product-field" required maxLength={200} value={faq.question} onChange={event => setForm({ ...form, faqs: form.faqs.map((row, i) => i === index ? { ...row, question: event.target.value } : row) })} /></label>

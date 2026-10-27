@@ -290,7 +290,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `b0476bef5575b88f139e395b316026ccf1005de19ce02b2d31e6c136fe410077`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `8b4977b70aa87664a571666bfb2659d31fdf90595d8bef1e1682f7bf33d7aa22`.
 
 ### Actual npm commands
 
@@ -571,7 +571,7 @@ Use the noindex checkbox in each page/product Search engine listing editor to ma
 
 ## Editable page URLs and redirects
 
-Page URL is now an editable path (e.g. `/favorites`), with its full address shown underneath. Save with Redirect old URL enabled to create a permanent 301 from the old path, retaining earlier redirects across renames. Uncheck to disable these redirects while retaining the original registered route as an alias. Reserved/occupied paths are rejected. The table shows saved URLs. Product URL handles continue using the separate product slug editor.
+Page URL is an editable path (e.g. `/favorites`), with its full address shown underneath. Only after the saved URL changes, the editor previews the old URL → new URL and shows the option to create a permanent 301 redirect. Earlier redirects are retained across renames when enabled; unchecking disables redirects while retaining the original registered route as an alias. Reserved/occupied paths are rejected. The table shows saved URLs. Product URL handles continue using the separate product slug editor.
 
 ### Store URL settings
 
