@@ -7,20 +7,28 @@ export async function loadTryOnFrame(url, signal) {
     image.crossOrigin = 'anonymous';
     image.src = url;
     await image.decode();
-    return { source: image, aspect: image.naturalWidth / image.naturalHeight, render() {}, dispose() {} };
+    return {
+      source: image,
+      aspect: image.naturalWidth / image.naturalHeight,
+      render() {},
+      dispose() {},
+    };
   }
   const response = await fetch(url, { signal });
   if (!response.ok) throw new Error('Unable to load the try-on model.');
   const buffer = await response.arrayBuffer();
   inspectGlb(buffer);
-  const [THREE, { GLTFLoader }] = await Promise.all([import('three'), import('three/addons/loaders/GLTFLoader.js')]);
+  const [THREE, { GLTFLoader }] = await Promise.all([
+    import('three'),
+    import('three/addons/loaders/GLTFLoader.js'),
+  ]);
   const gltf = await new GLTFLoader().parseAsync(buffer, '');
   const model = gltf.scene;
   let renderer;
   let occluder;
   const dispose = () => {
     const textures = new Set();
-    model.traverse(object => {
+    model.traverse((object) => {
       object.geometry?.dispose();
       for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
         if (!material) continue;
@@ -28,7 +36,7 @@ export async function loadTryOnFrame(url, signal) {
         material.dispose();
       }
     });
-    textures.forEach(texture => texture.dispose());
+    textures.forEach((texture) => texture.dispose());
     occluder?.geometry.dispose();
     occluder?.material.dispose();
     renderer?.dispose();
@@ -39,7 +47,8 @@ export async function loadTryOnFrame(url, signal) {
     const bounds = new THREE.Box3().setFromObject(model);
     const size = bounds.getSize(new THREE.Vector3());
     const center = bounds.getCenter(new THREE.Vector3());
-    if (![size.x, size.y, size.z].every(Number.isFinite) || size.x <= 0 || size.y <= 0) throw new Error('The GLB has no visible frame geometry.');
+    if (![size.x, size.y, size.z].every(Number.isFinite) || size.x <= 0 || size.y <= 0)
+      throw new Error('The GLB has no visible frame geometry.');
     // Rotate around the bridge/front plane rather than the middle of the arms.
     model.position.sub(new THREE.Vector3(center.x, center.y, bounds.max.z));
     const group = new THREE.Group();
@@ -56,7 +65,7 @@ export async function loadTryOnFrame(url, signal) {
     occluder.renderOrder = -1;
     group.add(occluder);
     const frontClip = new THREE.Plane(new THREE.Vector3(0, 0, 1), size.x * 0.09);
-    model.traverse(object => {
+    model.traverse((object) => {
       for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
         if (material) material.clippingPlanes = [frontClip];
       }
@@ -69,14 +78,24 @@ export async function loadTryOnFrame(url, signal) {
     // GLB convention: front faces +Z and up is +Y. Leave a small edge margin.
     const width = Math.max(size.x, size.y * 2) * 1.08;
     const distance = Math.max(size.x, size.y, size.z) * 4;
-    const camera = new THREE.OrthographicCamera(-width / 2, width / 2, width / 4, -width / 4, distance / 100, distance * 10);
+    const camera = new THREE.OrthographicCamera(
+      -width / 2,
+      width / 2,
+      width / 4,
+      -width / 4,
+      distance / 100,
+      distance * 10,
+    );
     camera.position.z = distance;
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.localClippingEnabled = true;
     renderer.setClearColor(0, 0);
     renderer.setSize(1024, 512, false);
     const frame = {
-      source: renderer.domElement, aspect: 2, depthAware: true, dispose,
+      source: renderer.domElement,
+      aspect: 2,
+      depthAware: true,
+      dispose,
       render(landmarks, videoAspect) {
         const pose = tryOnPose(landmarks, videoAspect);
         group.rotation.set(pose.pitch, pose.yaw, 0, 'YXZ');
@@ -92,5 +111,8 @@ export async function loadTryOnFrame(url, signal) {
     };
     frame.render();
     return frame;
-  } catch (error) { dispose(); throw error; }
+  } catch (error) {
+    dispose();
+    throw error;
+  }
 }

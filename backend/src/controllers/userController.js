@@ -21,37 +21,59 @@ export async function editUser(req, res, next) {
     fields.name = body.name.trim();
   }
   if (Object.hasOwn(body, 'email')) {
-    if (typeof body.email !== 'string' || body.email.trim().length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email.trim())) {
+    if (
+      typeof body.email !== 'string' ||
+      body.email.trim().length > 254 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email.trim())
+    ) {
       return res.status(400).json({ message: 'Enter a valid email address.' });
     }
     fields.email = body.email.trim().toLowerCase();
   }
   if (Object.hasOwn(body, 'role')) {
-    if (!['customer', 'admin'].includes(body.role)) return res.status(400).json({ message: 'Choose a valid role.' });
+    if (!['customer', 'admin'].includes(body.role))
+      return res.status(400).json({ message: 'Choose a valid role.' });
     if (String(req.user._id).toLowerCase() === id.toLowerCase() && body.role !== 'admin') {
       return res.status(403).json({ message: 'You cannot remove your own admin access.' });
     }
     fields.role = body.role;
   }
   if (Object.hasOwn(body, 'phone')) {
-    if (typeof body.phone !== 'string' || body.phone.trim().length > 30) return res.status(400).json({ message: 'Phone must contain at most 30 characters.' });
+    if (typeof body.phone !== 'string' || body.phone.trim().length > 30)
+      return res.status(400).json({ message: 'Phone must contain at most 30 characters.' });
     fields.phone = body.phone.trim();
   }
   if (Object.hasOwn(body, 'status')) {
-    if (!['active', 'inactive'].includes(body.status)) return res.status(400).json({ message: 'Choose a valid status.' });
-    if (String(req.user._id).toLowerCase() === id.toLowerCase() && body.status === 'inactive') return res.status(403).json({ message: 'You cannot deactivate your own account.' });
+    if (!['active', 'inactive'].includes(body.status))
+      return res.status(400).json({ message: 'Choose a valid status.' });
+    if (String(req.user._id).toLowerCase() === id.toLowerCase() && body.status === 'inactive')
+      return res.status(403).json({ message: 'You cannot deactivate your own account.' });
     fields.status = body.status;
   }
-  if (!Object.keys(fields).length) return res.status(400).json({ message: 'Provide a name, email, or role to update.' });
+  if (!Object.keys(fields).length)
+    return res.status(400).json({ message: 'Provide a name, email, or role to update.' });
   try {
-    const user = await User.findByIdAndUpdate(id, { $set: fields }, { new: true, runValidators: true });
+    const user = await User.findByIdAndUpdate(
+      id,
+      { $set: fields },
+      { new: true, runValidators: true },
+    );
     if (!user) return res.status(404).json({ message: 'User not found.' });
-    return res.json({ success: true, user: {
-      id: user._id, userId: user.userId, name: user.name, email: user.email, role: user.role,
-      createdAt: user.createdAt, updatedAt: user.updatedAt,
-    } });
+    return res.json({
+      success: true,
+      user: {
+        id: user._id,
+        userId: user.userId,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+    });
   } catch (error) {
-    if (error.code === 11000) return res.status(409).json({ message: 'An account with this email already exists.' });
+    if (error.code === 11000)
+      return res.status(409).json({ message: 'An account with this email already exists.' });
     next(error);
   }
 }
@@ -59,7 +81,8 @@ export async function editUser(req, res, next) {
 export async function deleteUser(req, res, next) {
   const { id } = req.params;
   if (!/^[a-f\d]{24}$/i.test(id)) return res.status(400).json({ message: 'Invalid user ID.' });
-  if (String(req.user._id).toLowerCase() === id.toLowerCase()) return res.status(403).json({ message: 'You cannot delete your own account.' });
+  if (String(req.user._id).toLowerCase() === id.toLowerCase())
+    return res.status(403).json({ message: 'You cannot delete your own account.' });
   try {
     const user = await User.findByIdAndDelete(id);
     if (!user) return res.status(404).json({ message: 'User not found.' });
@@ -88,12 +111,20 @@ export async function listUsers(req, res, next) {
     'name-asc': { name: 1, _id: 1 },
     'name-desc': { name: -1, _id: -1 },
   };
-  if (typeof sort !== 'string' || !Object.hasOwn(sortOrders, sort)) return res.status(400).json({ message: 'Choose a valid sort order.' });
-  if (typeof search !== 'string' || search.length > 100 || !['', 'active', 'inactive'].includes(status)) return res.status(400).json({ message: 'Invalid search or status.' });
+  if (typeof sort !== 'string' || !Object.hasOwn(sortOrders, sort))
+    return res.status(400).json({ message: 'Choose a valid sort order.' });
+  if (
+    typeof search !== 'string' ||
+    search.length > 100 ||
+    !['', 'active', 'inactive'].includes(status)
+  )
+    return res.status(400).json({ message: 'Invalid search or status.' });
   const filter = {};
   if (search.trim()) {
     const escaped = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    filter.$or = ['name', 'email', 'phone'].map((field) => ({ [field]: { $regex: escaped, $options: 'i' } }));
+    filter.$or = ['name', 'email', 'phone'].map((field) => ({
+      [field]: { $regex: escaped, $options: 'i' },
+    }));
   }
   try {
     const loggedInIds = await loggedInUserIds();
@@ -137,23 +168,84 @@ export async function listUsers(req, res, next) {
 }
 
 export async function createUser(req, res, next) {
-  const { name, email, password, phone = '', status = 'active', role = 'customer' } = req.body ?? {};
-  if (typeof name !== 'string' || !name.trim() || name.trim().length > 100 || typeof email !== 'string' || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) || typeof password !== 'string' || password.length < 8 || Buffer.byteLength(password) > 72 || typeof phone !== 'string' || phone.length > 30 || !['active', 'inactive'].includes(status) || !['customer', 'admin'].includes(role)) return res.status(400).json({ message: 'Enter a valid name, email, password (8–72 bytes), phone, role, and status.' });
+  const {
+    name,
+    email,
+    password,
+    phone = '',
+    status = 'active',
+    role = 'customer',
+  } = req.body ?? {};
+  if (
+    typeof name !== 'string' ||
+    !name.trim() ||
+    name.trim().length > 100 ||
+    typeof email !== 'string' ||
+    email.length > 254 ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) ||
+    typeof password !== 'string' ||
+    password.length < 8 ||
+    Buffer.byteLength(password) > 72 ||
+    typeof phone !== 'string' ||
+    phone.length > 30 ||
+    !['active', 'inactive'].includes(status) ||
+    !['customer', 'admin'].includes(role)
+  )
+    return res.status(400).json({
+      message: 'Enter a valid name, email, password (8–72 bytes), phone, role, and status.',
+    });
   try {
-    const user = await User.create({ name: name.trim(), email: email.trim().toLowerCase(), passwordHash: await bcrypt.hash(password, 12), phone: phone.trim(), status, role });
-    return res.status(201).json({ success: true, user: { id: user._id, userId: user.userId, name: user.name, email: user.email, role: user.role, phone: user.phone, status: user.status, createdAt: user.createdAt } });
+    const user = await User.create({
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      passwordHash: await bcrypt.hash(password, 12),
+      phone: phone.trim(),
+      status,
+      role,
+    });
+    return res.status(201).json({
+      success: true,
+      user: {
+        id: user._id,
+        userId: user.userId,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        phone: user.phone,
+        status: user.status,
+        createdAt: user.createdAt,
+      },
+    });
   } catch (error) {
-    if (error.code === 11000) return res.status(409).json({ message: 'An account with this email already exists.' });
+    if (error.code === 11000)
+      return res.status(409).json({ message: 'An account with this email already exists.' });
     next(error);
   }
 }
 
 // Direct admin edit pages fetch only public account fields, never credentials.
 export async function userDetails(req, res, next) {
-  if (!/^[a-f\d]{24}$/i.test(req.params.id)) return res.status(400).json({message:'Invalid user ID.'});
+  if (!/^[a-f\d]{24}$/i.test(req.params.id))
+    return res.status(400).json({ message: 'Invalid user ID.' });
   try {
-    const user=await User.findById(req.params.id).select('_id userId name email phone status role createdAt updatedAt').lean();
-    if(!user)return res.status(404).json({message:'User not found.'});
-    res.json({user:{id:String(user._id),userId:user.userId,name:user.name,email:user.email,phone:user.phone||'',accountStatus:user.status||'active',role:user.role,createdAt:user.createdAt,updatedAt:user.updatedAt}});
-  } catch(error){next(error);}
+    const user = await User.findById(req.params.id)
+      .select('_id userId name email phone status role createdAt updatedAt')
+      .lean();
+    if (!user) return res.status(404).json({ message: 'User not found.' });
+    res.json({
+      user: {
+        id: String(user._id),
+        userId: user.userId,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || '',
+        accountStatus: user.status || 'active',
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 }

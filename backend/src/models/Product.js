@@ -1,57 +1,127 @@
 import mongoose from 'mongoose';
-import {slugify} from '../utils/slugs.js';
-const validImage = (value) => typeof value === 'string' && value.length <= 2000 && (/^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value));
-const textList = { type: [String], default: [], validate: (values) => values.length <= 12 && values.every((value) => value.length <= 300) };
-const schema = new mongoose.Schema({
-  seoNoindex: { type: Boolean, default: null },
-  seoKeywords: { type: String, trim: true, maxlength: 1000, default: '' },
-  seoTitle: { type: String, trim: true, maxlength: 120, default: '' },
-  seoDescription: { type: String, trim: true, maxlength: 320, default: '' },
-  seoImage: { type: String, trim: true, maxlength: 2000, default: '', validate: value => !value || validImage(value) },
-  hasVariants: { type: Boolean, default: false },
-  slug:{type:String,trim:true,maxlength:120,match:/^[a-z0-9]+(?:-[a-z0-9]+)*$/},
-  categoryIds: {type:[{type:mongoose.Schema.Types.ObjectId,ref:'Category'}],default:[],validate:values=>values.length<=50},
-  subcategoryIds: {type:[{type:mongoose.Schema.Types.ObjectId,ref:'Category'}],default:[],validate:values=>values.length<=50},
-  categoryId: {type:mongoose.Schema.Types.ObjectId,ref:'Category',default:null},
-  subcategoryId: {type:mongoose.Schema.Types.ObjectId,ref:'Category',default:null},
-  sku: { type: String, required: true, unique: true, trim: true, maxlength: 100 },
-  name: { type: String, required: true, trim: true, maxlength: 150 },
-  image: { type: String, required: true, maxlength: 2000, validate: (value) => /^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value) },
-  tryOnImage: { type: String, default: '', maxlength: 2000, validate: value => !value || validImage(value) },
-  images: { type: [String], default: [], validate: (values) => values.length <= 8 && values.every(validImage) },
-  description: { type: String, trim: true, maxlength: 5000, default: '' },
-  features: { type: [String], default: [], validate: (values) => values.length <= 20 && values.every((value) => value.length <= 200) },
-  faqs: { type: [{ question: { type: String, required: true, maxlength: 200 }, answer: { type: String, required: true, maxlength: 1000 } }], default: [], validate: values => values.length <= 20 },
-  reviews: { type: [{ name: { type: String, required: true, maxlength: 100 }, rating: { type: Number, required: true, min: 1, max: 5, validate: Number.isInteger }, text: { type: String, required: true, maxlength: 2000 }, date: { type: Date, required: true } }], default: [], validate: values => values.length <= 100 },
-  highlightImages: { material: { type: String, default: '', validate: v => !v || validImage(v) }, hinge: { type: String, default: '', validate: v => !v || validImage(v) }, temple: { type: String, default: '', validate: v => !v || validImage(v) }, nosepad: { type: String, default: '', validate: v => !v || validImage(v) } },
-  subtitle: { type: String, trim: true, maxlength: 200, default: '' },
-  lensTypes: textList,
-  availableColors: textList,
-  availableSizes: { type: [String], enum: ['XS', 'S', 'M', 'M/L', 'L', 'XL'], default: [] },
-  offerTitle: { type: String, trim: true, maxlength: 100, default: '' },
-  offerText: { type: String, trim: true, maxlength: 300, default: '' },
-  deliveryInformation: { type: String, trim: true, maxlength: 1000, default: '' },
-  assurances: textList,
-  material: { type: String, trim: true, maxlength: 300, default: '' },
-  hinge: { type: String, trim: true, maxlength: 300, default: '' },
-  temple: { type: String, trim: true, maxlength: 300, default: '' },
-  nosepad: { type: String, trim: true, maxlength: 300, default: '' },
-  category: { type: String, enum: ['Classic', 'Premium'], default: 'Classic' },
-  productType: { type: String, enum: ['Eyeglasses', 'Sunglasses'], default: 'Eyeglasses' },
-  shape: { type: String, required: true, maxlength: 50 },
-  brand: { type: String, required: true, maxlength: 100 },
-  price: { type: Number, required: true, min: 0, max: 1000000 },
-  originalPrice: { type: Number, required: true, min: 0, max: 1000000 },
-  color: { type: String, required: true, maxlength: 50 },
-  size: { type: String, enum: ['XS', 'S', 'M', 'M/L', 'L', 'XL'], default: 'M' },
-  gender: { type: String, enum: ['Men', 'Women', 'Unisex'], default: 'Unisex' },
-  stock: { type: Number, min: 0, default: 0, validate: Number.isSafeInteger },
-  sales: { type: Number, min: 0, default: 0, validate: Number.isSafeInteger },
-  rating: { type: Number, min: 0, max: 5, default: 0 },
-  powered: { type: Boolean, default: false },
-  status: { type: String, enum: ['active', 'inactive'], default: 'active' },
-  addedAt: { type: Date, default: Date.now },
-}, { timestamps: true });
-schema.index({slug:1},{unique:true,partialFilterExpression:{slug:{$type:'string'}}});
-schema.pre('validate',function(){if(!this.slug)this.slug=slugify(this.name);});
+import { slugify } from '../utils/slugs.js';
+const validImage = (value) =>
+  typeof value === 'string' &&
+  value.length <= 2000 &&
+  (/^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value));
+const textList = {
+  type: [String],
+  default: [],
+  validate: (values) => values.length <= 12 && values.every((value) => value.length <= 300),
+};
+const schema = new mongoose.Schema(
+  {
+    seoNoindex: { type: Boolean, default: null },
+    seoKeywords: { type: String, trim: true, maxlength: 1000, default: '' },
+    seoTitle: { type: String, trim: true, maxlength: 120, default: '' },
+    seoDescription: { type: String, trim: true, maxlength: 320, default: '' },
+    seoImage: {
+      type: String,
+      trim: true,
+      maxlength: 2000,
+      default: '',
+      validate: (value) => !value || validImage(value),
+    },
+    hasVariants: { type: Boolean, default: false },
+    slug: { type: String, trim: true, maxlength: 120, match: /^[a-z0-9]+(?:-[a-z0-9]+)*$/ },
+    categoryIds: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
+      default: [],
+      validate: (values) => values.length <= 50,
+    },
+    subcategoryIds: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
+      default: [],
+      validate: (values) => values.length <= 50,
+    },
+    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null },
+    subcategoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null },
+    sku: { type: String, required: true, unique: true, trim: true, maxlength: 100 },
+    name: { type: String, required: true, trim: true, maxlength: 150 },
+    image: {
+      type: String,
+      required: true,
+      maxlength: 2000,
+      validate: (value) =>
+        /^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value),
+    },
+    tryOnImage: {
+      type: String,
+      default: '',
+      maxlength: 2000,
+      validate: (value) => !value || validImage(value),
+    },
+    images: {
+      type: [String],
+      default: [],
+      validate: (values) => values.length <= 8 && values.every(validImage),
+    },
+    description: { type: String, trim: true, maxlength: 5000, default: '' },
+    features: {
+      type: [String],
+      default: [],
+      validate: (values) => values.length <= 20 && values.every((value) => value.length <= 200),
+    },
+    faqs: {
+      type: [
+        {
+          question: { type: String, required: true, maxlength: 200 },
+          answer: { type: String, required: true, maxlength: 1000 },
+        },
+      ],
+      default: [],
+      validate: (values) => values.length <= 20,
+    },
+    reviews: {
+      type: [
+        {
+          name: { type: String, required: true, maxlength: 100 },
+          rating: { type: Number, required: true, min: 1, max: 5, validate: Number.isInteger },
+          text: { type: String, required: true, maxlength: 2000 },
+          date: { type: Date, required: true },
+        },
+      ],
+      default: [],
+      validate: (values) => values.length <= 100,
+    },
+    highlightImages: {
+      material: { type: String, default: '', validate: (v) => !v || validImage(v) },
+      hinge: { type: String, default: '', validate: (v) => !v || validImage(v) },
+      temple: { type: String, default: '', validate: (v) => !v || validImage(v) },
+      nosepad: { type: String, default: '', validate: (v) => !v || validImage(v) },
+    },
+    subtitle: { type: String, trim: true, maxlength: 200, default: '' },
+    lensTypes: textList,
+    availableColors: textList,
+    availableSizes: { type: [String], enum: ['XS', 'S', 'M', 'M/L', 'L', 'XL'], default: [] },
+    offerTitle: { type: String, trim: true, maxlength: 100, default: '' },
+    offerText: { type: String, trim: true, maxlength: 300, default: '' },
+    deliveryInformation: { type: String, trim: true, maxlength: 1000, default: '' },
+    assurances: textList,
+    material: { type: String, trim: true, maxlength: 300, default: '' },
+    hinge: { type: String, trim: true, maxlength: 300, default: '' },
+    temple: { type: String, trim: true, maxlength: 300, default: '' },
+    nosepad: { type: String, trim: true, maxlength: 300, default: '' },
+    category: { type: String, enum: ['Classic', 'Premium'], default: 'Classic' },
+    productType: { type: String, enum: ['Eyeglasses', 'Sunglasses'], default: 'Eyeglasses' },
+    shape: { type: String, required: true, maxlength: 50 },
+    brand: { type: String, required: true, maxlength: 100 },
+    price: { type: Number, required: true, min: 0, max: 1000000 },
+    originalPrice: { type: Number, required: true, min: 0, max: 1000000 },
+    color: { type: String, required: true, maxlength: 50 },
+    size: { type: String, enum: ['XS', 'S', 'M', 'M/L', 'L', 'XL'], default: 'M' },
+    gender: { type: String, enum: ['Men', 'Women', 'Unisex'], default: 'Unisex' },
+    stock: { type: Number, min: 0, default: 0, validate: Number.isSafeInteger },
+    sales: { type: Number, min: 0, default: 0, validate: Number.isSafeInteger },
+    rating: { type: Number, min: 0, max: 5, default: 0 },
+    powered: { type: Boolean, default: false },
+    status: { type: String, enum: ['active', 'inactive'], default: 'active' },
+    addedAt: { type: Date, default: Date.now },
+  },
+  { timestamps: true },
+);
+schema.index({ slug: 1 }, { unique: true, partialFilterExpression: { slug: { $type: 'string' } } });
+schema.pre('validate', function () {
+  if (!this.slug) this.slug = slugify(this.name);
+});
 export default mongoose.model('Product', schema);

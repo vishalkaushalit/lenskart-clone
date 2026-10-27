@@ -389,7 +389,7 @@ Product detail endpoints fetch variants and approved reviews concurrently after 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `0bebae24abec17f9f7d0580a9fe44c05b6feefc21e81130cac2bac90a8bd8989`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `b59a8d790b248361b9baf1702357d8a618a26c2917e0303aafb95cc6cc445aa8`.
 
 ### Actual npm commands
 
@@ -596,7 +596,6 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/server.js | app.use | `/api/products` |
 | src/server.js | app.use | `/api/admin/products` |
 | src/server.js | app.use | `/assets/products` |
-| src/services/userIds.test.js | _pres.get | `save` |
 | src/services/userIds.test.js | _pres.get | `insertMany` |
 
 ### Exact model definitions
@@ -608,12 +607,37 @@ These source excerpts keep every schema field, default, validator, index, and mo
 ```js
 // Generated directly from backend/src/models/Category.js; edit the source model, not this excerpt.
 import mongoose from 'mongoose';
-export const categorySlug=value=>String(value||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'category';
-const schema=new mongoose.Schema({slug:{type:String,trim:true,maxlength:120,match:/^[a-z0-9]+(?:-[a-z0-9]+)*$/},image:{type:String,default:'',maxlength:2000,validate:value=>!value||/^\/assets\/products\/[\w.-]+$/.test(value)||/^https?:\/\/[^\s]+$/.test(value)},kind:{type:String,enum:['category','shape','type','collection'],default:'category'},sortOrder:{type:Number,default:0},name:{type:String,required:true,trim:true,maxlength:100},parent:{type:mongoose.Schema.Types.ObjectId,ref:'Category',default:null},active:{type:Boolean,default:true}},{timestamps:true});
-schema.index({parent:1,name:1},{unique:true,collation:{locale:'en',strength:2}});
-schema.index({slug:1},{unique:true,partialFilterExpression:{slug:{$type:'string'}}});
-schema.pre('validate',function(){if(!this.slug)this.slug=categorySlug(this.name);});
-export default mongoose.model('Category',schema);
+export const categorySlug = (value) =>
+  String(value || '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || 'category';
+const schema = new mongoose.Schema(
+  {
+    slug: { type: String, trim: true, maxlength: 120, match: /^[a-z0-9]+(?:-[a-z0-9]+)*$/ },
+    image: {
+      type: String,
+      default: '',
+      maxlength: 2000,
+      validate: (value) =>
+        !value || /^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value),
+    },
+    kind: { type: String, enum: ['category', 'shape', 'type', 'collection'], default: 'category' },
+    sortOrder: { type: Number, default: 0 },
+    name: { type: String, required: true, trim: true, maxlength: 100 },
+    parent: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null },
+    active: { type: Boolean, default: true },
+  },
+  { timestamps: true },
+);
+schema.index({ parent: 1, name: 1 }, { unique: true, collation: { locale: 'en', strength: 2 } });
+schema.index({ slug: 1 }, { unique: true, partialFilterExpression: { slug: { $type: 'string' } } });
+schema.pre('validate', function () {
+  if (!this.slug) this.slug = categorySlug(this.name);
+});
+export default mongoose.model('Category', schema);
 ```
 
 #### Counter.js
@@ -622,10 +646,13 @@ export default mongoose.model('Category',schema);
 // Generated directly from backend/src/models/Counter.js; edit the source model, not this excerpt.
 import mongoose from 'mongoose';
 
-const counterSchema = new mongoose.Schema({
-  _id: { type: String, required: true },
-  value: { type: Number, required: true, default: 0 },
-}, { versionKey: false });
+const counterSchema = new mongoose.Schema(
+  {
+    _id: { type: String, required: true },
+    value: { type: Number, required: true, default: 0 },
+  },
+  { versionKey: false },
+);
 
 export default mongoose.model('Counter', counterSchema);
 ```
@@ -635,17 +662,30 @@ export default mongoose.model('Counter', counterSchema);
 ```js
 // Generated directly from backend/src/models/Coupon.js; edit the source model, not this excerpt.
 import mongoose from 'mongoose';
-const schema=new mongoose.Schema({
-  code:{type:String,required:true,unique:true,trim:true,uppercase:true,match:/^[A-Z0-9_-]{2,40}$/},
-  type:{type:String,enum:['percentage','fixed'],required:true},
-  value:{type:Number,required:true,min:0.01,max:1000000},
-  minimum:{type:Number,min:0,max:1000000,default:0},
-  expiresAt:{type:Date,default:null},
-  active:{type:Boolean,default:true},
-},{timestamps:true});
-schema.index({createdAt:-1,_id:-1});
-schema.pre('validate',function(){if(this.type==='percentage'&&this.value>100)this.invalidate('value','Percentage must not exceed 100.');});
-export default mongoose.model('Coupon',schema);
+const schema = new mongoose.Schema(
+  {
+    code: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      uppercase: true,
+      match: /^[A-Z0-9_-]{2,40}$/,
+    },
+    type: { type: String, enum: ['percentage', 'fixed'], required: true },
+    value: { type: Number, required: true, min: 0.01, max: 1000000 },
+    minimum: { type: Number, min: 0, max: 1000000, default: 0 },
+    expiresAt: { type: Date, default: null },
+    active: { type: Boolean, default: true },
+  },
+  { timestamps: true },
+);
+schema.index({ createdAt: -1, _id: -1 });
+schema.pre('validate', function () {
+  if (this.type === 'percentage' && this.value > 100)
+    this.invalidate('value', 'Percentage must not exceed 100.');
+});
+export default mongoose.model('Coupon', schema);
 ```
 
 #### CustomerReview.js
@@ -654,17 +694,20 @@ export default mongoose.model('Coupon',schema);
 // Generated directly from backend/src/models/CustomerReview.js; edit the source model, not this excerpt.
 import mongoose from 'mongoose';
 
-const schema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  order: { type: mongoose.Schema.Types.ObjectId, ref: 'Order', required: true },
-  product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-  name: { type: String, required: true, trim: true, maxlength: 100 },
-  rating: { type: Number, required: true, min: 1, max: 5, validate: Number.isInteger },
-  text: { type: String, required: true, trim: true, maxlength: 2000 },
-  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
-  moderatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-  moderatedAt: { type: Date, default: null },
-}, { timestamps: true });
+const schema = new mongoose.Schema(
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    order: { type: mongoose.Schema.Types.ObjectId, ref: 'Order', required: true },
+    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    name: { type: String, required: true, trim: true, maxlength: 100 },
+    rating: { type: Number, required: true, min: 1, max: 5, validate: Number.isInteger },
+    text: { type: String, required: true, trim: true, maxlength: 2000 },
+    status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+    moderatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    moderatedAt: { type: Date, default: null },
+  },
+  { timestamps: true },
+);
 schema.index({ order: 1, product: 1 }, { unique: true });
 schema.index({ product: 1, status: 1, createdAt: -1 });
 schema.index({ status: 1, createdAt: -1, _id: -1 });
@@ -676,54 +719,90 @@ export default mongoose.model('CustomerReview', schema);
 ```js
 // Generated directly from backend/src/models/Order.js; edit the source model, not this excerpt.
 import mongoose from 'mongoose';
-import {nextOrderId} from '../services/orderIds.js';
+import { nextOrderId } from '../services/orderIds.js';
 import { recordOrderStatus } from '../services/orderTracking.js';
 
-const orderSchema = new mongoose.Schema({
-  orderId:{type:Number,immutable:true,unique:true,sparse:true,min:1,validate:Number.isSafeInteger},
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-  requestId: {type:String},
-  shipping: {type:Object}, billing: {type:Object},
-  paymentMethod: {type:String,enum:["cod","online"],default:"cod"},
-  subtotal: {type:Number,min:0},discount: {type:Number,min:0,default:0},couponCode: {type:String,default:""},
-  items: [{
-    product: {type:mongoose.Schema.Types.ObjectId,ref:"Product"},
-    variant: {type:mongoose.Schema.Types.ObjectId,ref:"ProductVariant",default:null},
-    options: {color:String,size:String,type:{type:String}},
-    name: { type: String, required: true },
-    quantity: { type: Number, required: true, min: 1 },
-    unitPrice: { type: Number, required: true, min: 0 },
-  }],
-  totalAmount: { type: Number, required: true, min: 0 },
-  currency: { type: String, default: 'INR' },
-  deliveredAt: { type: Date, default: null },
-  trackingNumber: { type: String, trim: true, maxlength: 100, default: '' },
-  carrier: { type: String, trim: true, maxlength: 100, default: '' },
-  shipmentBookedAt: { type: Date, default: null },
-  carrierCollectedAt: { type: Date, default: null },
-  statusHistory: { type: [{
-    status: { type: String, enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'], required: true },
-    at: { type: Date, required: true },
-  }], default: [] },
-  status: {
-    type: String,
-    enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'],
-    default: 'pending',
+const orderSchema = new mongoose.Schema(
+  {
+    orderId: {
+      type: Number,
+      immutable: true,
+      unique: true,
+      sparse: true,
+      min: 1,
+      validate: Number.isSafeInteger,
+    },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    requestId: { type: String },
+    shipping: { type: Object },
+    billing: { type: Object },
+    paymentMethod: { type: String, enum: ['cod', 'online'], default: 'cod' },
+    subtotal: { type: Number, min: 0 },
+    discount: { type: Number, min: 0, default: 0 },
+    couponCode: { type: String, default: '' },
+    items: [
+      {
+        product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+        variant: { type: mongoose.Schema.Types.ObjectId, ref: 'ProductVariant', default: null },
+        options: { color: String, size: String, type: { type: String } },
+        name: { type: String, required: true },
+        quantity: { type: Number, required: true, min: 1 },
+        unitPrice: { type: Number, required: true, min: 0 },
+      },
+    ],
+    totalAmount: { type: Number, required: true, min: 0 },
+    currency: { type: String, default: 'INR' },
+    deliveredAt: { type: Date, default: null },
+    trackingNumber: { type: String, trim: true, maxlength: 100, default: '' },
+    carrier: { type: String, trim: true, maxlength: 100, default: '' },
+    shipmentBookedAt: { type: Date, default: null },
+    carrierCollectedAt: { type: Date, default: null },
+    statusHistory: {
+      type: [
+        {
+          status: {
+            type: String,
+            enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'],
+            required: true,
+          },
+          at: { type: Date, required: true },
+        },
+      ],
+      default: [],
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'],
+      default: 'pending',
+    },
   },
-}, { timestamps: true });
+  { timestamps: true },
+);
 
-orderSchema.index({user:1,requestId:1},{unique:true,partialFilterExpression:{requestId:{$type:'string'}}});
+orderSchema.index(
+  { user: 1, requestId: 1 },
+  { unique: true, partialFilterExpression: { requestId: { $type: 'string' } } },
+);
 orderSchema.index({ user: 1, createdAt: -1, _id: -1 });
 
 orderSchema.index({ createdAt: -1, _id: -1 });
 orderSchema.index({ status: 1, createdAt: -1, _id: -1 });
-orderSchema.index({ trackingNumber: 1 }, {
-  name: 'trackingNumber_unique', unique: true,
-  partialFilterExpression: { trackingNumber: { $type: 'string', $gt: '' } },
-  collation: { locale: 'en', strength: 2 },
-});
+orderSchema.index(
+  { trackingNumber: 1 },
+  {
+    name: 'trackingNumber_unique',
+    unique: true,
+    partialFilterExpression: { trackingNumber: { $type: 'string', $gt: '' } },
+    collation: { locale: 'en', strength: 2 },
+  },
+);
 
-orderSchema.pre('save',async function(){if(this.isNew&&!this.$locals.orderIdAssigned){this.orderId=await nextOrderId(this.$session());this.$locals.orderIdAssigned=true;}});
+orderSchema.pre('save', async function () {
+  if (this.isNew && !this.$locals.orderIdAssigned) {
+    this.orderId = await nextOrderId(this.$session());
+    this.$locals.orderIdAssigned = true;
+  }
+});
 orderSchema.pre('save', function () {
   recordOrderStatus(this);
 });
@@ -736,20 +815,32 @@ export default mongoose.model('Order', orderSchema);
 // Generated directly from backend/src/models/PageSeo.js; edit the source model, not this excerpt.
 import mongoose from 'mongoose';
 
-const schema = new mongoose.Schema({
-  path: { type: String, required: true, unique: true, maxlength: 300 },
-  title: { type: String, trim: true, maxlength: 120, default: '' },
-  description: { type: String, trim: true, maxlength: 320, default: '' },
-  urlPath: { type: String, default: '', maxlength: 300 },
-  redirectOld: { type: Boolean, default: true },
-  redirects: { type: [String], default: [] },
-  noindex: { type: Boolean, default: null },
-  keywords: { type: String, trim: true, maxlength: 1000, default: '' },
-  faqs: { type: [{ question: { type: String, required: true, trim: true, maxlength: 200 }, answer: { type: String, required: true, trim: true, maxlength: 1000 } }], default: [], validate: rows => rows.length <= 20 },
-  image: { type: String, trim: true, maxlength: 2000, default: '' },
-}, { timestamps: true });
+const schema = new mongoose.Schema(
+  {
+    path: { type: String, required: true, unique: true, maxlength: 300 },
+    title: { type: String, trim: true, maxlength: 120, default: '' },
+    description: { type: String, trim: true, maxlength: 320, default: '' },
+    urlPath: { type: String, default: '', maxlength: 300 },
+    redirectOld: { type: Boolean, default: true },
+    redirects: { type: [String], default: [] },
+    noindex: { type: Boolean, default: null },
+    keywords: { type: String, trim: true, maxlength: 1000, default: '' },
+    faqs: {
+      type: [
+        {
+          question: { type: String, required: true, trim: true, maxlength: 200 },
+          answer: { type: String, required: true, trim: true, maxlength: 1000 },
+        },
+      ],
+      default: [],
+      validate: (rows) => rows.length <= 20,
+    },
+    image: { type: String, trim: true, maxlength: 2000, default: '' },
+  },
+  { timestamps: true },
+);
 
-schema.index({urlPath:1},{unique:true,partialFilterExpression:{urlPath:{$gt:''}}});
+schema.index({ urlPath: 1 }, { unique: true, partialFilterExpression: { urlPath: { $gt: '' } } });
 
 export default mongoose.model('PageSeo', schema);
 ```
@@ -759,61 +850,131 @@ export default mongoose.model('PageSeo', schema);
 ```js
 // Generated directly from backend/src/models/Product.js; edit the source model, not this excerpt.
 import mongoose from 'mongoose';
-import {slugify} from '../utils/slugs.js';
-const validImage = (value) => typeof value === 'string' && value.length <= 2000 && (/^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value));
-const textList = { type: [String], default: [], validate: (values) => values.length <= 12 && values.every((value) => value.length <= 300) };
-const schema = new mongoose.Schema({
-  seoNoindex: { type: Boolean, default: null },
-  seoKeywords: { type: String, trim: true, maxlength: 1000, default: '' },
-  seoTitle: { type: String, trim: true, maxlength: 120, default: '' },
-  seoDescription: { type: String, trim: true, maxlength: 320, default: '' },
-  seoImage: { type: String, trim: true, maxlength: 2000, default: '', validate: value => !value || validImage(value) },
-  hasVariants: { type: Boolean, default: false },
-  slug:{type:String,trim:true,maxlength:120,match:/^[a-z0-9]+(?:-[a-z0-9]+)*$/},
-  categoryIds: {type:[{type:mongoose.Schema.Types.ObjectId,ref:'Category'}],default:[],validate:values=>values.length<=50},
-  subcategoryIds: {type:[{type:mongoose.Schema.Types.ObjectId,ref:'Category'}],default:[],validate:values=>values.length<=50},
-  categoryId: {type:mongoose.Schema.Types.ObjectId,ref:'Category',default:null},
-  subcategoryId: {type:mongoose.Schema.Types.ObjectId,ref:'Category',default:null},
-  sku: { type: String, required: true, unique: true, trim: true, maxlength: 100 },
-  name: { type: String, required: true, trim: true, maxlength: 150 },
-  image: { type: String, required: true, maxlength: 2000, validate: (value) => /^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value) },
-  tryOnImage: { type: String, default: '', maxlength: 2000, validate: value => !value || validImage(value) },
-  images: { type: [String], default: [], validate: (values) => values.length <= 8 && values.every(validImage) },
-  description: { type: String, trim: true, maxlength: 5000, default: '' },
-  features: { type: [String], default: [], validate: (values) => values.length <= 20 && values.every((value) => value.length <= 200) },
-  faqs: { type: [{ question: { type: String, required: true, maxlength: 200 }, answer: { type: String, required: true, maxlength: 1000 } }], default: [], validate: values => values.length <= 20 },
-  reviews: { type: [{ name: { type: String, required: true, maxlength: 100 }, rating: { type: Number, required: true, min: 1, max: 5, validate: Number.isInteger }, text: { type: String, required: true, maxlength: 2000 }, date: { type: Date, required: true } }], default: [], validate: values => values.length <= 100 },
-  highlightImages: { material: { type: String, default: '', validate: v => !v || validImage(v) }, hinge: { type: String, default: '', validate: v => !v || validImage(v) }, temple: { type: String, default: '', validate: v => !v || validImage(v) }, nosepad: { type: String, default: '', validate: v => !v || validImage(v) } },
-  subtitle: { type: String, trim: true, maxlength: 200, default: '' },
-  lensTypes: textList,
-  availableColors: textList,
-  availableSizes: { type: [String], enum: ['XS', 'S', 'M', 'M/L', 'L', 'XL'], default: [] },
-  offerTitle: { type: String, trim: true, maxlength: 100, default: '' },
-  offerText: { type: String, trim: true, maxlength: 300, default: '' },
-  deliveryInformation: { type: String, trim: true, maxlength: 1000, default: '' },
-  assurances: textList,
-  material: { type: String, trim: true, maxlength: 300, default: '' },
-  hinge: { type: String, trim: true, maxlength: 300, default: '' },
-  temple: { type: String, trim: true, maxlength: 300, default: '' },
-  nosepad: { type: String, trim: true, maxlength: 300, default: '' },
-  category: { type: String, enum: ['Classic', 'Premium'], default: 'Classic' },
-  productType: { type: String, enum: ['Eyeglasses', 'Sunglasses'], default: 'Eyeglasses' },
-  shape: { type: String, required: true, maxlength: 50 },
-  brand: { type: String, required: true, maxlength: 100 },
-  price: { type: Number, required: true, min: 0, max: 1000000 },
-  originalPrice: { type: Number, required: true, min: 0, max: 1000000 },
-  color: { type: String, required: true, maxlength: 50 },
-  size: { type: String, enum: ['XS', 'S', 'M', 'M/L', 'L', 'XL'], default: 'M' },
-  gender: { type: String, enum: ['Men', 'Women', 'Unisex'], default: 'Unisex' },
-  stock: { type: Number, min: 0, default: 0, validate: Number.isSafeInteger },
-  sales: { type: Number, min: 0, default: 0, validate: Number.isSafeInteger },
-  rating: { type: Number, min: 0, max: 5, default: 0 },
-  powered: { type: Boolean, default: false },
-  status: { type: String, enum: ['active', 'inactive'], default: 'active' },
-  addedAt: { type: Date, default: Date.now },
-}, { timestamps: true });
-schema.index({slug:1},{unique:true,partialFilterExpression:{slug:{$type:'string'}}});
-schema.pre('validate',function(){if(!this.slug)this.slug=slugify(this.name);});
+import { slugify } from '../utils/slugs.js';
+const validImage = (value) =>
+  typeof value === 'string' &&
+  value.length <= 2000 &&
+  (/^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value));
+const textList = {
+  type: [String],
+  default: [],
+  validate: (values) => values.length <= 12 && values.every((value) => value.length <= 300),
+};
+const schema = new mongoose.Schema(
+  {
+    seoNoindex: { type: Boolean, default: null },
+    seoKeywords: { type: String, trim: true, maxlength: 1000, default: '' },
+    seoTitle: { type: String, trim: true, maxlength: 120, default: '' },
+    seoDescription: { type: String, trim: true, maxlength: 320, default: '' },
+    seoImage: {
+      type: String,
+      trim: true,
+      maxlength: 2000,
+      default: '',
+      validate: (value) => !value || validImage(value),
+    },
+    hasVariants: { type: Boolean, default: false },
+    slug: { type: String, trim: true, maxlength: 120, match: /^[a-z0-9]+(?:-[a-z0-9]+)*$/ },
+    categoryIds: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
+      default: [],
+      validate: (values) => values.length <= 50,
+    },
+    subcategoryIds: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
+      default: [],
+      validate: (values) => values.length <= 50,
+    },
+    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null },
+    subcategoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null },
+    sku: { type: String, required: true, unique: true, trim: true, maxlength: 100 },
+    name: { type: String, required: true, trim: true, maxlength: 150 },
+    image: {
+      type: String,
+      required: true,
+      maxlength: 2000,
+      validate: (value) =>
+        /^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value),
+    },
+    tryOnImage: {
+      type: String,
+      default: '',
+      maxlength: 2000,
+      validate: (value) => !value || validImage(value),
+    },
+    images: {
+      type: [String],
+      default: [],
+      validate: (values) => values.length <= 8 && values.every(validImage),
+    },
+    description: { type: String, trim: true, maxlength: 5000, default: '' },
+    features: {
+      type: [String],
+      default: [],
+      validate: (values) => values.length <= 20 && values.every((value) => value.length <= 200),
+    },
+    faqs: {
+      type: [
+        {
+          question: { type: String, required: true, maxlength: 200 },
+          answer: { type: String, required: true, maxlength: 1000 },
+        },
+      ],
+      default: [],
+      validate: (values) => values.length <= 20,
+    },
+    reviews: {
+      type: [
+        {
+          name: { type: String, required: true, maxlength: 100 },
+          rating: { type: Number, required: true, min: 1, max: 5, validate: Number.isInteger },
+          text: { type: String, required: true, maxlength: 2000 },
+          date: { type: Date, required: true },
+        },
+      ],
+      default: [],
+      validate: (values) => values.length <= 100,
+    },
+    highlightImages: {
+      material: { type: String, default: '', validate: (v) => !v || validImage(v) },
+      hinge: { type: String, default: '', validate: (v) => !v || validImage(v) },
+      temple: { type: String, default: '', validate: (v) => !v || validImage(v) },
+      nosepad: { type: String, default: '', validate: (v) => !v || validImage(v) },
+    },
+    subtitle: { type: String, trim: true, maxlength: 200, default: '' },
+    lensTypes: textList,
+    availableColors: textList,
+    availableSizes: { type: [String], enum: ['XS', 'S', 'M', 'M/L', 'L', 'XL'], default: [] },
+    offerTitle: { type: String, trim: true, maxlength: 100, default: '' },
+    offerText: { type: String, trim: true, maxlength: 300, default: '' },
+    deliveryInformation: { type: String, trim: true, maxlength: 1000, default: '' },
+    assurances: textList,
+    material: { type: String, trim: true, maxlength: 300, default: '' },
+    hinge: { type: String, trim: true, maxlength: 300, default: '' },
+    temple: { type: String, trim: true, maxlength: 300, default: '' },
+    nosepad: { type: String, trim: true, maxlength: 300, default: '' },
+    category: { type: String, enum: ['Classic', 'Premium'], default: 'Classic' },
+    productType: { type: String, enum: ['Eyeglasses', 'Sunglasses'], default: 'Eyeglasses' },
+    shape: { type: String, required: true, maxlength: 50 },
+    brand: { type: String, required: true, maxlength: 100 },
+    price: { type: Number, required: true, min: 0, max: 1000000 },
+    originalPrice: { type: Number, required: true, min: 0, max: 1000000 },
+    color: { type: String, required: true, maxlength: 50 },
+    size: { type: String, enum: ['XS', 'S', 'M', 'M/L', 'L', 'XL'], default: 'M' },
+    gender: { type: String, enum: ['Men', 'Women', 'Unisex'], default: 'Unisex' },
+    stock: { type: Number, min: 0, default: 0, validate: Number.isSafeInteger },
+    sales: { type: Number, min: 0, default: 0, validate: Number.isSafeInteger },
+    rating: { type: Number, min: 0, max: 5, default: 0 },
+    powered: { type: Boolean, default: false },
+    status: { type: String, enum: ['active', 'inactive'], default: 'active' },
+    addedAt: { type: Date, default: Date.now },
+  },
+  { timestamps: true },
+);
+schema.index({ slug: 1 }, { unique: true, partialFilterExpression: { slug: { $type: 'string' } } });
+schema.pre('validate', function () {
+  if (!this.slug) this.slug = slugify(this.name);
+});
 export default mongoose.model('Product', schema);
 ```
 
@@ -822,23 +983,58 @@ export default mongoose.model('Product', schema);
 ```js
 // Generated directly from backend/src/models/ProductVariant.js; edit the source model, not this excerpt.
 import mongoose from 'mongoose';
-const image = value => typeof value === 'string' && value.length <= 2000 && (/^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value));
-const schema = new mongoose.Schema({
-  // Parent product; combinations are unique within this product.
-  productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true, immutable: true, index: true },
-  size: { type: String, enum: ['XS', 'S', 'M', 'M/L', 'L', 'XL'], required: true },
-  color: { type: String, trim: true, required: true, maxlength: 50 },
-  // Null inherits the current parent price. Stock belongs to this combination.
-  price: { type: Number, default: null, min: 0, max: 1000000 },
-  // Optional comparison price for the crossed-out price and discount display.
-  originalPrice: { type: Number, default: null, min: 0, max: 1000000, validate: { validator: function(value) { return value == null || this.price == null || value >= this.price; }, message: 'Compare price cannot be below price.' } },
-  stock: { type: Number, default: 0, min: 0, validate: Number.isSafeInteger },
-  // Ordered gallery; first image is the variant cover. Empty inherits product images.
-  tryOnImage: { type: String, default: '', maxlength: 2000, validate: value => !value || image(value) },
-  images: { type: [String], default: [], validate: values => values.length <= 8 && values.every(image) },
-  status: { type: String, enum: ['active', 'inactive'], default: 'active' },
-}, { timestamps: true });
-schema.index({ productId: 1, size: 1, color: 1 }, { unique: true, collation: { locale: 'en', strength: 2 } });
+const image = (value) =>
+  typeof value === 'string' &&
+  value.length <= 2000 &&
+  (/^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value));
+const schema = new mongoose.Schema(
+  {
+    // Parent product; combinations are unique within this product.
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
+      required: true,
+      immutable: true,
+      index: true,
+    },
+    size: { type: String, enum: ['XS', 'S', 'M', 'M/L', 'L', 'XL'], required: true },
+    color: { type: String, trim: true, required: true, maxlength: 50 },
+    // Null inherits the current parent price. Stock belongs to this combination.
+    price: { type: Number, default: null, min: 0, max: 1000000 },
+    // Optional comparison price for the crossed-out price and discount display.
+    originalPrice: {
+      type: Number,
+      default: null,
+      min: 0,
+      max: 1000000,
+      validate: {
+        validator: function (value) {
+          return value == null || this.price == null || value >= this.price;
+        },
+        message: 'Compare price cannot be below price.',
+      },
+    },
+    stock: { type: Number, default: 0, min: 0, validate: Number.isSafeInteger },
+    // Ordered gallery; first image is the variant cover. Empty inherits product images.
+    tryOnImage: {
+      type: String,
+      default: '',
+      maxlength: 2000,
+      validate: (value) => !value || image(value),
+    },
+    images: {
+      type: [String],
+      default: [],
+      validate: (values) => values.length <= 8 && values.every(image),
+    },
+    status: { type: String, enum: ['active', 'inactive'], default: 'active' },
+  },
+  { timestamps: true },
+);
+schema.index(
+  { productId: 1, size: 1, color: 1 },
+  { unique: true, collation: { locale: 'en', strength: 2 } },
+);
 export default mongoose.model('ProductVariant', schema);
 ```
 
@@ -847,23 +1043,26 @@ export default mongoose.model('ProductVariant', schema);
 ```js
 // Generated directly from backend/src/models/SiteSeo.js; edit the source model, not this excerpt.
 import mongoose from 'mongoose';
-const schema = new mongoose.Schema({
-  redirects: { type: [{ _id: false, from: String, to: String }], default: [] },
-  productPrefix: { type: String, default: '/products' },
-  collectionPrefix: { type: String, default: '/collections' },
-  productPrefixHistory: { type: [String], default: [] },
-  collectionPrefixHistory: { type: [String], default: [] },
-  key: { type: String, unique: true, default: 'site' },
-  websiteUrl: { type: String, default: '', maxlength: 2000 },
-  googleVerification: { type: String, default: '', maxlength: 500 },
-  metaVerification: { type: String, default: '', maxlength: 500 },
-  trackingMode: { type: String, enum: ['off','gtm','direct'], default: 'off' },
-  gtmId: { type: String, default: '', maxlength: 40 },
-  ga4Id: { type: String, default: '', maxlength: 40 },
-  googleAdsId: { type: String, default: '', maxlength: 40 },
-  sitemap: { type: String, default: '', maxlength: 200000 },
-  robots: { type: String, default: '', maxlength: 100000 },
-}, { timestamps: true });
+const schema = new mongoose.Schema(
+  {
+    redirects: { type: [{ _id: false, from: String, to: String }], default: [] },
+    productPrefix: { type: String, default: '/products' },
+    collectionPrefix: { type: String, default: '/collections' },
+    productPrefixHistory: { type: [String], default: [] },
+    collectionPrefixHistory: { type: [String], default: [] },
+    key: { type: String, unique: true, default: 'site' },
+    websiteUrl: { type: String, default: '', maxlength: 2000 },
+    googleVerification: { type: String, default: '', maxlength: 500 },
+    metaVerification: { type: String, default: '', maxlength: 500 },
+    trackingMode: { type: String, enum: ['off', 'gtm', 'direct'], default: 'off' },
+    gtmId: { type: String, default: '', maxlength: 40 },
+    ga4Id: { type: String, default: '', maxlength: 40 },
+    googleAdsId: { type: String, default: '', maxlength: 40 },
+    sitemap: { type: String, default: '', maxlength: 200000 },
+    robots: { type: String, default: '', maxlength: 100000 },
+  },
+  { timestamps: true },
+);
 export default mongoose.model('SiteSeo', schema);
 ```
 
@@ -875,59 +1074,59 @@ import mongoose from 'mongoose';
 import { nextUserId } from '../services/userIds.js';
 
 const userSchema = new mongoose.Schema(
-    {
-        userId: {
-            type: Number,
-            immutable: true,
-            unique: true,
-            sparse: true,
-            min: 1,
-            validate: Number.isSafeInteger,
-        },
-        name: {
-            type: String,
-            required: true,
-            trim: true,
-            maxlength: 100,
-        },
-
-        email: {
-            type: String,
-            required: true,
-            unique: true,
-            lowercase: true,
-            trim: true,
-            maxlength: 254,
-        },
-
-        phone: { type: String, trim: true, maxlength: 30, default: '' },
-        status: { type: String, enum: ['active', 'inactive'], default: 'active' },
-
-        passwordHash: {
-            type: String,
-            required: true,
-            select: false,
-        },
-
-        role: {
-            type: String,
-            enum: ['customer', 'admin'],
-            default: 'customer',
-        },
+  {
+    userId: {
+      type: Number,
+      immutable: true,
+      unique: true,
+      sparse: true,
+      min: 1,
+      validate: Number.isSafeInteger,
     },
-    { timestamps: true }
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 100,
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      maxlength: 254,
+    },
+
+    phone: { type: String, trim: true, maxlength: 30, default: '' },
+    status: { type: String, enum: ['active', 'inactive'], default: 'active' },
+
+    passwordHash: {
+      type: String,
+      required: true,
+      select: false,
+    },
+
+    role: {
+      type: String,
+      enum: ['customer', 'admin'],
+      default: 'customer',
+    },
+  },
+  { timestamps: true },
 );
 
 userSchema.pre('save', async function () {
-    if (this.isNew && !this.$locals.userIdAssigned) {
-        // Ignore supplied IDs: only the shared counter assigns new account IDs.
-        this.userId = await nextUserId();
-        this.$locals.userIdAssigned = true;
-    }
+  if (this.isNew && !this.$locals.userIdAssigned) {
+    // Ignore supplied IDs: only the shared counter assigns new account IDs.
+    this.userId = await nextUserId();
+    this.$locals.userIdAssigned = true;
+  }
 });
 
 userSchema.pre('insertMany', async function (users) {
-    for (const user of users) user.userId = await nextUserId();
+  for (const user of users) user.userId = await nextUserId();
 });
 
 export default mongoose.model('User', userSchema);

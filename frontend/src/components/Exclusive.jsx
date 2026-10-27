@@ -1,33 +1,45 @@
-import {Link} from '../storeRouter';
-import {useCategories} from '../context/CategoryContext';
-import {collectionLink} from '../state/collectionLinks';
-import transparent_frames from "../assets/images/exclusive/transparent_frames.webp";
-import popmart from "../assets/images/exclusive/popmart.webp";
-import john_jacobs_bold from "../assets/images/exclusive/john_jacobs_bold.webp";
-import john_jacobs_prada from "../assets/images/exclusive/john_jacobs_prada.webp";
-import hustlr_switch from "../assets/images/exclusive/hustlr_switch.webp";
-import ultra_light_frames from "../assets/images/exclusive/ultra_light_frames.webp";
+import { Link } from '../storeRouter';
+import { useCategories } from '../context/CategoryContext';
+import { collectionLink } from '../state/collectionLinks';
+import transparent_frames from '../assets/images/exclusive/transparent_frames.webp';
+import popmart from '../assets/images/exclusive/popmart.webp';
+import john_jacobs_bold from '../assets/images/exclusive/john_jacobs_bold.webp';
+import john_jacobs_prada from '../assets/images/exclusive/john_jacobs_prada.webp';
+import hustlr_switch from '../assets/images/exclusive/hustlr_switch.webp';
+import ultra_light_frames from '../assets/images/exclusive/ultra_light_frames.webp';
 
 const exclusiveCollections = [
-  { name: "Transparent frames", image: transparent_frames, exclusiveUrl: "#" },
-  { name: "Popmart", image: popmart, exclusiveUrl: "#" },
-  { name: "John Jacobs Bold", image: john_jacobs_bold, exclusiveUrl: "#" },
-  { name: "John Jacobs Prada", image: john_jacobs_prada, exclusiveUrl: "#" },
-  { name: "Hustlr Switch", image: hustlr_switch, exclusiveUrl: "#" },
-  { name: "Ultra-light frames", image: ultra_light_frames, exclusiveUrl: "#" },
+  { name: 'Transparent frames', image: transparent_frames, exclusiveUrl: '#' },
+  { name: 'Popmart', image: popmart, exclusiveUrl: '#' },
+  { name: 'John Jacobs Bold', image: john_jacobs_bold, exclusiveUrl: '#' },
+  { name: 'John Jacobs Prada', image: john_jacobs_prada, exclusiveUrl: '#' },
+  { name: 'Hustlr Switch', image: hustlr_switch, exclusiveUrl: '#' },
+  { name: 'Ultra-light frames', image: ultra_light_frames, exclusiveUrl: '#' },
 ];
 
 const Exclusive = () => {
-  const {productOptions}=useCategories();
+  const { productOptions } = useCategories();
   return (
     <>
       <section className="py-12 sm:py-16">
         <div className="store-container">
-          <h2 className="mb-7 text-xl sm:text-2xl font-extrabold text-ink">Exclusively at Lenskart</h2>
+          <h2 className="mb-7 text-xl sm:text-2xl font-extrabold text-ink">
+            Exclusively at Lenskart
+          </h2>
           <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3">
             {exclusiveCollections.map(({ name, image }) => (
-              <Link to={collectionLink(productOptions,{search:name})} className="overflow-hidden rounded-xl transition-transform hover:scale-[1.02]" key={name}>
-                <img loading="lazy" decoding="async" className="h-auto w-full" src={image} alt={name} />
+              <Link
+                to={collectionLink(productOptions, { search: name })}
+                className="overflow-hidden rounded-xl transition-transform hover:scale-[1.02]"
+                key={name}
+              >
+                <img
+                  loading="lazy"
+                  decoding="async"
+                  className="h-auto w-full"
+                  src={image}
+                  alt={name}
+                />
               </Link>
             ))}
           </div>

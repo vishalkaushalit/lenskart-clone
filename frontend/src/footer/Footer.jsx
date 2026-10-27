@@ -1,10 +1,6 @@
-import play_store from "/play_store.svg";
-import app_store from "/app_store.svg";
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaXTwitter,
-} from "react-icons/fa6";
+import play_store from '/play_store.svg';
+import app_store from '/app_store.svg';
+import { FaFacebookF, FaInstagram, FaXTwitter } from 'react-icons/fa6';
 
 const Footer = () => {
   return (
@@ -66,7 +62,8 @@ const Footer = () => {
                 </a>
               </div>
               <p className="mt-3 text-center text-sm font-light leading-6">
-                Download Lenskart App to buy<br className="hidden sm:block" /> Eyeglasses, Sunglasses and Contact Lenses
+                Download Lenskart App to buy
+                <br className="hidden sm:block" /> Eyeglasses, Sunglasses and Contact Lenses
               </p>
             </div>
           </div>

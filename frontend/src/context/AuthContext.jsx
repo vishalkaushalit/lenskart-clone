@@ -1,11 +1,8 @@
-import {
-  useEffect,
-  useState,
-} from 'react';
+import { useEffect, useState } from 'react';
 import { useStore } from './StoreContext';
 import { apiRequest } from '../api/api';
 
-import {AuthContext} from './AuthState';
+import { AuthContext } from './AuthState';
 
 import { sessionHintKey, hasSessionHint, rememberSession } from '../../../shared/sessionHint.js';
 
@@ -22,15 +19,25 @@ export function AuthProvider({ children }) {
     async function checkSession() {
       const current = ++generation;
       if (!hasSessionHint()) {
-        if (active) { setUser(null); setError(''); setLoading(false); }
+        if (active) {
+          setUser(null);
+          setError('');
+          setLoading(false);
+        }
         return;
       }
       try {
         const data = await apiRequest('/auth/me');
-        if (active && current === generation) { setUser(data.user); setError(''); }
+        if (active && current === generation) {
+          setUser(data.user);
+          setError('');
+        }
       } catch (error) {
         if (!active || current !== generation) return;
-        if (error.status === 401) { rememberSession(false); setUser(null); }
+        if (error.status === 401) {
+          rememberSession(false);
+          setUser(null);
+        }
         if (active && error.status !== 401) {
           setError('Unable to check your login. Please reload the page.');
         }
@@ -40,9 +47,13 @@ export function AuthProvider({ children }) {
     }
 
     checkSession();
-    function storageChanged(event) { if (event.key === sessionHintKey || event.key === null) checkSession(); }
+    function storageChanged(event) {
+      if (event.key === sessionHintKey || event.key === null) checkSession();
+    }
     window.addEventListener('storage', storageChanged);
-    function refreshSession() { if (!document.hidden && hasSessionHint()) checkSession(); }
+    function refreshSession() {
+      if (!document.hidden && hasSessionHint()) checkSession();
+    }
     window.addEventListener('focus', refreshSession);
 
     return () => {
@@ -85,9 +96,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider
-      value={{ user, loading, error, login, logout, updateProfile }}
-    >
+    <AuthContext.Provider value={{ user, loading, error, login, logout, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

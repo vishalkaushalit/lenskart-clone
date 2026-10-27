@@ -1,2 +1,2 @@
 import { createContext } from 'react';
-export const PageRoutesContext=createContext([]);
+export const PageRoutesContext = createContext([]);

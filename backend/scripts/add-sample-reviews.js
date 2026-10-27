@@ -30,33 +30,66 @@ try {
     // Preserve existing reviews and leave room within the product's 100-review limit.
     let remaining = Math.max(0, 100 - (product.reviews?.length || 0));
     for (const [index, [name, rating, text]] of samples.entries()) {
-      const hex = createHash('sha256').update(`sample-review-v1:${product._id}:${index}`).digest('hex').slice(0, 24);
+      const hex = createHash('sha256')
+        .update(`sample-review-v1:${product._id}:${index}`)
+        .digest('hex')
+        .slice(0, 24);
       const _id = new mongoose.Types.ObjectId(hex);
-      const existing = product.reviews?.find(review => String(review._id) === hex);
+      const existing = product.reviews?.find((review) => String(review._id) === hex);
       if (existing) {
         if (existing.text === `Sample review: ${text}`) {
           plannedCleanups++;
           if (write) {
-            const result = await Product.updateOne({ _id: product._id, reviews: { $elemMatch: { _id, text: existing.text } } }, { $set: { 'reviews.$.text': text } }, { runValidators: true });
+            const result = await Product.updateOne(
+              { _id: product._id, reviews: { $elemMatch: { _id, text: existing.text } } },
+              { $set: { 'reviews.$.text': text } },
+              { runValidators: true },
+            );
             cleaned += result.modifiedCount;
           }
         }
         if (existing.name === `${name} (Guest · sample)`) {
           plannedRenames++;
           if (write) {
-            const result = await Product.updateOne({ _id: product._id, reviews: { $elemMatch: { _id, name: existing.name } } }, { $set: { 'reviews.$.name': name } }, { runValidators: true });
+            const result = await Product.updateOne(
+              { _id: product._id, reviews: { $elemMatch: { _id, name: existing.name } } },
+              { $set: { 'reviews.$.name': name } },
+              { runValidators: true },
+            );
             renamed += result.modifiedCount;
           }
         }
         continue;
       }
       if (!remaining) continue;
-      planned++; remaining--;
+      planned++;
+      remaining--;
       if (!write) continue;
       const review = { _id, name, rating, text, date: new Date(now - (index + 1) * 86400000) };
-      const result = await Product.updateOne({ _id: product._id, 'reviews._id': { $ne: _id }, $expr: { $lt: [{ $size: { $ifNull: ['$reviews', []] } }, 100] } }, { $push: { reviews: review } }, { runValidators: true });
+      const result = await Product.updateOne(
+        {
+          _id: product._id,
+          'reviews._id': { $ne: _id },
+          $expr: { $lt: [{ $size: { $ifNull: ['$reviews', []] } }, 100] },
+        },
+        { $push: { reviews: review } },
+        { runValidators: true },
+      );
       added += result.modifiedCount;
     }
   }
-  console.log(JSON.stringify({ mode: write ? 'write' : 'dry-run', activeProducts: products.length, plannedReviews: planned, addedReviews: added, plannedRenames, renamedReviews: renamed, plannedCleanups, cleanedReviews: cleaned }));
-} finally { await mongoose.disconnect(); }
+  console.log(
+    JSON.stringify({
+      mode: write ? 'write' : 'dry-run',
+      activeProducts: products.length,
+      plannedReviews: planned,
+      addedReviews: added,
+      plannedRenames,
+      renamedReviews: renamed,
+      plannedCleanups,
+      cleanedReviews: cleaned,
+    }),
+  );
+} finally {
+  await mongoose.disconnect();
+}

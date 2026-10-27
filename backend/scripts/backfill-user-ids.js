@@ -5,7 +5,9 @@ import { initializeUserIds } from '../src/services/userIds.js';
 try {
   if (!process.env.MONGODB_URI) throw new Error('MONGODB_URI is required.');
   await mongoose.connect(process.env.MONGODB_URI, {
-    serverSelectionTimeoutMS: 10000, autoIndex: false, autoCreate: false,
+    serverSelectionTimeoutMS: 10000,
+    autoIndex: false,
+    autoCreate: false,
   });
   const summary = await initializeUserIds(mongoose.connection.collection('users'), {
     dryRun: process.argv.includes('--dry-run'),
