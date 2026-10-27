@@ -11,4 +11,6 @@
   max-height: 80dvh;
   border-radius: 16px;
 }
-.app-popup { overflow-y: auto; }
+.app-popup {
+  overflow-y: auto;
+}

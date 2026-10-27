@@ -1,9 +1,52 @@
-.customer-review-card { margin:22px 0; color:#454576; font-size:14px; overflow-wrap:anywhere; }
-.customer-review-heading { display:flex; align-items:center; gap:9px; }
-.customer-review-heading>svg { flex-shrink:0; }
-.customer-review-author { min-width:0; }
-.customer-review-name { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
-.customer-review-verified { display:inline-flex; align-items:center; gap:4px; border-radius:999px; background:#e6f6f0; color:#087653; padding:3px 8px; font-size:11px; font-weight:600; }
-.customer-review-author time { display:block; color:#73738d; margin-top:4px; font-size:11px; }
-.customer-review-rating { flex-shrink:0; margin-left:auto; background:#f4f4f8; border-radius:15px; font-size:11px; padding:3px 7px; }
-.customer-review-card>p { margin-top:12px; white-space:pre-wrap; }
+.customer-review-card {
+  margin: 22px 0;
+  color: #454576;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.customer-review-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.customer-review-heading > svg {
+  flex-shrink: 0;
+}
+.customer-review-author {
+  min-width: 0;
+}
+.customer-review-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.customer-review-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  background: #e6f6f0;
+  color: #087653;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.customer-review-author time {
+  display: block;
+  color: #73738d;
+  margin-top: 4px;
+  font-size: 11px;
+}
+.customer-review-rating {
+  flex-shrink: 0;
+  margin-left: auto;
+  background: #f4f4f8;
+  border-radius: 15px;
+  font-size: 11px;
+  padding: 3px 7px;
+}
+.customer-review-card > p {
+  margin-top: 12px;
+  white-space: pre-wrap;
+}

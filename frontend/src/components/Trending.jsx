@@ -1,29 +1,29 @@
-import {Link} from '../storeRouter';
-import { useEffect, useRef, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
-import trending_1 from "../assets/images/trending/trending_1.webp";
-import trending_2 from "../assets/images/trending/trending_2.webp";
-import trending_3 from "../assets/images/trending/trending_3.webp";
-import trending_4 from "../assets/images/trending/trending_4.webp";
-import trending_5 from "../assets/images/trending/trending_5.webp";
-import trending_6 from "../assets/images/trending/trending_6.webp";
-import trending_7 from "../assets/images/trending/trending_7.webp";
-import trending_8 from "../assets/images/trending/trending_8.webp";
-import trending_9 from "../assets/images/trending/trending_9.webp";
-import trending_10 from "../assets/images/trending/trending_10.webp";
-import trending_11 from "../assets/images/trending/trending_11.webp";
-import trending_12 from "../assets/images/trending/trending_12.webp";
-import trending_1_video from "../assets/videos/trending_1.mp4";
-import trending_2_video from "../assets/videos/trending_2.mp4";
-import trending_3_video from "../assets/videos/trending_3.mp4";
-import trending_4_video from "../assets/videos/trending_4.mp4";
-import trending_5_video from "../assets/videos/trending_5.mp4";
-import trending_6_video from "../assets/videos/trending_6.mp4";
-import trending_7_video from "../assets/videos/trending_7.mp4";
-import trending_8_video from "../assets/videos/trending_8.mp4";
+import { Link } from '../storeRouter';
+import { useEffect, useRef, useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay } from 'swiper/modules';
+import trending_1 from '../assets/images/trending/trending_1.webp';
+import trending_2 from '../assets/images/trending/trending_2.webp';
+import trending_3 from '../assets/images/trending/trending_3.webp';
+import trending_4 from '../assets/images/trending/trending_4.webp';
+import trending_5 from '../assets/images/trending/trending_5.webp';
+import trending_6 from '../assets/images/trending/trending_6.webp';
+import trending_7 from '../assets/images/trending/trending_7.webp';
+import trending_8 from '../assets/images/trending/trending_8.webp';
+import trending_9 from '../assets/images/trending/trending_9.webp';
+import trending_10 from '../assets/images/trending/trending_10.webp';
+import trending_11 from '../assets/images/trending/trending_11.webp';
+import trending_12 from '../assets/images/trending/trending_12.webp';
+import trending_1_video from '../assets/videos/trending_1.mp4';
+import trending_2_video from '../assets/videos/trending_2.mp4';
+import trending_3_video from '../assets/videos/trending_3.mp4';
+import trending_4_video from '../assets/videos/trending_4.mp4';
+import trending_5_video from '../assets/videos/trending_5.mp4';
+import trending_6_video from '../assets/videos/trending_6.mp4';
+import trending_7_video from '../assets/videos/trending_7.mp4';
+import trending_8_video from '../assets/videos/trending_8.mp4';
 
-import "swiper/css";
+import 'swiper/css';
 
 const videoUrls = [
   trending_1_video,
@@ -58,94 +58,98 @@ const thumbnailImages = [
 const videoSlides = [
   {
     id: 1,
-    title: "Classic Round",
+    title: 'Classic Round',
     thumbnail: thumbnailImages[0],
     video: videoUrls[0],
-    link: "/shop/round-glasses",
+    link: '/shop/round-glasses',
   },
   {
     id: 2,
-    title: "Aviator Edge",
+    title: 'Aviator Edge',
     thumbnail: thumbnailImages[1],
     video: videoUrls[1],
-    link: "/shop/aviator-glasses",
+    link: '/shop/aviator-glasses',
   },
   {
     id: 3,
-    title: "Cat Eye Style",
+    title: 'Cat Eye Style',
     thumbnail: thumbnailImages[2],
     video: videoUrls[2],
-    link: "/shop/cat-eye-glasses",
+    link: '/shop/cat-eye-glasses',
   },
   {
     id: 4,
-    title: "Rectangle Smart",
+    title: 'Rectangle Smart',
     thumbnail: thumbnailImages[3],
     video: videoUrls[3],
-    link: "/shop/rectangle-glasses",
+    link: '/shop/rectangle-glasses',
   },
   {
     id: 5,
-    title: "Blue Light Shield",
+    title: 'Blue Light Shield',
     thumbnail: thumbnailImages[4],
     video: videoUrls[4],
-    link: "/shop/blue-light-glasses",
+    link: '/shop/blue-light-glasses',
   },
   {
     id: 6,
-    title: "Sunset Luxe",
+    title: 'Sunset Luxe',
     thumbnail: thumbnailImages[5],
     video: videoUrls[5],
-    link: "/shop/sunset-luxe-glasses",
+    link: '/shop/sunset-luxe-glasses',
   },
   {
     id: 7,
-    title: "Vintage Charm",
+    title: 'Vintage Charm',
     thumbnail: thumbnailImages[6],
     video: videoUrls[6],
-    link: "/shop/vintage-glasses",
+    link: '/shop/vintage-glasses',
   },
   {
     id: 8,
-    title: "Modern Bold",
+    title: 'Modern Bold',
     thumbnail: thumbnailImages[7],
     video: videoUrls[7],
-    link: "/shop/modern-glasses",
+    link: '/shop/modern-glasses',
   },
   {
     id: 9,
-    title: "Elegant Retro",
+    title: 'Elegant Retro',
     thumbnail: thumbnailImages[8],
     video: videoUrls[8],
-    link: "/shop/retro-glasses",
+    link: '/shop/retro-glasses',
   },
   {
     id: 10,
-    title: "Urban Edge",
+    title: 'Urban Edge',
     thumbnail: thumbnailImages[9],
     video: videoUrls[9],
-    link: "/shop/urban-glasses",
+    link: '/shop/urban-glasses',
   },
   {
     id: 11,
-    title: "Minimalist Pure",
+    title: 'Minimalist Pure',
     thumbnail: thumbnailImages[10],
     video: videoUrls[10],
-    link: "/shop/minimalist-glasses",
+    link: '/shop/minimalist-glasses',
   },
   {
     id: 12,
-    title: "Fashion Forward",
+    title: 'Fashion Forward',
     thumbnail: thumbnailImages[11],
     video: videoUrls[11],
-    link: "/shop/fashion-glasses",
+    link: '/shop/fashion-glasses',
   },
 ];
 
 const Trending = () => {
-  const sectionRef=useRef(null);
-  const [visible,setVisible]=useState(false);
-  useEffect(()=>{const observer=new IntersectionObserver(([entry])=>setVisible(entry.isIntersecting));observer.observe(sectionRef.current);return()=>observer.disconnect();},[]);
+  const sectionRef = useRef(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting));
+    observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
   const swiperRef = useRef(null);
   const videoRefs = useRef([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -173,8 +177,6 @@ const Trending = () => {
           swiperRef.current.slideNext();
         }
       }, 3000);
-
-
     }, 500);
 
     return () => {
@@ -184,7 +186,7 @@ const Trending = () => {
       activeVideo.currentTime = 0;
       setPlayingIndex(-1);
     };
-  }, [activeIndex,visible]);
+  }, [activeIndex, visible]);
 
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
@@ -223,27 +225,32 @@ const Trending = () => {
         >
           {videoSlides.map((slide, index) => (
             <SwiperSlide key={slide.id} className="h-auto">
-              <div
-                className="h-full"
-              >
+              <div className="h-full">
                 <div className="relative h-[290px] overflow-hidden rounded-[26px] sm:h-[330px] lg:h-[440px]">
                   <img
                     src={slide.thumbnail}
                     alt={slide.title}
-                    className={`absolute inset-0 z-1 size-full object-cover transition duration-200 ${index === playingIndex ? "scale-105 opacity-0" : "opacity-100"}`}
+                    className={`absolute inset-0 z-1 size-full object-cover transition duration-200 ${index === playingIndex ? 'scale-105 opacity-0' : 'opacity-100'}`}
                   />
                   <video
                     ref={(element) => {
                       videoRefs.current[index] = element;
                     }}
-                    className={`absolute inset-0 z-2 block size-full object-cover transition duration-200 ${index === playingIndex ? "opacity-100" : "opacity-0"}`}
+                    className={`absolute inset-0 z-2 block size-full object-cover transition duration-200 ${index === playingIndex ? 'opacity-100' : 'opacity-0'}`}
                     src={visible && index === activeIndex ? slide.video : undefined}
                     muted
                     playsInline
                     preload="none"
                   />
                   <div className="absolute inset-0 z-3 bg-gradient-to-t from-black/60 via-black/20 to-black/30" />
-                  <Link to={index<4?`/collection?shape=${encodeURIComponent(['Round','Aviator','Cat Eye','Rectangle'][index])}`:'/collection'} className="absolute bottom-4 left-4 z-4 inline-flex min-w-27 items-center justify-center rounded-full border border-white/75 bg-white/95 px-4 py-2.5 text-sm font-bold text-ink shadow-lg transition hover:-translate-y-0.5 hover:bg-white sm:bottom-[18px] sm:left-[18px] sm:min-w-30 sm:px-[18px]">
+                  <Link
+                    to={
+                      index < 4
+                        ? `/collection?shape=${encodeURIComponent(['Round', 'Aviator', 'Cat Eye', 'Rectangle'][index])}`
+                        : '/collection'
+                    }
+                    className="absolute bottom-4 left-4 z-4 inline-flex min-w-27 items-center justify-center rounded-full border border-white/75 bg-white/95 px-4 py-2.5 text-sm font-bold text-ink shadow-lg transition hover:-translate-y-0.5 hover:bg-white sm:bottom-[18px] sm:left-[18px] sm:min-w-30 sm:px-[18px]"
+                  >
                     Shop now
                   </Link>
                 </div>

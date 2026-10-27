@@ -10,14 +10,20 @@ export default function useStickyColumns(firstRef, secondRef, enabled = true) {
     function update() {
       const headerHeight = header?.getBoundingClientRect().height || 0;
       for (const column of columns) {
-        column.style.setProperty('--column-sticky-top', `${stickyColumnTop(headerHeight, window.innerHeight, column.getBoundingClientRect().height)}px`);
+        column.style.setProperty(
+          '--column-sticky-top',
+          `${stickyColumnTop(headerHeight, window.innerHeight, column.getBoundingClientRect().height)}px`,
+        );
       }
     }
     update();
     const observer = new ResizeObserver(update);
-    columns.forEach(column => observer.observe(column));
+    columns.forEach((column) => observer.observe(column));
     if (header) observer.observe(header);
     window.addEventListener('resize', update);
-    return () => { observer.disconnect(); window.removeEventListener('resize', update); };
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', update);
+    };
   }, [firstRef, secondRef, enabled]);
 }

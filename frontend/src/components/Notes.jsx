@@ -1,4 +1,4 @@
-import { Link } from "../storeRouter";
+import { Link } from '../storeRouter';
 
 const Notes = () => {
   return (
@@ -8,28 +8,26 @@ const Notes = () => {
           <div className="max-w-5xl">
             <h2 className="text-xl sm:text-2xl font-semibold">Buy Eyewear from Lenskart</h2>
             <p className="mt-5 text-sm leading-6">
-              LENSKART SOLUTIONS LIMITED (Earlier known as Lenskart Solutions
-              Private Limited) is a technology-driven eyewear company, with a
-              belief that clear vision is fundamental to personal development
-              and well-being. Our aim is to build tech-enabled supply and
-              distribution solutions that improve access to affordable and
-              quality Eyewear for All.
+              LENSKART SOLUTIONS LIMITED (Earlier known as Lenskart Solutions Private Limited) is a
+              technology-driven eyewear company, with a belief that clear vision is fundamental to
+              personal development and well-being. Our aim is to build tech-enabled supply and
+              distribution solutions that improve access to affordable and quality Eyewear for All.
             </p>
             <p className="mt-5 text-sm leading-6">
-              We sell a wide range of eyewear products including prescription{" "}
+              We sell a wide range of eyewear products including prescription{' '}
               <Link className="underline" to="/collection/eyeglasses">
                 eyeglasses
               </Link>
-              ,{" "}
+              ,{' '}
               <Link className="underline" to="/collection/sunglasses">
                 sunglasses
               </Link>
-              , and other products such as{" "}
+              , and other products such as{' '}
               <Link className="underline" to="/collection/contact-lenses">
                 contact lenses
-              </Link>{" "}
-              and eyewear accessories. Our brands are designed to be
-              aspirational and appeal to a wide range of customer segments.
+              </Link>{' '}
+              and eyewear accessories. Our brands are designed to be aspirational and appeal to a
+              wide range of customer segments.
             </p>
           </div>
         </div>

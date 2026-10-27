@@ -12,17 +12,309 @@ import Pagination from '../components/Pagination';
 import Loader from '../components/Loader';
 import NotificationPopup from '../components/NotificationPopup';
 import { apiRequest } from '../api';
-const money=v=>`₹${Number(v).toLocaleString('en-IN')}`;
-export default function Commerce({kind,tracking=false}){
+const money = (v) => `₹${Number(v).toLocaleString('en-IN')}`;
+export default function Commerce({ kind, tracking = false }) {
   const [params, setParams] = useSearchParams();
-  const search = params.get("search") || "";
-  const pageValue = Number(params.get("page") || 1);
-  const page = Number.isSafeInteger(pageValue) && pageValue > 0 && pageValue <= 10000 ? pageValue : 1;
-  function setPage(value) { setParams(previous => { const next = new URLSearchParams(previous); next.set("page", String(value)); return next; }); }
-  const coupons=kind==='coupons';const title=coupons?'Discount Coupons':tracking?'Track Orders':'Orders';
-  const [data,setData]=useState({loading:true,rows:[],total:0});const [attempt,setAttempt]=useState(0);const [busy,setBusy]=useState(false);const [notice,setNotice]=useState(null);
-  useEffect(()=>{const controller=new AbortController();async function load(){setData(previous=>({...previous,loading:true}));try{const result=await apiRequest(`/admin/${kind}?page=${page}&search=${encodeURIComponent(search)}`,{signal:controller.signal});if(!controller.signal.aborted)setData({loading:false,rows:result[kind],total:result.total});}catch(error){if(!controller.signal.aborted){setData({loading:false,rows:[],total:0,error:error.message});setNotice({type:'error',message:error.message});}}}load();return()=>controller.abort();},[kind,page,attempt,search]);
-  async function mutate(path,method,body){setBusy(true);try{await apiRequest(`/admin${path}`,{method,body:JSON.stringify(body)});setAttempt(n=>n+1);setNotice({type:'success',message:'Changes saved.'});}catch(error){setNotice({type:'error',message:error.message});}finally{setBusy(false);}}
-  return <DashboardLayout><main className="admin-page"><PageHeader title={title} description={coupons?'Create and manage checkout discounts':tracking?'View carriers, waybills and shipment timelines':'View customer orders and update fulfillment status'}><div className="flex gap-2"><button className="admin-button-secondary" disabled={data.loading||busy} onClick={()=>setAttempt(n=>n+1)}>Refresh</button>{coupons&&<Link to="/coupons/add" className="admin-button-primary">Add Coupon</Link>}</div></PageHeader>
-  <DataTable label={title} footer={!data.loading&&!data.error&&<Pagination page={page} total={data.total} onPageChange={setPage} label={kind}/>}><thead><tr>{(coupons?['Sr. No.','Code','Discount','Minimum','Expiry','Status','Created On','Actions']:['Sr. No.','Order ID','Customer','Items','Total','Payment','Status',...(tracking?['Carrier','Waybill / Tracking']:[]),'Created On','Actions']).map(label=><th key={label}>{label}</th>)}</tr></thead><tbody>{data.loading?<tr><td colSpan={coupons?8:tracking?11:9}><Loader/></td></tr>:data.error?<tr><td colSpan={coupons?8:tracking?11:9}><button onClick={()=>setAttempt(n=>n+1)}>Try again</button></td></tr>:!data.rows.length?<tr><td colSpan={coupons?8:tracking?11:9} className="text-center">No {kind} found.</td></tr>:data.rows.map((row,index)=>coupons?<tr key={row._id}><td className="font-medium text-slate-700">{(page-1)*10+index+1}</td><td className="font-semibold"><Link to={`/coupons/${row._id}`} className="text-blue-600">{row.code}</Link></td><td>{row.type==='percentage'?`${row.value}%`:money(row.value)}</td><td>{money(row.minimum)}</td><td>{row.expiresAt?new Date(row.expiresAt).toLocaleDateString('en-IN'):'No expiry'}</td><td><StatusBadge status={!row.active?'inactive':row.expiresAt&&new Date(row.expiresAt)<new Date()?'expired':'active'}/></td><td className="whitespace-nowrap">{creationDate(row.createdAt)}</td><td><div className="flex gap-3"><ActionLink to={`/coupons/${row._id}`} action="view" label={`View coupon ${row.code}`}/><ActionLink to={`/coupons/${row._id}/edit`} action="edit" label={`Edit coupon ${row.code}`}/><button type="button" disabled={busy} onClick={()=>mutate(`/coupons/${row._id}`,'PATCH',{active:!row.active})} aria-label={`${row.active?'Disable':'Enable'} coupon ${row.code}`} title={row.active?'Disable coupon':'Enable coupon'} className="admin-action-link admin-action-power disabled:opacity-40"><Power size={16}/></button><DeleteRecordButton path={`/admin/coupons/${row._id}`} label={`coupon ${row.code}`} disabled={busy} onDeleted={()=>{if(data.rows.length===1&&page>1)setPage(page-1);else setAttempt(n=>n+1);}}/></div></td></tr>:<tr key={row._id}><td className="font-medium text-slate-700">{(page-1)*10+index+1}</td><td>#{row.orderId??'—'}</td><td>{row.user?.name||'Deleted account'}<p className="text-slate-400">{row.user?.email}</p>{row.shipping&&<details><summary className="cursor-pointer text-blue-600">Delivery address</summary><p>{row.shipping.name}<br/>{row.shipping.address}<br/>{row.shipping.city}, {row.shipping.state} {row.shipping.pincode}<br/>{row.shipping.phone}</p></details>}</td><td>{row.items.map((item,index)=><p key={index}>{item.name} × {item.quantity}{item.options&&` · ${item.options.color} / ${item.options.size}`}</p>)}</td><td>{money(row.totalAmount)}{row.couponCode&&<p className="text-emerald-600">{row.couponCode}: −{money(row.discount)}</p>}</td><td>{row.paymentMethod==='cod'?'COD':row.paymentMethod==='online'?'Online':'—'}</td><td><StatusBadge status={row.status}/>{tracking&&row.trackingNumber&&!row.carrierCollectedAt&&!['delivered','cancelled'].includes(row.status)&&<p className="mt-1 text-xs text-slate-500">Shipment booked</p>}</td>{tracking&&<><td>{row.carrier||'Not assigned'}</td><td className="break-all">{row.trackingNumber||'Not generated'}</td></>}<td>{creationDate(row.createdAt)}</td><td><div className="flex items-center gap-3"><ActionLink to={`/orders/${row._id}/track`} action="track" label={`Track order ${row.orderId??'—'}`}/><ActionLink to={`/orders/${row._id}/edit`} action="edit" label={`Edit order ${row.orderId??'—'}`}/><ActionLink to={`/orders/${row._id}`} action="view" label={`View order ${row.orderId??'—'}`}/><DeleteRecordButton path={`/admin/orders/${row._id}`} label={`order #${row.orderId??'—'}`} disabled={busy||row.status!=='cancelled'} onDeleted={()=>{if(data.rows.length===1&&page>1)setPage(page-1);else setAttempt(n=>n+1);}}/></div></td></tr>)}</tbody></DataTable>{notice&&<NotificationPopup notification={notice} onClose={()=>setNotice(null)}/>}</main></DashboardLayout>;
+  const search = params.get('search') || '';
+  const pageValue = Number(params.get('page') || 1);
+  const page =
+    Number.isSafeInteger(pageValue) && pageValue > 0 && pageValue <= 10000 ? pageValue : 1;
+  function setPage(value) {
+    setParams((previous) => {
+      const next = new URLSearchParams(previous);
+      next.set('page', String(value));
+      return next;
+    });
+  }
+  const coupons = kind === 'coupons';
+  const title = coupons ? 'Discount Coupons' : tracking ? 'Track Orders' : 'Orders';
+  const [data, setData] = useState({ loading: true, rows: [], total: 0 });
+  const [attempt, setAttempt] = useState(0);
+  const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    async function load() {
+      setData((previous) => ({ ...previous, loading: true }));
+      try {
+        const result = await apiRequest(
+          `/admin/${kind}?page=${page}&search=${encodeURIComponent(search)}`,
+          { signal: controller.signal },
+        );
+        if (!controller.signal.aborted)
+          setData({ loading: false, rows: result[kind], total: result.total });
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          setData({ loading: false, rows: [], total: 0, error: error.message });
+          setNotice({ type: 'error', message: error.message });
+        }
+      }
+    }
+    load();
+    return () => controller.abort();
+  }, [kind, page, attempt, search]);
+  async function mutate(path, method, body) {
+    setBusy(true);
+    try {
+      await apiRequest(`/admin${path}`, { method, body: JSON.stringify(body) });
+      setAttempt((n) => n + 1);
+      setNotice({ type: 'success', message: 'Changes saved.' });
+    } catch (error) {
+      setNotice({ type: 'error', message: error.message });
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <DashboardLayout>
+      <main className="admin-page">
+        <PageHeader
+          title={title}
+          description={
+            coupons
+              ? 'Create and manage checkout discounts'
+              : tracking
+                ? 'View carriers, waybills and shipment timelines'
+                : 'View customer orders and update fulfillment status'
+          }
+        >
+          <div className="flex gap-2">
+            <button
+              className="admin-button-secondary"
+              disabled={data.loading || busy}
+              onClick={() => setAttempt((n) => n + 1)}
+            >
+              Refresh
+            </button>
+            {coupons && (
+              <Link to="/coupons/add" className="admin-button-primary">
+                Add Coupon
+              </Link>
+            )}
+          </div>
+        </PageHeader>
+        <DataTable
+          label={title}
+          footer={
+            !data.loading &&
+            !data.error && (
+              <Pagination page={page} total={data.total} onPageChange={setPage} label={kind} />
+            )
+          }
+        >
+          <thead>
+            <tr>
+              {(coupons
+                ? [
+                    'Sr. No.',
+                    'Code',
+                    'Discount',
+                    'Minimum',
+                    'Expiry',
+                    'Status',
+                    'Created On',
+                    'Actions',
+                  ]
+                : [
+                    'Sr. No.',
+                    'Order ID',
+                    'Customer',
+                    'Items',
+                    'Total',
+                    'Payment',
+                    'Status',
+                    ...(tracking ? ['Carrier', 'Waybill / Tracking'] : []),
+                    'Created On',
+                    'Actions',
+                  ]
+              ).map((label) => (
+                <th key={label}>{label}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.loading ? (
+              <tr>
+                <td colSpan={coupons ? 8 : tracking ? 11 : 9}>
+                  <Loader />
+                </td>
+              </tr>
+            ) : data.error ? (
+              <tr>
+                <td colSpan={coupons ? 8 : tracking ? 11 : 9}>
+                  <button onClick={() => setAttempt((n) => n + 1)}>Try again</button>
+                </td>
+              </tr>
+            ) : !data.rows.length ? (
+              <tr>
+                <td colSpan={coupons ? 8 : tracking ? 11 : 9} className="text-center">
+                  No {kind} found.
+                </td>
+              </tr>
+            ) : (
+              data.rows.map((row, index) =>
+                coupons ? (
+                  <tr key={row._id}>
+                    <td className="font-medium text-slate-700">{(page - 1) * 10 + index + 1}</td>
+                    <td className="font-semibold">
+                      <Link to={`/coupons/${row._id}`} className="text-blue-600">
+                        {row.code}
+                      </Link>
+                    </td>
+                    <td>{row.type === 'percentage' ? `${row.value}%` : money(row.value)}</td>
+                    <td>{money(row.minimum)}</td>
+                    <td>
+                      {row.expiresAt
+                        ? new Date(row.expiresAt).toLocaleDateString('en-IN')
+                        : 'No expiry'}
+                    </td>
+                    <td>
+                      <StatusBadge
+                        status={
+                          !row.active
+                            ? 'inactive'
+                            : row.expiresAt && new Date(row.expiresAt) < new Date()
+                              ? 'expired'
+                              : 'active'
+                        }
+                      />
+                    </td>
+                    <td className="whitespace-nowrap">{creationDate(row.createdAt)}</td>
+                    <td>
+                      <div className="flex gap-3">
+                        <ActionLink
+                          to={`/coupons/${row._id}`}
+                          action="view"
+                          label={`View coupon ${row.code}`}
+                        />
+                        <ActionLink
+                          to={`/coupons/${row._id}/edit`}
+                          action="edit"
+                          label={`Edit coupon ${row.code}`}
+                        />
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() =>
+                            mutate(`/coupons/${row._id}`, 'PATCH', { active: !row.active })
+                          }
+                          aria-label={`${row.active ? 'Disable' : 'Enable'} coupon ${row.code}`}
+                          title={row.active ? 'Disable coupon' : 'Enable coupon'}
+                          className="admin-action-link admin-action-power disabled:opacity-40"
+                        >
+                          <Power size={16} />
+                        </button>
+                        <DeleteRecordButton
+                          path={`/admin/coupons/${row._id}`}
+                          label={`coupon ${row.code}`}
+                          disabled={busy}
+                          onDeleted={() => {
+                            if (data.rows.length === 1 && page > 1) setPage(page - 1);
+                            else setAttempt((n) => n + 1);
+                          }}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  <tr key={row._id}>
+                    <td className="font-medium text-slate-700">{(page - 1) * 10 + index + 1}</td>
+                    <td>#{row.orderId ?? '—'}</td>
+                    <td>
+                      {row.user?.name || 'Deleted account'}
+                      <p className="text-slate-400">{row.user?.email}</p>
+                      {row.shipping && (
+                        <details>
+                          <summary className="cursor-pointer text-blue-600">
+                            Delivery address
+                          </summary>
+                          <p>
+                            {row.shipping.name}
+                            <br />
+                            {row.shipping.address}
+                            <br />
+                            {row.shipping.city}, {row.shipping.state} {row.shipping.pincode}
+                            <br />
+                            {row.shipping.phone}
+                          </p>
+                        </details>
+                      )}
+                    </td>
+                    <td>
+                      {row.items.map((item, index) => (
+                        <p key={index}>
+                          {item.name} × {item.quantity}
+                          {item.options && ` · ${item.options.color} / ${item.options.size}`}
+                        </p>
+                      ))}
+                    </td>
+                    <td>
+                      {money(row.totalAmount)}
+                      {row.couponCode && (
+                        <p className="text-emerald-600">
+                          {row.couponCode}: −{money(row.discount)}
+                        </p>
+                      )}
+                    </td>
+                    <td>
+                      {row.paymentMethod === 'cod'
+                        ? 'COD'
+                        : row.paymentMethod === 'online'
+                          ? 'Online'
+                          : '—'}
+                    </td>
+                    <td>
+                      <StatusBadge status={row.status} />
+                      {tracking &&
+                        row.trackingNumber &&
+                        !row.carrierCollectedAt &&
+                        !['delivered', 'cancelled'].includes(row.status) && (
+                          <p className="mt-1 text-xs text-slate-500">Shipment booked</p>
+                        )}
+                    </td>
+                    {tracking && (
+                      <>
+                        <td>{row.carrier || 'Not assigned'}</td>
+                        <td className="break-all">{row.trackingNumber || 'Not generated'}</td>
+                      </>
+                    )}
+                    <td>{creationDate(row.createdAt)}</td>
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <ActionLink
+                          to={`/orders/${row._id}/track`}
+                          action="track"
+                          label={`Track order ${row.orderId ?? '—'}`}
+                        />
+                        <ActionLink
+                          to={`/orders/${row._id}/edit`}
+                          action="edit"
+                          label={`Edit order ${row.orderId ?? '—'}`}
+                        />
+                        <ActionLink
+                          to={`/orders/${row._id}`}
+                          action="view"
+                          label={`View order ${row.orderId ?? '—'}`}
+                        />
+                        <DeleteRecordButton
+                          path={`/admin/orders/${row._id}`}
+                          label={`order #${row.orderId ?? '—'}`}
+                          disabled={busy || row.status !== 'cancelled'}
+                          onDeleted={() => {
+                            if (data.rows.length === 1 && page > 1) setPage(page - 1);
+                            else setAttempt((n) => n + 1);
+                          }}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ),
+              )
+            )}
+          </tbody>
+        </DataTable>
+        {notice && <NotificationPopup notification={notice} onClose={() => setNotice(null)} />}
+      </main>
+    </DashboardLayout>
+  );
 }

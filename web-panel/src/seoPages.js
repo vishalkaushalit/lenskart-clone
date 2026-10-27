@@ -1,4 +1,12 @@
 import { editableStorePages } from '../../shared/storePages.js';
 
-export const seoPages = editableStorePages.map(page => [page.path, page.label, page.title, page.description, page.noindex, page.keywords || '', page.faqs || []]);
-export const seoPageKey = path => path === '/' ? 'home' : encodeURIComponent(path.slice(1));
+export const seoPages = editableStorePages.map((page) => [
+  page.path,
+  page.label,
+  page.title,
+  page.description,
+  page.noindex,
+  page.keywords || '',
+  page.faqs || [],
+]);
+export const seoPageKey = (path) => (path === '/' ? 'home' : encodeURIComponent(path.slice(1)));

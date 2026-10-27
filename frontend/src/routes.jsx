@@ -1,18 +1,18 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import CategoryProvider from './context/CategoryProvider';
-import Header from "./header/Header";
-import Footer from "./footer/Footer";
-import { Outlet } from "react-router-dom";
+import Header from './header/Header';
+import Footer from './footer/Footer';
+import { Outlet } from 'react-router-dom';
 
 function StoreLayout() {
-  const [hideNavigation,setHideNavigation]=useState(false);
+  const [hideNavigation, setHideNavigation] = useState(false);
   return (
     <CategoryProvider>
-      {!hideNavigation&&<Header />}
+      {!hideNavigation && <Header />}
       <main className="store-page-surface">
-        <Outlet context={{setHideNavigation}} />
+        <Outlet context={{ setHideNavigation }} />
       </main>
-      {!hideNavigation&&<Footer />}
+      {!hideNavigation && <Footer />}
     </CategoryProvider>
   );
 }

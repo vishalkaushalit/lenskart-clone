@@ -1,13 +1,13 @@
 import PasswordInput from '../../../shared/PasswordInput';
-import PopupMessage from "./PopupMessage";
-import { useState } from "react";
-import { Link, useLocation, useNavigate } from "../storeRouter";
-import { useAuth } from "../context/AuthState";
+import PopupMessage from './PopupMessage';
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from '../storeRouter';
+import { useAuth } from '../context/AuthState';
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const { login } = useAuth();
@@ -16,32 +16,28 @@ const LoginForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError("");
+    setError('');
     setSubmitting(true);
 
     try {
       const user = await login(email, password);
 
-      if (user.role === "admin") {
-        const adminUrl = (import.meta.env.VITE_ADMIN_URL || (import.meta.env.PROD ? `${window.location.origin}/admin` : ''));
+      if (user.role === 'admin') {
+        const adminUrl =
+          import.meta.env.VITE_ADMIN_URL ||
+          (import.meta.env.PROD ? `${window.location.origin}/admin` : '');
         if (!adminUrl) {
-          setError("The web-panel URL is not configured.");
+          setError('The web-panel URL is not configured.');
           return;
         }
-        window.location.assign(
-          `${adminUrl.replace(/\/$/, "")}/dashboard?login=success`
-        );
+        window.location.assign(`${adminUrl.replace(/\/$/, '')}/dashboard?login=success`);
         return;
       }
 
       const from = location.state?.from;
 
       const destination =
-        typeof from === "string" &&
-        from.startsWith("/") &&
-        !from.startsWith("//")
-          ? from
-          : "/";
+        typeof from === 'string' && from.startsWith('/') && !from.startsWith('//') ? from : '/';
 
       navigate(destination, { replace: true });
     } catch (error) {
@@ -54,9 +50,7 @@ const LoginForm = () => {
   return (
     <div className="w-full p-6 sm:p-10 lg:w-1/2">
       <h1 className="text-3xl font-semibold">Welcome back</h1>
-      <p className="mt-2 text-gray-600">
-        Log in to your account.
-      </p>
+      <p className="mt-2 text-gray-600">Log in to your account.</p>
 
       {location.state?.registered && (
         <PopupMessage message="Registration successful. Please log in." type="success" />
@@ -64,10 +58,7 @@ const LoginForm = () => {
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-5">
         <div>
-          <label
-            htmlFor="login-email"
-            className="mb-2 block font-medium"
-          >
+          <label htmlFor="login-email" className="mb-2 block font-medium">
             Email
           </label>
 
@@ -84,10 +75,7 @@ const LoginForm = () => {
         </div>
 
         <div>
-          <label
-            htmlFor="login-password"
-            className="mb-2 block font-medium"
-          >
+          <label htmlFor="login-password" className="mb-2 block font-medium">
             Password
           </label>
 
@@ -104,29 +92,24 @@ const LoginForm = () => {
         </div>
 
         <div className="text-right">
-          <Link
-            to="/forgot-password"
-            className="text-sm text-blue-700 hover:underline"
-          >
+          <Link to="/forgot-password" className="text-sm text-blue-700 hover:underline">
             Forgot password?
           </Link>
         </div>
 
-        {error && (
-          <PopupMessage message={error} onClose={() => setError("")} />
-        )}
+        {error && <PopupMessage message={error} onClose={() => setError('')} />}
 
         <button
           type="submit"
           disabled={submitting}
           className="w-full rounded-lg bg-black px-4 py-3 font-medium text-white disabled:opacity-50"
         >
-          {submitting ? "Logging in..." : "Login"}
+          {submitting ? 'Logging in...' : 'Login'}
         </button>
       </form>
 
       <p className="mt-6 text-center text-gray-600">
-        Don't have an account?{" "}
+        Don't have an account?{' '}
         <Link
           to="/register"
           state={{ from: location.state?.from }}

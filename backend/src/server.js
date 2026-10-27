@@ -4,8 +4,8 @@ import 'dotenv/config';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { publicProducts, managedProducts } from './routes/productRoutes.js';
 import express from 'express';
-import {publicCategories,adminCategories} from './routes/categoryRoutes.js';
-import {commerceAdmin,commercePublic} from './routes/commerceRoutes.js';
+import { publicCategories, adminCategories } from './routes/categoryRoutes.js';
+import { commerceAdmin, commercePublic } from './routes/commerceRoutes.js';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import session from 'express-session';
@@ -30,13 +30,19 @@ if (process.env.VERCEL) app.set('trust proxy', 1);
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.ADMIN_URL,
-  ...(process.env.VERCEL ? [process.env.VERCEL_URL, process.env.VERCEL_PROJECT_PRODUCTION_URL].filter(Boolean).map(host => `https://${host}`) : []),
+  ...(process.env.VERCEL
+    ? [process.env.VERCEL_URL, process.env.VERCEL_PROJECT_PRODUCTION_URL]
+        .filter(Boolean)
+        .map((host) => `https://${host}`)
+    : []),
 ].filter(Boolean);
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  }),
+);
 
 app.use(express.json({ limit: '512kb' }));
 
@@ -93,30 +99,47 @@ export function initializeApp() {
       console.error('Session store error:', error.name);
     });
 
-    app.use(session({
-      name: 'store.sid',
-      secret: process.env.SESSION_SECRET,
-      store: sessionStore,
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      },
-    }));
+    app.use(
+      session({
+        name: 'store.sid',
+        secret: process.env.SESSION_SECRET,
+        store: sessionStore,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        },
+      }),
+    );
 
-    await Promise.all([User.init(),Order.init(),Coupon.init(),ProductVariant.init(),CustomerReview.init()]);
+    await Promise.all([
+      User.init(),
+      Order.init(),
+      Coupon.init(),
+      ProductVariant.init(),
+      CustomerReview.init(),
+    ]);
     app.use('/api/site-seo', publicSiteSeo);
     app.use('/api/admin/site-seo', adminSiteSeo);
-    app.get('/', (req,res) => { req.storefrontPath='/';return renderStorefront(req,res); });
-    app.get('/robots.txt', (req,res,next) => { req.url='/robots.txt';publicSiteSeo(req,res,next); });
-    app.get('/sitemap.xml', (req,res,next) => { req.url='/sitemap.xml';publicSiteSeo(req,res,next); });
+    app.get('/', (req, res) => {
+      req.storefrontPath = '/';
+      return renderStorefront(req, res);
+    });
+    app.get('/robots.txt', (req, res, next) => {
+      req.url = '/robots.txt';
+      publicSiteSeo(req, res, next);
+    });
+    app.get('/sitemap.xml', (req, res, next) => {
+      req.url = '/sitemap.xml';
+      publicSiteSeo(req, res, next);
+    });
     app.use('/api/seo', publicSeo);
     app.use('/api/admin/seo', adminSeo);
-    app.use('/api/categories',publicCategories);
-    app.use('/api/admin/categories',adminCategories);
+    app.use('/api/categories', publicCategories);
+    app.use('/api/admin/categories', adminCategories);
     app.use('/api/admin', commerceAdmin);
     app.use('/api/admin/dashboard', dashboardRoutes);
     app.use('/api', commercePublic);
@@ -125,12 +148,19 @@ export function initializeApp() {
     app.use('/api/users', userRoutes);
     app.use('/api/products', publicProducts);
     app.use('/api/admin/products', managedProducts);
-    app.use('/assets/products', express.static(fileURLToPath(new URL('../public/products/', import.meta.url)),{maxAge:'7d',etag:true}));
+    app.use(
+      '/assets/products',
+      express.static(fileURLToPath(new URL('../public/products/', import.meta.url)), {
+        maxAge: '7d',
+        etag: true,
+      }),
+    );
 
-    app.use((req,res,next)=>{
-      if(!['GET','HEAD'].includes(req.method)||/^\/(api|admin|assets)(?:\/|$)/.test(req.path))return next();
-      req.storefrontPath=req.path.replace(/\/+$/,'') || '/';
-      Promise.resolve(renderStorefront(req,res)).catch(next);
+    app.use((req, res, next) => {
+      if (!['GET', 'HEAD'].includes(req.method) || /^\/(api|admin|assets)(?:\/|$)/.test(req.path))
+        return next();
+      req.storefrontPath = req.path.replace(/\/+$/, '') || '/';
+      Promise.resolve(renderStorefront(req, res)).catch(next);
     });
 
     app.use((req, res) => {
@@ -145,7 +175,12 @@ export function initializeApp() {
 
       res.status(error.status === 413 ? 413 : 500).json({
         success: false,
-        message: error.status === 413 ? (req.is('application/json')?'The form is too large. Reduce the content and try again.':'Each image must be smaller than 4 MB.') : 'Something went wrong. Please try again.',
+        message:
+          error.status === 413
+            ? req.is('application/json')
+              ? 'The form is too large. Reduce the content and try again.'
+              : 'Each image must be smaller than 4 MB.'
+            : 'Something went wrong. Please try again.',
       });
     });
 
@@ -158,10 +193,12 @@ export default app;
 
 // Importing this module from the Vercel handler must not start a listener.
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  initializeApp().then(() => {
-    app.listen(PORT, () => console.log(`Backend running at http://localhost:${PORT}`));
-  }).catch(error => {
-    console.error('Backend startup failed:', error.message);
-    process.exitCode = 1;
-  });
+  initializeApp()
+    .then(() => {
+      app.listen(PORT, () => console.log(`Backend running at http://localhost:${PORT}`));
+    })
+    .catch((error) => {
+      console.error('Backend startup failed:', error.message);
+      process.exitCode = 1;
+    });
 }

@@ -23,7 +23,13 @@ export async function updateProfile(req, res, next) {
     if (!user) return res.status(401).json({ message: 'Account not found. Please log in again.' });
     return res.json({
       success: true,
-      user: { id: user._id, userId: user.userId, name: user.name, email: user.email, role: user.role },
+      user: {
+        id: user._id,
+        userId: user.userId,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -41,7 +47,9 @@ export async function listOrders(req, res, next) {
   try {
     const pageSize = 10;
     const orders = await Order.find({ user: req.user._id })
-      .select('orderId items totalAmount currency status createdAt deliveredAt updatedAt trackingNumber carrier shipmentBookedAt carrierCollectedAt')
+      .select(
+        'orderId items totalAmount currency status createdAt deliveredAt updatedAt trackingNumber carrier shipmentBookedAt carrierCollectedAt',
+      )
       .sort({ createdAt: -1, _id: -1 })
       .skip((page - 1) * pageSize)
       .limit(pageSize + 1)
