@@ -389,7 +389,7 @@ Product detail endpoints fetch variants and approved reviews concurrently after 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `18c759b1ebd1c59e52d48228305955f02df871a673262ec742b68639ebc1011d`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `1a513aecb60b85bc9970fed643005b3b060378f27ee1e1677d847b03a9be63be`.
 
 ### Actual npm commands
 
@@ -720,6 +720,8 @@ const schema = new mongoose.Schema({
   path: { type: String, required: true, unique: true, maxlength: 300 },
   title: { type: String, trim: true, maxlength: 120, default: '' },
   description: { type: String, trim: true, maxlength: 320, default: '' },
+  keywords: { type: String, trim: true, maxlength: 1000, default: '' },
+  faqs: { type: [{ question: { type: String, required: true, trim: true, maxlength: 200 }, answer: { type: String, required: true, trim: true, maxlength: 1000 } }], default: [], validate: rows => rows.length <= 20 },
   image: { type: String, trim: true, maxlength: 2000, default: '' },
 }, { timestamps: true });
 
@@ -735,6 +737,7 @@ import {slugify} from '../utils/slugs.js';
 const validImage = (value) => typeof value === 'string' && value.length <= 2000 && (/^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value));
 const textList = { type: [String], default: [], validate: (values) => values.length <= 12 && values.every((value) => value.length <= 300) };
 const schema = new mongoose.Schema({
+  seoKeywords: { type: String, trim: true, maxlength: 1000, default: '' },
   seoTitle: { type: String, trim: true, maxlength: 120, default: '' },
   seoDescription: { type: String, trim: true, maxlength: 320, default: '' },
   seoImage: { type: String, trim: true, maxlength: 2000, default: '', validate: value => !value || validImage(value) },
@@ -929,3 +932,11 @@ Page SEO overrides are stored in the `PageSeo` model with unique `path`, `title`
 Product `seoTitle` (120 characters), `seoDescription` (320) and `seoImage` (2000, HTTP/HTTPS URL or uploaded `/assets/products/` path) are saved by the product create/update API and included in product responses. Nonempty product SEO fields take precedence over path-based settings on product detail pages, while review pages retain their own path settings.
 
 Admin commerce and review lists use 10 rows per page. User lists default to a limit of 10, and dashboard recent orders return 10 rows per page.
+
+## Keywords and FAQ schema
+
+PageSeo supports `keywords` (string, 1000 characters) and `faqs` (up to 20 required question/answer pairs, 200/1000 characters). Public/admin SEO reads include both. SEO writes validate and trim these fields; omitted fields preserve saved values and empty strings/arrays clear them. Products expose editable `seoKeywords` (1000 characters); existing `faqs` provide visible FAQ content and schema.
+
+Dashboard accepts `days=all`, deriving the daily range from the earliest saved order through today in India time. All-time comparison percentages are null; recent orders remain paginated at 10 per page. Empty databases use today’s range.
+
+Dashboard accepts independent `salesDays`, `statusDays`, `recentDays` (same supported ranges as `days`) and `recentStatus` (all or a valid order status). Omitted section ranges inherit `days`. Facets use separate date boundaries; recent-order pagination counts only matching records, while summary cards retain their own range.

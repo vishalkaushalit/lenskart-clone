@@ -288,7 +288,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e53b8c9c8d85ef8fe9631b6ff6a9d271b5b141fcb293915f8b35e26de2c7df74`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `7566670ff64d4e6a2e31a4aeae40d1fe9b88a0dfa32839d5f973d5efd2aa60ff`.
 
 ### Actual npm commands
 
@@ -315,6 +315,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/AdminRoute.jsx](src/components/AdminRoute.jsx) | AdminRoute |
 | [src/components/AsideBarDashboard.jsx](src/components/AsideBarDashboard.jsx) | default export |
 | [src/components/ChartDashboard.jsx](src/components/ChartDashboard.jsx) | ChartDashboard |
+| [src/components/DashboardDateFilter.jsx](src/components/DashboardDateFilter.jsx) | DashboardDateFilter |
 | [src/components/DashboardHeader.jsx](src/components/DashboardHeader.jsx) | default export |
 | [src/components/DashboardLayout.jsx](src/components/DashboardLayout.jsx) | DashboardLayout |
 | [src/components/DataTable.jsx](src/components/DataTable.jsx) | DataTable |
@@ -505,7 +506,7 @@ The search engine listing uses an icon-only blue pencil button to edit and a gra
 
 Search engine listing previews use a compact search-result layout with a site icon, breadcrumb URL, clickable title, clamped description and thumbnail from the social override or main product image. Long content truncates and the thumbnail adapts to narrow screens; this is an approximation, not a guarantee of actual search engine appearance.
 
-The SEO editor has no social sharing image field. Its search result thumbnail continues to use the product main image or a previously saved image override; existing saved image data is preserved.
+The SEO editor includes a social sharing image upload with preview, Replace image and Remove image actions. Product listings default to the main product image; removing an override restores it. JPG/PNG/WebP uploads are limited to 4 MB. Save is disabled during uploads.
 
 Opening the SEO editor prefills blank title and description fields with editable page-content values. Existing custom values are preserved, character counts reflect the actual inputs, and these values save with the page/product.
 
@@ -520,3 +521,31 @@ All paginated admin tables show 10 items per page, including products, variants,
 ## Shared page registry
 
 `shared/storePages.js` is the single source for storefront routes, default metadata, and the admin Page SEO table. To add a static page, create its component in `frontend/src/pages/` and register its path, component filename (without extension), label, title, description, noindex policy, layout (`store` or `auth`), and protected flag there. Vite discovers page components automatically. Static entries appear in Page SEO after rebuilding/deploying both apps; no separate admin entry or notification is needed. Parameterized product/order routes are excluded from the static SEO table; product SEO remains in the product editor. Existing path-based saved overrides remain valid. This does not create page content from the admin panel.
+
+## Keywords and FAQ schema
+
+Page SEO edit forms include comma-separated meta keywords (1000 characters) and up to 20 FAQs with question (200) and answer (1000) fields. Add/remove FAQs and save to publish visible page FAQs and generated FAQPage structured data. Product SEO has keywords; product FAQs remain in Storefront product details → Frequently asked questions and generate schema automatically.
+
+SEO editor Page title and Page URL / URL handle share a two-column row on desktop and stack on narrow screens.
+
+SEO editor field labels, including FAQ question and answer labels, use black text.
+
+FAQ editor rows collapse to a question summary with a chevron toggle. Saved FAQs start collapsed; new blank questions open automatically. Invalid fields expand their row for correction.
+
+Search result previews load the storefront favicon from its configured frontend URL, falling back to a globe if the icon cannot load.
+
+SEO social image selection uses the same dashed upload area as the product gallery, with Upload image and drag-and-drop support. Uploaded or default product images show a preview with Replace and Remove actions as applicable.
+
+SEO editors place a sticky search preview on the left and fields on the right at wide desktop widths, stacking on smaller screens. Home, Collection and Eyeglasses include starter keywords and frame-selection FAQs from the shared page registry. Saved values take precedence, including explicitly empty keyword/FAQ settings.
+
+FAQ removal uses the shared red trash icon button with a tooltip and accessible label.
+
+SEO actions display shared dismissible notifications for successful/failed saves, required-field validation, FAQ additions/removals, and image uploads, replacements, removals and upload errors. FAQ/image messages indicate that the form must be saved to apply changes. Repeated actions restart the notification display; notices last three seconds. Shared image fields provide the same feedback elsewhere in the admin.
+
+Dashboard defaults to All time so older orders appear immediately. Date filters retain Last 7/30/90 days. Revenue continues to include delivered orders only; status and recent-order sections include all statuses in the selected period.
+
+Dashboard Sales Overview, Order Status and Recent Orders have independent date filters (All time / Last 7 / 30 / 90 days). Recent Orders also has a status filter; changing its filters resets pagination to page one, with 10 matching rows per page. Section filters do not change other sections.
+
+The dashboard header shows Refresh without a date filter. Summary cards show all-time totals; each chart/table keeps its individual filters.
+
+Recent Orders uses the shared bordered admin button style for View All, consistent with the dashboard controls.

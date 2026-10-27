@@ -15,9 +15,11 @@ function setMeta(attribute, key, value) {
   if (!element.parentNode) document.head.appendChild(element);
 }
 
-function applyMetadata({ title, description, url, noindex = false, image }) {
+function applyMetadata({ title, description, url, noindex = false, image, keywords = '' }) {
   document.title = `${title} | ${brand}`;
   setMeta('name', 'description', description);
+  if (keywords) setMeta('name', 'keywords', keywords);
+  else document.head.querySelectorAll('meta[name="keywords"]').forEach(node => node.remove());
   setMeta('name', 'robots', noindex ? 'noindex, nofollow' : 'index, follow');
   setMeta('property', 'og:title', document.title);
   setMeta('property', 'og:description', description);
@@ -51,14 +53,14 @@ export default function PageMetadata() {
     if (productMatch) [title, description, noindex] = [productMatch[2] ? 'Product Reviews' : 'Eyewear Details', 'Explore eyewear details and customer reviews.', false];
     // Filtered/search URLs are kept out of the index; canonical URLs omit queries.
     const filtered = ['/collection', '/eyeglasses'].includes(path) && Boolean(search);
-    const metadata = { title, description, noindex: noindex || filtered, url: new URL(path, window.location.origin).href };
+    const metadata = { title, description, keywords: editableStorePages.find(page => page.path === path)?.keywords || '', noindex: noindex || filtered, url: new URL(path, window.location.origin).href };
     const controller = new AbortController();
     let overrides = {};
     let current = metadata;
     let productOverrides = {};
     function render(next = current) {
       current = next;
-      applyMetadata({ ...current, ...Object.fromEntries(['title', 'description', 'image'].filter(key => overrides[key]).map(key => [key, overrides[key]])), ...productOverrides });
+      applyMetadata({ ...current, ...Object.fromEntries(['title', 'description', 'image', 'keywords'].filter(key => key === 'keywords' ? typeof overrides[key] === 'string' : overrides[key]).map(key => [key, overrides[key]])), ...productOverrides });
     }
     render();
     apiRequest(`/seo?path=${encodeURIComponent(path)}`, { signal: controller.signal }).then(({ seo }) => {
@@ -67,7 +69,7 @@ export default function PageMetadata() {
     if (!productMatch) return () => controller.abort();
     apiRequest(`/products/${productMatch[1]}`, { signal: controller.signal }).then(({ product }) => {
       if (controller.signal.aborted || !product) return;
-      if (!productMatch[2]) productOverrides = Object.fromEntries([['title', product.seoTitle], ['description', product.seoDescription], ['image', product.seoImage]].filter(([, value]) => value));
+      if (!productMatch[2]) productOverrides = Object.fromEntries([['keywords', product.seoKeywords], ['title', product.seoTitle], ['description', product.seoDescription], ['image', product.seoImage]].filter(([, value]) => value));
       const text = String(product.description || product.subtitle || `Explore ${product.name}, including frame details, available options and customer reviews.`).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
       const imageBase = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api');
       render({ ...metadata, title: `${product.name}${productMatch[2] ? ' Reviews' : ''}`, description: productMatch[2] ? `Read customer reviews and ratings for ${product.name}.` : text, image: product.image ? new URL(product.image, imageBase).href : undefined });

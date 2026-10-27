@@ -1,3 +1,4 @@
+import PageFaq from './seo/PageFaq';
 import {useState} from 'react';
 import CategoryProvider from './context/CategoryProvider';
 import Header from "./header/Header";
@@ -11,6 +12,7 @@ function StoreLayout() {
       {!hideNavigation&&<Header />}
       <main className="store-page-surface">
         <Outlet context={{setHideNavigation}} />
+        <PageFaq />
       </main>
       {!hideNavigation&&<Footer />}
     </CategoryProvider>

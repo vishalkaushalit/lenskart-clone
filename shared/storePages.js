@@ -8,7 +8,18 @@ export const storePages = [
     "noindex": false,
     "layout": "store",
     "protected": false,
-    "component": "Home"
+    "component": "Home",
+    "keywords": "eyeglasses, sunglasses, eyewear, frames, frame sizes",
+    "faqs": [
+      {
+        "question": "How can I find a frame style?",
+        "answer": "Browse the collection and filter by brand, shape, color and frame size. Open a product to review its available options."
+      },
+      {
+        "question": "How do I choose a frame size?",
+        "answer": "Check the size printed inside your current frame and compare it with the frame size and width information on the product page."
+      }
+    ]
   },
   {
     "path": "/collection",
@@ -18,7 +29,18 @@ export const storePages = [
     "noindex": false,
     "layout": "store",
     "protected": false,
-    "component": "Collection"
+    "component": "Collection",
+    "keywords": "eyeglasses, eyewear collection, frame shapes, frame sizes",
+    "faqs": [
+      {
+        "question": "How can I find a frame style?",
+        "answer": "Browse the collection and filter by brand, shape, color and frame size. Open a product to review its available options."
+      },
+      {
+        "question": "How do I choose a frame size?",
+        "answer": "Check the size printed inside your current frame and compare it with the frame size and width information on the product page."
+      }
+    ]
   },
   {
     "path": "/eyeglasses",
@@ -28,7 +50,18 @@ export const storePages = [
     "noindex": false,
     "layout": "store",
     "protected": false,
-    "component": "Collection"
+    "component": "Collection",
+    "keywords": "eyeglasses, eyewear collection, frame shapes, frame sizes",
+    "faqs": [
+      {
+        "question": "How can I find a frame style?",
+        "answer": "Browse the collection and filter by brand, shape, color and frame size. Open a product to review its available options."
+      },
+      {
+        "question": "How do I choose a frame size?",
+        "answer": "Check the size printed inside your current frame and compare it with the frame size and width information on the product page."
+      }
+    ]
   },
   {
     "path": "/wishlist",

@@ -200,3 +200,19 @@ textarea.admin-field, textarea.product-field { resize:vertical; }
 .seo-pages-table th:nth-child(4) { width:24%; }
 .seo-pages-table th:last-child { width:14%; }
 .seo-pages-table td:nth-child(3) { overflow-wrap:anywhere; }
+
+.seo-editor .product-label { color:#000; }
+
+.seo-faq-toggle > summary { list-style:none; }
+.seo-faq-toggle > summary::-webkit-details-marker { display:none; }
+.seo-faq-toggle[open] > summary .seo-faq-chevron { transform:rotate(180deg); }
+.seo-faq-toggle > summary:focus-visible { outline:2px solid #2563eb; outline-offset:2px; border-radius:8px; }
+
+.seo-editor-layout { margin-top:20px; }
+.seo-editor-layout .seo-preview { margin-top:0; }
+.seo-editor-fields { margin-top:20px; padding-top:20px; border-top:1px solid #e2e8f0; }
+@media(min-width:1200px) {
+  .seo-editor-layout.is-expanded { display:grid; grid-template-columns:minmax(0,0.9fr) minmax(0,1.1fr); gap:28px; align-items:start; }
+  .seo-editor-layout.is-expanded .seo-preview { position:sticky; top:24px; max-width:none; }
+  .seo-editor-layout.is-expanded .seo-editor-fields { margin-top:0; padding:0 0 0 28px; border-top:0; border-left:1px solid #e2e8f0; }
+}

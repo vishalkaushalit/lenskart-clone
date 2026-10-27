@@ -72,3 +72,48 @@ test('invalid recent-order pagination is rejected before database reads',async t
  t.mock.method(User,'countDocuments',()=>assert.fail('Invalid page queried database'));
  let status;await dashboardSummary({query:{recentPage:'0'}},{status(code){status=code;return this;},json(){}},assert.ifError);assert.equal(status,400);
 });
+
+test('all-time range includes orders older than the rolling filters', () => {
+  const range = dashboardRange('all', new Date('2026-10-27T10:00:00Z'), new Date('2026-10-05T10:49:56Z'));
+  assert.equal(range.start.toISOString(), '2026-10-04T18:30:00.000Z');
+  assert.equal(range.end.toISOString(), '2026-10-27T18:30:00.000Z');
+  assert.equal(range.days, 23);
+  const series = salesSeries(range, [{ _id: '2026-10-05', revenue: 1500 }]);
+  assert.equal(series[0].revenue, 1500);
+  assert.equal(series.at(-1).date, '2026-10-27');
+});
+test('all-time range handles a store with no orders', () => {
+  const now = new Date('2026-10-27T10:00:00Z');
+  const range = dashboardRange('all', now);
+  assert.equal(range.days, 1);
+  assert.equal(salesSeries(range, [])[0].revenue, 0);
+});
+
+test('dashboard section filters use separate ranges and recent-order totals', async t => {
+  t.mock.method(mongoose.connection, 'collection', () => ({ find: () => ({ async *[Symbol.asyncIterator]() {} }) }));
+  t.mock.method(User, 'countDocuments', async () => 0);
+  t.mock.method(Product, 'countDocuments', async () => 0);
+  t.mock.method(Order, 'aggregate', async pipeline => {
+    const facets = pipeline[1].$facet;
+    assert.ok(facets.sales[0].$match.createdAt.$gte < facets.current[0].$match.createdAt.$gte);
+    assert.ok(facets.statuses[0].$match.createdAt.$gte < facets.sales[0].$match.createdAt.$gte);
+    assert.equal(facets.recentCount[0].$match.status, 'confirmed');
+    return [{ current: [{ orders: 8 }], recentCount: [{ total: 2 }] }];
+  });
+  t.mock.method(Order, 'find', filter => {
+    assert.equal(filter.status, 'confirmed');
+    return { select(){return this;},populate(){return this;},sort(){return this;},skip(){return this;},limit(size){assert.equal(size,10);return this;},async lean(){return [];} };
+  });
+  let result;
+  await dashboardSummary({query:{days:'7',salesDays:'30',statusDays:'90',recentDays:'7',recentStatus:'confirmed'}}, {json(value){result=value;}}, assert.ifError);
+  assert.equal(result.sales.length,30);
+  assert.equal(result.stats.orders,8);
+  assert.equal(result.recentPagination.total,2);
+});
+test('dashboard rejects invalid section filters', async () => {
+  for (const query of [{days:'7',salesDays:'invalid'}, {days:'7',recentStatus:'invalid'}]) {
+    let code;
+    await dashboardSummary({query},{status(value){code=value;return this;},json(){}},assert.ifError);
+    assert.equal(code,400);
+  }
+});

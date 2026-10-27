@@ -1,3 +1,4 @@
+import FaqSchema from '../seo/FaqSchema';
 import { frameSizing, compareFrameFit, formatFrameSize } from '../utils/frameSizing';
 import { readSavedTryOn } from '../utils/savedTryOn';
 import useStickyColumns from '../hooks/useStickyColumns';
@@ -195,6 +196,7 @@ function Details({ product: baseProduct, products }) {
   }
   return (
     <>
+      <FaqSchema faqs={product.faqs} />
       <div className="store-product-layout">
         <div ref={mainRef} className="store-product-main">
           <section className="store-product-photos" aria-label="Product images">

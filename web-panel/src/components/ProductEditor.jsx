@@ -11,7 +11,7 @@ import { apiRequest, productImageUrl } from '../api';
 
 export default function ProductEditor({ product = null }) {
   const editing = Boolean(product);
-  const [seo, setSeo] = useState({ title: product?.seoTitle || '', description: product?.seoDescription || '', image: product?.seoImage || '' });
+  const [seo, setSeo] = useState({ keywords: product?.seoKeywords || '', title: product?.seoTitle || '', description: product?.seoDescription || '', image: product?.seoImage || '' });
   const [listingContent, setListingContent] = useState({ name: product?.name || '', description: product?.description || '' });
   const [handle, setHandle] = useState(product?.slug || '');
   const [categories,setCategories]=useState([]);
@@ -68,7 +68,7 @@ export default function ProductEditor({ product = null }) {
     if(tryOnUploading||seoUploading)return;
     if (!images.length) {setNotification({type:'error',message:'Upload at least one product image.'});return;}
     const fields = Object.fromEntries(new FormData(event.currentTarget));
-    fields.seoTitle=seo.title; fields.seoDescription=seo.description; fields.seoImage=seo.image;
+    fields.seoKeywords=seo.keywords; fields.seoTitle=seo.title; fields.seoDescription=seo.description; fields.seoImage=seo.image;
     fields.categoryIds=categoryIds;fields.subcategoryIds=subcategoryIds;
     for (const key of (product?.hasVariants?['price','originalPrice']:['price','originalPrice','stock'])) fields[key]=Number(fields[key]);
     for (const key of ['features', 'lensTypes', 'assurances']) fields[key] = fields[key].split('\n').map((line)=>line.trim()).filter(Boolean);

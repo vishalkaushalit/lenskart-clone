@@ -47,3 +47,21 @@ test('SEO saves trimmed fields and supports clearing overrides', async t => {
   await handler(adminSeo, 'put')({ body: { path: '/products/frame', title: ' Frame title ', description: ' ' } }, res);
   assert.equal(res.body.seo.title, 'Frame title');
 });
+
+test('SEO validates FAQ content and keywords before saving', async () => {
+  for (const fields of [{ keywords: {} }, { keywords: 'x'.repeat(1001) }, { faqs: {} }, { faqs: [{ question: '', answer: 'Answer' }] }, { faqs: [{ question: 'Question', answer: 'x'.repeat(1001) }] }]) {
+    const res = response();
+    await handler(adminSeo, 'put')({ body: { path: '/', ...fields } }, res);
+    assert.equal(res.code, 400);
+  }
+});
+test('SEO saves trimmed FAQs and keywords and allows clearing them', async t => {
+  const writes = [];
+  t.mock.method(PageSeo, 'findOneAndUpdate', async (_, update) => { writes.push(update.$set); return update.$set; });
+  await handler(adminSeo, 'put')({ body: { path: '/', keywords: ' frames, glasses ', faqs: [{ question: ' Question? ', answer: ' Answer ' }] } }, response());
+  assert.equal(writes[0].keywords, 'frames, glasses');
+  assert.deepEqual(writes[0].faqs, [{ question: 'Question?', answer: 'Answer' }]);
+  await handler(adminSeo, 'put')({ body: { path: '/', keywords: '', faqs: [] } }, response());
+  assert.equal(writes[1].keywords, '');
+  assert.deepEqual(writes[1].faqs, []);
+});
