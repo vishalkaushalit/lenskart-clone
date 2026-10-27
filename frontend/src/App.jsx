@@ -25,8 +25,7 @@ function pageRoute(page, settings) {
 export default function App() {
   const [settings,setSettings]=useState(null);
   useEffect(()=>{const controller=new AbortController();apiRequest('/seo/routes',{signal:controller.signal}).then(({pages})=>{if(!controller.signal.aborted)setSettings(pages);}).catch(()=>{if(!controller.signal.aborted)setSettings([]);});return()=>controller.abort();},[]);
-  if(!settings)return <Loader label="Loading store"/>;
-  return <PageRoutesContext.Provider value={settings}><LoaderProvider className="store"><SiteVerification /><PageMetadata /><Suspense fallback={<Loader label="Loading page" />}><Routes>
+  return <LoaderProvider className="store">{!settings?<Loader label="Loading store"/>:<PageRoutesContext.Provider value={settings}><SiteVerification /><PageMetadata /><Suspense fallback={<Loader label="Loading page" />}><Routes>
     <Route element={<StoreLayout />}>
       {settings.filter(row=>row.redirectOnly).map(row=><Route key={row.path} path={row.path} element={<RedirectPage to={row.urlPath}/>}/>)}
       {storePages.filter(page => page.layout === 'store' && !page.protected).map(page=>pageRoute(page,settings))}
@@ -39,5 +38,5 @@ export default function App() {
     <Route element={<main className="store-page-surface store-auth-layout"><Outlet /><PageFaq /></main>}>
       {storePages.filter(page => page.layout === 'auth').map(page=>pageRoute(page,settings))}
     </Route>
-  </Routes></Suspense></LoaderProvider></PageRoutesContext.Provider>;
+  </Routes></Suspense></PageRoutesContext.Provider>}</LoaderProvider>;
 }
