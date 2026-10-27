@@ -43,7 +43,7 @@ export async function dashboardSummary(req, res, next) {
           sales: [{ $match: { createdAt: { $gte: range.start }, status: 'delivered' } }, { $group: { _id: { $dateToString: { date: '$createdAt', format: '%Y-%m-%d', timezone: 'Asia/Kolkata' } }, revenue: { $sum: '$totalAmount' } } }],
         } },
       ]),
-      Order.find({ createdAt: { $gte: range.start, $lt: range.end } }).select('orderId user shipping.name totalAmount status createdAt').populate('user', 'name').sort({ createdAt: -1, _id: -1 }).skip((recentPage-1)*5).limit(5).lean(),
+      Order.find({ createdAt: { $gte: range.start, $lt: range.end } }).select('orderId user shipping.name totalAmount status createdAt').populate('user', 'name').sort({ createdAt: -1, _id: -1 }).skip((recentPage-1)*10).limit(10).lean(),
     ]);
     const summary = aggregated[0] || {};
     const current = { orders: 0, pending: 0, completed: 0, revenue: 0, ...summary.current?.[0] };
@@ -55,7 +55,7 @@ export async function dashboardSummary(req, res, next) {
       changes: Object.fromEntries(['orders', 'pending', 'completed', 'revenue'].map(key => [key, change(current[key], previous[key])])),
       sales: salesSeries(range, summary.sales || []),
       statuses: ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'].map(status => ({ status, count: statuses.get(status) || 0 })),
-      recentPagination: {page:recentPage,pageSize:5,total:current.orders},
+      recentPagination: {page:recentPage,pageSize:10,total:current.orders},
       recentOrders: recentOrders.map(order => ({ id: String(order._id), orderId: order.orderId, customer: order.user?.name || order.shipping?.name || 'Deleted account', totalAmount: order.totalAmount, status: order.status, createdAt: order.createdAt })),
     });
   } catch (error) {

@@ -49,7 +49,7 @@ export default function Reviews() {
     <DataTable label="Customer reviews" footer={!loading && <Pagination page={page} total={data.total} onPageChange={setPage} disabled={busy} label="reviews" />}>
       <thead><tr>{['Sr. No.', 'Product', 'Customer', 'Order / Delivery', 'Rating', 'Review', 'Submitted', 'Status', 'Actions'].map(label => <th key={label}>{label}</th>)}</tr></thead>
       <tbody>{loading ? <tr><td colSpan={9}><Loader /></td></tr> : !data.reviews.length ? <tr><td colSpan={9} className="h-40 text-center align-middle text-sm text-slate-500">No reviews found</td></tr> : data.reviews.map((review, index) => <tr key={review._id}>
-        <td>{(page - 1) * 20 + index + 1}</td><td>{review.product ? <Link className="text-blue-600" to={`/product/${review.product.slug||review.product._id}`}>{review.product.name}</Link> : 'Deleted product'}</td><td>{review.name}</td>
+        <td>{(page - 1) * 10 + index + 1}</td><td>{review.product ? <Link className="text-blue-600" to={`/product/${review.product.slug||review.product._id}`}>{review.product.name}</Link> : 'Deleted product'}</td><td>{review.name}</td>
         <td>{review.order ? <><Link className="text-blue-600" to={`/orders/${review.order._id}`}>#{review.order.orderId ?? '—'}</Link><p>{creationDate(review.order.deliveredAt || review.order.updatedAt)}</p></> : 'Deleted order'}</td>
         <td>{review.rating} ★</td><td><p className="min-w-48 max-w-md whitespace-pre-wrap break-words">{review.text}</p></td><td>{creationDate(review.createdAt)}</td>
         <td><span className={review.status === 'approved' ? greenBadge : redBadge}>{review.status === 'approved' ? 'Approved' : 'Unapproved'}</span></td>

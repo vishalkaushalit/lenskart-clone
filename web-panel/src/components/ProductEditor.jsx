@@ -1,3 +1,4 @@
+import SearchEngineListing from './SearchEngineListing';
 import { formatFrameSize } from '../../../shared/frameSizing.js';
 import ImageUploadField from './ImageUploadField';
 import ProductImageGallery from './ProductImageGallery';
@@ -10,6 +11,9 @@ import { apiRequest, productImageUrl } from '../api';
 
 export default function ProductEditor({ product = null }) {
   const editing = Boolean(product);
+  const [seo, setSeo] = useState({ title: product?.seoTitle || '', description: product?.seoDescription || '', image: product?.seoImage || '' });
+  const [listingContent, setListingContent] = useState({ name: product?.name || '', description: product?.description || '' });
+  const [handle, setHandle] = useState(product?.slug || '');
   const [categories,setCategories]=useState([]);
   const categoryTree=useMemo(()=>{
     const children=new Map();
@@ -29,6 +33,7 @@ export default function ProductEditor({ product = null }) {
   const [highlightImages,setHighlightImages] = useState(()=>Object.fromEntries(['material','hinge','temple','nosepad'].map(key=>[key,product?.highlightImages?.[key]?{path:product.highlightImages[key],url:productImageUrl(product.highlightImages[key])}:null])));
   const previews = useRef([]);
   const uploads = useRef(new Map());
+  const [seoUploading,setSeoUploading] = useState(false);
   const [tryOnUploading,setTryOnUploading] = useState(false);
   const [busy,setBusy] = useState(false);
   const [notification,setNotification] = useState(null);
@@ -60,9 +65,10 @@ export default function ProductEditor({ product = null }) {
   }
   async function submit(event) {
     event.preventDefault();
-    if(tryOnUploading)return;
+    if(tryOnUploading||seoUploading)return;
     if (!images.length) {setNotification({type:'error',message:'Upload at least one product image.'});return;}
     const fields = Object.fromEntries(new FormData(event.currentTarget));
+    fields.seoTitle=seo.title; fields.seoDescription=seo.description; fields.seoImage=seo.image;
     fields.categoryIds=categoryIds;fields.subcategoryIds=subcategoryIds;
     for (const key of (product?.hasVariants?['price','originalPrice']:['price','originalPrice','stock'])) fields[key]=Number(fields[key]);
     for (const key of ['features', 'lensTypes', 'assurances']) fields[key] = fields[key].split('\n').map((line)=>line.trim()).filter(Boolean);
@@ -83,7 +89,7 @@ export default function ProductEditor({ product = null }) {
   function text(name,label,placeholder,required=true) {return <label className="product-label">{label}{required&&<span className="text-red-500"> *</span>}<input name={name} defaultValue={product?.[name]||''} placeholder={placeholder} required={required} maxLength={name==='name'?150:name==='shape'||name==='color'?50:100} className={input}/></label>;}
   function select(name,label,values) {return <label className="product-label">{label.replace(/\s*\*$/, '')}{label.endsWith('*')&&<span className="text-red-500"> *</span>}<select name={name} defaultValue={product?.[name]||values[0]} className={input}>{values.map((value)=><option key={value} value={value}>{name==='size'?formatFrameSize(value):value}</option>)}</select></label>;}
   const imagePanel=<div><ProductImageGallery images={images} setImages={setImages} choose={choose} busy={busy}/><ProductImageLibrary choose={choose} busy={busy} count={images.length}/></div>;
-  return <><form onSubmit={submit}><fieldset disabled={busy||notification?.type==='success'} className={`product-editor-grid ${editing?'is-editing':''}`}>
+  return <><form onSubmit={submit} onChange={event => { const { name, value } = event.target; if (name === 'name' || name === 'description') setListingContent(previous => ({ ...previous, [name]: value })); }}><fieldset disabled={busy||notification?.type==='success'} className={`product-editor-grid ${editing?'is-editing':''}`}>
     {imagePanel}
     <div className="min-w-0 space-y-4">
     <section className="product-panel flex flex-col"><h2 className="product-panel-title"><BadgeIndianRupee size={16}/>Pricing &amp; Inventory</h2><div className="grid gap-5 sm:grid-cols-2">
@@ -94,7 +100,7 @@ export default function ProductEditor({ product = null }) {
     <div className="product-panel"><ImageUploadField name="tryOnImage" label="Virtual try-on image (optional)" initialValue={product?.tryOnImage||''} transparentOnly onUploading={setTryOnUploading}/><p className="mt-3 text-xs text-slate-500">Upload a transparent PNG/WebP front view with clear lens interiors, or a self-contained GLB glasses model (front facing +Z, upright +Y). Keep the bridge centered. Gallery photos are not used for live try-on. Save the product after uploading. Same-color variants can use this image; upload a matching image on variants with other colors.</p></div>
     </div>
     <section className="product-panel product-basic-panel md:col-span-2"><h2 className="product-panel-title"><Package size={16}/>Basic Information</h2><div className="product-basic-fields">
-      {text('name','Product Name','Enter product name')}{text('slug','URL Slug','Generated automatically when empty',false)}{text('subtitle','Subtitle','Dark Night Full Rim Square',false)}
+      {text('name','Product Name','Enter product name')}{text('subtitle','Subtitle','Dark Night Full Rim Square',false)}
       {select('productType','Product Type *',['Eyeglasses','Sunglasses'])}
       <div className="sm:col-span-2"><h3 className="product-label">Categories &amp; Subcategories</h3><p className="mt-1 text-xs text-slate-400">Choose every collection where this product should appear.</p><div className="mt-3 max-h-48 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 overflow-auto rounded-lg border border-slate-200 p-3">{categoryTree.map(root=><div key={root._id}><label className="flex items-center gap-2 text-sm font-medium"><input type="checkbox" checked={categoryIds.includes(root._id)} onChange={event=>{setCategoryIds(previous=>event.target.checked?[...previous,root._id]:previous.filter(value=>value!==root._id));if(!event.target.checked)setSubcategoryIds(previous=>previous.filter(value=>!categories.some(row=>row._id===value&&row.parent===root._id)));}} className="accent-blue-600"/>{root.name}</label><div className="ml-6 mt-2 grid gap-2">{root.children.map(child=><label key={child._id} className="flex items-center gap-2 text-xs text-slate-500"><input type="checkbox" checked={subcategoryIds.includes(child._id)} onChange={event=>{if(event.target.checked){setCategoryIds(previous=>previous.includes(root._id)?previous:[...previous,root._id]);setSubcategoryIds(previous=>[...previous,child._id]);}else setSubcategoryIds(previous=>previous.filter(value=>value!==child._id));}} className="accent-blue-600"/>{child.name}</label>)}</div></div>)}{!categoryTree.length&&<p className="text-xs text-slate-400">Add categories from the Categories page first.</p>}</div></div>
       {text('brand','Brand','Enter brand')}
@@ -112,5 +118,6 @@ export default function ProductEditor({ product = null }) {
         <div className="space-y-3"><h3 className="product-label">Customer reviews</h3>{reviews.map((review,index)=><div key={index} className="relative rounded-lg border border-slate-200 p-3 pb-12 space-y-2"><div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_80px_minmax(0,1fr)]">{['name','rating','date','text'].map(key=><label key={key} className={`product-label min-w-0 capitalize ${key==='text'?'sm:col-span-3':''}`}>{key==='text'?'Message':key}{key==='text'?<textarea required rows={3} maxLength={2000} value={review.text} onChange={e=>setReviews(previous=>previous.map((item,i)=>i===index?{...item,text:e.target.value}:item))} className={input}/>:<input required type={key==='rating'?'number':key==='date'?'date':'text'} min={key==='rating'?1:undefined} max={key==='rating'?5:undefined} step={key==='rating'?1:undefined} maxLength={key==='name'?100:2000} value={key==='date'?review.date?.slice(0,10)||'':review[key]} onChange={e=>setReviews(previous=>previous.map((item,i)=>i===index?{...item,[key]:e.target.value}:item))} className={input}/>}</label>)}</div><button type="button" aria-label={`Delete review ${index+1}`} title="Delete review" className="delete-button absolute right-2 bottom-2" onClick={()=>setReviews(previous=>previous.filter((_,i)=>i!==index))}><Trash2 size={18} aria-hidden="true" /></button></div>)}<button type="button" disabled={reviews.length>=100} className="admin-button-secondary" onClick={()=>setReviews(previous=>[...previous,{name:'',rating:5,date:'',text:''}])}>Add review</button><p className="text-xs text-slate-400">Add actual customer feedback.</p></div></div>
       </div></details>
     </div></section>
-  </fieldset>    <div className="product-editor-actions"><Link to={editing?`/product/${product.slug||product.id}`:'/product'} className="admin-button-secondary">Cancel</Link><button disabled={busy||tryOnUploading} className="admin-button-primary">{busy?'Saving...':editing?'Update Product':'Save Product'}</button></div></form>{notification&&<NotificationPopup notification={notification} onClose={()=>{if(notification.type==='success')navigate(`/product/${notification.id}`);else setNotification(null);}}/>}</>;
+    <div className="md:col-span-2"><SearchEngineListing defaultImage={images[0]?.url || ''} onUploading={setSeoUploading} value={seo} onChange={setSeo} defaultTitle={listingContent.name} defaultDescription={listingContent.description} path={`/products/${handle || listingContent.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`} handle={handle} onHandleChange={setHandle} /></div>
+  </fieldset>    <div className="product-editor-actions"><Link to={editing?`/product/${product.slug||product.id}`:'/product'} className="admin-button-secondary">Cancel</Link><button disabled={busy||tryOnUploading||seoUploading} className="admin-button-primary">{busy?'Saving...':editing?'Update Product':'Save Product'}</button></div></form>{notification&&<NotificationPopup notification={notification} onClose={()=>{if(notification.type==='success')navigate(`/product/${notification.id}`);else setNotification(null);}}/>}</>;
 }

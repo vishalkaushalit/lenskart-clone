@@ -173,3 +173,30 @@ textarea.admin-field, textarea.product-field { resize:vertical; }
   cursor:not-allowed;
   opacity:.6;
 }
+
+/* Approximate search-result dimensions independently of the editor layout. */
+.seo-preview { max-width:650px; margin-top:20px; padding:20px; border:1px solid #e2e8f0; border-radius:10px; background:#fff; font-family:Arial,sans-serif; text-align:left; }
+.seo-preview-site { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.seo-preview-icon { display:flex; align-items:center; justify-content:center; flex:none; width:30px; height:30px; border-radius:50%; background:#f1f3f4; color:#5f6368; }
+.seo-preview-site-text,.seo-preview-copy { min-width:0; }
+.seo-preview-name { margin:0; color:#202124; font-size:14px; line-height:20px; }
+.seo-preview-url { margin:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:#4d5156; font-size:12px; line-height:18px; }
+.seo-preview-result { display:flex; align-items:flex-start; gap:20px; }
+.seo-preview-copy { flex:1; }
+.seo-preview-title { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:2; font-size:20px; line-height:26px; font-weight:400; color:#1a0dab; text-decoration:none; overflow-wrap:anywhere; }
+.seo-preview-title:hover { text-decoration:underline; }
+.seo-preview-title:focus-visible { outline:2px solid #2563eb; outline-offset:3px; }
+.seo-preview-description { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:3; margin:5px 0 0; color:#4d5156; font-size:14px; line-height:22px; overflow-wrap:anywhere; }
+.seo-preview-thumbnail { width:92px; height:92px; flex:none; border:1px solid #f1f3f4; border-radius:12px; object-fit:contain; background:#fff; }
+@media(max-width:480px) { .seo-preview { padding:14px; } .seo-preview-result { gap:12px; } .seo-preview-thumbnail { width:64px; height:64px; } .seo-preview-title { font-size:18px; line-height:24px; } }
+
+.seo-pages-table { table-layout:fixed; border-collapse:collapse; }
+.seo-pages-table th,.seo-pages-table td { padding:12px 18px; vertical-align:middle; }
+.seo-pages-table th { font-size:12px; color:#64748b; background:#f8fafc; }
+.seo-pages-table td { font-size:13px; }
+.seo-pages-table th:nth-child(1) { width:10%; }
+.seo-pages-table th:nth-child(2) { width:24%; }
+.seo-pages-table th:nth-child(3) { width:28%; }
+.seo-pages-table th:nth-child(4) { width:24%; }
+.seo-pages-table th:last-child { width:14%; }
+.seo-pages-table td:nth-child(3) { overflow-wrap:anywhere; }

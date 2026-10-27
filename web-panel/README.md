@@ -288,7 +288,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `d03ba330accdd6641040042cea916c4d3162b24ab5c00ed25ac370b5bc22fe69`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e53b8c9c8d85ef8fe9631b6ff6a9d271b5b141fcb293915f8b35e26de2c7df74`.
 
 ### Actual npm commands
 
@@ -332,6 +332,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/ProductVariants.jsx](src/components/ProductVariants.jsx) | ProductVariants |
 | [src/components/RecentOrders.jsx](src/components/RecentOrders.jsx) | RecentOrders |
 | [src/components/ReviewDeleteButton.jsx](src/components/ReviewDeleteButton.jsx) | ReviewDeleteButton |
+| [src/components/SearchEngineListing.jsx](src/components/SearchEngineListing.jsx) | SearchEngineListing |
 | [src/components/StatDashboard.jsx](src/components/StatDashboard.jsx) | StatDashboard |
 | [src/components/StatusBadge.jsx](src/components/StatusBadge.jsx) | StatusBadge |
 | [src/components/UserActionDialog.jsx](src/components/UserActionDialog.jsx) | UserActionDialog |
@@ -352,6 +353,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/pages/OrderDetails.jsx](src/pages/OrderDetails.jsx) | OrderDetails |
 | [src/pages/OrderTracking.jsx](src/pages/OrderTracking.jsx) | OrderTracking |
 | [src/pages/PageSeo.jsx](src/pages/PageSeo.jsx) | PageSeo |
+| [src/pages/PageSeoEdit.jsx](src/pages/PageSeoEdit.jsx) | PageSeoEdit |
 | [src/pages/ProductDetails.jsx](src/pages/ProductDetails.jsx) | ProductDetails |
 | [src/pages/ProductVariants.jsx](src/pages/ProductVariants.jsx) | ProductVariantsPage |
 | [src/pages/Profile.jsx](src/pages/Profile.jsx) | Profile |
@@ -362,6 +364,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/pages/Users.jsx](src/pages/Users.jsx) | Users |
 | [src/search.js](src/search.js) | matchesSearch, searchDestination |
 | [src/search.test.js](src/search.test.js) | Internal module / styles |
+| [src/seoPages.js](src/seoPages.js) | seoPageKey, seoPages |
 | [src/tablePagination.js](src/tablePagination.js) | paginateRows |
 | [src/tablePagination.test.js](src/tablePagination.test.js) | Internal module / styles |
 
@@ -373,6 +376,7 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | --- | --- | --- |
 | src/App.jsx | React Route | `/dashboard` |
 | src/App.jsx | React Route | `/seo` |
+| src/App.jsx | React Route | `/seo/:pageKey/edit` |
 | src/App.jsx | React Route | `/product` |
 | src/App.jsx | React Route | `/product/add` |
 | src/App.jsx | React Route | `/product/:id/variants/add` |
@@ -493,4 +497,26 @@ Product/variant detail tables and size selectors show the shared Total Frame Fro
 
 ## Manual page SEO
 
-Admin navigation → **Page SEO** lets administrators load an exact storefront path and save its SEO title, meta description and full HTTP/HTTPS social image URL. Use `/` for Home or `/products/<slug>` for a product; review URLs have separate settings. Clear a field and save to restore its automatic fallback. Titles keep the storefront brand suffix. Saving does not publish a page or change indexing rules. Reload the storefront to fetch changes.
+Admin navigation → **Page SEO** shows a table of storefront pages with URLs, indexing status and pencil actions. Select a row’s pencil action to open a dedicated `/seo/:pageKey/edit` page with its search result preview, click **Edit website SEO**, and edit the page title or meta description before saving. Character counts and automatic content fallbacks appear in the editor. Product add/edit forms include the same **Search engine listing** card with the URL handle; product SEO saves with **Save Product / Update Product**. The handle uses the existing slug field and has no automatic old-URL redirect. Reload the storefront after saving.
+
+
+
+The search engine listing uses an icon-only blue pencil button to edit and a gray close button when expanded, with accessible labels, tooltips and visible keyboard focus. Its header wraps on narrow screens.
+
+Search engine listing previews use a compact search-result layout with a site icon, breadcrumb URL, clickable title, clamped description and thumbnail from the social override or main product image. Long content truncates and the thumbnail adapts to narrow screens; this is an approximation, not a guarantee of actual search engine appearance.
+
+The SEO editor has no social sharing image field. Its search result thumbnail continues to use the product main image or a previously saved image override; existing saved image data is preserved.
+
+Opening the SEO editor prefills blank title and description fields with editable page-content values. Existing custom values are preserved, character counts reflect the actual inputs, and these values save with the page/product.
+
+The Page SEO table uses compact rows and consistent column widths. Pencil actions navigate to a separate edit page with loading/error states, Save changes and Back to listings controls. Edit URLs support direct navigation and refreshing. The table scrolls horizontally on narrow screens. Indexable indicates the configured robots policy, not confirmed search engine indexing.
+
+The dedicated SEO edit page uses the shared PageHeader with Back to listings, full-width product-panel form styling, visible editor fields, shared loader/error message, and the product editor’s sticky Cancel / Save changes action bar. Product inline SEO cards retain the expandable pencil control.
+
+Page SEO lists ten rows per page using the shared admin pagination controls. The S.No. column continues across pages (1–10, 11–20, etc.); the footer shows the displayed range and total.
+
+All paginated admin tables show 10 items per page, including products, variants, categories, users, orders, tracking, coupons, reviews, order items, dashboard recent orders and Page SEO. Serial numbering and server query offsets use the same page size.
+
+## Shared page registry
+
+`shared/storePages.js` is the single source for storefront routes, default metadata, and the admin Page SEO table. To add a static page, create its component in `frontend/src/pages/` and register its path, component filename (without extension), label, title, description, noindex policy, layout (`store` or `auth`), and protected flag there. Vite discovers page components automatically. Static entries appear in Page SEO after rebuilding/deploying both apps; no separate admin entry or notification is needed. Parameterized product/order routes are excluded from the static SEO table; product SEO remains in the product editor. Existing path-based saved overrides remain valid. This does not create page content from the admin panel.

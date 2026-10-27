@@ -33,13 +33,13 @@ function mockUsers(t, users, total, expectedSkip, expectedLimit) {
 
 test('users list defaults to page 1 with only public account fields', async (t) => {
   const user = { _id: 'user-1', userId: undefined, name: 'Customer', email: 'customer@example.com', role: 'customer', createdAt: 'created', updatedAt: 'updated', passwordHash: 'private', secret: 'private' };
-  mockUsers(t, [user], 1, 0, 20);
+  mockUsers(t, [user], 1, 0, 10);
   const res = response();
   await listUsers({ query: {} }, res, assert.ifError);
   assert.deepEqual(res.body, {
     success: true,
     users: [{ id: 'user-1', userId: undefined, name: 'Customer', email: 'customer@example.com', role: 'customer', phone: '', status: 'inactive', accountStatus: 'active', createdAt: 'created', updatedAt: 'updated' }],
-    pagination: { page: 1, limit: 20, total: 1, totalPages: 1 },
+    pagination: { page: 1, limit: 10, total: 1, totalPages: 1 },
     counts: { all: 1, active: 0, inactive: 1 },
   });
 });
@@ -52,7 +52,7 @@ test('custom pagination returns the correct offset and page count', async (t) =>
 });
 
 test('an empty users collection returns an empty list', async (t) => {
-  mockUsers(t, [], 0, 0, 20);
+  mockUsers(t, [], 0, 0, 10);
   const res = response();
   await listUsers({ query: {} }, res, assert.ifError);
   assert.deepEqual(res.body.users, []);

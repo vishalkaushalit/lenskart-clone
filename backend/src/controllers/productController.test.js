@@ -162,3 +162,13 @@ test('product detail reads start variants and approved reviews concurrently', { 
     assert.equal(res.body.product.id, id);
   }
 });
+
+test('product SEO fields are editable, public and validated', async () => {
+  const fields = { seoTitle: 'Custom frame title', seoDescription: 'Custom search description', seoImage: 'https://example.com/frame.jpg' };
+  assert.deepEqual(productFields(fields), fields);
+  const result = publicProduct({ _id: '507f1f77bcf86cd799439011', ...fields });
+  for (const key of Object.keys(fields)) assert.equal(result[key], fields[key]);
+  const invalid = new Product({ seoTitle: 'x'.repeat(121), seoDescription: 'x'.repeat(321), seoImage: 'javascript:alert(1)' });
+  const error = invalid.validateSync();
+  for (const key of Object.keys(fields)) assert.ok(error.errors[key]);
+});

@@ -22,7 +22,7 @@ export default function ProductVariants({ product, onChange, mode='list', initia
   const previews = useRef([]);
   const uploads = useRef(new Map());
   useEffect(()=>{const urls=previews.current;return ()=>urls.forEach(url=>URL.revokeObjectURL(url));},[]);
-  const paging=useTablePagination(product.variants||[],20,product.id);
+  const paging=useTablePagination(product.variants||[],10,product.id);
   const update = (key,value) => setForm(previous=>({...previous,[key]:value}));
   const sharedTryOnImage = colorTryOnImage(product, { ...form, tryOnImage: '', id: editing });
   function choose(files) {

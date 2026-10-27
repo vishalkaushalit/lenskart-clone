@@ -40,7 +40,7 @@ test('dashboard aggregates live data and exposes only recent-order display field
     assert.equal(pipeline[1].$facet.sales[1].$group._id.$dateToString.timezone, 'Asia/Kolkata');
     return [{ current: [{ orders: 3, pending: 1, completed: 1, revenue: 1500 }], previous: [{ orders: 2, revenue: 1000 }], statuses: [{ _id: 'delivered', count: 1 }, { _id: 'pending', count: 1 }, { _id: 'cancelled', count: 1 }], sales: [] }];
   });
-  t.mock.method(Order, 'find', () => ({ select(){return this;},populate(){return this;},sort(){return this;},skip(value){assert.equal(value,5);return this;},limit(value){assert.equal(value,5);return this;},lean:async()=>[{_id:'order',orderId:12,shipping:{name:'Customer',phone:'private'},totalAmount:1500,status:'delivered',createdAt:new Date()}] }));
+  t.mock.method(Order, 'find', () => ({ select(){return this;},populate(){return this;},sort(){return this;},skip(value){assert.equal(value,10);return this;},limit(value){assert.equal(value,10);return this;},lean:async()=>[{_id:'order',orderId:12,shipping:{name:'Customer',phone:'private'},totalAmount:1500,status:'delivered',createdAt:new Date()}] }));
   let result;
   await dashboardSummary({ query: { days: '7',recentPage:'2' } }, { json(value){result=value;} }, assert.ifError);
   assert.equal(result.stats.users, 5);
@@ -49,7 +49,7 @@ test('dashboard aggregates live data and exposes only recent-order display field
   assert.equal(result.changes.revenue, 50);
   assert.equal(result.statuses.find(row=>row.status==='cancelled').count, 1);
   assert.equal(result.recentOrders[0].customer, 'Customer');
-  assert.deepEqual(result.recentPagination,{page:2,pageSize:5,total:3});
+  assert.deepEqual(result.recentPagination,{page:2,pageSize:10,total:3});
   assert.equal(result.recentOrders[0].shipping, undefined);
 });
 test('empty dashboard returns zeroes and invalid ranges do not query the database', async t => {

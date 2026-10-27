@@ -13,7 +13,7 @@ test('coupon search filters both the total and rows before pagination', async t 
   t.mock.method(Coupon, 'find', filter => {
     assert.deepEqual(filter, counted);
     assert.equal(filter.$and[0].$or[0].code.$regex, 'SAVE');
-    const chain = { sort(){return this;}, skip(value){assert.equal(value,20);return this;}, limit(){return this;}, lean:async()=>[{code:'SAVE'}] };
+    const chain = { sort(){return this;}, skip(value){assert.equal(value,10);return this;}, limit(){return this;}, lean:async()=>[{code:'SAVE'}] };
     return chain;
   });
   const handler=commerceAdmin.stack.find(layer=>layer.route?.path==='/coupons'&&layer.route.methods.get).route.stack[0].handle;

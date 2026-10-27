@@ -30,7 +30,7 @@ export default function Dashboard() {
       pending = true;
       try {
         const data = await apiRequest(`/admin/dashboard?days=${days}&recentPage=${recentPage}`, { signal: controller.signal });
-        if (!controller.signal.aborted) {setResult({ loading: false, data, error: '' });const last=Math.max(1,Math.ceil(data.recentPagination.total/5));if(recentPage>last)setRecentPage(last);}
+        if (!controller.signal.aborted) {setResult({ loading: false, data, error: '' });const last=Math.max(1,Math.ceil(data.recentPagination.total/10));if(recentPage>last)setRecentPage(last);}
       } catch (error) {
         if (!controller.signal.aborted) setResult(previous => ({ ...previous, loading: false, error: error.message }));
       } finally { pending = false; }

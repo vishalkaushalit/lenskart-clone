@@ -25,7 +25,7 @@ const wrap=fn=>(req,res,next)=>Promise.resolve(fn(req,res)).catch(error=>{
 });
 function fail(message,status=400){throw Object.assign(new Error(message),{status});}
 function id(value){if(!/^[a-f\d]{24}$/i.test(value||''))fail('Invalid ID.');return value;}
-function pagination(req){const page=Number(req.query.page||1);if(!Number.isSafeInteger(page)||page<1||page>10000)fail('Invalid page.');return {page,limit:20};}
+function pagination(req){const page=Number(req.query.page||1);if(!Number.isSafeInteger(page)||page<1||page>10000)fail('Invalid page.');return {page,limit:10};}
 commerceAdmin.get('/coupons',wrap(async(req,res)=>{const {page,limit}=pagination(req);const filter=textSearch(searchTerms(req.query.search),['code','type']);const [total,coupons]=await Promise.all([Coupon.countDocuments(filter),Coupon.find(filter).sort({createdAt:-1,_id:-1}).skip((page-1)*limit).limit(limit).lean()]);res.json({coupons,total,page});}));
 function couponFields(body){const fields={};for(const key of ['code','type','value','minimum','expiresAt','active'])if(Object.hasOwn(body||{},key))fields[key]=body[key];return fields;}
 commerceAdmin.get('/coupons/:id',wrap(async(req,res)=>{const coupon=await Coupon.findById(id(req.params.id)).lean();if(!coupon)fail('Coupon not found.',404);res.json({coupon});}));

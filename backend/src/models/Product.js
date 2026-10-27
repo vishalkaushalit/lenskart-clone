@@ -3,6 +3,9 @@ import {slugify} from '../utils/slugs.js';
 const validImage = (value) => typeof value === 'string' && value.length <= 2000 && (/^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value));
 const textList = { type: [String], default: [], validate: (values) => values.length <= 12 && values.every((value) => value.length <= 300) };
 const schema = new mongoose.Schema({
+  seoTitle: { type: String, trim: true, maxlength: 120, default: '' },
+  seoDescription: { type: String, trim: true, maxlength: 320, default: '' },
+  seoImage: { type: String, trim: true, maxlength: 2000, default: '', validate: value => !value || validImage(value) },
   hasVariants: { type: Boolean, default: false },
   slug:{type:String,trim:true,maxlength:120,match:/^[a-z0-9]+(?:-[a-z0-9]+)*$/},
   categoryIds: {type:[{type:mongoose.Schema.Types.ObjectId,ref:'Category'}],default:[],validate:values=>values.length<=50},

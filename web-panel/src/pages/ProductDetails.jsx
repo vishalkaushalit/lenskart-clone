@@ -20,7 +20,7 @@ export default function ProductDetails(){
   const {id}=useParams();const {loading,product,error,retry}=useProduct(id);
   const [selected,setSelected]=useState(0);const [tab,setTab]=useState('Description');
   const [deleting,setDeleting]=useState(false);const [notification,setNotification]=useState(null);const navigate=useNavigate();
-  const paging=useTablePagination(product?.variants||[],20,id);
+  const paging=useTablePagination(product?.variants||[],10,id);
   const images=product?.images||[];
   const reviews=useMemo(()=>[...(product?.customerReviews||[]),...(product?.reviews||[])].sort((a,b)=>new Date(b.date)-new Date(a.date)),[product?.customerReviews,product?.reviews]);
   const specs=product?{Brand:product.brand,Category:product.productType,SKU:product.sku,Stock:product.stock,Status:product.status,Subtitle:product.subtitle,'Lens types':(product.lensTypes||[]).join(', '),...(!product.hasVariants?{'Frame color':product.color,'Frame size':formatFrameSize(product.size)}:{}),'Offer title':product.offerTitle,Offer:product.offerText,Delivery:product.deliveryInformation,Assurances:(product.assurances||[]).join('; '),Material:product.material,Hinge:product.hinge,Temple:product.temple,Nosepad:product.nosepad}:{};

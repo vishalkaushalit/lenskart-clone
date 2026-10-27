@@ -71,7 +71,7 @@ export async function deleteUser(req, res, next) {
 
 export async function listUsers(req, res, next) {
   const page = positiveInteger(req.query.page, 1, 10000);
-  const limit = positiveInteger(req.query.limit, 20, 100);
+  const limit = positiveInteger(req.query.limit, 10, 100);
   if (page === null || limit === null) {
     return res.status(400).json({
       success: false,

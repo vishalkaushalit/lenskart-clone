@@ -1,50 +1,31 @@
-import { useState } from 'react';
+import Pagination from '../components/Pagination';
+import useTablePagination from '../hooks/useTablePagination';
+import { Pencil } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import PageHeader from '../components/PageHeader';
-import { apiRequest } from '../api';
+import { seoPages, seoPageKey } from '../seoPages';
 
-const empty = { title: '', description: '', image: '' };
 export default function PageSeo() {
-  const [path, setPath] = useState('/');
-  const [loadedPath, setLoadedPath] = useState('');
-  const [form, setForm] = useState(empty);
-  const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-  async function load(event) {
-    event.preventDefault();
-    setBusy(true); setMessage(''); setError(''); setLoadedPath('');
-    try {
-      const { seo } = await apiRequest(`/admin/seo?path=${encodeURIComponent(path)}`);
-      setForm(seo || empty); setLoadedPath(path);
-    } catch (err) { setError(err.message); }
-    finally { setBusy(false); }
-  }
-  async function save(event) {
-    event.preventDefault();
-    setBusy(true); setMessage(''); setError('');
-    try {
-      await apiRequest('/admin/seo', { method: 'PUT', body: JSON.stringify({ path: loadedPath, title: form.title, description: form.description, image: form.image }) });
-      setMessage('SEO settings saved. Reload the storefront page to see the changes.');
-    } catch (err) { setError(err.message); }
-    finally { setBusy(false); }
-  }
-  const inputClass = 'mt-2 w-full rounded-lg border border-slate-300 p-3';
+  const pagination = useTablePagination(seoPages);
   return <DashboardLayout><main className="admin-page space-y-6">
-    <PageHeader title="Page SEO" description="Customize metadata for a storefront page. Blank fields use automatic defaults." />
-    <form onSubmit={load} className="max-w-2xl space-y-3 rounded-xl bg-white p-6">
-      <label className="block">Page path<input className={inputClass} value={path} onChange={event => { setPath(event.target.value); setLoadedPath(''); }} required maxLength={300} disabled={busy} placeholder="/products/frame-slug" /></label>
-      <p className="text-sm text-slate-500">Use / for Home, /collection, /eyeglasses, or the exact product/reviews path from the storefront URL. Omit the domain, query and trailing slash.</p>
-      <button disabled={busy} className="rounded-lg bg-blue-600 px-4 py-2 text-white">{busy ? 'Please wait…' : 'Load page settings'}</button>
-    </form>
-    {loadedPath && <form onSubmit={save} className="max-w-2xl space-y-4 rounded-xl bg-white p-6">
-      <h2 className="font-semibold">Metadata for {loadedPath}</h2>
-      <label className="block">SEO title<input className={inputClass} value={form.title} maxLength={120} disabled={busy} onChange={event => setForm({ ...form, title: event.target.value })} /></label>
-      <p className="text-sm text-slate-500">The storefront adds “ | Lenskart Clone” to the title. Account and checkout pages remain excluded from indexing.</p>
-      <label className="block">Meta description<textarea className={inputClass} rows={4} value={form.description} maxLength={320} disabled={busy} onChange={event => setForm({ ...form, description: event.target.value })} /></label>
-      <label className="block">Social image URL<input className={inputClass} type="url" value={form.image} maxLength={2000} disabled={busy} placeholder="https://example.com/image.jpg" onChange={event => setForm({ ...form, image: event.target.value })} /></label>
-      <button disabled={busy} className="rounded-lg bg-blue-600 px-4 py-2 text-white">{busy ? 'Saving…' : 'Save SEO settings'}</button>
-    </form>}
-    {message && <p role="status">{message}</p>}{error && <p role="alert" className="text-red-600">{error}</p>}
+    <PageHeader title="Search engine listings" description="Manage search appearance for your storefront pages." />
+    <p className="text-sm text-slate-600">Product search listings are edited on each <Link to="/product" className="text-blue-700 underline">product's editing page</Link>.</p>
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <div className="overflow-x-auto">
+        <table className="admin-table seo-pages-table w-full min-w-[600px] text-left">
+          <caption className="sr-only">Storefront pages and search indexing settings</caption>
+          <thead><tr><th scope="col">S.No.</th><th scope="col">Page</th><th scope="col">URL</th><th scope="col">Search indexing</th><th scope="col" className="text-right">Actions</th></tr></thead>
+          <tbody>{pagination.rows.map(([url, label, , , noindex], index) => <tr key={url} >
+            <td className="tabular-nums text-slate-500">{pagination.offset + index + 1}</td>
+            <td className="font-medium text-slate-900">{label}</td>
+            <td className="font-mono text-slate-500">{url}</td>
+            <td><span className={`inline-flex whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium ${!noindex ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-600'}`}>{!noindex ? 'Indexable' : 'Noindex'}</span></td>
+            <td className="text-right"><Link to={`/seo/${seoPageKey(url)}/edit`} aria-label={`Edit SEO for ${label}`} title={`Edit SEO for ${label}`} className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50"><Pencil size={16} aria-hidden="true" /></Link></td>
+          </tr>)}</tbody>
+        </table>
+        </div>
+        <Pagination page={pagination.page} pageSize={pagination.pageSize} total={pagination.total} onPageChange={pagination.setPage} label="pages" />
+      </div>
   </main></DashboardLayout>;
 }

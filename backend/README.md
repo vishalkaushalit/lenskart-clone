@@ -389,7 +389,7 @@ Product detail endpoints fetch variants and approved reviews concurrently after 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `c3f4bfa711b7ae5c2b3c3733871e11646d4dc8e5b8b4853263dc86f844c0b0b1`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `18c759b1ebd1c59e52d48228305955f02df871a673262ec742b68639ebc1011d`.
 
 ### Actual npm commands
 
@@ -735,6 +735,9 @@ import {slugify} from '../utils/slugs.js';
 const validImage = (value) => typeof value === 'string' && value.length <= 2000 && (/^\/assets\/products\/[\w.-]+$/.test(value) || /^https?:\/\/[^\s]+$/.test(value));
 const textList = { type: [String], default: [], validate: (values) => values.length <= 12 && values.every((value) => value.length <= 300) };
 const schema = new mongoose.Schema({
+  seoTitle: { type: String, trim: true, maxlength: 120, default: '' },
+  seoDescription: { type: String, trim: true, maxlength: 320, default: '' },
+  seoImage: { type: String, trim: true, maxlength: 2000, default: '', validate: value => !value || validImage(value) },
   hasVariants: { type: Boolean, default: false },
   slug:{type:String,trim:true,maxlength:120,match:/^[a-z0-9]+(?:-[a-z0-9]+)*$/},
   categoryIds: {type:[{type:mongoose.Schema.Types.ObjectId,ref:'Category'}],default:[],validate:values=>values.length<=50},
@@ -921,4 +924,8 @@ The admin-only `POST /api/admin/products/try-on` accepts transparent PNG/WebP im
 
 ## Manual page SEO
 
-Page SEO overrides are stored in the `PageSeo` model with unique `path`, `title` (120 characters), `description` (320) and `image` (2000, HTTP/HTTPS URL). Public `GET /api/seo?path=/` returns the override or null. Admin-only `GET /api/admin/seo?path=/` and `PUT /api/admin/seo` read/upsert settings; PUT accepts `{ path, title, description, image }`. Paths omit query parameters and trailing slashes, except `/`. Blank fields restore automatic storefront fallbacks.
+Page SEO overrides are stored in the `PageSeo` model with unique `path`, `title` (120 characters), `description` (320) and `image` (2000, HTTP/HTTPS URL or uploaded `/assets/products/` path). Public `GET /api/seo?path=/` returns the override or null. Admin-only `GET /api/admin/seo?path=/` and `PUT /api/admin/seo` read/upsert settings; PUT accepts `{ path, title, description, image }`. Paths omit query parameters and trailing slashes, except `/`. Blank fields restore automatic storefront fallbacks.
+
+Product `seoTitle` (120 characters), `seoDescription` (320) and `seoImage` (2000, HTTP/HTTPS URL or uploaded `/assets/products/` path) are saved by the product create/update API and included in product responses. Nonempty product SEO fields take precedence over path-based settings on product detail pages, while review pages retain their own path settings.
+
+Admin commerce and review lists use 10 rows per page. User lists default to a limit of 10, and dashboard recent orders return 10 rows per page.

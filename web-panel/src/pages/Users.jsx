@@ -32,7 +32,7 @@ export default function Users() {
   function setPage(value) {
     setSearchParams((previous) => { const next = new URLSearchParams(previous); next.set("page", String(value)); return next; });
   }
-  const limit = 20;
+  const limit = 10;
   const search = searchParams.get("search") || "";
   function setSearch(value) {
     setSearchParams((previous) => { const next = new URLSearchParams(previous); if (value) next.set("search", value); else next.delete("search"); next.delete("page"); return next; }, { replace: true });

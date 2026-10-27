@@ -1,21 +1,10 @@
+import { editableStorePages } from '../../../shared/storePages.js';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { apiRequest } from '../api/api';
 
 const brand = 'Lenskart Clone';
-const pages = {
-  '/': ['Eyeglasses, Sunglasses & Frames', 'Explore eyeglasses, sunglasses and frames. Find your favorite shape, color and size at Lenskart Clone.'],
-  '/collection': ['Shop Eyewear', 'Browse our eyewear collection and filter frames by brand, shape, color and size.'],
-  '/eyeglasses': ['Shop Eyeglasses', 'Explore eyeglasses and compare frame styles, sizes and colors.'],
-  '/wishlist': ['Your Wishlist', 'View and shop your saved eyewear.', true],
-  '/cart': ['Shopping Cart', 'Review your eyewear, selected options and cart total.', true],
-  '/checkout': ['Checkout', 'Choose your delivery address and complete your order.', true],
-  '/profile': ['Your Account', 'Manage your profile and view your order history.', true],
-  '/login': ['Sign In', 'Sign in to manage your account and eyewear orders.', true],
-  '/register': ['Create an Account', 'Create an account to save your favorites and place orders.', true],
-  '/forgot-password': ['Forgot Password', 'Password recovery information.', true],
-  '/reset-password': ['Reset Password', 'Password reset information.', true],
-};
+const pages = Object.fromEntries(editableStorePages.map(page => [page.path, [page.title, page.description, page.noindex]]));
 
 function setMeta(attribute, key, value) {
   const matches = [...document.head.querySelectorAll(`meta[${attribute}="${key}"]`)];
@@ -38,6 +27,7 @@ function applyMetadata({ title, description, url, noindex = false, image }) {
   setMeta('name', 'twitter:card', image ? 'summary_large_image' : 'summary');
   setMeta('name', 'twitter:title', document.title);
   setMeta('name', 'twitter:description', description);
+  if (image) image = new URL(image, import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api')).href;
   for (const [attribute, key] of [['property', 'og:image'], ['name', 'twitter:image']]) {
     if (image) setMeta(attribute, key, image);
     else document.head.querySelectorAll(`meta[${attribute}="${key}"]`).forEach(node => node.remove());
@@ -65,9 +55,10 @@ export default function PageMetadata() {
     const controller = new AbortController();
     let overrides = {};
     let current = metadata;
+    let productOverrides = {};
     function render(next = current) {
       current = next;
-      applyMetadata({ ...current, ...Object.fromEntries(['title', 'description', 'image'].filter(key => overrides[key]).map(key => [key, overrides[key]])) });
+      applyMetadata({ ...current, ...Object.fromEntries(['title', 'description', 'image'].filter(key => overrides[key]).map(key => [key, overrides[key]])), ...productOverrides });
     }
     render();
     apiRequest(`/seo?path=${encodeURIComponent(path)}`, { signal: controller.signal }).then(({ seo }) => {
@@ -76,6 +67,7 @@ export default function PageMetadata() {
     if (!productMatch) return () => controller.abort();
     apiRequest(`/products/${productMatch[1]}`, { signal: controller.signal }).then(({ product }) => {
       if (controller.signal.aborted || !product) return;
+      if (!productMatch[2]) productOverrides = Object.fromEntries([['title', product.seoTitle], ['description', product.seoDescription], ['image', product.seoImage]].filter(([, value]) => value));
       const text = String(product.description || product.subtitle || `Explore ${product.name}, including frame details, available options and customer reviews.`).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
       const imageBase = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? `${window.location.origin}/api` : 'http://localhost:5001/api');
       render({ ...metadata, title: `${product.name}${productMatch[2] ? ' Reviews' : ''}`, description: productMatch[2] ? `Read customer reviews and ratings for ${product.name}.` : text, image: product.image ? new URL(product.image, imageBase).href : undefined });

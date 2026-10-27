@@ -22,7 +22,7 @@ adminSeo.put('/', async (req, res) => {
   for (const [value, limit] of [[title, 120], [description, 320], [image, 2000]]) {
     if (typeof value !== 'string' || value.length > limit) return res.status(400).json({ message: 'Check the SEO field lengths.' });
   }
-  if (image.trim()) {
+  if (image.trim() && !/^\/assets\/products\/[\w.-]+$/.test(image.trim())) {
     try {
       if (!['http:', 'https:'].includes(new URL(image.trim()).protocol)) throw new Error();
     } catch { return res.status(400).json({ message: 'Use a full HTTP or HTTPS image URL.' }); }

@@ -15,8 +15,8 @@ for (const [path, model, key] of [['/orders', Order, 'orders'], ['/coupons', Cou
     t.mock.method(model, 'find', () => ({
       populate() { return this; },
       sort(order) { assert.deepEqual(order, { createdAt: -1, _id: -1 }); return this; },
-      skip(offset) { assert.equal(offset, 20); return this; },
-      limit(size) { assert.equal(size, 20); return this; },
+      skip(offset) { assert.equal(offset, 10); return this; },
+      limit(size) { assert.equal(size, 10); return this; },
       async lean() {
         assert.equal(countStarted, true);
         resolveCount(21);

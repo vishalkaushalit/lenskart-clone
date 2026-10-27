@@ -1,65 +1,30 @@
 import { LoaderProvider } from '../../shared/LoadingOverlay.jsx';
-import {lazy,Suspense} from 'react';
+import { storePages } from '../../shared/storePages.js';
+import { lazy, Suspense } from 'react';
+import { Routes, Route, Outlet } from 'react-router-dom';
 import Loader from './components/Loader';
 import PageMetadata from './seo/PageMetadata';
-import { Routes, Route, Outlet } from "react-router-dom";
+import StoreLayout from './routes';
+import ProtectedRoute from './components/ProtectedRoute';
 
-import StoreLayout from "./routes";
-const Register=lazy(()=>import("./pages/Register"));
-const Wishlist=lazy(()=>import("./pages/Wishlist"));
-const Cart=lazy(()=>import("./pages/Cart"));
-const ThankYou=lazy(()=>import("./pages/ThankYou"));
-const Checkout=lazy(()=>import("./pages/Checkout"));
-const ProductDetails=lazy(()=>import("./pages/ProductDetails"));
-const ProductReviews=lazy(()=>import("./pages/ProductReviews"));
-const Collection=lazy(()=>import("./pages/Collection"));
-const Home=lazy(()=>import("./pages/Home"));
-const Login=lazy(()=>import("./pages/Login"));
-const Profile=lazy(()=>import("./pages/Profile"));
-const OrderTracker=lazy(()=>import("./pages/OrderTracker"));
-import ProtectedRoute from "./components/ProtectedRoute";
-
-const App = () => {
-  return (
-    <LoaderProvider className="store"><PageMetadata /><Suspense fallback={<Loader label="Loading page"/>}><Routes>
-      <Route element={<StoreLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/collection" element={<Collection />} />
-        <Route path="/products/:id" element={<ProductDetails />} />
-        <Route path="/products/:id/reviews" element={<ProductReviews />} />
-        <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/eyeglasses" element={<Collection />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/thank-you/:id" element={<ThankYou />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/orders/:id/track" element={<OrderTracker />} />
-        </Route>
-        <Route path="*" element={<h1>Page not found</h1>} />
+const modules = import.meta.glob('./pages/*.jsx');
+const components = Object.fromEntries(Object.entries(modules).map(([path, load]) => [path.split('/').pop().replace('.jsx', ''), lazy(load)]));
+function pageRoute(page) {
+  const Component = components[page.component];
+  if (page.component && !Component) throw new Error(`Missing storefront component: ${page.component}`);
+  return <Route key={page.path} path={page.path} element={Component ? <Component /> : <p>{page.message}</p>} />;
+}
+export default function App() {
+  return <LoaderProvider className="store"><PageMetadata /><Suspense fallback={<Loader label="Loading page" />}><Routes>
+    <Route element={<StoreLayout />}>
+      {storePages.filter(page => page.layout === 'store' && !page.protected).map(pageRoute)}
+      <Route element={<ProtectedRoute />}>
+        {storePages.filter(page => page.layout === 'store' && page.protected).map(pageRoute)}
       </Route>
-      <Route
-        element={
-          <main className="store-page-surface store-auth-layout">
-            <Outlet />
-          </main>
-        }
-      >
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-
-        <Route
-          path="/forgot-password"
-          element={<p>Forgot password — coming soon.</p>}
-        />
-
-        <Route
-          path="/reset-password"
-          element={<p>Reset password — coming soon.</p>}
-        />
-      </Route>
-    </Routes></Suspense></LoaderProvider>
-  );
-};
-
-export default App;
+      <Route path="*" element={<h1>Page not found</h1>} />
+    </Route>
+    <Route element={<main className="store-page-surface store-auth-layout"><Outlet /></main>}>
+      {storePages.filter(page => page.layout === 'auth').map(pageRoute)}
+    </Route>
+  </Routes></Suspense></LoaderProvider>;
+}

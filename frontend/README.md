@@ -358,7 +358,7 @@ Collection category tabs and empty-result indicators use a rectangular eyeglasse
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `d9424e428157c1d96a53f892c54e200d7b573d8fcd66aa4a2b2e92d8aed27815`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `12d760031e915bedbafbc102ed68ec471417d278f1ffcdfda83abe393471d794`.
 
 ### Actual npm commands
 
@@ -379,7 +379,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 
 | File | Exports |
 | --- | --- |
-| [src/App.jsx](src/App.jsx) | default export |
+| [src/App.jsx](src/App.jsx) | App |
 | [src/api/api.js](src/api/api.js) | apiRequest |
 | [src/api/requestClient.js](src/api/requestClient.js) | Internal module / styles |
 | [src/components/AccountMenu.jsx](src/components/AccountMenu.jsx) | AccountMenu |
@@ -501,22 +501,7 @@ Paths below are local declarations; consult the API/page guide above for mounted
 
 | Source | Declaration | Path |
 | --- | --- | --- |
-| src/App.jsx | React Route | `/` |
-| src/App.jsx | React Route | `/collection` |
-| src/App.jsx | React Route | `/products/:id` |
-| src/App.jsx | React Route | `/products/:id/reviews` |
-| src/App.jsx | React Route | `/wishlist` |
-| src/App.jsx | React Route | `/cart` |
-| src/App.jsx | React Route | `/eyeglasses` |
-| src/App.jsx | React Route | `/checkout` |
-| src/App.jsx | React Route | `/thank-you/:id` |
-| src/App.jsx | React Route | `/profile` |
-| src/App.jsx | React Route | `/orders/:id/track` |
 | src/App.jsx | React Route | `*` |
-| src/App.jsx | React Route | `/login` |
-| src/App.jsx | React Route | `/register` |
-| src/App.jsx | React Route | `/forgot-password` |
-| src/App.jsx | React Route | `/reset-password` |
 | src/components/OrderReviews.jsx | fields.get | `rating` |
 | src/components/OrderReviews.jsx | fields.get | `text` |
 | src/components/ProductSearch.jsx | params.get | `search` |
@@ -671,4 +656,8 @@ Cart and checkout reuse the product-page sticky-column hook for their two-column
 
 ## Manual page SEO
 
-Manual overrides can be edited under **Page SEO** in the admin panel. The storefront reads `/api/seo?path=...` and uses nonempty saved title, description and image fields ahead of automatic metadata. Each exact path, including product review paths, has separate settings. Missing settings or failed settings requests retain automatic defaults; navigation aborts outdated reads. Reload after saving. Indexing rules and canonical URLs remain controlled by the storefront.
+Static page overrides can be edited under **Page SEO** in the admin panel. Product add/edit forms have an inline **Search engine listing** editor for `seoTitle`, `seoDescription` and `seoImage`, which take precedence over path settings on product detail pages. The storefront reads `/api/seo?path=...` and uses nonempty saved title, description and image fields ahead of automatic metadata. Each exact path, including product review paths, has separate settings. Missing settings or failed settings requests retain automatic defaults; navigation aborts outdated reads. Reload after saving. Indexing rules and canonical URLs remain controlled by the storefront.
+
+## Shared page registry
+
+`shared/storePages.js` is the single source for storefront routes, default metadata, and the admin Page SEO table. To add a static page, create its component in `frontend/src/pages/` and register its path, component filename (without extension), label, title, description, noindex policy, layout (`store` or `auth`), and protected flag there. Vite discovers page components automatically. Static entries appear in Page SEO after rebuilding/deploying both apps; no separate admin entry or notification is needed. Parameterized product/order routes are excluded from the static SEO table; product SEO remains in the product editor. Existing path-based saved overrides remain valid. This does not create page content from the admin panel.
