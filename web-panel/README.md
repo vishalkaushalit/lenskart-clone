@@ -288,7 +288,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `4768112b130f3e94d06625dea421dee69fca73fed275d6ed4819903d7a0d833e`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `a832c434653a97708f6e4382d81b9c61f95ce9d6e2355a5bc41a000af82ea05d`.
 
 ### Actual npm commands
 
@@ -336,6 +336,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/components/SearchEngineListing.jsx](src/components/SearchEngineListing.jsx) | SearchEngineListing |
 | [src/components/StatDashboard.jsx](src/components/StatDashboard.jsx) | StatDashboard |
 | [src/components/StatusBadge.jsx](src/components/StatusBadge.jsx) | StatusBadge |
+| [src/components/TextFileUpload.jsx](src/components/TextFileUpload.jsx) | TextFileUpload |
 | [src/components/UserActionDialog.jsx](src/components/UserActionDialog.jsx) | UserActionDialog |
 | [src/components/VariantDeleteButton.jsx](src/components/VariantDeleteButton.jsx) | VariantDeleteButton |
 | [src/dashboard/Dashboard.jsx](src/dashboard/Dashboard.jsx) | Dashboard |
@@ -554,4 +555,8 @@ Recent Orders uses the shared bordered admin button style for View All, consiste
 
 ## Site verification and crawler files
 
-Page SEO → Site SEO settings (`/seo/settings`) manages Google Search Console and Meta/Facebook domain verification. Paste tokens/meta tags or upload TXT/HTML containing a tag (2 KB). Upload/edit sitemap.xml (200 KB) and robots.txt (100 KB), preview contents, view live root files, or restore automatic defaults. Save changes publishes the settings. Configure Website URL to the public origin for generated sitemap links. These are verification tags, not Analytics/GTM/Pixel tracking scripts.
+Page SEO → Site SEO settings (`/seo/settings`) manages Google Search Console and Meta/Facebook domain verification. Paste verification tokens/meta tags; verification fields have no file upload. Upload/edit sitemap.xml (200 KB) and robots.txt (100 KB), preview contents, view live root files, or restore automatic defaults. Save changes publishes the settings. Configure Website URL to the public origin for generated sitemap links. Verification fields accept verification tags only; Google tracking has its own installation settings.
+
+Upload areas size to their content with compact spacing and no fixed minimum height, including sitemap/robots and product/image upload controls.
+
+Google tracking supports Disabled, GTM (`GTM-…`), or direct GA4 (`G-…`) / Ads (`AW-…`) IDs. Saving validates IDs; scripts initialize on storefront reload, once per document. GTM receives `store_page_view` events for container triggers. Direct GA4 sends route page views; disable enhanced-measurement history page views to avoid duplicates. Ads installs the base tag; purchase conversion events need separate configuration. No tracking is loaded in Disabled mode.

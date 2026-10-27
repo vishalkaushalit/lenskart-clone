@@ -29,6 +29,17 @@ export function siteSeoFields(body) {
   }
   if (fields.sitemap && (!/^\s*(?:<\?xml[^>]*>\s*)?<(urlset|sitemapindex)\b[\s\S]*<\/(urlset|sitemapindex)>\s*$/.test(fields.sitemap) || /<!DOCTYPE|<!ENTITY|<script/i.test(fields.sitemap))) throw new Error('Upload a sitemap XML file with a urlset or sitemapindex root, without scripts or document entities.');
   if (fields.robots && (/<[^>]+>/.test(fields.robots) || !/^\s*user-agent\s*:/im.test(fields.robots))) throw new Error('robots.txt must be plain text with a User-agent directive.');
+  if (Object.hasOwn(body,'trackingMode')) {
+    if (!['off','gtm','direct'].includes(body.trackingMode)) throw new Error('Choose a supported tracking method.');
+    fields.trackingMode=body.trackingMode;
+    for (const [key, pattern] of [['gtmId',/^GTM-[A-Z0-9]+$/],['ga4Id',/^G-[A-Z0-9]+$/],['googleAdsId',/^AW-[0-9]+$/]]) {
+      const value=body[key] ?? '';
+      if(typeof value!=='string'||value.length>40||(value&&!pattern.test(value))) throw new Error(`Enter a valid ${key}, not a script snippet.`);
+      fields[key]=value;
+    }
+    if(fields.trackingMode==='gtm'&&!fields.gtmId)throw new Error('Enter your GTM container ID.');
+    if(fields.trackingMode==='direct'&&!fields.ga4Id&&!fields.googleAdsId)throw new Error('Enter a GA4 or Google Ads ID.');
+  }
   return fields;
 }
 export function verificationHtml(settings) {

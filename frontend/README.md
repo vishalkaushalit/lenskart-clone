@@ -358,7 +358,7 @@ Collection category tabs and empty-result indicators use a rectangular eyeglasse
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `be384b1ad5c9654e092ef64f5f8ee2792e50aefbeb66db261adb711daacc11dc`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `e8962288c1ac22ee842b3b2c763941373e5b45d2bc9ab117b0e625933c3fb5f9`.
 
 ### Actual npm commands
 
@@ -380,6 +380,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | File | Exports |
 | --- | --- |
 | [src/App.jsx](src/App.jsx) | App |
+| [src/analytics/googleTracking.js](src/analytics/googleTracking.js) | installGoogleTracking, trackGooglePage |
 | [src/api/api.js](src/api/api.js) | apiRequest |
 | [src/api/requestClient.js](src/api/requestClient.js) | Internal module / styles |
 | [src/components/AccountMenu.jsx](src/components/AccountMenu.jsx) | AccountMenu |
@@ -674,3 +675,5 @@ SEO editors place a sticky search preview on the left and fields on the right at
 ## Site verification and crawler files
 
 Site SEO verification tags are read into the document head at runtime, including local development. The production homepage is served from the built HTML with saved Google/Meta verification tags already in its source. Root sitemap.xml and robots.txt are backend-served via Vercel routing; standalone frontend Vite requires a reverse proxy to backend for these root files. Google/Meta verification must be completed in the provider after saving. Site settings are global, independent of per-page metadata.
+
+Google tracking is configured in Site SEO settings. The storefront loads either GTM or direct GA4/Ads once per document, and tracks SPA route changes without duplicate immediate events. Query parameters are excluded from manual page-view payloads. Configure matching GTM custom-event triggers or disable GA4 enhanced-measurement history events when using direct page views. No purchase conversions are sent automatically.

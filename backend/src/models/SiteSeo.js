@@ -4,6 +4,10 @@ const schema = new mongoose.Schema({
   websiteUrl: { type: String, default: '', maxlength: 2000 },
   googleVerification: { type: String, default: '', maxlength: 500 },
   metaVerification: { type: String, default: '', maxlength: 500 },
+  trackingMode: { type: String, enum: ['off','gtm','direct'], default: 'off' },
+  gtmId: { type: String, default: '', maxlength: 40 },
+  ga4Id: { type: String, default: '', maxlength: 40 },
+  googleAdsId: { type: String, default: '', maxlength: 40 },
   sitemap: { type: String, default: '', maxlength: 200000 },
   robots: { type: String, default: '', maxlength: 100000 },
 }, { timestamps: true });

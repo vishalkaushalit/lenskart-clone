@@ -389,7 +389,7 @@ Product detail endpoints fetch variants and approved reviews concurrently after 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `aebd10d49b1759f84d2f87d5cd5971f6e4a281eabd21aafd53bdd746c53a01d5`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `5c3c16b082873ea6da2f4fff6bc38e27e848166ef79d73e512660f923d16e7dc`.
 
 ### Actual npm commands
 
@@ -841,6 +841,10 @@ const schema = new mongoose.Schema({
   websiteUrl: { type: String, default: '', maxlength: 2000 },
   googleVerification: { type: String, default: '', maxlength: 500 },
   metaVerification: { type: String, default: '', maxlength: 500 },
+  trackingMode: { type: String, enum: ['off','gtm','direct'], default: 'off' },
+  gtmId: { type: String, default: '', maxlength: 40 },
+  ga4Id: { type: String, default: '', maxlength: 40 },
+  googleAdsId: { type: String, default: '', maxlength: 40 },
   sitemap: { type: String, default: '', maxlength: 200000 },
   robots: { type: String, default: '', maxlength: 100000 },
 }, { timestamps: true });
@@ -976,3 +980,5 @@ Dashboard accepts independent `salesDays`, `statusDays`, `recentDays` (same supp
 ## Site verification and crawler files
 
 Site SEO settings use the singleton SiteSeo model. Admin-only GET/PUT `/api/admin/site-seo` manage website origin, Google/Meta verification tokens, custom sitemap XML (200 KB) and robots text (100 KB). Public `/api/site-seo/settings` returns verification tokens. Root robots.txt and sitemap.xml routes serve overrides or generated defaults; active products and indexable registered pages populate the sitemap (up to 49,900 products). Verification tags are escaped into built homepage HTML by `/api/site-seo/home` and the root backend handler. Build the storefront first. Vercel bundles dist/index.html and routes homepage/robots/sitemap requests to the backend. Settings changes publish on save; generated files may cache for 60 seconds. Uploaded sitemap content is screened for a supported root and unsafe entities, not full XML schema validity.
+
+SiteSeo tracking fields: `trackingMode` (`off`, `gtm`, `direct`), `gtmId`, `ga4Id`, `googleAdsId`. Admin writes validate the selected method and ID format. Public site settings return these public tracking identifiers for storefront installation. Arbitrary script snippets are not accepted.

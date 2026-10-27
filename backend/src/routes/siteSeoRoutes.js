@@ -19,7 +19,7 @@ adminSiteSeo.put('/', async (req,res) => {
 });
 publicSiteSeo.get('/settings', async (req,res) => {
   const value=await settings();
-  res.json({googleVerification:value.googleVerification || '',metaVerification:value.metaVerification || ''});
+  res.json({googleVerification:value.googleVerification || '',metaVerification:value.metaVerification || '',trackingMode:value.trackingMode || 'off',gtmId:value.gtmId || '',ga4Id:value.ga4Id || '',googleAdsId:value.googleAdsId || ''});
 });
 function origin(value,req) {
   return value.websiteUrl || process.env.FRONTEND_URL?.replace(/\/$/,'') || `${req.protocol}://${req.get('host')}`;
