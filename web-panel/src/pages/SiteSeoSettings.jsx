@@ -313,7 +313,7 @@ export default function SiteSeoSettings() {
                           <label className="product-label block">
                             File preview
                             <textarea
-                              className="product-field font-mono text-xs"
+                              className="product-field font-sans text-xs"
                               rows={10}
                               maxLength={max}
                               value={form[key]}

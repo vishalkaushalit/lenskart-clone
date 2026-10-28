@@ -73,7 +73,7 @@ export default function PageSeo() {
                   <tr key={url}>
                     <td className="tabular-nums text-slate-500">{pagination.offset + index + 1}</td>
                     <td className="font-medium text-slate-900">{label}</td>
-                    <td className="font-mono text-slate-500">{overrides[url]?.urlPath || url}</td>
+                    <td className="font-sans text-slate-500">{overrides[url]?.urlPath || url}</td>
                     <td>
                       <span
                         className={`inline-flex whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium ${!noindex ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-600'}`}

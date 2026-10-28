@@ -134,8 +134,8 @@ export default function RedirectSettings({ settings, onChange, notify }) {
           {rows.slice((current - 1) * 10, current * 10).map((row, index) => (
             <tr key={`${row.automatic ? 'auto' : 'custom'}-${row.from}`}>
               <td>{(current - 1) * 10 + index + 1}</td>
-              <td className="break-all font-mono">{row.from}</td>
-              <td className="break-all font-mono">{row.to}</td>
+              <td className="break-all font-sans">{row.from}</td>
+              <td className="break-all font-sans">{row.to}</td>
               <td>{row.automatic ? 'Automatic 301' : 'Custom 301'}</td>
               <td>
                 <div className="flex items-center gap-2">

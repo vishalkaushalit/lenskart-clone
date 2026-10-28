@@ -180,12 +180,12 @@ export default function SearchEngineListing({
               <div className="grid items-center gap-3 text-sm sm:grid-cols-[1fr_auto_1fr]">
                 <div className="min-w-0">
                   <span className="mb-1 block text-xs font-medium text-slate-500">Old URL</span>
-                  <p className="break-all font-mono text-slate-800">{oldUrl}</p>
+                  <p className="break-all font-sans text-slate-800">{oldUrl}</p>
                 </div>
                 <ArrowRight size={18} className="text-slate-500" aria-hidden="true" />
                 <div className="min-w-0">
                   <span className="mb-1 block text-xs font-medium text-slate-500">New URL</span>
-                  <p className="break-all font-mono text-slate-800">{newUrl}</p>
+                  <p className="break-all font-sans text-slate-800">{newUrl}</p>
                 </div>
               </div>
               <label className="flex items-center gap-3 text-sm font-medium text-black">
