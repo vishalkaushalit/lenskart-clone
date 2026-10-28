@@ -33,7 +33,7 @@ export default function ShapeCollections({ categories = [], name }) {
           {shapes.map((shape) => (
             <SwiperSlide key={shape._id}>
               <Link
-                to={`/collection/${root.slug}?subcategory=${shape.slug}`}
+                to={`/collections/${root.slug}/${encodeURIComponent(shape.slug)}`}
                 className="block text-center"
               >
                 {(shape.image || root.image) && (

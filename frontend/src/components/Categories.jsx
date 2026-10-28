@@ -30,7 +30,7 @@ export default function Categories({ categories = [] }) {
           {roots.map((root) => (
             <SwiperSlide key={root._id} style={{ overflow: 'visible' }}>
               <div className="relative group">
-                <Link to={`/collection/${root.slug}`} className="block text-center">
+                <Link to={`/collections/${root.slug}`} className="block text-center">
                   {root.image && (
                     <img
                       loading="lazy"
@@ -52,7 +52,7 @@ export default function Categories({ categories = [] }) {
                         .map((child) => (
                           <Link
                             key={child._id}
-                            to={`/collection/${root.slug}?subcategory=${child.slug}`}
+                            to={`/collections/${root.slug}/${encodeURIComponent(child.slug)}`}
                             className="flex items-center gap-4 p-2 hover:bg-slate-50"
                           >
                             {(child.image || root.image) && (
@@ -70,7 +70,7 @@ export default function Categories({ categories = [] }) {
                           </Link>
                         ))}
                       <Link
-                        to={`/collection/${root.slug}`}
+                        to={`/collections/${root.slug}`}
                         className="block text-center p-4 font-semibold"
                       >
                         View all

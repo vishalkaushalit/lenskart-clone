@@ -153,31 +153,46 @@ export async function saveProduct(req, res, next) {
         return res.status(400).json({ message: 'Choose valid categories and subcategories.' });
       const rootIds = [...new Set(roots)];
       const childIds = [...new Set(children)];
-      const selected = await Category.find({
-        _id: { $in: [...rootIds, ...childIds] },
-        active: true,
-      }).lean();
-      if (
-        rootIds.some(
-          (value) => !selected.some((row) => String(row._id) === value && !row.parent),
-        ) ||
-        childIds.some(
-          (value) =>
-            !selected.some(
-              (row) => String(row._id) === value && rootIds.includes(String(row.parent)),
-            ),
-        )
-      )
-        return res.status(400).json({
-          message:
-            'Choose active categories and subcategories belonging to the selected categories.',
-        });
+      const selected = await Category.find({ active: true }).lean();
+      const categoriesById = new Map(selected.map((row) => [String(row._id), row]));
+      const validRootIds = rootIds.filter(
+        (value) => categoriesById.has(value) && !categoriesById.get(value).parent,
+      );
+      if (validRootIds.length !== rootIds.length)
+        return res.status(400).json({ message: 'Choose active main categories.' });
+      const normalizedChildren = new Set(childIds);
+      for (const value of childIds) {
+        let current = categoriesById.get(value);
+        const visited = new Set();
+        if (!current || !current.parent)
+          return res.status(400).json({ message: 'Choose active subcategories.' });
+        while (current.parent) {
+          const currentId = String(current._id);
+          if (visited.has(currentId))
+            return res.status(400).json({ message: 'The category hierarchy is invalid.' });
+          visited.add(currentId);
+          const parent = categoriesById.get(String(current.parent));
+          if (!parent)
+            return res.status(400).json({ message: 'Choose subcategories with active parents.' });
+          if (!parent.parent) {
+            if (!rootIds.includes(String(parent._id)))
+              return res.status(400).json({
+                message: 'Choose subcategories belonging to the selected main categories.',
+              });
+            break;
+          }
+          normalizedChildren.add(String(parent._id));
+          current = parent;
+        }
+      }
       fields.categoryIds = rootIds;
-      fields.subcategoryIds = childIds;
+      fields.subcategoryIds = [...normalizedChildren];
       fields.categoryId = rootIds[0] || null;
       fields.subcategoryId =
         selected.find(
-          (row) => childIds.includes(String(row._id)) && String(row.parent) === fields.categoryId,
+          (row) =>
+            normalizedChildren.has(String(row._id)) &&
+            String(row.parent) === fields.categoryId,
         )?._id || null;
     }
     if (Object.hasOwn(fields, 'categoryId') || Object.hasOwn(fields, 'subcategoryId')) {
@@ -194,8 +209,26 @@ export async function saveProduct(req, res, next) {
           return res.status(400).json({ message: 'Choose an active main category.' });
       }
       if (subcategoryId) {
-        const child = await Category.findById(subcategoryId);
-        if (!child || !child.active || String(child.parent) !== String(categoryId))
+        const selected = await Category.find({ active: true }).lean();
+        const categoriesById = new Map(selected.map((row) => [String(row._id), row]));
+        let child = categoriesById.get(String(subcategoryId));
+        const visited = new Set();
+        if (!child || !child.parent)
+          return res
+            .status(400)
+            .json({ message: 'Choose a subcategory belonging to this category.' });
+        while (child.parent) {
+          const childId = String(child._id);
+          if (visited.has(childId))
+            return res.status(400).json({ message: 'The category hierarchy is invalid.' });
+          visited.add(childId);
+          child = categoriesById.get(String(child.parent));
+          if (!child)
+            return res
+              .status(400)
+              .json({ message: 'Choose a subcategory with active parents.' });
+        }
+        if (String(child._id) !== String(categoryId))
           return res
             .status(400)
             .json({ message: 'Choose a subcategory belonging to this category.' });

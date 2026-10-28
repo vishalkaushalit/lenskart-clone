@@ -35,6 +35,8 @@ These values are embedded in browser bundles. Restart Vite after editing `.env`.
 | --- | --- |
 | `/` | Home: carousel, API categories/shapes, promotional sections, trending media, brands, and service information. |
 | `/collection`, `/eyeglasses` | Collection: API catalog, taxonomy and attribute filters, sorting, search, wishlist actions, and product galleries. |
+| `/products` | All active products in the same filterable catalog view. |
+| `/collections` | All active root collections and their subcollections, linked to the matching product listings. |
 | `/products/:id` | ProductDetails: active product by slug or ObjectId; gallery/popup, price, frame options, highlights, FAQ, reviews, and add to cart. |
 | `/wishlist` | Wishlist: browser-saved product IDs resolved to current API products. |
 | `/cart` | Cart: selected options, quantity controls, item deletion, original/current prices, coupon, and billing total in one card. |
@@ -53,7 +55,7 @@ These values are embedded in browser bundles. Restart Vite after editing `.env`.
 | --- | --- |
 | URL `search` | Submitted desktop/mobile product query; retained in search inputs and result heading. |
 | URL `category` | Root category slug or legacy ObjectId; maps to product root memberships. |
-| URL `subcategory` | Child slug or ObjectId within the selected root. |
+| URL path segments | Category and any number of nested subcategory slugs; legacy `subcategory` query values remain supported. |
 | URL `brand` | Exact case-insensitive brand filter. |
 | URL `shape` | Exact case-insensitive frame-shape filter. |
 | `catalog` | API `/products?all=1` results; includes all active product types. |
@@ -358,7 +360,7 @@ Collection category tabs and empty-result indicators use a rectangular eyeglasse
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `15c65b678d953fbf23ea453fb764bb577a53ef6d19a2a5822ae3b423dfe5c15f`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `8809fbd167073141c92eb7956f29e6896ee1129a68080810444b87c5545c3526`.
 
 ### Actual npm commands
 
@@ -451,6 +453,7 @@ Maintained by `npm run docs:sync` from the repository root. Edit explanations ab
 | [src/pages/Checkout.jsx](src/pages/Checkout.jsx) | Checkout |
 | [src/pages/Collection.css](src/pages/Collection.css) | Internal module / styles |
 | [src/pages/Collection.jsx](src/pages/Collection.jsx) | Collection |
+| [src/pages/Collections.jsx](src/pages/Collections.jsx) | Collections |
 | [src/pages/Home.jsx](src/pages/Home.jsx) | default export |
 | [src/pages/Login.jsx](src/pages/Login.jsx) | default export |
 | [src/pages/OrderTracker.jsx](src/pages/OrderTracker.jsx) | OrderTracker |
@@ -502,6 +505,7 @@ Paths below are local declarations; consult the API/page guide above for mounted
 | src/components/ProductSearch.jsx | params.get | `search` |
 | src/pages/Collection.jsx | params.get | `search` |
 | src/pages/Collection.jsx | params.get | `category` |
+| src/pages/Collection.jsx | params.get | `subcategory` |
 | src/pages/Collection.jsx | params.get | `subcategory` |
 | src/pages/Collection.jsx | params.get | `search` |
 | src/pages/Collection.jsx | params.get | `brand` |
@@ -680,4 +684,4 @@ Static page addresses can be edited in Page SEO. Startup loads `/api/seo/routes`
 
 ### Configurable store URL prefixes
 
-`shared/urlPrefixes.js` resolves current and historical product/collection prefixes from admin settings. Route discovery includes these mappings. `src/storeRouter.jsx` adapts storefront links and navigation to the configured addresses, keeping queries and fragments. Product details/reviews use the same product identifiers; collection filters remain query parameters. Metadata resolves renamed paths to their original content keys. Reload the storefront after changing settings.
+`shared/urlPrefixes.js` resolves current and historical product/collection prefixes from admin settings. `/products` lists all active products; `/collections` lists all root collections and descendants. Category listings use `/collections/:category/:subcategory/...`, with each nested level represented by another path segment. Trailing slashes are accepted and redirect to the canonical no-trailing-slash URL. Older `/collection/:category` links redirect to the plural category URLs. The configurable collection prefix applies to the all-products listing, not the reserved collections index or category URLs. Route discovery includes these mappings. `src/storeRouter.jsx` adapts storefront links and navigation to the configured addresses, keeping queries and fragments. Product details/reviews use the same product identifiers. Metadata resolves renamed paths to their original content keys. Reload the storefront after changing settings.

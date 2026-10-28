@@ -90,7 +90,7 @@ export default function PageMetadata() {
         false,
       ];
     // Filtered/search URLs are kept out of the index; canonical URLs omit queries.
-    const filtered = ['/collection', '/eyeglasses'].includes(path) && Boolean(search);
+    const filtered = ['/collection', '/products', '/eyeglasses'].includes(path) && Boolean(search);
     const metadata = {
       title,
       description,

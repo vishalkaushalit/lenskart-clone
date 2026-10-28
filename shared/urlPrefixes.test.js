@@ -10,12 +10,28 @@ test('prefixes preserve product handles, reviews and historical redirects', () =
   for (const path of ['/products/blue/reviews', '/glasses/blue/reviews', '/frames/blue/reviews'])
     assert.deepEqual(resolveStorePath(path, routes).destination, '/frames/blue/reviews');
   assert.equal(resolveStorePath('/frames/blue', routes).path, '/products/blue');
-  assert.equal(resolveStorePath('/collection', routes).destination, '/collections');
-  assert.equal(resolveStorePath('/collections', routes).path, '/collection');
+  assert.equal(resolveStorePath('/collection', routes).destination, '/collection');
+  assert.equal(resolveStorePath('/collections', routes).path, '/collections');
   assert.equal(resolveStorePath('/collections/eyeglasses', routes).path, '/collection/eyeglasses');
   assert.equal(
     resolveStorePath('/collections/eyeglasses', routes).destination,
     '/collections/eyeglasses',
+  );
+  assert.equal(
+    resolveStorePath('/collection/eyeglasses/classic', routes).destination,
+    '/collections/eyeglasses/classic',
+  );
+  assert.equal(
+    resolveStorePath('/collections/eyeglasses/classic', routes).destination,
+    '/collections/eyeglasses/classic',
+  );
+  assert.equal(
+    resolveStorePath('/collections/eyeglasses/classic/acetate/', routes).destination,
+    '/collections/eyeglasses/classic/acetate',
+  );
+  assert.equal(
+    resolveStorePath('/collection/eyeglasses/classic/acetate/', routes).destination,
+    '/collections/eyeglasses/classic/acetate',
   );
   assert.equal(
     resolveStorePath('/collection/eyeglasses', prefixRoutes({ collectionPrefix: '/collection' }))
@@ -38,11 +54,21 @@ test('prefixes preserve product handles, reviews and historical redirects', () =
   );
   assert.equal(resolveStorePath('/api/products/blue', routes).destination, '/api/products/blue');
 });
-test('defaults use the plural Shopify-style collection prefix', () => {
+test('defaults keep the collection index separate from the product listing', () => {
   const routes = prefixRoutes();
   assert.equal(resolveStorePath('/products/blue', routes).destination, '/products/blue');
+  assert.equal(resolveStorePath('/collection', routes).destination, '/collection');
+  assert.equal(resolveStorePath('/collections', routes).destination, '/collections');
   assert.equal(
     resolveStorePath('/collections/eyeglasses', routes).destination,
     '/collections/eyeglasses',
+  );
+  assert.equal(
+    resolveStorePath('/collections/eyeglasses/classic', routes).destination,
+    '/collections/eyeglasses/classic',
+  );
+  assert.equal(
+    resolveStorePath('/collections/eyeglasses/classic/', routes).destination,
+    '/collections/eyeglasses/classic',
   );
 });

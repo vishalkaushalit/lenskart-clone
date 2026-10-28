@@ -128,7 +128,7 @@ Product and category view/edit links use saved slugs. Admin product URLs accept 
 | Application | Source files | Guide |
 | --- | --- | --- |
 | backend | 88 | [README](backend/README.md) |
-| frontend | 110 | [README](frontend/README.md) |
+| frontend | 111 | [README](frontend/README.md) |
 | web-panel | 63 | [README](web-panel/README.md) |
 
 Update references with `npm run docs:sync`; verify with `npm run docs:check`. Run `npm run docs:hooks` once per clone to enable commit-time synchronization. Review written field explanations whenever behavior changes.

@@ -79,7 +79,8 @@ adminSiteSeo.put('/', async (req, res) => {
   const previous = await settings();
   const merged = { ...previous, ...fields };
   const product = merged.productPrefix || '/products',
-    collection = merged.collectionPrefix || '/collections';
+    configuredCollection = merged.collectionPrefix || '/collection',
+    collection = configuredCollection === '/collections' ? '/collection' : configuredCollection;
   const products = new Set([
     '/products',
     previous.productPrefix,
@@ -88,9 +89,9 @@ adminSiteSeo.put('/', async (req, res) => {
   ]);
   const collections = new Set([
     '/collection',
-    previous.collectionPrefix,
+    previous.collectionPrefix === '/collections' ? '/collection' : previous.collectionPrefix,
     collection,
-    ...(previous.collectionPrefixHistory || []),
+    ...(previous.collectionPrefixHistory || []).filter((prefix) => prefix !== '/collections'),
   ]);
   if ([...products].some((prefix) => prefix && collections.has(prefix)))
     return res.status(409).json({
@@ -113,12 +114,12 @@ adminSiteSeo.put('/', async (req, res) => {
     return res.status(409).json({ message: 'This prefix conflicts with a saved page URL.' });
   for (const [key, fallback] of [
     ['productPrefix', '/products'],
-    ['collectionPrefix', '/collections'],
+    ['collectionPrefix', '/collection'],
   ]) {
     if (fields[key] && fields[key] !== (previous[key] || fallback))
       fields[key + 'History'] = [
         ...new Set([...(previous[key + 'History'] || []), previous[key] || fallback]),
-      ].filter((value) => value !== fields[key]);
+      ].filter((value) => value !== fields[key] && value !== '/collections');
   }
   try {
     const routes = [
@@ -183,16 +184,25 @@ publicSiteSeo.get('/sitemap.xml', async (req, res) => {
     .select('path noindex urlPath redirectOld redirects -_id')
     .lean();
   const base = origin(value, req);
+  const collectionListingPath =
+    prefixRoutes(value, overrides).find((row) => row.path === '/collection')?.urlPath ||
+    '/collection';
+  const collectionRoutes = prefixRoutes(value, overrides);
   const rows = [
     ...sitemapPages(
       editableStorePages,
       overrides.map((row) =>
         row.path === '/collection'
-          ? { ...row, urlPath: prefixRoutes(value, overrides)[2].urlPath }
+          ? {
+              ...row,
+              urlPath:
+                collectionRoutes.find((route) => route.path === '/collection')?.urlPath ||
+                '/collection',
+            }
           : row,
       ),
     ).map((page) => ({
-      path: page.path === '/collection' ? value.collectionPrefix || '/collections' : page.path,
+      path: page.path === '/collection' ? collectionListingPath : page.path,
     })),
     ...products
       .filter(
@@ -227,10 +237,28 @@ export async function renderStorefront(req, res) {
   const overrides = await PageSeo.find({})
     .select('path noindex urlPath redirectOld redirects title description -_id')
     .lean();
+  const collectionListingPath =
+    prefixRoutes(value, overrides).find((row) => row.path === '/collection')?.urlPath ||
+    '/collection';
+  const isCollectionPath = requested === '/collections' || requested.startsWith('/collections/');
+  const routeOverrides =
+    isCollectionPath
+      ? overrides.filter(
+          (row) =>
+            row.path !== '/collection' &&
+            row.urlPath !== '/collections' &&
+            !row.urlPath?.startsWith('/collections/') &&
+            !row.redirects?.some((path) => path === '/collections' || path.startsWith('/collections/')),
+        )
+      : overrides;
   const customTarget = redirectTarget(requested, [
-    ...customRedirectRoutes(value),
-    ...prefixRoutes(value, overrides),
-    ...overrides,
+    ...customRedirectRoutes(value).filter(
+      (row) =>
+        !isCollectionPath ||
+        (row.path !== '/collections' && !row.path.startsWith('/collections/')),
+    ),
+    ...prefixRoutes(value, routeOverrides),
+    ...routeOverrides,
   ]);
   if (customTarget !== requested) {
     const query = req.originalUrl?.includes('?')
@@ -238,14 +266,14 @@ export async function renderStorefront(req, res) {
       : '';
     return res.redirect(301, customTarget + query);
   }
-  const prefixed = resolveStorePath(requested, prefixRoutes(value, overrides));
+  const prefixed = resolveStorePath(requested, prefixRoutes(value, routeOverrides));
   if (prefixed.destination !== requested) {
     const query = req.originalUrl?.includes('?')
       ? '?' + req.originalUrl.split('?').slice(1).join('?')
       : '';
     return res.redirect(301, prefixed.destination + query);
   }
-  const seo = overrides.find(
+  const seo = routeOverrides.find(
     (row) =>
       row.path === prefixed.path || row.urlPath === requested || row.redirects?.includes(requested),
   );
@@ -319,11 +347,16 @@ export async function renderStorefront(req, res) {
     editableStorePages,
     overrides.map((row) =>
       row.path === '/collection'
-        ? { ...row, urlPath: prefixRoutes(value, overrides)[2].urlPath }
+        ? {
+            ...row,
+            urlPath:
+              prefixRoutes(value, overrides).find((route) => route.path === '/collection')
+                ?.urlPath || '/collection',
+          }
         : row,
     ),
   ).map((page) => ({
-    path: page.path === '/collection' ? value.collectionPrefix || '/collections' : page.path,
+    path: page.path === '/collection' ? collectionListingPath : page.path,
     label: page.label,
   }));
   const links = [

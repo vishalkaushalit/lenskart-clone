@@ -45,7 +45,9 @@ publicSeo.get('/routes', async (req, res) => {
   const site = (await SiteSeo.findOne({ key: 'site' }).lean()) || {};
   res.json({
     pages: [
-      ...customRedirectRoutes(site),
+      ...customRedirectRoutes(site).filter(
+        (row) => row.path !== '/collections' && !row.path.startsWith('/collections/'),
+      ),
       ...prefixRoutes(site, pages),
       ...pages.filter((row) => row.path !== '/collection'),
     ],
@@ -116,15 +118,20 @@ adminSeo.put('/', async (req, res) => {
         ))
     )
       return res.status(400).json({ message: 'This URL is reserved or belongs to another page.' });
+    if (path === '/collections' && requested !== path)
+      return res.status(400).json({ message: 'The /collections index URL cannot be changed.' });
     const site = (await SiteSeo.findOne({ key: 'site' }).lean()) || {};
     const reservedPrefixes = [
       site.productPrefix || '/products',
       ...(site.productPrefixHistory || []),
-      site.collectionPrefix || '/collections',
+      site.collectionPrefix || '/collection',
       ...(site.collectionPrefixHistory || []),
+      '/collections',
     ];
+    const keepsCollectionIndexPath = path === '/collections' && requested === path;
     if (
       path !== '/collection' &&
+      !keepsCollectionIndexPath &&
       reservedPrefixes.some((prefix) => requested === prefix || requested.startsWith(prefix + '/'))
     )
       return res.status(409).json({ message: 'This URL is reserved for products or collections.' });

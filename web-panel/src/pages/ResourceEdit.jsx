@@ -63,6 +63,17 @@ export default function ResourceEdit({ kind, mode = 'edit' }) {
   const edit = result.record,
     editor = edit,
     rows = result.rows || [];
+  function categoryLabel(category) {
+    const names = [category.name];
+    let parent = rows.find((row) => row._id === category.parent);
+    const visited = new Set([category._id]);
+    while (parent && !visited.has(parent._id)) {
+      visited.add(parent._id);
+      names.unshift(parent.name);
+      parent = rows.find((row) => row._id === parent.parent);
+    }
+    return names.join(' / ');
+  }
   async function save(event) {
     event.preventDefault();
     if (busy || uploading) return;
@@ -177,10 +188,10 @@ export default function ResourceEdit({ kind, mode = 'edit' }) {
                     >
                       <option value="">None (main category)</option>
                       {rows
-                        .filter((row) => !row.parent && row.active)
+                        .filter((row) => row.active && row._id !== edit._id)
                         .map((row) => (
                           <option key={row._id} value={row._id}>
-                            {row.name}
+                            {categoryLabel(row)}
                           </option>
                         ))}
                     </select>

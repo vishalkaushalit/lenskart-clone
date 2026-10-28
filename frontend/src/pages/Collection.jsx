@@ -22,20 +22,34 @@ export default function Collection() {
 
 function CollectionResults() {
   const [params, setParams] = useSearchParams();
-  const { category: categorySlug } = useParams();
+  const { category: categorySlug, subcategory: subcategorySlug, '*': nestedPath = '' } = useParams();
   const { categories } = useCategories();
   const categoryValue = categorySlug || params.get('category') || '';
-  const subcategoryValue = params.get('subcategory') || '';
+  const subcategoryValues = [
+    ...(subcategorySlug ? [subcategorySlug] : []),
+    ...nestedPath.split('/').filter(Boolean),
+  ];
+  if (!subcategoryValues.length && params.get('subcategory'))
+    subcategoryValues.push(params.get('subcategory'));
+  const hasSubcategory = subcategoryValues.length > 0;
   const categoryId =
     categories.find(
       (row) => !row.parent && (row.slug === categoryValue || row._id === categoryValue),
     )?._id || '';
-  const subcategoryId =
-    categories.find(
-      (row) =>
-        row.parent === categoryId &&
-        (row.slug === subcategoryValue || row._id === subcategoryValue),
-    )?._id || '';
+  const selectedCategories = [];
+  let parentId = categoryId;
+  for (const segment of subcategoryValues) {
+    const category = categories.find(
+      (row) => row.parent === parentId && (row.slug === segment || row._id === segment),
+    );
+    if (!category) {
+      selectedCategories.length = 0;
+      break;
+    }
+    selectedCategories.push(category);
+    parentId = category._id;
+  }
+  const subcategoryId = selectedCategories.at(-1)?._id || '';
   const [similarProduct, setSimilarProduct] = useState(null);
   const [catalog, setCatalog] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,7 +97,7 @@ function CollectionResults() {
       (product) =>
         (tab === 'All' || product.category === tab) &&
         (!categoryValue || Boolean(categoryId)) &&
-        (!subcategoryValue || Boolean(subcategoryId)) &&
+        (!hasSubcategory || Boolean(subcategoryId)) &&
         (!brandQuery || product.brand.toLowerCase() === brandQuery) &&
         (!shapeQuery || product.shape.toLowerCase() === shapeQuery) &&
         (!categoryId || (product.categoryIds || [product.categoryId]).includes(categoryId)) &&
@@ -102,7 +116,7 @@ function CollectionResults() {
     tab,
     categoryValue,
     categoryId,
-    subcategoryValue,
+    hasSubcategory,
     subcategoryId,
     brandQuery,
     shapeQuery,
@@ -200,7 +214,7 @@ function CollectionResults() {
             <span>/</span>
             {currentSubcategory && currentCategory ? (
               <>
-                <Link to={`/collection/${currentCategory.slug}`}>{currentCategory.name}</Link>
+                <Link to={`/collections/${currentCategory.slug}`}>{currentCategory.name}</Link>
                 <span aria-hidden="true">/</span>
                 <strong aria-current="page">{currentSubcategory.name}</strong>
               </>

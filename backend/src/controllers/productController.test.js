@@ -247,6 +247,51 @@ test('subcategory membership requires its parent to be selected', async (t) => {
   );
   assert.equal(res.statusCode, 400);
 });
+test('nested product assignments include all active descendant ancestors', async (t) => {
+  const { default: Category } = await import('../models/Category.js');
+  const root = '123456789012345678901234';
+  const child = '123456789012345678901235';
+  const leaf = '123456789012345678901236';
+  t.mock.method(Category, 'findById', async (id) =>
+    String(id) === root
+      ? { _id: root, parent: null, active: true }
+      : String(id) === child
+        ? { _id: child, parent: root, active: true }
+        : null,
+  );
+  t.mock.method(Category, 'find', () => ({
+    async lean() {
+      return [
+        { _id: root, parent: null },
+        { _id: child, parent: root },
+        { _id: leaf, parent: child },
+      ];
+    },
+  }));
+  let saved;
+  t.mock.method(Product, 'create', async (fields) => {
+    saved = fields;
+    return { _id: 'product', ...fields };
+  });
+  const res = response();
+  await saveProduct(
+    {
+      params: {},
+      body: {
+        name: 'Frame',
+        slug: 'nested-frame',
+        categoryIds: [root],
+        subcategoryIds: [leaf],
+      },
+    },
+    res,
+    assert.ifError,
+  );
+  assert.deepEqual(saved.categoryIds, [root]);
+  assert.deepEqual(saved.subcategoryIds, [leaf, child]);
+  assert.equal(saved.categoryId, root);
+  assert.equal(saved.subcategoryId, child);
+});
 test('batch product lookup validates IDs and includes active products of all types', async (t) => {
   const id = '123456789012345678901234';
   t.mock.method(Product, 'find', (filter) => {

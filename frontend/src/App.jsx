@@ -88,7 +88,13 @@ export default function App() {
                   .filter((page) => page.layout === 'store' && !page.protected)
                   .map((page) => pageRoute(page, settings))}
                 {settings
-                  .filter((row) => row.path === '/collection/:category' && !row.redirectOnly)
+                  .filter(
+                    (row) =>
+                      [
+                        '/collection/:category',
+                        '/collection/:category/:subcategory/*',
+                      ].includes(row.path) && !row.redirectOnly,
+                  )
                   .flatMap((row) =>
                     [...new Set([row.path, row.urlPath, ...(row.redirects || [])])]
                       .filter(Boolean)

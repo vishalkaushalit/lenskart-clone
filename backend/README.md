@@ -117,11 +117,11 @@ const product = {
 | --- | --- |
 | `name` | Required label, max 100; unique within the same parent (case-insensitive index). |
 | `slug` | Unique readable collection query value, max 120; generated if empty. |
-| `parent` | Null for a main category, root Category ObjectId for a subcategory. Only two levels; parent cannot change after creation. |
+| `parent` | Null for a main category, or another Category ObjectId for a nested category at any depth. Parent cannot change after creation. |
 | `image` | Homepage category/shape image; valid local asset path or HTTP(S) URL, or empty. |
 | `kind` | `category`, `shape`, `type`, or `collection`; describes how the entry is grouped/displayed. |
 | `sortOrder` | Numeric display ordering; lower numbers sort first. |
-| `active` | Public visibility. Children of inactive roots are omitted from public category responses. |
+| `active` | Public visibility. A category is omitted from public responses when it or any ancestor is inactive. |
 
 ### User: `src/models/User.js`
 
@@ -389,7 +389,7 @@ Product detail endpoints fetch variants and approved reviews concurrently after 
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `2d6ef4fe615372e8070cdfa2f16e613697a0d56b84c6ae7c97c867a756be33d0`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `30bb65256d9fd17e4bee8223e4b1d28f61308fec4310717c3363b4ca69a40f3f`.
 
 ### Actual npm commands
 
@@ -1047,7 +1047,7 @@ const schema = new mongoose.Schema(
   {
     redirects: { type: [{ _id: false, from: String, to: String }], default: [] },
     productPrefix: { type: String, default: '/products' },
-    collectionPrefix: { type: String, default: '/collections' },
+    collectionPrefix: { type: String, default: '/collection' },
     productPrefixHistory: { type: [String], default: [] },
     collectionPrefixHistory: { type: [String], default: [] },
     key: { type: String, unique: true, default: 'site' },

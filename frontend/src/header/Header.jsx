@@ -183,7 +183,9 @@ const Header = () => {
           normalized(row.name) === normalized(item || '')),
     );
     if (item && item !== root.name && item !== label && !child) return '#';
-    return `/collection/${root.slug}${child ? `?subcategory=${child.slug}` : ''}`;
+    return child
+      ? `/collections/${root.slug}/${encodeURIComponent(child.slug)}`
+      : `/collections/${root.slug}`;
   }
 
   const { user } = useAuth();

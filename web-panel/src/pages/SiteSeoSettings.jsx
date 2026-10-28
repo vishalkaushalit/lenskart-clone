@@ -10,7 +10,7 @@ import { apiRequest, frontendUrl } from '../api';
 const defaults = {
   redirects: [],
   productPrefix: '/products',
-  collectionPrefix: '/collections',
+  collectionPrefix: '/collection',
   websiteUrl: '',
   googleVerification: '',
   metaVerification: '',
@@ -36,7 +36,15 @@ export default function SiteSeoSettings() {
     const controller = new AbortController();
     apiRequest('/admin/site-seo', { signal: controller.signal })
       .then(({ settings }) => {
-        if (!controller.signal.aborted) setForm({ ...defaults, ...settings });
+        if (!controller.signal.aborted)
+          setForm({
+            ...defaults,
+            ...settings,
+            collectionPrefix:
+              settings.collectionPrefix === '/collections'
+                ? '/collection'
+                : settings.collectionPrefix || defaults.collectionPrefix,
+          });
       })
       .catch((err) => {
         if (!controller.signal.aborted) setError(err.message);
@@ -143,7 +151,7 @@ export default function SiteSeoSettings() {
                       <div className="grid gap-5 md:grid-cols-2">
                         {[
                           ['productPrefix', 'Products', '/products'],
-                          ['collectionPrefix', 'Collections', '/collections'],
+                          ['collectionPrefix', 'Product listing', '/collection'],
                         ].map(([key, label, placeholder]) => (
                           <label key={key} className="product-label block">
                             {label}
@@ -162,7 +170,8 @@ export default function SiteSeoSettings() {
                                 '/product-slug'
                               ) : (
                                 <span className="mt-1 block">
-                                  Category URLs use {frontendUrl}/collections/collection-slug
+                                  Category URLs use {frontendUrl}/collections/collection-slug. The
+                                  collections index is {frontendUrl}/collections.
                                 </span>
                               )}
                             </span>

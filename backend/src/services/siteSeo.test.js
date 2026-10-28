@@ -127,7 +127,8 @@ test('generated robots and sitemap use the saved origin and active product slugs
   assert.equal(sitemap.contentType, 'application/xml');
   assert.ok(sitemap.body.includes('https://shop.example.com/products/test-frame'));
   assert.ok(!sitemap.body.includes('/checkout'));
-  assert.ok(!sitemap.body.includes('/collection'));
+  assert.ok(sitemap.body.includes('<loc>https://shop.example.com/collections</loc>'));
+  assert.ok(!sitemap.body.includes('<loc>https://shop.example.com/collection</loc>'));
 });
 test('custom crawler files are served without querying the product catalog', async (t) => {
   const { default: SiteSeo } = await import('../models/SiteSeo.js');
@@ -180,6 +181,15 @@ test('Google tracking validates installation method and public IDs', () => {
     { trackingMode: 'direct', ga4Id: 'AW-123' },
   ])
     assert.throws(() => siteSeoFields({ ...empty, ...fields }));
+  assert.throws(() =>
+    siteSeoFields({ ...empty, redirects: [{ from: '/collections', to: '/collection' }] }),
+  );
+  assert.throws(() =>
+    siteSeoFields({
+      ...empty,
+      redirects: [{ from: '/collections/eyeglasses/classic', to: '/collection' }],
+    }),
+  );
   assert.equal(siteSeoFields({ ...empty, trackingMode: 'off' }).trackingMode, 'off');
 });
 
@@ -316,10 +326,11 @@ test('URL prefixes reject reserved and malformed values', () => {
   ])
     assert.throws(() => siteSeoFields({ ...empty, productPrefix }));
   assert.equal(
-    siteSeoFields({ ...empty, productPrefix: '/frames', collectionPrefix: '/collections' })
+    siteSeoFields({ ...empty, productPrefix: '/frames', collectionPrefix: '/collection' })
       .productPrefix,
     '/frames',
   );
+  assert.throws(() => siteSeoFields({ ...empty, collectionPrefix: '/collections' }));
 });
 test('old product and collection prefixes redirect permanently with queries', async (t) => {
   const { renderStorefront } = await import('../routes/siteSeoRoutes.js');
@@ -343,7 +354,6 @@ test('old product and collection prefixes redirect permanently with queries', as
   for (const [path, target] of [
     ['/products/blue/reviews', '/frames/blue/reviews'],
     ['/eyewear/blue', '/frames/blue'],
-    ['/collection', '/collections'],
   ]) {
     let result;
     await renderStorefront(

@@ -19,8 +19,20 @@ publicCategories.get(
   '/',
   wrap(async (req, res) => {
     const rows = await Category.find({ active: true }).sort({ sortOrder: 1, name: 1 }).lean();
-    const roots = new Set(rows.filter((row) => !row.parent).map((row) => String(row._id)));
-    res.json({ categories: rows.filter((row) => !row.parent || roots.has(String(row.parent))) });
+    const categoriesById = new Map(rows.map((row) => [String(row._id), row]));
+    const visible = rows.filter((row) => {
+      const visited = new Set();
+      let current = row;
+      while (current.parent) {
+        const id = String(current._id);
+        if (visited.has(id)) return false;
+        visited.add(id);
+        current = categoriesById.get(String(current.parent));
+        if (!current) return false;
+      }
+      return true;
+    });
+    res.json({ categories: visible });
   }),
 );
 adminCategories.get(
@@ -44,13 +56,18 @@ async function save(req, res) {
   if (parent) {
     if (!/^[a-f\d]{24}$/i.test(String(parent)) || String(parent) === String(category._id))
       return res.status(400).json({ message: 'Choose a valid parent category.' });
-    const root = await Category.findById(parent);
-    if (!root || root.parent)
-      return res.status(400).json({ message: 'Subcategories must belong to a main category.' });
-    if (await Category.exists({ parent: category._id }))
-      return res
-        .status(400)
-        .json({ message: 'A category with subcategories cannot become a subcategory.' });
+    let ancestor = await Category.findById(parent);
+    if (!ancestor) return res.status(400).json({ message: 'Choose an existing parent category.' });
+    const visited = new Set();
+    while (ancestor) {
+      const ancestorId = String(ancestor._id);
+      if (ancestorId === String(category._id))
+        return res.status(400).json({ message: 'A category cannot be its own descendant.' });
+      if (visited.has(ancestorId))
+        return res.status(400).json({ message: 'The parent category hierarchy is invalid.' });
+      visited.add(ancestorId);
+      ancestor = ancestor.parent ? await Category.findById(ancestor.parent) : null;
+    }
   }
   if (req.params.id && String(parent || '') !== String(category.parent || ''))
     return res.status(400).json({ message: 'The parent cannot be changed after creation.' });

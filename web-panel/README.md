@@ -63,7 +63,7 @@ ProductDetails displays gallery, price, stock, category/specifications, and edit
 | `name`, `slug`, `subtitle` | Customer title, readable URL, and supporting title text; empty slug is generated. |
 | `sku` | Required unique inventory identifier. |
 | `productType` | Eyeglasses/Sunglasses catalog group. |
-| `categoryIds`, `subcategoryIds` | Multiple root/child memberships; selecting a child also selects its root. Removing a root removes its children. |
+| `categoryIds`, `subcategoryIds` | Multiple root and nested-category memberships; selecting a nested category includes its ancestors. Removing a root removes its descendants. |
 | `brand`, `shape`, `color`, `size`, `gender` | Customer-facing specifications, search values, and filters. |
 | `category` | Frame Range (Classic/Premium), separate from taxonomy memberships. |
 | `price`, `originalPrice` | Numeric current/list prices in INR; used for bill savings. |
@@ -93,7 +93,7 @@ The admin sidebar labels this section **Collections** and links to `/collections
 | --- | --- |
 | `name` | Root/child label used in navigation and collection filters. |
 | `slug` | Collection query slug; generated if blank. |
-| `parent` | Empty for root, root ObjectId for child; immutable after creation. |
+| `parent` | Empty for root, parent category ObjectId at any depth; immutable after creation. |
 | `image` | Category/shape tile image; ImageUploadField uploads and supplies its path. |
 | `kind` | Category, shape, type, or collection display classification. |
 | `sortOrder` | Numeric navigation order. |
@@ -103,7 +103,7 @@ The admin sidebar labels this section **Collections** and links to `/collections
 | `busy`, `uploading` | Disable save while request/image upload is in progress. |
 | URL `search`, `page` | Current header query and 20-row pagination. |
 
-The parent list shows active roots. Taxonomy supports a root plus children, not unlimited nested levels. There is an edit action and active toggle field; no category delete endpoint is implemented.
+The parent list offers active categories at any depth. Nested category paths become `/collections/:category/:subcategory/...`; inactive ancestors hide their entire branch from the storefront. Parent assignment is fixed after creation. There is an edit action and active toggle field.
 
 ### Users (`/users`)
 
@@ -201,7 +201,7 @@ This map covers every JavaScript/JSX/CSS source file. Media assets are grouped b
 | [`src/index.css`](src/index.css) | Global/Tailwind styles and shared delete-button appearance. |
 | [`src/main.jsx`](src/main.jsx) | React entry point and browser-router mounting. |
 | [`src/pages/AddProduct.jsx`](src/pages/AddProduct.jsx) | Create page wrapping ProductEditor. |
-| [`src/pages/Categories.jsx`](src/pages/Categories.jsx) | Root/child category form, image upload, local search, and paginated table. |
+| [`src/pages/Categories.jsx`](src/pages/Categories.jsx) | Nested category form, image upload, local search, and paginated table. |
 | [`src/pages/Commerce.jsx`](src/pages/Commerce.jsx) | Shared orders/coupons listing, server search, page links, and coupon quick-toggle refresh. |
 | [`src/pages/EditProduct.jsx`](src/pages/EditProduct.jsx) | Fetch selected product then mount editor with its fields. |
 | [`src/pages/Logout.jsx`](src/pages/Logout.jsx) | End current session and redirect to customer app. |
@@ -293,7 +293,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `6139f5f249ea8f2eadf3432d6b8456e5e7636102764f48956ff2708623f1251a`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `ed7e738b05ee3324c438784b7f919e5c52fc6fdabcd25bfd95376bef693b0f97`.
 
 ### Actual npm commands
 
@@ -577,6 +577,6 @@ Page URL is an editable path (e.g. `/favorites`), with its full address shown un
 
 ### Store URL settings
 
-The sidebar **Settings** link opens `/seo/settings`. Store URL prefixes control the product route (default `/products`) and collection route (default `/collections`). Category pages use `/collections/:categorySlug`; subcategory filters remain query parameters. Use a single lowercase path segment, such as `/frames` or `/collections`. Saving retains prior prefixes as permanent redirects; product slugs, review suffixes and collection filters remain intact. Edit an automatic redirect from the table to open its source page URL settings or store-prefix settings; all redirects for that page or prefix follow the saved URL. Delete an automatic redirect from the table to remove its saved page redirect or prefix history; deleting a product-prefix redirect removes both its product and review prefix redirects. Reserved and conflicting prefixes are rejected. Reload the storefront after saving URL settings or deleting an automatic redirect. Uploaded custom sitemaps must be updated manually.
+The sidebar **Settings** link opens `/seo/settings`. Store URL prefixes control the product route (default `/products`) and all-products listing (default `/collection`). `/products` lists all products, while `/collections` is reserved for the all-collections index. Category routes use `/collections/:categorySlug`; subcategory routes use `/collections/:categorySlug/:subcategorySlug`. Use a single lowercase path segment for configurable prefixes. Saving retains prior prefixes as permanent redirects; product slugs and review suffixes remain intact. Edit an automatic redirect from the table to open its source page URL settings or store-prefix settings; all redirects for that page or prefix follow the saved URL. Delete an automatic redirect from the table to remove its saved page redirect or prefix history; deleting a product-prefix redirect removes both its product and review prefix redirects. Reserved and conflicting prefixes are rejected. Reload the storefront after saving URL settings or deleting an automatic redirect. Uploaded custom sitemaps must be updated manually.
 
 Admin collection management uses `/collections`, `/collections/add`, `/collections/:id`, and `/collections/:id/edit`. Legacy admin `/categories` routes are removed and show Page not found. Database categories and admin API endpoints remain compatible.

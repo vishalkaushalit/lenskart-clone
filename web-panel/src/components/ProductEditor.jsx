@@ -31,9 +31,13 @@ export default function ProductEditor({ product = null }) {
       if (!children.has(row.parent)) children.set(row.parent, []);
       children.get(row.parent).push(row);
     }
+    const build = (row) => ({
+      ...row,
+      children: (children.get(row._id) || []).map(build),
+    });
     return categories
       .filter((row) => !row.parent && row.active)
-      .map((root) => ({ ...root, children: children.get(root._id) || [] }));
+      .map(build);
   }, [categories]);
   const [categoryIds, setCategoryIds] = useState(
     product?.categoryIds || (product?.categoryId ? [product.categoryId] : []),
@@ -177,6 +181,64 @@ export default function ProductEditor({ product = null }) {
     }
   }
   const input = 'product-field';
+  function descendantIds(categoryId) {
+    const descendants = new Set();
+    const pending = [categoryId];
+    while (pending.length) {
+      const parentId = pending.pop();
+      for (const row of categories) {
+        if (row.parent === parentId && !descendants.has(row._id)) {
+          descendants.add(row._id);
+          pending.push(row._id);
+        }
+      }
+    }
+    return descendants;
+  }
+  function categoryPath(categoryId) {
+    const path = [];
+    let current = categories.find((row) => row._id === categoryId);
+    const visited = new Set();
+    while (current?.parent && !visited.has(current._id)) {
+      visited.add(current._id);
+      path.unshift(current._id);
+      current = categories.find((row) => row._id === current.parent);
+    }
+    return { rootId: current?._id, descendantIds: path };
+  }
+  function renderSubcategories(children) {
+    return children.map((child) => (
+      <div key={child._id}>
+        <label className="flex items-center gap-2 text-xs text-slate-500">
+          <input
+            type="checkbox"
+            checked={subcategoryIds.includes(child._id)}
+            onChange={(event) => {
+              const { rootId, descendantIds: path } = categoryPath(child._id);
+              if (event.target.checked) {
+                if (rootId)
+                  setCategoryIds((previous) =>
+                    previous.includes(rootId) ? previous : [...previous, rootId],
+                  );
+                setSubcategoryIds((previous) => [...new Set([...previous, ...path])]);
+              } else {
+                const removed = descendantIds(child._id);
+                removed.add(child._id);
+                setSubcategoryIds((previous) => previous.filter((value) => !removed.has(value)));
+              }
+            }}
+            className="accent-blue-600"
+          />
+          {child.name}
+        </label>
+        {child.children.length > 0 && (
+          <div className="ml-5 mt-2 grid gap-2 border-l border-slate-200 pl-3">
+            {renderSubcategories(child.children)}
+          </div>
+        )}
+      </div>
+    ));
+  }
   function text(name, label, placeholder, required = true) {
     return (
       <label className="product-label">
@@ -344,47 +406,19 @@ export default function ProductEditor({ product = null }) {
                                 ? [...previous, root._id]
                                 : previous.filter((value) => value !== root._id),
                             );
-                            if (!event.target.checked)
+                            if (!event.target.checked) {
+                              const removed = descendantIds(root._id);
                               setSubcategoryIds((previous) =>
-                                previous.filter(
-                                  (value) =>
-                                    !categories.some(
-                                      (row) => row._id === value && row.parent === root._id,
-                                    ),
-                                ),
+                                previous.filter((value) => !removed.has(value)),
                               );
+                            }
                           }}
                           className="accent-blue-600"
                         />
                         {root.name}
                       </label>
                       <div className="ml-6 mt-2 grid gap-2">
-                        {root.children.map((child) => (
-                          <label
-                            key={child._id}
-                            className="flex items-center gap-2 text-xs text-slate-500"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={subcategoryIds.includes(child._id)}
-                              onChange={(event) => {
-                                if (event.target.checked) {
-                                  setCategoryIds((previous) =>
-                                    previous.includes(root._id)
-                                      ? previous
-                                      : [...previous, root._id],
-                                  );
-                                  setSubcategoryIds((previous) => [...previous, child._id]);
-                                } else
-                                  setSubcategoryIds((previous) =>
-                                    previous.filter((value) => value !== child._id),
-                                  );
-                              }}
-                              className="accent-blue-600"
-                            />
-                            {child.name}
-                          </label>
-                        ))}
+                        {renderSubcategories(root.children)}
                       </div>
                     </div>
                   ))}

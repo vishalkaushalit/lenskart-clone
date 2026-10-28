@@ -39,6 +39,7 @@ export function siteSeoFields(body) {
           '/assets',
           '/orders',
           '/thank-you',
+          '/collections',
           '/eyeglasses',
           '/wishlist',
           '/cart',
@@ -76,6 +77,8 @@ export function siteSeoFields(body) {
         throw new Error(
           'Use a unique old URL different from the destination; the homepage cannot be redirected.',
         );
+      if (row.from === '/collections' || row.from.startsWith('/collections/'))
+        throw new Error('The /collections path is reserved for the collections index.');
       paths.add(row.from);
       return { from: row.from, to: row.to };
     });
