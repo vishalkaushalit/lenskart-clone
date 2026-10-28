@@ -1,10 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 @import '../../shared/Popup.css';
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+}
 
 @layer base {
   body {
     margin: 0;
-    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-sans);
     background: #f8fafc;
     color: #1e293b;
   }
@@ -492,7 +497,6 @@ textarea.product-field {
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   background: #fff;
-  font-family: Arial, sans-serif;
   text-align: left;
 }
 .seo-preview-site {

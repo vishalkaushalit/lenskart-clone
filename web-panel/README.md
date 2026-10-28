@@ -163,7 +163,7 @@ OrderDetails uses `items[].product` for a product link, `unitPrice` for the save
 
 ## Styles, assets, and errors
 
-`index.css` provides Tailwind/global utilities, admin layouts/table/form classes, and shared delete styling. `App.css` remains in the source; actual imports determine whether its styles apply. `src/assets/` contains legacy/template art; `public/` contains direct static icons. Product/category photos resolve from the backend rather than being copied into panel assets.
+`index.css` provides the global Plus Jakarta Sans font, Tailwind utilities, admin layouts/table/form classes, and shared delete styling. `App.css` remains in the source; actual imports determine whether its styles apply. `src/assets/` contains legacy/template art; `public/` contains direct static icons. Product/category photos resolve from the backend rather than being copied into panel assets.
 
 If the panel redirects to login, verify the same enabled admin session via the storefront. If requests fail with 401/403, inspect API role checks and origins. If images fail, verify their local backend files and API URL. If the dashboard is empty, inspect database records and date range; zero delivered revenue is valid. Online payment processing and order deletion are not panel features.
 
@@ -293,7 +293,7 @@ Order tracking uses the shared polling hook with the admin request client. Produ
 <!-- AUTO-GENERATED:START -->
 ## Generated code reference
 
-Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `750357d7f3fb07bfd1951174cbf69bed624556e86d2f2890f3e9ca23513fd0c1`.
+Maintained by `npm run docs:sync` from the repository root. Edit explanations above this section; generated content is replaced automatically. Source fingerprint: `283e1b12c9d7e1b786ea4b8b900268c7d87788aa8b5d7577f9ecdd7312d0d6b9`.
 
 ### Actual npm commands
 
